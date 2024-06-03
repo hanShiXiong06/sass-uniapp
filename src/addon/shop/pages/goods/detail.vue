@@ -645,10 +645,14 @@ const toDetail = (id: string | number) => {
 }
 
 //预览图片
-const imgListPreview = (item) => {
-	if (item === '') return false
+const imgListPreview = (items: any) => {
+
+	if (items.length === 0 ) return false
 	var urlList = []
-	urlList.push(img(item))  //push中的参数为 :src="item.img_url" 中的图片地址
+  items.map( (item:string) =>{
+    urlList.push(item)
+  })
+
 	uni.previewImage({
 		indicator: "number",
 		loop: true,
@@ -764,7 +768,7 @@ onPageScroll((e)=> {
 
 const swiperClick = (index)=>{
 	if(typeof index == 'number')
-		imgListPreview(goodsDetail.value.goods.goods_image[index])
+		imgListPreview(goodsDetail.value.goods.goods_image)
 }
 
 /************* 分享海报-start **************/
