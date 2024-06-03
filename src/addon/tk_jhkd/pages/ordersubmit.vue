@@ -43,15 +43,9 @@
 				</view>
 			</u-col>
 		</u-row>
-		<view class="text-sm mt-2 text-[#686868] overflow-hidden"  :style="'height:' +height " >
+		<view class="text-sm mt-2 text-[#686868]">
 			请认真核实地址,填写实际重量再下单！
-      <view>必读！必读！新手必读！</view>
-       <view>①上门成功率非百分百，不成功可退款，无法保证按预约时间上门，催上门可电联快递员或反馈</view>
-      <view>
-      ②超轻包裹会体积重计费人，如棉被，羽绒服，塑料容器，毛绒玩具等，体积重公式为：（长cmx宽cmx高cm/抛比，抛比请参照各快递公司，体积重＞实际重，即按体积计费，</view><view>③体积或重量可预估，运费多退少补，『计费重量向上取整，如1.01kg，按2kg计费』</view><view>④线下切勿付运费给快递员.本程序不承担快递未上门相关责任，急件请酌情安排
-    </view><view> ⑤需自行打包口请认可以上说明再继续下单</view>
 		</view>
-    <view><u-button @click="heightChangeAuto"> <up-icon name="arrow-down" color="#2979ff" size="28"  > </up-icon> </u-button> </view>
 	</view>
 	<view class="tk-card">
 		<view class="fb">
@@ -68,7 +62,7 @@
 	</view>
 	<view v-if="preData" class="tk-card mt-[40rpx] overflow-y-auto">
 		<block v-for="(item,index) in preData" :key=index>
-			<view class="fb p-[12rpx] " :class="{active:currentIndex == index }" @click="selectPre(index)" v-if="item.onlinePay=='Y'">
+			<view class="fb p-[12rpx]" @click="selectPre(index)" v-if="item.onlinePay=='Y'">
 				<view class="fl">
 					<image style="width: 68rpx;height: 68rpx;border-radius: 8rpx;" :src="img(item.logo)" mode="">
 					</image>
@@ -95,6 +89,7 @@
 			</label>
 		</checkbox-group>
 	</view>
+	<view class="mt-[380rpx] mb-[260rpx] flex items-center"></view>
 	<!-- 物品信息弹出框 -->
 	<u-popup class="safe-area-inset-bottom" :round="10" @close="close" closeable="true" :show="goodshow" mode="bottom"
 		width="640" border-radius="12">
@@ -180,29 +175,40 @@
 		<view class="b-tabbar-back fb items-center p-2">
 			<view class="">
 				<view class="text-sm tk-sltext w-[400rpx]">快递：{{selectData?selectData.channelName:'请选择快递'}}</view>
-				<view class="text-sm font-weight text-[#ec2626]">快递费：{{selectData?selectData.showPrice:'请先选择快递'}}</view>
+				<view class="text-sm font-weight">快递费：{{selectData?selectData.showPrice:'请先选择快递'}}</view>
 			</view>
 
 			<text class="tt-bbut text-center" @click="submitOrder()">立即下单</text>
 		</view>
 		<u-safe-bottom></u-safe-bottom>
 	</view>
+	<button @click="shareEvent()" class="fixed bottom-48 right-4 z-50 rounded-full p-2 text-white hover:bg-blue-700">
 
+		<u-icon name="share" color="#000000" size="24"></u-icon>
+	</button>
+	<share-poster ref="sharePosterRef" posterType="tk_jhkd_poster" :posterId="poster_id" :posterParam="posterParam"
+		:copyUrlParam="copyUrlParam" />
 	<pay ref="payRef" @close="payLoading = false"></pay>
 </template>
 <script setup lang="ts">
 	import useDiyStore from '@/app/stores/diy';
-	import { ref, reactive } from 'vue'
+	import { ref, reactive, computed } from 'vue'
 	import { goto } from '@/addon/tk_jhkd/utils/ts/goto';
 	import {
 		onLoad,
 		onShow
 	} from '@dcloudio/uni-app'
 	import {
-		preOrder, createOrder, getJhkdAddressInfo, getAgreement
+		preOrder, createOrder, getJhkdAddressInfo, getAgreement, checkFenxiao
 	} from '@/addon/tk_jhkd/api/tkjhkd'
-	import { redirect, img } from '@/utils/common';
+	import { redirect, img, handleOnloadParams } from '@/utils/common';
 	import { getAddressInfo } from '@/app/api/member'
+	import { useSubscribeMessage } from '@/hooks/useSubscribeMessage'
+	import { useLogin } from '@/hooks/useLogin'
+	import useMemberStore from '@/stores/member'
+	const memberStore = useMemberStore()
+	const userInfo = computed(() => memberStore.info)
+
 	const list = ref([''])
 	const startaddress = ref(null)
 	const endaddress = ref(null)
@@ -214,8 +220,6 @@
 	const isReadJhkdService = ref(false)
 	const isOpenAgreement = ref(true)
 	const bjshow = ref(false)
-  const currentIndex= ref(null)
-  const height = ref('100px')
 	const tip = ref({
 		title: '快速下单必读',
 		description: '先地址簿添加/编辑地址，选择取/收货地址，填写物品信息，选择渠道下单',
@@ -231,11 +235,44 @@
 		'零食特产',
 		'办公用品'
 	])
+
+
+	/************* 分享海报-start **************/
+	let sharePosterRef = ref(null);
+	let copyUrlParam = ref('');
+	let posterParam = {};
+	const poster_id = ref(0)
+	// 分享海报链接
+	const copyUrlFn = () => {
+
+		if (userInfo.value && userInfo.value.member_id) copyUrlParam.value += '?mid=' + userInfo.value.member_id;
+	}
+	const shareEvent = () => {
+
+		// 检测是否登录
+		if (!userInfo.value) {
+			let pid = uni.getStorageSync('pid');
+			if (pid && pid > 0) {
+				useLogin().setLoginBack({ url: '/addon/tk_jhkd/pages/ordersubmit?mid=' + pid })
+				return false
+			} else {
+				useLogin().setLoginBack({ url: '/addon/tk_jhkd/pages/ordersubmit' })
+				return false
+			}
+		}
+
+		if (userInfo.value && userInfo.value.member_id)
+			posterParam.member_id = userInfo.value.member_id;
+		sharePosterRef.value.openShare()
+	}
+	/************* 分享海报-end **************/
+
+
+
 	const goodswrite = (index) => {
 		uni.$u.toast(goods.value[index])
 		form.goods = goods.value[index]
 	}
-
 	const checkboxChange = (e) => {
 		if (isOpenAgreement.value == true) {
 			isOpenAgreement.value = false
@@ -282,13 +319,15 @@
 				value: type
 			},
 			success() {
-				redirect({ url: '/app/pages/member/address', param: { type: 'address' } })
+				redirect({ url: '/addon/tk_jhkd/pages/address/address', param: { type: 'address' } })
 			}
 		})
 	}
 	const addressInfo = async (id) => {
-		const data = await getJhkdAddressInfo(id);
-		return data.data;
+		if (id > 0) {
+			const data = await getJhkdAddressInfo(id);
+			return data.data;
+		}
 	};
 
 	const selectAddress = uni.getStorageSync('selectAddressCallback');
@@ -327,6 +366,7 @@
 			uni.$u.toast('请填写送件地址')
 			return
 		}
+		useSubscribeMessage().request('tk_jhkd_order_sign')
 		goodshow.value = true
 		form.delivery_info = []
 	}
@@ -381,6 +421,8 @@
 			uni.$u.toast('请先阅读并同意协议')
 			return
 		}
+
+		useSubscribeMessage().request('tk_jhkd_order_pay,tk_jhkd_order_pick,tk_jhkd_order_add')
 		const data = await createOrder(form)
 		form.delivery_info = []
 		selectData.value = null
@@ -389,7 +431,6 @@
 		payRef.value?.open(data.data.trade_type, data.data.trade_id, '/addon/tk_jhkd/pages/orderlist')
 	}
 	const selectPre = (e) => {
-    currentIndex.value  = e
 		selectData.value = preData.value[e]
 		form.showPrice = selectData.value.showPrice
 		form.delivery_info = selectData.value
@@ -400,23 +441,29 @@
 		const data = await getAgreement('jhkdservice')
 		jhkdservice.value = data.data
 	}
-	onLoad((options) => {
+	onLoad((option) => {
+		// #ifdef MP-WEIXIN
+		// 处理小程序场景值参数
+		option = handleOnloadParams(option);
+		// #endif
+		if (option.mid) {
+			uni.setStorageSync('pid', option.mid)
+			//分销预埋钩子绑定
+			checkFenxiao({ pid: option.mid })
+		} else {
+			let pid = uni.getStorageSync('pid');
+			if (pid && pid > 0) {
+				checkFenxiao({ pid: pid })
+			}
+		}
 		//传入判断，type,寄件
-		form.customerType = options.type ? options.type : 'kd'
+		form.customerType = option.type ? option.type : 'kd'
 		if (form.customerType == 'ky') {
 			form.weight = 30
 		}
 		checkServiceAgreement()
+
 	})
-
-  const heightChangeAuto = ()=>{
-    if(height.value==='auto'){
-      height.value='100px'
-      return
-    }
-    height.value='auto'
-  }
-
 </script>
 
 <style lang="scss" scoped>
@@ -481,8 +528,4 @@
 		color: #ffffff;
 		font-size: 28rpx;
 	}
-  .active{
-    background: rgb(80, 129, 238 ,0.5);
-    border-radius: 8rpx;
-  }
 </style>

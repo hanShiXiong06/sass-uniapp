@@ -210,3 +210,8 @@ export function getSignConfig() {
 export function setSign() {
 	return request.post('member/sign')
 }
+
+/*hsx 解析地址接口*/
+export function addressParser(params: string){
+	return request.get(`member/address/parser`, {address:params})
+}

@@ -1,5 +1,8 @@
 import request from '@/utils/request'
 
+export function fanyiAddress(data : AnyObject) {
+	return request.get('tk_jhkd/address/fanyiaddress', data)
+}
 /**
  * 获取地址列表
  */
@@ -71,4 +74,7 @@ export function preOrder(data : AnyObject) {
  */
 export function createOrder(data : AnyObject) {
 	return request.post(`tk_jhkd/createorder`, data)
+}
+export function checkFenxiao(params : Record<string, any>) {
+	return request.post(`tk_jhkd/checkfenxiao`, params)
 }

@@ -188,6 +188,7 @@
             order: diyComponent.value.sortWay
 		}
 		getGoodsComponents(data).then((res) => {
+
 			goodsList.value = res.data;
             skeleton.loading = false;
 		});
