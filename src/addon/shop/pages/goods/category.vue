@@ -67,13 +67,12 @@ onShow(() => {
 .category .labelPopup :deep(.u-transition) {
 	top: 92rpx !important;
 	left: 182rpx !important;
-	z-index: 8 !important;
+	z-index: 3 !important;
 }
 .category .labelPopup.active :deep(.u-transition) {
 	top: 198rpx !important;
 }
-</style>
-<style lang="scss" scoped>
+
 :deep(.mescroll-upwarp) {
 	box-sizing: border-box;
 	padding-left: 182rpx;

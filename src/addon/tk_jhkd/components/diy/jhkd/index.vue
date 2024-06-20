@@ -5,7 +5,7 @@
 			<u-row gutter="12" class="flex item-center">
 				<u-col span="2">
 					<view class="">
-						<text class="tag">取</text>
+						<text class="tag">寄</text>
 					</view>
 
 					<view class="mt-[4rpx] mb-[4rpx]">
@@ -14,7 +14,7 @@
 					</view>
 					<view class="">
 						<text class="tag" style="color: #ffffff;"
-							:style="{ background:diyComponent.songbackground, }">送</text>
+							:style="{ background:diyComponent.songbackground, }">收</text>
 					</view>
 
 				</u-col>

@@ -508,6 +508,7 @@ const subActive = ref<number>(0)
 // 一级菜单点击事件
 const firstLevelClick = (index: number, data: Object) => {
   tabActive.value = index;
+  labelPopup.value = false
   if (data.child_list && data.child_list.length) {
     subMenuClick(0, data.child_list[0]);
   } else {
@@ -780,7 +781,7 @@ let goodsPrice = (data: any) => {
 .category .labelPopup :deep(.u-transition) {
   top: 92rpx !important;
   left: 182rpx !important;
-  z-index: 8 !important;
+  z-index: 6 !important;
 }
 
 .category .labelPopup.active :deep(.u-transition) {
@@ -892,12 +893,12 @@ let goodsPrice = (data: any) => {
   position: absolute;
   left: 0px;
   top: 0;
-  z-index: 9;
+  z-index: 2;
 }
 .position-b{
   position: relative;
   left: 0px;
   top: 0;
-  z-index: 8;
+  z-index: 1;
 }
 </style>

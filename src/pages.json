@@ -313,8 +313,7 @@
 				"path": "tk_jhkd/pages/ordersubmit",
 				"style": {
 					"navigationBarTitleText": "快递下单"
-				},
-				"needLogin": true
+				}
 			},
 			{
 				"path": "tk_jhkd/pages/orderlist",
