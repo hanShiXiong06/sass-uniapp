@@ -6,7 +6,7 @@
 				<view class="search-box z-10 bg-[#fff] fixed top-0 left-0 right-0">
 					<input class="search-ipt text-sm" type="text" v-model="searchName" :placeholder="t('searchKeywordPlaceholder')">
 					<view class="flex items-center z-2 h-[66rpx] absolute right-[48rpx] top-[18rpx]">
-						<text class="iconfont iconxiazai17 text-[30rpx]" @click="searchNameFn"></text>
+						<text class="nc-iconfont nc-icon-sousuoV6xx text-[30rpx]" @click="searchNameFn"></text>
 					</view>
 				</view>
 				<!-- 左侧切换 -->
@@ -32,12 +32,12 @@
 										@click="subMenuClick(index,item)">{{item.category_name}}</text>
 								</view>
 							</scroll-view>
-							<text class="iconfont iconjiantoushang  text-[30rpx]" @click="labelPopup = true"></text>
+							<text class="nc-iconfont nc-icon-shangV6xx-1  text-[32rpx]" @click="labelPopup = true"></text>
 						</template>
 						<template v-else>
 							<view class="flex-1 h-[48rpx] text-[22rpx] text-[#E2E2E2] px-[24rpx] leading-[48rpx]">{{ t('allCategory') }}
 							</view>
-							<text class="iconfont iconjiantoushang transform text-[30rpx] rotate-180"
+							<text class="nc-iconfont nc-icon-shangV6xx-1 transform text-[32rpx] rotate-180"
 								@click="labelPopup = false"></text>
 						</template>
 					</view>
@@ -64,7 +64,8 @@
 								<view class="flex items-center mt-2 text-[#F55246] text-xs">
 									<view class="text-[var(--price-text-color)]">
 										<text class="text-[28rpx] price-font">￥</text>
-										<text class="text-[28rpx] price-font">{{item.price}}</text>
+										<text class="text-[28rpx] price-font">{{goodsPrice(item)}}</text>
+										<image  v-if="priceType(item) == 'member_price'" class="h-[24rpx] ml-[10rpx] w-[60rpx]" :src="img('addon/o2o/VIP.png')" mode="heightFix" />
 									</view>
 								</view>
 									<view class="flex items-center mt-auto justify-between">
@@ -88,7 +89,7 @@
 <script setup lang="ts">
 	import { ref, } from 'vue';
 	import { onLoad } from '@dcloudio/uni-app';
-	import { img, redirect } from '@/utils/common';
+	import { img, redirect, getToken } from '@/utils/common';
 	import { getGoodsList, getCategory } from '@/addon/o2o/api/goods';
 	import MescrollBody from '@/components/mescroll/mescroll-body/mescroll-body.vue';
 	import MescrollEmpty from '@/components/mescroll/mescroll-empty/mescroll-empty.vue';
@@ -213,6 +214,28 @@
 		getMescroll().resetUpScroll();
 		// redirect({ url: '/addon/o2o/pages/goods/list', param: { goods_name: searchName.value } })
 	}
+
+	// 价格类型
+	let priceType = (data:any) =>{
+		let type = "";
+		if(data.member_discount && getToken()){
+			type = 'member_price' // 会员价
+		}else{ 
+			type = ""
+		}
+		return type;
+	}
+	// 商品价格
+	let goodsPrice = (data:any) =>{
+		let price = "0.00";
+		if(data.member_discount && getToken()){
+			price = data.goods_sku.member_price || '0.00' // 会员价
+		}else{
+			price = data.goods_sku.price || '0.00'
+		}
+		return parseFloat(price).toFixed(2);
+	}
+	
 </script>
 
 <style lang="scss" scoped>
@@ -290,7 +313,6 @@
 		line-height: 92rpx;
 	}
 
-
 	.tabs-box .tab-item-active {
 		position: relative;
 		color: var(--primary-color);
@@ -346,7 +368,6 @@
 		top: 15%;
 		transform: rotate(180deg);
 	}
-
 
 	.labelPopup :deep(.u-transition) {
 		top: 198rpx !important;

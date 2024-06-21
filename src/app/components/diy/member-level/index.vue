@@ -3,7 +3,7 @@
 		<view v-if="diyComponent.style == 'style-1'" class="rounded-t-[16rpx] flex items-center justify-between style-bg-1 py-[20rpx] px-[30rpx]">
 			<view class="flex items-end">
 				<image :src="img('static/resource/images/diy/member/VIP_02.png')" mode="aspectFit" class="w-[50rpx] h-[36rpx]" />
-				<text class="text-[28rpx] text-[#FFDAA8] ml-[10rpx] font-bold">{{info.member_level_name}}</text>
+				<text class="text-[28rpx] text-[#FFDAA8] ml-[10rpx] font-bold max-w-[440rpx] truncate">{{info.member_level_name}}</text>
 			</view>
 			<view class="flex items-center justify-center rounded-[30rpx] box-border style-btn w-[120rpx] h-[50rpx]" @click="toLink('/app/pages/member/level')">
 				<text class="text-[24rpx] text-[#333]">{{ info.member_level ? (upgradeGrowth > 0 ? '去升级' : '去查看') : '去解锁' }}</text>
@@ -14,9 +14,9 @@
 			<view class="flex flex-col">
 				<view class="flex items-center">
 					<image :src="img('static/resource/images/diy/member/VIP_01.png')" mode="aspectFit" class="w-[74rpx] h-[30rpx]" />
-					<text class="text-[32rpx] text-[#FFE3B1] leading-[normal] ml-[14rpx] font-bold">{{info.member_level_name}}</text>
+					<text class="text-[32rpx] text-[#FFE3B1] leading-[normal] ml-[14rpx] font-bold max-w-[420rpx] truncate">{{info.member_level_name}}</text>
 				</view>
-				<text class="text-[#fff] text-[24rpx] mt-[10rpx]" v-if="benefits_arr && benefits_arr.length">{{info.member_level_name}}购物享{{benefits_arr[0].title}}</text>
+				<text class="text-[#fff] text-[24rpx] mt-[10rpx] leading-[32rpx]" v-if="benefits_arr && benefits_arr.length">{{info.member_level_name}}购物享{{benefits_arr[0].title}}</text>
 			</view>
 			<view class="flex items-center justify-center rounded-[30rpx] box-border style-btn w-[120rpx] h-[50rpx]" @click="toLink('/app/pages/member/level')">
 				<text class="text-[24rpx] text-[#333]">{{ info.member_level ? (upgradeGrowth > 0 ? '去升级' : '去查看') : '去解锁' }}</text>
@@ -30,7 +30,7 @@
 						<view class="flex justify-end leading-[30rpx] box-border text-[#fff] pr-[10rpx] text-[26rpx] w-[120rpx] h-[30rpx] bg-contain bg-no-repeat" :style="{'backgroundImage': 'url('+img('static/resource/images/diy/member/VIP.png')+')'}">
 							VIP.{{currIndex}}
 						</view>
-						<text class="text-[#733F02] ml-[8rpx] text-[30rpx] font-bold">{{info.member_level_name}}</text>
+						<text class="text-[#733F02] ml-[8rpx] text-[30rpx] font-bold max-w-[380rpx] truncate">{{info.member_level_name}}</text>
 					</view>
 					<text class="text-[28rpx] text-[#794200] mt-[16rpx]">购物或邀请好友可以提升等级</text>
 				</view>
@@ -39,7 +39,7 @@
 						<image :src="img('static/resource/images/diy/member/rule.png')" mode="aspectFit" class="w-[26rpx] h-[26rpx]" />
 						<text class="text-[24rpx] text-[#733F02] mt-[10rpx]">规则</text>
 					</view>
-					<view class="ml-[10rpx] text-[#733F02] !text-[24rpx] iconfont iconxiangyoujiantou"></view>
+					<view class="ml-[10rpx] text-[#733F02] !text-[26rpx] nc-iconfont nc-icon-youV6xx"></view>
 				</view>
 			</view>
 			<view class="flex items-center justify-between">
@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts" setup>
-	import { computed, ref, watch, onMounted } from 'vue'
+	import { computed, ref, watch } from 'vue'
 	import { img, redirect } from '@/utils/common'
 	import useMemberStore from '@/stores/member'
 	import { t } from '@/locale'
@@ -95,10 +95,17 @@
 		}
 	)
 
+    // 获取会员等级列表
+    let list:any = ref([])
+    let upgradeGrowth = ref(0) // 升级下级会员所需的成长值
+    let currIndex = ref(0) //当前会员索引
+    let afterCurrIndex = ref(-1)  // 下一个会员等级索引
+    let benefits_arr:any = ref([]) //当前会员权益
+
 	const info:any = computed(() => {
 		// 装修模式
 		if (diyStore.mode == 'decorate') {
-			upgradeGrowth.value = 10;
+			upgradeGrowth.value = 0;
 			benefits_arr.value = [{'title': '商品包邮'}];
 			currIndex.value = 1;
 			list.value = [{}];
@@ -115,16 +122,11 @@
 		}
 	})
 
-	// 获取会员等级列表
-	let list:any = ref([])
-	let upgradeGrowth = ref(0) // 升级下级会员所需的成长值
-	let currIndex = ref(0) //当前会员索引
-	let afterCurrIndex = ref(-1)  // 下一个会员等级索引
-	let benefits_arr:any = ref([]) //当前会员权益
-
 	const getMemberLevelFn = ()=> {
         getMemberLevel().then((res: any) => {
             list.value = res.data;
+			if(!list.value.length) return false;
+			
 	        let isSet = false;
 
             // 刚进来处理会员等级数据

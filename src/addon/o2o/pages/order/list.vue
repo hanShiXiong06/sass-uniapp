@@ -51,7 +51,7 @@
                         </view>
                     </view>
                     <view class="flex justify-end mt-3">
-                        <u-button :customStyle="{marginRight:'0px',marginLeft:'8rpx',width:'auto'}"  shape="circle" size="small" @click="orderBtnFn(item, btnItem.key)" v-for="(btnItem, btnIndex) in item.order_status_info.member_action" :key="btnIndex" >{{ btnItem.name }}</u-button>
+                        <u-button :text="btnItem.name" :customStyle="{marginRight:'0px',marginLeft:'8rpx',width:'auto'}"  shape="circle" size="small" @click="orderBtnFn(item, btnItem.key)" v-for="(btnItem, btnIndex) in item.order_status_info.member_action" :key="btnIndex" ></u-button>
                     </view>
                 </view>
             </block>

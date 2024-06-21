@@ -6,18 +6,17 @@
 					<text class="iconfont iconjilu color-base-text"></text>
 					<text class="text-[28rpx]">核销记录</text>
 				</view>
-		  
-				<view class="sweep-code ns-gradient-otherpages-member-balance-balance-rechange" @click="scanCode" v-show="operationType == 'sweepCode'">
-					<text class="iconfont iconsaoma"></text>
+				<view class="sweep-code flex items-center justify-center ns-gradient-otherpages-member-balance-balance-rechange" @click="scanCode" v-show="operationType == 'sweepCode'">
+					<text class="nc-iconfont nc-icon-saoyisaoV6xx text-[130rpx] text-[#fff]"></text>
 				</view>
 				<view class="manual-input" v-show="operationType == 'manualInput'">
 					<view class="process-wrap">
 						<view class="wrap">
-							<view class="_icon"><text class="iconfont iconshurutianxiebi color-base-text"></text></view>
+							<view class="_icon"><text class="iconfont iconVector-77 color-base-text"></text></view>
 							<view class="_text">输入核销码</view>
 						</view>
 						<view>
-							<view><text class="iconfont iconjiang-copy color-tip"></text></view>
+							<view><text class="nc-iconfont nc-icon-changjiantouV6xx color-tip"></text></view>
 						</view>
 						<view class="wrap">
 							<view class="_icon"><text class="iconfont iconhexiao color-base-text"></text></view>
@@ -32,12 +31,12 @@
 		
 			<view class="action-type-wrap">
 				<view class="action" @click="changeOperationType('sweepCode')">
-					<view class="_icon"><text class="iconfont iconsaoma"></text></view>
+					<view class="_icon"><text class="nc-iconfont nc-icon-saoyisaoV6xx"></text></view>
 					<view class="_text">扫码核销</view>
 				</view>
-				<view class="iconfont icontiaoxingmasaomiao ns-gradient-otherpages-member-balance-balance-rechange"></view>
+				<view class="nc-iconfont nc-icon-saotiaoxingmaV6xx ns-gradient-otherpages-member-balance-balance-rechange"></view>
 				<view class="action" @click="changeOperationType('manualInput')">
-					<view class="_icon"><text class="iconfont iconshuru"></text></view>
+					<view class="_icon"><text class="iconfont iconVector-77"></text></view>
 					<view class="_text" @click="focus">手动输入</view>
 				</view>
 			</view>
@@ -140,7 +139,9 @@
 		getVerifierInfo(verify_code.value).then((res:any) =>{
 			isLoading = false;
 			redirect({ url: '/app/pages/verify/verify', param: { code: verify_code.value} })
-		})
+		}).catch(() => {
+            isLoading = false;
+        })
 	}
 	
 	const focus = () => {
@@ -218,6 +219,9 @@
 							border-radius: 50%;
 							margin: 0 auto;
 							color: var(--primary-color);
+							display: flex;
+							align-items: center;
+							justify-content: center;
 	
 							.iconfont {
 								font-size: 36rpx;
@@ -289,7 +293,7 @@
 				}
 			}
 	
-			.icontiaoxingmasaomiao {
+			.nc-icon-saotiaoxingmaV6xx {
 				width: 110rpx;
 				height: 110rpx;
 				border-radius: 50%;
@@ -299,7 +303,7 @@
 				line-height: 110rpx;
 				background: var(--primary-color);
 				color: #fff;
-				font-size: 32rpx;
+				font-size: 40rpx;
 			}
 		}
 	}

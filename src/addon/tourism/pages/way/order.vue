@@ -21,7 +21,7 @@
                     <text class="text-xs text-[#E02020]">{{Number(wayRefund) ? '随时可退' : '购买后不可退款'}}</text>
                     <view class="flex items-center text-[#774C33] text-xs" @click="buyInfoShow = true">
                         <text>购买须知</text>
-                        <text class="iconfont iconxiangyoujiantou text-xs"></text>
+                        <text class="nc-iconfont nc-icon-youV6xx text-[26rpx]"></text>
                     </view>
                 </view>
             </view>
@@ -92,7 +92,7 @@
                         <image class="w-[42rpx] h-[42rpx]" :src="img('addon/tourism/tourism/way/discount_coupon.png')" mode="widthFix"></image>
                         <text class="ml-1 text-xs">抵用券</text>
                     </view>
-                    <text class="text-[#999] text-xs flex items-center">查看<text class="iconfont iconxiangyoujiantou text-xs"></text></text>
+                    <text class="text-[#999] text-xs flex items-center">查看<text class="nc-iconfont nc-icon-youV6xx text-[26rpx]"></text></text>
                 </view>
             </view> -->
 
@@ -105,9 +105,9 @@
                 </view>
                 <view class="ml-auto mr-2" @click="detailPopupShow = !detailPopupShow">
                     <text class="text-[#686868] text-xs mr-1">明细</text>
-                    <text class="iconfont iconjiantoushang text-[#C2C2C2] text-xs font-bold"></text>
+                    <text class="nc-iconfont nc-icon-shangV6xx-1 text-[#C2C2C2] text-xs font-bold"></text>
                 </view>
-                <u-button  color="var(--primary-color)" shape="circle" :customStyle="{lineHeight:'76rpx', margin:'0rpx', color:'#fff',width:'278rpx'}"  type="primary" size="16" :loading="createLoading"  @click="orderCreate">提交订单</u-button>
+                <u-button text="提交订单" color="var(--primary-color)" shape="circle" :customStyle="{lineHeight:'76rpx', margin:'0rpx', color:'#fff',width:'278rpx'}"  type="primary" size="16" :loading="createLoading"  @click="orderCreate"></u-button>
             </view>
             <u-popup :show="detailPopupShow" @close="detailPopupShow = false" :closeable="true">
                 <view class="text-center py-[30rpx] font-bold leading-none">

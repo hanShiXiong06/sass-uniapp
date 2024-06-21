@@ -159,6 +159,9 @@ class Request {
 			case 402:
 				redirect({url: '/app/pages/index/close', mode: 'reLaunch'})
 				break;
+			case 403:
+				redirect({url: '/app/pages/index/nosite', mode: 'reLaunch'})
+				break;
 		}
 	}
 

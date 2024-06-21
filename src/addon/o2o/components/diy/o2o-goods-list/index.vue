@@ -20,9 +20,8 @@
 					</view>
 				</view>
 				<view class="ml-auto text-right " v-if="diyComponent.more_is_show" :style="{ color: diyComponent.more_color, fontSize: diyComponent.more_font_size * 2 + 'rpx',}">
-					<view @click="toRedirect(diyComponent.more_link)" class="flex items-center">
-						<text class="max-w-[200rpx] mr-[6rpx] line-normal"
-						      :style="{ color: diyComponent.more_color, fontSize: diyComponent.more_font_size * 2 + 'rpx',}">
+					<view @click="diyStore.toRedirect(diyComponent.more_link)" class="flex items-center">
+						<text class="max-w-[200rpx] mr-[6rpx] line-normal" :style="{ color: diyComponent.more_color, fontSize: diyComponent.more_font_size * 2 + 'rpx',}">
 							{{ diyComponent.more_text }}
 						</text>
 						<u-icon name="arrow-right" size="12" color="diyComponent.more_color" class="line-normal"></u-icon>
@@ -50,7 +49,11 @@
 							</view>
 							<view class="px-[16rpx] pb-[20rpx] flex justify-between items-center mt-[12rpx]">
 								<view class="text-[28rpx]  text-[var(--price-text-color)] font-600 price-font">
-									<text>￥{{item.goodsSku.price}}</text>
+									
+									<text class="">
+										￥{{goodsPrice(item) }}
+										<image  v-if="priceType(item) == 'member_price'" class="h-[24rpx] ml-[4rpx] w-[60rpx]" :src="img('addon/o2o/VIP.png')" mode="heightFix" />
+									</text>
 									<text v-if="item.goodsSku.unit">/{{item.goodsSku.unit }}</text>
 								</view>
 								<text class="text-[28rpx] text-[#fff] bg-[var(--primary-color)] px-[20rpx] py-[14rpx] rounded-[6rpx]">
@@ -77,7 +80,10 @@
 								</view>
 								<view class="mt-auto flex justify-between items-center">
 									<view class="text-[28rpx]  text-[var(--price-text-color)] font-600 price-font">
-										<text>￥{{item.goodsSku.price}}</text>
+										<text class="">
+											￥{{goodsPrice(item) }}
+											<image  v-if="priceType(item) == 'member_price'" class="h-[24rpx] ml-[4rpx] w-[60rpx]" :src="img('addon/o2o/VIP.png')" mode="heightFix" />
+										</text>
 										<text v-if="item.goodsSku.unit">/{{item.goodsSku.unit }}</text>
 									</view>
 									<text class="text-[28rpx] text-[#fff] bg-[var(--primary-color)] px-[20rpx] py-[14rpx] rounded-[6rpx]">
@@ -102,7 +108,10 @@
 								</view>
 								<view class="px-[16rpx] pb-[20rpx] flex items-center mt-[8rpx]">
 									<view class="text-[28rpx]  text-[var(--price-text-color)] font-600 price-font">
-										<text>￥{{item.goodsSku.price}}</text>
+										<text class="">
+											￥{{goodsPrice(item) }}
+											<image  v-if="priceType(item) == 'member_price'" class="h-[24rpx] ml-[4rpx] w-[60rpx]" :src="img('addon/o2o/VIP.png')" mode="heightFix" />
+										</text>
 										<text v-if="item.goodsSku.unit">/{{item.goodsSku.unit}}</text>
 									</view>
 								</view>
@@ -118,11 +127,10 @@
 <script setup lang="ts">
     // 商品列表
     import { ref,computed, watch, onMounted, nextTick,getCurrentInstance } from 'vue';
-    import {redirect,diyRedirect, img,currRoute, getToken } from '@/utils/common';
+    import {redirect,img, getToken } from '@/utils/common';
     import useDiyStore from '@/app/stores/diy';
     import {getGoodsComponents} from '@/addon/o2o/api/goods';
     import skeleton from '@/addon/o2o/components/skeleton/index'
-    import { useLogin } from '@/hooks/useLogin';
 
     const props = defineProps(['component', 'index', 'pullDownRefreshCount']);
     const diyStore = useDiyStore();
@@ -183,9 +191,10 @@
 
     const getGoodsListFn = () => {
         loading.value = true;
+		
         let data = {
             num: diyComponent.value.source == 'all' ? diyComponent.value.num : '',
-            goods_ids: diyComponent.value.source == 'custom' ? diyComponent.value.goods_ids : '',
+            goods_ids: diyComponent.value.source == 'custom' ? (diyComponent.value.goods_ids.length > 0 ? diyComponent.value.goods_ids : '-1') : '',
             goods_category: diyComponent.value.source == 'category' ? diyComponent.value.goods_category : ''
         }
         getGoodsComponents(data).then((res) => {
@@ -238,19 +247,28 @@
         if (diyStore.mode == 'decorate') return false;
         redirect({url: '/addon/o2o/pages/goods/detail', param: {sku_id: data.goodsSku.sku_id}})
     }
-
-    const toRedirect = (data: {}) => {
-        if (Object.keys(data).length) {
-            if (!data.url) return;
-            if (currRoute() == 'app/pages/member/index' && !getToken()) {
-                useLogin().setLoginBack({ url: data.url })
-                return;
-            }
-            diyRedirect(data);
-        } else {
-            redirect(data)
-        }
-    }
+	
+	// 价格类型
+	let priceType = (data:any) =>{
+		let type = "";
+		if(data.member_discount && getToken()){
+			type = 'member_price' // 会员价
+		}else{ 
+			type = ""
+		}
+		return type;
+	}
+	// 商品价格
+	let goodsPrice = (data:any) =>{
+		let price = "0.00";
+		if(data.member_discount && getToken()){
+			price = data.goodsSku.member_price || '0.00' // 会员价
+		}else{
+			price = data.goodsSku.price || '0.00'
+		}
+		return parseFloat(price).toFixed(2);
+	}
+	
 </script>
 
 <style lang="scss" scoped>

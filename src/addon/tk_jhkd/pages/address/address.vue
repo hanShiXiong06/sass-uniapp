@@ -91,12 +91,16 @@
 		data.forEach(item => {
 			item.type == 'address' ? address.push(item) : locationAddress.push(item)
 		})
-		addressList.value = address
-		locationAddressList.value = locationAddress
+		if (!source.value) { //地址管理使用
+			addressList.value = data;
+		} else { // 区分同城配送地址和快递地址
+			addressList.value = current.value == 0 ? address : locationAddress;
+		}
 		loading.value = false
 	}).catch(() => {
 		loading.value = false
 	})
+
 
 	const switchTab = (event) => {
 		current.value = event.index

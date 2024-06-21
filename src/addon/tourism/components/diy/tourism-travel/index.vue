@@ -11,7 +11,7 @@
 							<view class="absolute text-white bg-[#FE8700] bottom-2 left-3 p-1 rounded text-[24rpx] flex items-baseline">
 								<view>
 									<text class="price-font ">￥</text>
-									<text class="price-font text-[32rpx]">{{item.price}}</text>
+									<text class="price-font text-[32rpx]">{{goodsPrice(item)}}</text>
 									{{t('rise')}}
 								</view>
 							</view>
@@ -27,8 +27,11 @@
 							<view class="flex items-center mt-auto text-[#F55246] text-xs">
 								<view>
 									<text class="price-font">￥</text>
-									<text class="text-base price-font">{{item.price}}</text>
-									{{t('rise')}}
+									<text class="text-base price-font">{{goodsPrice(item)}}</text>
+									<text class="ml-[4rpx] mr-[4rpx]"> {{t('rise')}} </text>
+									<text class="">
+										<image v-if="priceType(item) == 'member_price'" class="h-[22rpx] ml-[4rpx] w-[50rpx]" :src="img('addon/tourism/VIP.png')" mode="heightFix" />
+									</text>
 								</view>
 							</view>
 						</view>
@@ -42,7 +45,7 @@
 <script setup lang="ts">
     // 线路
     import { ref,computed, watch, onMounted, nextTick,getCurrentInstance } from 'vue';
-    import {redirect, img} from '@/utils/common';
+    import {redirect, img, getToken} from '@/utils/common';
     import useDiyStore from '@/app/stores/diy';
     import {onLoad} from '@dcloudio/uni-app';
     import {getWayRecommend} from '@/addon/tourism/api/tourism';
@@ -105,7 +108,7 @@
     const getWayRecommendFn = () => {
         let data: object = {
 			goods_ids: diyComponent.value.source == 'custom' ? diyComponent.value.way_id : '',
-            limit: diyComponent.value.source == 'all' ? diyComponent.value.num : ''
+            limit: diyComponent.value.source == 'all' ? diyComponent.value.num : 0
         };
         loading.value = false;
         getWayRecommend(data).then((res) => {
@@ -119,6 +122,7 @@
     const refresh = () => {
         if (diyStore.mode == 'decorate') {
             let obj = {
+				price: 100.00,
                 goods: {
                     cover_thumb_big: img('static/resource/images/diy/block_placeholder.png'),
                     cover_thumb_mid: img('static/resource/images/diy/block_placeholder.png'),
@@ -163,6 +167,33 @@
             )
         }
     });
+	
+	// 价格类型
+	let priceType = (data:any) =>{
+		if (diyStore.mode == 'decorate') {
+		    return data.price;
+		}
+		let type = "";
+		let member_discount = ('member_discount' in data.goods) ? data.goods.member_discount : ''
+		if(member_discount && getToken()){
+			type = 'member_price' // 会员价
+		}else{ 
+			type = ""
+		}
+		return type;
+	}
+	// 商品价格
+	let goodsPrice = (data:any) =>{
+		if (diyStore.mode == 'decorate') {
+		    return data.price;
+		}
+		let price = data.price;
+		let member_discount = ('member_discount' in data.goods) ? data.goods.member_discount : ''
+		if(member_discount && getToken()){
+			price = data.member_price || data.price // 会员价
+		}
+		return parseFloat(price).toFixed(2);
+	}
 </script>
 
 <style lang="scss" scoped>

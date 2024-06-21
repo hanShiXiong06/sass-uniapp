@@ -103,6 +103,15 @@
             <template v-if="component.componentName == 'Jhkd'">
                 <diy-jhkd :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" />
             </template>
+            <template v-if="component.componentName == 'Cps'">
+                <diy-cps :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" />
+            </template>
+            <template v-if="component.componentName == 'Bwc'">
+                <diy-bwc :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" />
+            </template>
+            <template v-if="component.componentName == 'Meituan'">
+                <diy-meituan :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" />
+            </template>
             </view>
         </view>
         <template v-if="diyStore.mode == '' && data.global.bottomTabBarSwitch">
@@ -130,9 +139,13 @@
    import diyTourismTravel from '@/addon/tourism/components/diy/tourism-travel/index.vue';
    import diyBrand from '@/addon/tk_jhkd/components/diy/brand/index.vue';
    import diyJhkd from '@/addon/tk_jhkd/components/diy/jhkd/index.vue';
+   import diyCps from '@/addon/cps/components/diy/cps/index.vue';
+   import diyBwc from '@/addon/tk_cps/components/diy/bwc/index.vue';
+   import diyMeituan from '@/addon/tk_cps/components/diy/meituan/index.vue';
    import topTabbar from '@/components/top-tabbar/top-tabbar.vue'
    import useDiyStore from '@/app/stores/diy';
-   import { ref, onMounted, nextTick, computed } from 'vue';
+   import { ref, onMounted, nextTick, computed, watch } from 'vue';
+   import { useRouter } from 'vue-router';
    import { getLocation } from '@/utils/common';
    import Sortable from 'sortablejs';
    import { range } from 'lodash-es';
@@ -141,6 +154,26 @@
 
    const props = defineProps(['data','pullDownRefreshCount']);
    const diyStore = useDiyStore();
+   const router = useRouter();
+
+   // 兼容轮播搜索组件-切换分类时，导致个人中心白屏 - start
+   // #ifdef H5
+   watch(() => router.currentRoute.value, (newRoute) => {
+       if(newRoute.path != "/addon/shop/pages/index"){
+           diyStore.topFixedStatus = 'home'
+       }
+   });
+
+   // #endif
+
+   // #ifdef MP
+   wx.onAppRoute(function(res) {
+       if(res.path != "addon/shop/pages/index"){
+           diyStore.topFixedStatus = 'home'
+       }
+   });
+   // #endif
+   // 兼容轮播搜索组件-切换分类时，导致个人中心白屏 - end
 
    const data = computed(() => {
        if (diyStore.mode == 'decorate') {

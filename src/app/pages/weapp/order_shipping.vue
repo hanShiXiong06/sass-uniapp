@@ -14,7 +14,6 @@
     const errorMsg = ref('')
 
     onLoad((options: any) => {
-        console.log('onload',options)
         if (options.merchant_trade_no) {
             outTradeNo.value = options.merchant_trade_no;
             getMsgJumpPathFn();

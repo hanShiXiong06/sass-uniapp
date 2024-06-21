@@ -92,14 +92,14 @@
                         <view>{{t('record')}}</view>
                         <view class="flex items-center" @click="redirect({url: '/addon/o2o/pages/refund/log', param: { refund_no: detail.refund_no}})">
                             <text>{{t('check')}}</text>
-                            <text class="iconfont iconxiangyoujiantou text-xs"></text>
+                            <text class="nc-iconfont nc-icon-youV6xx text-[26rpx] text-[#666]"></text>
                         </view>
                     </view>
                 </view>
 
                 <view class="flex tab-bar justify-between items-center bg-[#fff] fixed left-0 right-0 bottom-0 min-h-[100rpx] px-1 flex-wrap">
                     <view class="flex ml-[30rpx] w-[70rpx] flex-col justify-center items-center" @click="redirect({ url: '/addon/o2o/pages/index', mode: 'reLaunch' })">
-                        <text class="iconfont iconshouye text-[32rpx]"></text>
+                        <text class="nc-iconfont nc-icon-shouye-xiaolianV6xx text-[34rpx]"></text>
                         <text class="text-xs mt-1">{{t('index')}}</text>
                     </view>
                     <view class="flex justify-end mr-[30rpx]">
@@ -118,7 +118,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue';
-import { onLoad } from '@dcloudio/uni-app'
+import { onLoad,onUnload } from '@dcloudio/uni-app'
 import { t } from '@/locale'
 import { img, redirect, copy } from '@/utils/common';
 import { getRefundDetail, cancelRefund } from '@/addon/o2o/api/order';
@@ -193,6 +193,13 @@ const handleImg = (url) => {
 	})
 	
 }
+
+// 关闭预览图片
+onUnload(()=>{
+    // #ifdef  H5 || APP
+    uni.closePreviewImage()
+    // #endif
+})
 </script>
 <style lang="scss" scoped>
 .text-item {

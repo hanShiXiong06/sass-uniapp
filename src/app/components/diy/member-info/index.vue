@@ -16,7 +16,7 @@
 				</view>
 				<view class="set-icon flex items-center absolute right-0 top-2">
 					<view @click="redirect({ url: '/app/pages/setting/index' })">
-						<text class="iconfont iconshezhi text-[1.6rem] ml-[10rpx]" :style="{ color : diyComponent.textColor }"></text>
+						<text class="nc-iconfont nc-icon-shezhiV6xx-1 text-[40rpx] ml-[10rpx]" :style="{ color : diyComponent.textColor }"></text>
 					</view>
 				</view>
 			</view>
@@ -29,7 +29,7 @@
 				</view>
 				<view class="set-icon flex items-center absolute right-0 top-2">
 					<view @click="redirect({ url: '/app/pages/setting/index' })">
-						<text class="iconfont iconshezhi text-[1.6rem] ml-[10rpx]" :style="{ color : diyComponent.textColor }"></text>
+						<text class="nc-iconfont nc-icon-shezhiV6xx-1 text-[40rpx] ml-[10rpx]" :style="{ color : diyComponent.textColor }"></text>
 					</view>
 				</view>
 			</view>
@@ -161,12 +161,11 @@
 		}
 		// #endif
 	}
-
-		let menuButtonInfo = {};
-		// 如果是小程序，获取右上角胶囊的尺寸信息，避免导航栏右侧内容与胶囊重叠(支付宝小程序非本API，尚未兼容)
-		// #ifdef MP-WEIXIN || MP-BAIDU || MP-TOUTIAO || MP-QQ
-		menuButtonInfo = uni.getMenuButtonBoundingClientRect();
-		// #endif
+	let menuButtonInfo = {};
+	// 如果是小程序，获取右上角胶囊的尺寸信息，避免导航栏右侧内容与胶囊重叠(支付宝小程序非本API，尚未兼容)
+	// #ifdef MP-WEIXIN || MP-BAIDU || MP-TOUTIAO || MP-QQ
+	menuButtonInfo = uni.getMenuButtonBoundingClientRect();
+	// #endif
 	
 	// 导航栏内部盒子的样式
 	const navbarInnerStyle = computed(() => {

@@ -7,8 +7,9 @@
 	"money":"可提现余额（元）",
     "availableBalance": "可用余额",
     "rechargeAmountError": "充值金额错误",
-    "clickRecharge": "立即充值",
-    "rechargeAmountPlaceholder": "请输入充值金额",
+    "confirm": "确认",
+    "customRechargeAmount": "自定义充值金额",
 	"yuan":"元",
-	"rechargeRecord":"充值记录"
+	"rechargeRecord":"充值记录",
+	"RechargeMethod":"充值方式"
 }

@@ -2,7 +2,7 @@
 	<view @touchmove.prevent.stop>
 		<u-popup :show="goodsSkuPop" @close="closeFn" mode="bottom">
 			<view class="rounded-t-[20rpx] overflow-hidden bg-[#fff] p-[32rpx] relative">
-				<view class="absolute right-[37rpx]  iconfont iconguanbi text-[50rpx]" @click="closeFn"></view>
+				<view class="absolute right-[37rpx]  nc-iconfont nc-icon-guanbiV6xx text-[40rpx]" @click="closeFn"></view>
 				<view class="flex mb-[58rpx]">
 
 					<view class="rounded-[8rpx] overflow-hidden">
@@ -16,7 +16,7 @@
 						<view class="w-[100%]">
 							<view class=" text-[var(--price-text-color)]">
 								<text class="text-[28rpx] font-bold">￥</text>
-								<text class="text-[28rpx] mr-[10rpx]  font-bold">{{goodsDetail.detail.price}}</text>
+								<text class="text-[28rpx] mr-[10rpx]  font-bold">{{goodsPrice}}</text>
 							</view>
 						</view>
 						<view class="w-[100%]"  style="max-height: calc(204rpx - 92rpx);" >
@@ -40,18 +40,18 @@
 						<view class="text-[26rpx] leading-[36rpx] mb-[30rpx]">购买数量</view>
 						<u-number-box :min="goodsDetail.min_buy"  integer :step="1" input-width="98rpx" v-model="buyNum" input-height="54rpx">
 							<template #minus>
-								<text class="text-[44rpx] iconfont iconjianhao text-[var(--primary-color)]" :class="{ '!text-[#c8c9cc]': buyNum === goodsDetail.min_buy }"></text>
+								<text class="text-[44rpx] nc-iconfont nc-icon-jianshaoV6xx text-[var(--primary-color)]" :class="{ '!text-[#c8c9cc]': buyNum === goodsDetail.min_buy }"></text>
 							</template>
 							<template #input>
 								<text class="text-[#333] fext-[23rpx] font-500 mx-[16rpx]">{{ buyNum }}</text>
 							</template>
 							<template #plus>
-								<text class="text-[44rpx] iconfont iconjiahao2fill text-[var(--primary-color)]"></text>
+								<text class="text-[44rpx] nc-iconfont nc-icon-tianjiaV6mm text-[var(--primary-color)]"></text>
 							</template>
 						</u-number-box>
 					</view>
 				</scroll-view>
-				<u-button class="!h-[80rpx] !text-[30rpx] !m-0 !mt-[30rpx]"  shape="circle" :color="goodsDetail.goods.status ? 'var( --primary-color)' :'#999'" @click="confirm">{{goodsDetail.goods.status ? '确定':'已下架' }}</u-button>
+				<u-button :text="goodsDetail.goods.status ? '确定':'已下架'" class="!h-[80rpx] !text-[30rpx] !m-0 !mt-[30rpx]"  shape="circle" :color="goodsDetail.goods.status ? 'var( --primary-color)' :'#999'" @click="confirm"></u-button>
 			</view>
 		</u-popup>
 	</view>
@@ -59,7 +59,7 @@
 
 <script setup lang="ts">
 import { ref,  computed } from 'vue';
-import { img, redirect } from '@/utils/common'
+import { img, redirect, getToken } from '@/utils/common'
 import { useLogin } from '@/hooks/useLogin'
 import useMemberStore from '@/stores/member'
 
@@ -156,5 +156,16 @@ const confirm = ()=>{
 	}
 	defineExpose({
 		open
+	})
+	
+	// 商品价格
+	let goodsPrice = computed(() =>{
+		let price = "0.00";
+		if(Object.keys(goodsDetail.value).length && Object.keys(goodsDetail.value.goods).length && goodsDetail.value.goods.member_discount && getToken()){
+			price = goodsDetail.value.member_price // 会员价
+		}else{
+			price = goodsDetail.value.price
+		}
+		return parseFloat(price).toFixed(2);
 	})
 </script>

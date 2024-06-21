@@ -1,5 +1,7 @@
-import {defineStore} from 'pinia'
-import {toRaw} from 'vue'
+import { defineStore } from 'pinia'
+import { toRaw } from 'vue'
+import { diyRedirect, currRoute, getToken } from '@/utils/common';
+import { useLogin } from '@/hooks/useLogin';
 
 interface Diy {
     mode: string, // 模式：decorate 装修，为空表示正常
@@ -63,7 +65,7 @@ const useDiyStore = defineStore('diy', {
                         this.value.forEach((item, index) => {
                             item.pageStyle = '';
                             if (item.pageStartBgColor) {
-                                if (item.pageStartBgColor && item.pageEndBgColor) item.pageStyle += `background:linear-gradient(${item.pageGradientAngle},${item.pageStartBgColor},${item.pageEndBgColor});`;
+                                if (item.pageStartBgColor && item.pageEndBgColor) item.pageStyle += `background:linear-gradient(${ item.pageGradientAngle },${ item.pageStartBgColor },${ item.pageEndBgColor });`;
                                 else item.pageStyle += 'background-color:' + item.pageStartBgColor + ';';
                             }
 
@@ -87,11 +89,11 @@ const useDiyStore = defineStore('diy', {
             // #endif
         },
         // 将数据传输给后台
-        postMessage(index, component) {
+        postMessage(index: any, component: any) {
             // #ifdef H5
             this.currentIndex = index;
             if (component)
-                var data = JSON.stringify({
+                var data: any = JSON.stringify({
                     type: 'data',
                     index: this.currentIndex,
                     global: toRaw(this.global),
@@ -119,6 +121,16 @@ const useDiyStore = defineStore('diy', {
             });
             window.parent.postMessage(data, '*');
             // #endif
+        },
+        toRedirect(data: any) {
+            if (Object.keys(data).length) {
+                if (!data.name) return;
+                if (currRoute() == 'app/pages/member/index' && !getToken()) {
+                    useLogin().setLoginBack({ url: data.url })
+                    return;
+                }
+                diyRedirect(data);
+            }
         }
     }
 })

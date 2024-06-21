@@ -50,9 +50,6 @@
 
                 <view class="mt-[100rpx]">
                     <u-button :text="t('save')" type="primary" shape="circle" :loading="loading" @click="handleSave"></u-button>
-                    <view class="mt-[30rpx]" v-if="formData.account_id">
-                        <u-button :text="t('delete')" type="primary" shape="circle" :plain="true" :loading="loading" @click="deleteConfirm = true"></u-button>
-                    </view>
                 </view>
             </view>
         </scroll-view>
@@ -128,7 +125,7 @@
 
             save(formData).then((res) => {
                 if (mode.value == 'get') redirect({ url: '/app/pages/member/account', param: { type: formData.account_type, mode: mode.value } })
-                else redirect({ url: '/app/pages/member/apply_cash_out', param: { account_id: res.data.id, type: formData.account_type } , mode: 'redirectTo'})
+                else redirect({ url: '/app/pages/member/apply_cash_out', param: { account_id: formData.account_id ? formData.account_id : res.data.id, type: formData.account_type } , mode: 'redirectTo'})
             }).catch(() => {
                 loading.value = false
             })

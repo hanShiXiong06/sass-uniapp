@@ -121,7 +121,6 @@ export function getRefundList(params: AnyObject) {
     return request.get('o2o/refund/lists',params);
 }
 
-
 /**
  * 技师端获取退款详情
  * @param refundId

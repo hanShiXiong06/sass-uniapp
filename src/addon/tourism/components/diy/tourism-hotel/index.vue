@@ -24,8 +24,12 @@
 							<view class="flex items-center mt-auto text-[#F55246] text-xs">
 								<view>
 									<text class="price-font">￥</text>
-									<text class="text-base price-font">{{item.price}}</text>
-									{{t('rise')}}
+									<text class="text-base price-font">{{goodsPrice(item)}}</text>
+									<text class="ml-[4rpx] mr-[4rpx]"> {{t('rise')}} </text>
+									<text class="">
+										<image v-if="priceType(item) == 'member_price'" class="h-[22rpx] ml-[4rpx] w-[50rpx]" :src="img('addon/tourism/VIP.png')" mode="widthFix" />
+									</text>
+									
 								</view>
 							</view>
 						</view>
@@ -49,7 +53,7 @@
 							<view class="flex items-center mt-auto text-[#F55246] text-xs">
 								<view>
 									<text class="price-font">￥</text>
-									<text class="text-base price-font">{{item.price}}</text>
+									<text class="text-base price-font">{{goodsPrice(item)}}</text>
 									{{t('rise')}}
 								</view>
 							</view>
@@ -64,7 +68,7 @@
 <script setup lang="ts">
     // 酒店
     import { ref,computed, watch, onMounted, nextTick,getCurrentInstance } from 'vue';
-    import {redirect, img} from '@/utils/common';
+    import {redirect, img, getToken} from '@/utils/common';
     import useDiyStore from '@/app/stores/diy';
     import {getHotelRecommend} from '@/addon/tourism/api/tourism';
     import {t} from '@/locale';
@@ -126,7 +130,7 @@
     const getHotelRecommendFn = () => {
         let data: object = {
 			goods_ids: diyComponent.value.source == 'custom' ? diyComponent.value.hotel_id : '',
-            limit: diyComponent.value.source == 'all' ? diyComponent.value.num : ''
+            limit: diyComponent.value.source == 'all' ? diyComponent.value.num : 0
         };
         loading.value = false;
         getHotelRecommend(data).then((res) => {
@@ -152,6 +156,7 @@
                 hotel_name: '酒店名称',
                 hotel_attribute: ["标签", "标签", "标签"],
                 hotel_star: 5,
+				price: 100.00,
                 goods: {
                     price: 100.00
                 }
@@ -191,6 +196,34 @@
 
     const instance = getCurrentInstance();
     const height = ref(0)
+	
+	
+	// 价格类型
+	let priceType = (data:any) =>{
+		if (diyStore.mode == 'decorate') {
+		    return data.price;
+		}
+		let type = "";
+		let member_discount = ('member_discount' in data.goods) ? data.goods.member_discount : ''
+		if(member_discount && getToken()){
+			type = 'member_price' // 会员价
+		}else{ 
+			type = ""
+		}
+		return type;
+	}
+	// 商品价格
+	let goodsPrice = (data:any) =>{
+		if (diyStore.mode == 'decorate') {
+		    return data.price;
+		}
+		let price = data.price
+		let member_discount = ('member_discount' in data.goods) ? data.goods.member_discount : ''
+		if(member_discount && getToken()){
+			price = data.member_price || data.price // 会员价
+		}
+		return parseFloat(price).toFixed(2);
+	}
 </script>
 
 <style lang="scss" scoped>

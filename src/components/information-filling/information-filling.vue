@@ -86,32 +86,28 @@
 	const formRef = ref(null)
 
 	const confirm = async () => {
-		formRef.value.validate().then(async () => {
-			if (loading.value) return
-			loading.value = true
+        formRef.value.validate().then(async() => {
+            if (loading.value) return
+            loading.value = true
 
-			// 修改头像
-			await modifyMember({ field: 'headimg', value: formData.headimg })
-				.then(() => {
-					memberStore.info.headimg = formData.headimg
-				})
-				.catch(() => {
-					loading.value = false
-				})
-			if (!loading.value) return
+            // 修改头像
+            await modifyMember({ field: 'headimg', value: formData.headimg }).then(() => {
+                memberStore.info.headimg = formData.headimg
+            }).catch(() => {
+                loading.value = false
+            })
+            if (!loading.value) return
 
-			// 修改昵称
-			modifyMember({ field: 'nickname', value: formData.nickname })
-				.then(() => {
-					memberStore.info.nickname = formData.nickname
-					loading.value = false
-					show.value = false
-				})
-				.catch(() => {
-					loading.value = false
-				})
-		})
-	}
+            // 修改昵称
+            modifyMember({ field: 'nickname', value: formData.nickname }).then(() => {
+                memberStore.info.nickname = formData.nickname
+                loading.value = false
+                show.value = false
+            }).catch(() => {
+                loading.value = false
+            })
+        })
+    }
 
 	defineExpose({
 		show

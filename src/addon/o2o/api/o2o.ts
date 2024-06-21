@@ -64,9 +64,6 @@ export function deleteService(id: number){
 
 /**
  * 获取技师统计
- * @param 
- * @returns
- *
  */
 export function getStat() {
     return request.get(`o2o/technician/order/stat`);

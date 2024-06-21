@@ -85,7 +85,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue';
-import { onLoad } from '@dcloudio/uni-app'
+import { onLoad,onUnload } from '@dcloudio/uni-app'
 import { t } from '@/locale'
 import { img, redirect, copy } from '@/utils/common';
 import { getOrderRefundDetail } from '@/addon/o2o/api/order';
@@ -131,6 +131,13 @@ const handleImg = (url) => {
 	})
 	
 }
+
+// 关闭预览图片
+onUnload(()=>{
+    // #ifdef  H5 || APP
+    uni.closePreviewImage()
+    // #endif
+})
 </script>
 <style lang="scss" scoped>
 .text-item {

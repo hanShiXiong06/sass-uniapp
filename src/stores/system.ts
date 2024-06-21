@@ -8,8 +8,7 @@ interface System {
     siteAddons: string[],
     currRoute: string,
     location: Object | null, // 定位信息
-    mapConfig: Object,
-    installAddonList: string[]
+    mapConfig: Object
 }
 
 const useSystemStore = defineStore('system', {
@@ -23,8 +22,7 @@ const useSystemStore = defineStore('system', {
             mapConfig: {
                 is_open: 1,
                 valid_time: 0
-            },
-            installAddonList: []
+            }
         }
     },
     actions: {
@@ -35,9 +33,7 @@ const useSystemStore = defineStore('system', {
                 this.siteAddons = res.data.site_addons.map((item: AnyObject) => {
                     return item.key
                 })
-                if (!this.site || this.site.status == 3) redirect({url: '/app/pages/index/close', mode: 'reLaunch'})
             }).catch((err) => {
-                redirect({url: '/app/pages/index/nosite', mode: 'reLaunch'})
             })
         },
         async getMapFn() {

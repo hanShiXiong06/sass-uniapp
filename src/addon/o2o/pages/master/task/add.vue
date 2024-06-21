@@ -21,7 +21,7 @@
 					</view>
 				</u-form-item>
 				<u-form-item class="mt-[30rpx]">
-					<u-button @click="onSave()" :customStyle="{borderRadius :'38rpx',color:'#fff',margin:'30rpx 0',backgroundColor:'var(--primary-color)'}">{{ t('save') }}</u-button>
+					<u-button :text="t('save')" @click="onSave()" :customStyle="{borderRadius :'38rpx',color:'#fff',margin:'30rpx 0',backgroundColor:'var(--primary-color)'}"></u-button>
 				</u-form-item>
 			</u-form>
 		</view>

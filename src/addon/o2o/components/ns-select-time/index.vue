@@ -23,7 +23,7 @@
 							<view class="text-[24rpx]" :class="{'text-[var(--primary-color)]':key == timeActive}">
 								<text>{{el.begin}}-{{el.end}}</text>
 							</view>
-							<text v-if="key == timeActive" class="iconfont iconxuanzhongduigou mr-[30rpx] text-[38rpx]"></text>
+							<text v-if="key == timeActive" class="nc-iconfont nc-icon-duihaoV6mm mr-[30rpx] text-[38rpx]"></text>
 						</view>
 					</template>
 				</scroll-view>
@@ -93,14 +93,12 @@ export default {
 				})
 				
 				let flag = true
-				// console.log(this.dateArr)
 				this.dateArr.forEach((item,index) =>{
 					item.children.forEach((el,key)=>{
 						if(!el.disable && flag ){
 							flag = false
 							this.timeActive = key
 							this.dateActive = index
-							// console.log(this.timeActive,this.dateActive)
 							this.selectDate = this.dateArr[index].mdTime
 							this.orderDateStamp = this.dateArr[index].date
 							this.orderDateTime = `${this.selectDate} ${item.children[this.timeActive].begin}-${item.children[this.timeActive].end}`

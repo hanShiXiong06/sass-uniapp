@@ -8,13 +8,13 @@
 			</view>
 			
 			<view class="fixed-wrap" :class="[ diyStore.mode != 'decorate' ? diyComponent.positionWay : '' ]" :style="fixedStyle">
-				<view class="diy-search-wrap relative z-10" @click="toRedirect(diyComponent.search.link)" :style="navbarInnerStyle">
+				<view class="diy-search-wrap relative z-10" @click="diyStore.toRedirect(diyComponent.search.link)" :style="navbarInnerStyle">
 					<view class="img-wrap" v-if="diyComponent.search.logo">
 						<image :src="img(diyComponent.search.logo)" mode="aspectFit"/>
 					</view>
 					<view class="search-content">
 						<input type="text" class="uni-input" placeholder-style="color:#fff" placeholder-class="!text-[#fff] text-[24rpx] leading-[68rpx]" :placeholder="isShowSearchPlaceholder ? diyComponent.search.text : ''" disabled="true"/>
-						<text class="iconfont iconxiazai17"></text>
+						<text class="nc-iconfont nc-icon-sousuo-duanV6xx1"></text>
 
 						<swiper class="swiper-wrap" :interval="diyComponent.search.hotWord.interval * 1000" autoplay="true" vertical="true" circular="true" v-if="!isShowSearchPlaceholder">
 							<swiper-item class="swiper-item" v-for="(item) in diyComponent.search.hotWord.list" :key="item.id">
@@ -24,7 +24,7 @@
 					</view>
 
 				</view>
-			
+
 				<view class="tab-list-wrap relative z-10" v-if="diyComponent.tab.control">
 					<scroll-view scroll-x="true" class="scroll-wrap" :scroll-into-view="'a' + currTabIndex">
 						<view @click="changeData({ source : 'home' },-1)" class="scroll-item" :class="[{ active: currTabIndex == -1 }]">
@@ -36,7 +36,7 @@
 							<view class="line" :style="{'background-color': getTabColor(index == currTabIndex)}" v-if="index == currTabIndex"></view>
 						</view>
 					</scroll-view>
-					<view v-if="diyComponent.tab.list.length" class="absolute tab-btn iconfont iconliebiaoxingshi" @click="tabAllPopup = true"></view>
+					<view v-if="diyComponent.tab.list.length" class="absolute tab-btn nc-iconfont nc-icon-yingyongliebiaoV6xx" @click="tabAllPopup = true"></view>
 				</view>
                 
 				<view class="bg-img" v-if="fixedStyleBg">
@@ -58,11 +58,11 @@
 						'swiper-right': diyComponent.swiper.indicatorAlign == 'right',
 						'ns-indicator-dots': diyComponent.swiper.indicatorStyle == 'style-2'
 					}"
-					:previous-margin="swiperStyle2 ? 0 : '60rpx'" :next-margin="swiperStyle2 ? 0 : '60rpx'"
+					:previous-margin="swiperStyle2 ? 0 : '36rpx'" :next-margin="swiperStyle2 ? 0 : '36rpx'"
 				    :interval="diyComponent.swiper.interval * 1000" :indicator-dots="isShowDots"
 				    :indicator-color="diyComponent.swiper.indicatorColor" :indicator-active-color="diyComponent.swiper.indicatorActiveColor">
 					<swiper-item class="swiper-item" v-for="(item,index) in diyComponent.swiper.list" :key="item.id" :style="swiperWarpCss">
-						<view @click="toRedirect(item.link)">
+						<view @click="diyStore.toRedirect(item.link)">
 							<view class="item" :style="{height: imgHeight}">
 								<image v-if="item.imageUrl" :src="img(item.imageUrl)" mode="scaleToFill" :style="swiperWarpCss" :class="['w-full h-full',{'swiper-animation': swiperIndex != index}]" :show-menu-by-longpress="true"/>
 								<image v-else :src="img('static/resource/images/diy/figure.png')" :style="swiperWarpCss" mode="scaleToFill" :class="['w-full h-full',{'swiper-animation': swiperIndex != index}]" :show-menu-by-longpress="true"/>
@@ -83,8 +83,8 @@
 			</view>
 			
 			<!-- 分类展开 -->
-			<u-popup :show="tabAllPopup" mode="top" @close="tabAllPopup = false">
-				<view class="text-sm px-[30rpx] mt-3" :style="{'padding-top':(menuButtonInfo.top+'px')}">全部分类</view>
+			<u-popup :safeAreaInsetTop="true" :show="tabAllPopup" mode="top" @close="tabAllPopup = false">
+				<view class="text-sm px-[30rpx] pt-3" :style="{'padding-top':(menuButtonInfo.top+'px')}">全部分类</view>
 				<view class="flex flex-wrap pl-[30rpx] pt-[30rpx]">
 					<view @click="changeData({ source : 'home' },-1)" :class="['px-[26rpx] border-[2rpx] border-solid border-transparent h-[60rpx] mr-[30rpx] mb-[30rpx] flex items-center justify-center bg-[#F4F4F4] rounded-[8rpx] text-xs', { 'tab-select-popup': currTabIndex == -1 }]">
 						首页
@@ -112,12 +112,11 @@
 <script setup lang="ts">
 	// 轮播搜索
 	import { ref, reactive, computed, watch, onMounted, nextTick, getCurrentInstance } from 'vue';
-	import { img, redirect,diyRedirect, currRoute, getToken } from '@/utils/common';
+	import { img } from '@/utils/common';
 	import useDiyStore from '@/app/stores/diy';
     import diyGroup from '@/addon/components/diy/group/index.vue'
     import { getDiyInfo } from '@/app/api/diy';
-    import { useLogin } from '@/hooks/useLogin';
-	
+
 	const instance = getCurrentInstance();
 	const props = defineProps(['component', 'index', 'pullDownRefreshCount', 'global']);
 	const diyStore = useDiyStore();
@@ -246,7 +245,6 @@
 		style = diyComponent.value.swiper.swiperStyle == 'style-2' ? true : false;
 		return style;
 	})
-	
 
     const imgHeight = computed(() => {
         return (diyComponent.value.swiper.imageHeight * 2) + 'rpx';
@@ -339,7 +337,7 @@
     const diyPageData = reactive({
         pageMode: 'diy',
         title: '',
-        global: {},
+        global: <any>{},
         value: []
     })
 
@@ -361,6 +359,7 @@
 
                 let sources = JSON.parse(data.value);
                 diyPageData.global = sources.global;
+				diyPageData.global.topStatusBar.isShow = false; // 子页面不需要展示顶部导航栏
                 diyPageData.global.bottomTabBarSwitch = false; // 子页面不需要展示底部导航
                 diyPageData.value = sources.value;
 
@@ -385,19 +384,6 @@
                 })
             }
         });
-    }
-
-    const toRedirect = (data: {}) => {
-        if (Object.keys(data).length) {
-            if (!data.url) return;
-            if (currRoute() == 'app/pages/member/index' && !getToken()) {
-                useLogin().setLoginBack({ url: data.url })
-                return;
-            }
-            diyRedirect(data);
-        } else {
-            redirect(data)
-        }
     }
 	
 	// 轮播指示器
@@ -546,7 +532,7 @@
 			}
 		}
 		.tab-btn{
-			font-size: 32rpx;
+			font-size: 34rpx;
 			/* #ifdef H5 */ 
 			top: 22rpx;
 			right: 20rpx;
@@ -555,9 +541,9 @@
 			&::after{
 				content: "";
 				position: absolute;
-				top: 2rpx;
-				bottom: 0;
-				left: -16rpx;
+				top: 6rpx;
+				bottom: -2rpx;
+				left: -14rpx;
 				width: 4rpx;
 				background: linear-gradient( 180deg, #FFFFFF 16%, rgba(255,255,255,0) 92%);
 			}

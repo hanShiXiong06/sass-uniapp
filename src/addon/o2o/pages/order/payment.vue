@@ -15,7 +15,7 @@
                         {{ t('addHomeAddress') }}
                     </view>
                 </view>
-                <text class="iconfont iconxiangyoujiantou text-[26rpx] text-gray-subtitle"></text>
+                <text class="nc-iconfont nc-icon-youV6xx text-[26rpx] text-[#666]"></text>
             </view>
             <view class="outline-border" v-for="(item, index) in orderData.goods_data">
                 <u--image width="168rpx" height="168rpx" :src="img(item.sku_image)" model="aspectFill">
@@ -40,13 +40,13 @@
                 <!-- 预约技师 -->
                 <view class="flex justify-between items-center box-border py-[24rpx]">
                     <view class="flex-align">
-                        <text class="iconfont text-[28rpx] text-[#4D4D4D] font-bold iconqiuzhirenyuan"></text>
+                        <text class="text-[28rpx] text-[#4D4D4D] font-bold nc-iconfont nc-icon-qiuzhirenyuanV6xx1"></text>
                         <text class="text-[28rpx] ml-2">{{ t('selectiveTechnician') }}</text>
 
                     </view>
                     <view class="flex-align text-[#63676D]" @click="userShow = true">
                         <view class="text-[28rpx] ml-2 text-right">{{ createData.technician_name ? createData.technician_name : t('selectiveTechnician') }}</view>
-                        <text class="text-[28rpx] iconfont iconxiangyoujiantou"></text>
+                        <text class=" text-[26rpx] text-[#666] nc-iconfont nc-icon-youV6xx"></text>
                     </view>
                 </view>
 
@@ -55,12 +55,12 @@
                 <!-- 预约时间 -->
                 <view class="flex justify-between items-center box-border py-[24rpx]">
                     <view class="flex-align">
-                        <text class="iconfont text-[28rpx] text-[#4D4D4D] font-bold iconshijian"></text>
+                        <text class="text-[28rpx] text-[#4D4D4D] font-bold nc-iconfont nc-icon-shijianV6xx"></text>
                         <text class="text-[28rpx] ml-2">{{ t('addHomeTime') }}</text>
                     </view>
                     <view class="flex-align text-[#63676D]" @click="handleTime">
                         <view class="text-[28rpx] ml-2 text-right">{{createData.reserve_service_time ? createData.reserve_service_time : t('selectAddTimePlaceholder')  }}</view>
-                        <text class="text-[28rpx] iconfont iconxiangyoujiantou"></text>
+                        <text class=" text-[26rpx] text-[#666] nc-iconfont nc-icon-youV6xx"></text>
                     </view>
                 </view>
                 <ns-select-time ref="selectTime"  :rules="service_time" :isQuantum="true"  @change="getTime"  @getStamp="getStamp" v-if="Object.keys(service_time).length"></ns-select-time>
@@ -103,7 +103,7 @@
 import { ref } from 'vue';
 import { onLoad, onShow } from '@dcloudio/uni-app'
 import { useLogin } from '@/hooks/useLogin';
-import { img, redirect, urlDeconstruction, getToken, moneyFormat, mobileHide } from '@/utils/common';
+import { img, redirect, urlDeconstruction, getToken, moneyFormat, mobileHide,isWeixinBrowser } from '@/utils/common';
 import {  getTechnicianGoods } from '@/addon/o2o/api/technician';
 import {  orderCalculate,orderCreate } from '@/addon/o2o/api/order';
 import { getReserveConfig } from '@/addon/o2o/api/goods';
@@ -111,6 +111,7 @@ import { t } from '@/locale';
 import useMemberStore from '@/stores/member'
 import { cloneDeep } from 'lodash-es'
 import nsSelectTime from '@/addon/o2o/components/ns-select-time'
+import { wechatSync } from '@/app/api/system'
 
 let loading = ref<boolean>(false);
 let userList = ref([[]]); // 技师

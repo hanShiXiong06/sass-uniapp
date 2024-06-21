@@ -7,7 +7,7 @@
 					<image class="w-[80rpx] h-[80rpx]" mode="aspectFit" v-else :src="img('addon/tourism/tourism/member/hotel.png')"></image>
 					<view class="flex flex-col flex-1 ml-[10rpx]">
 						<view class="multi-hidden leading-[1.2]">{{item.name}}</view>
-						<view class="ml-auto text-[#999]">x{{item.num}}</view>
+						<view class="ml-auto text-[#999]">x1</view>
 					</view>
 				</view>
 			</view>
@@ -44,11 +44,10 @@
 
 <script setup lang="ts">
     import { ref } from 'vue';
-    import { onLoad } from '@dcloudio/uni-app'
+    import { onLoad ,onShow} from '@dcloudio/uni-app'
 	import { img,redirect, isWeixinBrowser, getToken } from '@/utils/common';
     import { getVerifierInfo, getCheckVerifier, verify } from '@/app/api/verify'
     import { t } from '@/locale'
-	import {onShow} from '@dcloudio/uni-app'
 
     const loading = ref(true)
     const verifyDetail = ref<AnyObject | null>(null)
@@ -97,7 +96,6 @@
 		getVerifierInfo(code.value).then((res:any) =>{
 			verifyInfo.value = res.data;
 			loading.value = false;
-			console.log("verifyInfo.value",verifyInfo.value)
 		})
 	}
 	let isLoading = false;
@@ -110,6 +108,8 @@
 			setTimeout(() => {
 				redirect({ url: '/app/pages/verify/index', param: {}, mode: 'redirectTo' })
 			}, 1000);
-		})
+		}).catch(() => {
+            isLoading = false;
+        })
 	}
 </script>

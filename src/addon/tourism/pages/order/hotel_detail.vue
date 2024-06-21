@@ -2,7 +2,7 @@
 	<view class="bg-[#f8f8f8] min-h-screen overflow-hidden" :style="themeColor()">
 		<view class="bg-linear h-[480rpx] text-white px-4 pt-5">
 			<view class="text-[42rpx] flex items-baseline">
-				<text class="iconfont iconshijian text-[42rpx] mr-1"></text>
+				<text class="nc-iconfont nc-icon-shijianV6xx text-[42rpx] mr-1"></text>
 				<text class="font-bold">订单待使用</text>
 			</view>
 			<view class="text-xs mt-3">您的订单已生成，请尽快使用！</view>
@@ -34,7 +34,7 @@
 				<view class="flex items-center justify-between">
 					<view class="flex items-center">
 						<text class="text-sm">券码 8066843434542462</text>
-						<text class="iconfont iconfuzhi ml-2 text-[#636363]"></text>
+						<text class="nc-iconfont nc-icon-fuzhiV6xx ml-2 text-[#636363]"></text>
 					</view>
 					<text class="text-[#696969] text-[26rpx]">待使用</text>
 				</view>
@@ -52,7 +52,7 @@
 					</view>
 					<view class="ml-4 mr-4 relative w-[136rpx] text-center">
 						<text class="text-white relative z-10 text-xs font-scale bg-[#1C283E] px-2 py-1 rounded-xl w-[90rpx] box-border break-keep">共1晚</text>
-						<text class="iconfont iconzhixiang absolute left-0 right-0 text-[90rpx] top-[50%] translate-y text-[#ABABAB]"></text>
+						<text class="nc-iconfont nc-icon-zhixiang-youjiantouV6xx absolute left-0 right-0 text-[90rpx] top-[50%] translate-y text-[#ABABAB]"></text>
 					</view>
 					<view class="flex flex-col items-center">
 						<text class="text-[26rpx] text-[#1A2336]">9月3日 周六</text>
@@ -63,7 +63,7 @@
 					智能特惠大床房(天猫精灵+智能客控)标准件
 				</view>
 				<view class="mt-1 text-[#1A2336] text-[26rpx] font-bold flex items-center">
-					<text class="iconfont iconyuandianfengefu"></text>
+					<text class="nc-iconfont nc-icon-fengefuV6xx"></text>
 					<text>共一间</text>
 				</view>
 				<view class="mt-3 text-[#1A2336] text-[26rpx] font-bold">
@@ -98,8 +98,8 @@
 		<view class="h-[160rpx] w-full"></view>
 		<view class="flex justify-between items-center bg-white p-3 fixed left-0 right-0 bottom-0 z-10">
 			<view class="flex flex-col items-center justify-center" @click="toIndex">
-				<text class="iconfont iconshouye-zhihui text-[46rpx] text-[#333]"></text>
-				<text class="text-xs mt-[2rpx] font-scale">返回首页</text>
+				<text class="nc-iconfont nc-icon-shouye-xiaolianV6xx text-[46rpx] text-[#333]"></text>
+				<text class="text-xs mt-[2rpx] font-scale">首页</text>
 			</view>
 			<button type="primary" :plain="true" class="rounded-3xl text-[26rpx] w-[200rpx] h-[70rpx] leading-[70rpx] mr-3 ml-auto">申请退款</button>
 			<button type="primary" class="rounded-3xl text-[26rpx] w-[200rpx] h-[70rpx] leading-[70rpx] m-0">再来一单</button>

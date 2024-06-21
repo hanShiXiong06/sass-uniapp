@@ -2,7 +2,7 @@
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  background-size: contain !important;
+  background-size: contain;
   background-repeat: no-repeat !important;
 }
 
@@ -16,17 +16,6 @@
       display: none;
     }
   }
-
-  /* #ifdef MP */
-  .child-diy-template-wrap {
-    ::v-deep .diy-group {
-      > .draggable-element.top-fixed-diy {
-        display: block !important;
-      }
-    }
-  }
-
-  /* #endif */
 
   /* #ifdef H5 */
   :deep(.child-diy-template-wrap) {

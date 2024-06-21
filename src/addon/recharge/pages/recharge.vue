@@ -1,47 +1,65 @@
 <template>
     <view :style="themeColor()">
-        <u-loading-page :loading="loading" loadingText=""></u-loading-page>
-        <view class="account-info-wrap overflow-hidden" v-show="!loading">
-            <view class="mx-[24rpx] mt-[30rpx] px-3 pb-4 pt-7 box-border bg-[#fff] rounded-lg">
-                <u--input :placeholder="t('rechargeAmountPlaceholder')" v-model="rechargeAmount" border="bottom" type="number" clearable>
-                </u--input>
-                <view class="top-up-wrap flex flex-wrap justify-around mt-3">
+        <view class="overflow-hidden bg-[#F5F6FA] min-h-[100vh] px-[30rpx]" v-show="!loading">
+			<view class="h-[200rpx] box-border pt-[46rpx] pl-[40rpx] mt-[20rpx] rounded-[16rpx]  bg-gradient-to-r from-[#FB7939] to-[#FE120E]" :style="{backgroundImage: 'url(' + img('static/resource/images/member/point/mask_group.png') + ') ',backgroundSize: '100% 100%',backgroundRepeat: 'no-repeat'}">
+				<view class="leading-[36rpx] text-[#ffffff] text-[26rpx]">当前余额(元)</view>
+				<view class="leading-[68rpx] text-[#ffffff] text-[56rpx] mt-[8rpx]"  v-if="info">{{info ? moneyFormat(info.balance) : 0.00}}</view>
+			</view>
+			
+            <view class="mt-[30rpx] px-[20rpx] py-[30rpx] box-border bg-[#fff] rounded-lg">
+				<view class="flex items-center pb-[8rpx] border-0 border-b-[2rpx] border-solid border-[#BBBBBB]">
+					<view class="text-[30rpx] text-[#333]  leading-[1] iconfont iconrenminbiV6xx"></view>
+                    <input type="digit" class="h-[76rpx] leading-[76rpx] font-bold pl-[10rpx] flex-1  text-[48rpx] bg-[#fff]" v-model="rechargeAmount" maxlength="7" :placeholder="rechargeAmount?'':t('customRechargeAmount')" placeholder-class="apply-price"  :adjust-position="false"/>
+				</view>
+                <view class="top-up-wrap flex flex-wrap justify-around">
                     <view v-for="(item,index) in rechargePackage" :key="index"
-                        :class="['top-up-item w-22 box-border border-1 text-center rounded mt-2 py-3 px-4 border-gray-400 border-solid',{'border-primary text-primary':rechargeAmount == item}]"
+                        :class="['flex justify-center items-center w-[180rpx] h-[88rpx] box-border border-1 text-center rounded-[16rpx] mt-[30rpx] border-[#BBBBBB] border-solid',{'border-none text-white':rechargeAmount == item}]"
+						:style="{'background': rechargeAmount == item?'linear-gradient( 283deg, #FD3923 11%, #FF7630 100%), #FFFFFF':''}"
                         @click="rechargeAmount = item">
-                        <text>{{item}}{{t('yuan')}}</text>
+							<view class="flex items-baseline">
+								<text class="text-[34rpx] font-bold leading-[42rpx]">{{item}}</text>
+								<text class="text-[20rpx] ml-[6rpx] font-normal leading-[28rpx]">{{t('yuan')}}</text>
+							</view>
                     </view>
                 </view>
-                <view class="mt-5 px-2">
-                    <u-button type="primary" shape="circle" :loading="rechargeLoading" :text="t('clickRecharge')" @click="recharge"></u-button>
-                </view>
-                <view class="mt-[20rpx] text-center text-sm" @click="redirect({ url: '/addon/recharge/pages/recharge_record' })">
-                    {{t('rechargeRecord')}}
-                </view>
             </view>
+			
+			<view class="fixed bottom-[60rpx] left-0 right-0 px-[30rpx]">
+				<u-button :text="t('confirm')" :customStyle="{background: 'linear-gradient( 94deg, #FB7939 0%, #FE120E 99%), #EF000C', height:'88rpx',lineHeight:'88rpx',color:'#fff',fontSize:'32rpx',border:'none'}"  shape="circle" :loading="rechargeLoading" @click="recharge" ></u-button>
+				<view class="mt-[20rpx] text-center text-[26rpx]  text-[#EF000C]" @click="redirect({ url: '/addon/recharge/pages/recharge_record' })">
+				    {{t('rechargeRecord')}}
+				</view>
+			</view>
             <pay ref="payRef" @close="rechargeLoading = false"></pay>
         </view>
+        <u-loading-page :loading="loading"></u-loading-page>
     </view>
 </template>
 
 <script setup lang="ts">
-    import {ref, reactive} from 'vue'
-    import {t} from '@/locale'
-    import {moneyFormat, redirect, img} from '@/utils/common';
-    import {createRecharge} from '@/addon/recharge/api/recharge';
+    import { ref, computed} from 'vue'
+    import { t } from '@/locale'
+    import { redirect, img, debounce, moneyFormat } from '@/utils/common'
+    import { createRecharge } from '@/addon/recharge/api/recharge'
+    import { useSubscribeMessage } from '@/hooks/useSubscribeMessage'
+	import useMemberStore from '@/stores/member'
 
     const rechargePackage = ref([20, 30, 50, 100, 200, 300])
     const rechargeAmount = ref<string | number>("");
     const rechargeLoading = ref(false)
     const payRef = ref(null)
     const loading = ref(false);
-
+	
+	// 账户金额
+	const memberStore = useMemberStore();
+	const info = computed(() => memberStore.info)
+	
     /**
      * 发起充值
      */
-    const recharge = () => {
+    const recharge = debounce(() => {
         if (uni.$u.test.isEmpty(rechargeAmount.value)) {
-            uni.showToast({title: t('rechargeAmountPlaceholder'), icon: 'none'})
+            uni.showToast({title: t('customRechargeAmount'), icon: 'none'})
             return
         }
         if (!uni.$u.test.amount(rechargeAmount.value) || rechargeAmount.value <= 0) {
@@ -52,56 +70,23 @@
         rechargeLoading.value = true
 
         createRecharge({recharge_money: rechargeAmount.value}).then((res:any) => {
-            payRef.value?.open(res.data.trade_type, res.data.trade_id)
+            useSubscribeMessage().request('recharge_success')
+            payRef.value?.open(res.data.trade_type, res.data.trade_id,'/app/pages/member/index')
             loading.value = false
             rechargeLoading.value = false
         }).catch(() => {
             rechargeLoading.value = false
             loading.value = false
         })
-    }
+    })
 </script>
 
 <style lang="scss" scoped>
-.account-info-wrap{
-    @apply bg-[#F5F6FA] min-h-[100vh];
-    .account-info-head{
-        @apply relative h-40;
-        .name{
-            @apply ml-4 pt-7 text-white text-lg mb-3;
-        }
-        .content{
-            @apply absolute bg-white left-3 right-3 rounded-lg p-5;
-            .money{
-                @apply text-xl font-bold;
-            }
-            .text{
-                @apply text-xs text-slate-500 mt-2;
-            }
-            .money-wrap{
-                @apply mt-5 flex;
-                .money-item{
-                    @apply flex-1;
-                }
-                .money{
-                    @apply text-lg;
-                }
-                .text{
-                    @apply mt-1;
-                }
-            }
-        }
-    }
-    .account-info-btn{
-        @apply flex mt-24 ml-3 mr-3;
-        .btn{
-            &:first-of-type{
-                @apply mr-1 rounded;
-            }
-            &:last-of-type{
-                @apply ml-1 rounded;
-            }
-        }
-    }
+
+:deep(.apply-price){
+    color:#999;
+    font-size: 30rpx;
+    font-weight: normal;
+    line-height: 76rpx;
 }
 </style>

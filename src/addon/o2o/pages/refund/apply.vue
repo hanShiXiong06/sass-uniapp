@@ -31,7 +31,7 @@
                         <view class="flex-1 text-right">
                             <view class="text-xs text-gray-subtitle truncate w-[460rpx]">{{ formData.reason || t('placeholder') }}</view>
                         </view>
-                        <text class="iconfont iconxiangyoujiantou text-[26rpx] text-gray-subtitle"></text>
+                        <text class="nc-iconfont nc-icon-youV6xx text-[26rpx] text-[#666]"></text>
                     </view>
                 </view>
             </view>
@@ -51,7 +51,11 @@
                 <view class="py-[24rpx]">
                     <view class="text-sm">{{ t('uploadProof') }}<text class="text-xs text-gray-subtitle ml-[10rpx]">{{ t('optional') }}</text></view>
                     <view class="p-[20rpx] bg-[#f5f5f5] rounded mt-[20rpx]">
-                        <u-upload :fileList="voucherListPreview" @afterRead="afterRead" @delete="deletePic" multiple :maxCount="5"></u-upload>
+                        <u-upload :fileList="voucherListPreview" @afterRead="afterRead" @delete="deletePic" multiple :maxCount="9">
+                            <view class="flex items-center justify-center w-[140rpx] h-[140rpx] border-[2rpx] border-dashed border-[#ebebec] text-center text-[#888]">
+                                <view class="nc-iconfont nc-icon-xiangjiV6xx text-[50rpx]"></view>
+                            </view>
+                        </u-upload>
                     </view>
                 </view>
             </view>
@@ -73,7 +77,7 @@
                 <view class="px-[30rpx] pb-[30rpx]">
                     <view class="flex items-center h-[90rpx] justify-between">
                         <text>{{ t('refundReason') }}</text>
-                        <text class="iconfont iconguanbi" @click="refundCausePopup = false"></text>
+                        <text class="nc-iconfont nc-icon-guanbiV6xx text-[32rpx]" @click="refundCausePopup = false"></text>
                     </view>
                     <scroll-view scroll-y="true" class="h-[450rpx] mt-[20rpx]">
 						<u-radio-group v-model="currReasonName" placement="column" activeColor="var(--primary-color)">
@@ -81,7 +85,7 @@
 							</u-radio>
 						</u-radio-group>
 					</scroll-view>
-                    <u-button type="primary" class="mt-[40rpx]" shape="circle" @click="refundCausePopupFn">{{ t('confirm') }}</u-button>
+                    <u-button type="primary" :text="t('confirm')" class="mt-[40rpx]" shape="circle" @click="refundCausePopupFn"></u-button>
                 </view>
             </u-popup>
         </view>
@@ -161,7 +165,7 @@ const afterRead = (event) => {
             filePath: item.url,
             name: 'file'
         }).then(res => {
-            if (formData.value.voucher.length < 5) {
+            if (formData.value.voucher.length < 9) {
                 formData.value.voucher.push(res.data.url)
             }
         }).catch(() => {

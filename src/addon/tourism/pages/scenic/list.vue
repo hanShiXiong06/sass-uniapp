@@ -5,29 +5,29 @@
 				<view class="flex-1 flex items-center bg-[#F2F2F2] px-[30rpx] rounded-3xl text-[#949494] h-[74rpx]">
 					<!-- <view class="flex items-center text-[#5A6677]">
 						<text class="ml-[14rpx] leading-1 text-base">太原</text>
-						<text class="iconfont iconjiantouxia text-lg"></text>
+						<text class="nc-iconfont nc-icon-xiangxiaV6xx-1 text-lg"></text>
 					</view>
 					<text class="mx-[14rpx] text-[#D8D8D8]">|</text> -->
 					<u--input :placeholder="t('searchScenicName')" class="text-sm" placeholderClass="text-sm" border="none" v-model="search_name"></u--input>
-					<text class="iconfont iconxiazai17 text-[#666] text-[32rpx]" @click="searchNameFn"></text>
+					<text class="nc-iconfont nc-icon-sousuoV6xx text-[#666] text-[32rpx]" @click="searchNameFn"></text>
 				</view>
 			</view>
 			<!-- <view class="flex items-center px-[24rpx] border-0 border-b-1 border-solid border-[#F0F0F0] text-sm pb-[16rpx]">
 				<view class="flex items-center text-color mr-2">
 					<text>全部景点</text>
-					<text class="iconfont iconjiantouxia text-lg"></text>
+					<text class="nc-iconfont nc-icon-xiangxiaV6xx-1 text-lg"></text>
 				</view>
 				<view class="flex items-center mr-2">
 					<text>位置距离</text>
-					<text class="iconfont iconjiantouxia text-lg"></text>
+					<text class="nc-iconfont nc-icon-xiangxiaV6xx-1 text-lg"></text>
 				</view>
 				<view class="flex items-center mr-2">
 					<text>热度排行</text>
-					<text class="iconfont iconjiantouxia text-lg"></text>
+					<text class="nc-iconfont nc-icon-xiangxiaV6xx-1 text-lg"></text>
 				</view>
 				<view class="flex items-center ml-auto">
 					<text>筛选</text>
-					<text class="iconfont iconjiantouxia text-lg"></text>
+					<text class="nc-iconfont nc-icon-xiangxiaV6xx-1 text-lg"></text>
 				</view>
 			</view> -->
 
@@ -58,7 +58,14 @@
 							<text>{{item.scenic_level}}星</text>
 						</view>
 						<view class="flex items-center mt-auto text-[#F55246] text-xs">
-							<view><text class="price-font">￥</text><text class="text-base price-font">{{item.sale_price || item.price || '0.00'}}</text>{{t('rise')}}</view>
+							<view>
+								<text class="price-font">￥</text>
+								<text class="text-base price-font">{{goodsPrice(item)}}</text>
+								<text class="ml-[4rpx] mr-[4rpx]"> {{t('rise')}} </text>
+								<text class="">
+									<image v-if="priceType(item) == 'member_price'" class="h-[22rpx] ml-[4rpx] w-[50rpx]" :src="img('addon/tourism/VIP.png')" mode="widthFix" />
+								</text>
+							</view>
 							<!-- <text class="ml-1">(会员￥68)</text> -->
 						</view>
 					</view>
@@ -72,7 +79,7 @@
 
 <script setup lang="ts">
 	import { ref, reactive, computed } from 'vue';
-	import { redirect, img } from '@/utils/common';
+	import { redirect, img, getToken } from '@/utils/common';
 	import { getScenicList } from '@/addon/tourism/api/tourism';
 	import { t } from '@/locale';
 	import MescrollBody from '@/components/mescroll/mescroll-body/mescroll-body.vue';
@@ -131,6 +138,27 @@
 
 	const toLink = (id : string) => {
 		redirect({ url: '/addon/tourism/pages/scenic/detail', param: { scenic_id : id } })
+	}
+	
+	// 价格类型
+	let priceType = (data:any) =>{
+		let type = "";
+		if(data.goods.member_discount && getToken()){
+			type = 'member_price' // 会员价
+		}else{ 
+			type = ""
+		}
+		return type;
+	}
+	// 商品价格
+	let goodsPrice = (data:any) =>{
+		let price = "0.00";
+		if(data.goods.member_discount && getToken()){
+			price = data.member_price // 会员价
+		}else{
+			price = data.price
+		}
+		return parseFloat(price).toFixed(2);
 	}
 </script>
 <style lang="scss" scoped>

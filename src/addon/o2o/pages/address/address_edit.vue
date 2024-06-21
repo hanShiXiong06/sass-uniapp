@@ -25,11 +25,11 @@
                 </view>
                 <view class="mt-[10rpx]">
                     <u-form-item :label="t('defaultAddress')" prop="name" :border-bottom="true">
-                        <u-switch v-model="formData.is_default" size="20" :activeValue="1" :inactiveValue="0" activeColor="var(--primary-color)"></u-switch>
+                        <u-switch v-model="formData.is_default" size="20" :activeValue="1" :inactiveValue="0" activeColor="var(--primary-color)"/>
                     </u-form-item>
                 </view>
                 <view class="mt-[40rpx]">
-                    <u-button class="text-[var-(--primary-color)]" type="primary" shape="circle" :text="t('save')" @click="save" :loading="operateLoading"></u-button>
+                    <u-button class="text-[var-(--primary-color)]" type="primary" shape="circle" :text="t('save')" @click="save" :disabled="btnDisabled" :loading="operateLoading"></u-button>
                 </view>
             </u-form>
         </view>
@@ -56,12 +56,11 @@
         full_address: '',
         is_default: 0,
         area: '',
-        type: 'address'
     })
     
     const areaRef = ref()
     const formRef = ref(null)
-    const type = ref('')
+    const btnDisabled = ref(false)
     
     onLoad((data) => {
         if (data.id) {
@@ -69,7 +68,6 @@
                 data && Object.assign(formData.value, data)
             }).catch()
         }
-        type.value = data.type || ''
     })
     
     const rules = computed(() => {
@@ -131,16 +129,20 @@
         formRef.value.validate().then(() => {
             if (operateLoading.value) return
             operateLoading.value = true
+
+            btnDisabled.value = true
             
             formData.value.full_address = formData.value.area + formData.value.address
         
             save(formData.value).then((res) => {
                 operateLoading.value = false
                 setTimeout(()=> {
+                    btnDisabled.value = false
                    redirect({ url: '/addon/o2o/pages/address/index' })
                 }, 1000)
             }).catch(() => {
                 operateLoading.value = false
+                btnDisabled.value = false
             })
         })
     }

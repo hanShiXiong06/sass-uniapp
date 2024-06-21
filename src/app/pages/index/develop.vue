@@ -13,8 +13,7 @@
 			<text class="mb-[20rpx]">{{ t('siteId') }}</text>
 			<u-input v-model="formData.siteId" clearable :placeholder="t('siteIdPlaceholder')" />
 		</view>
-		<u-button type="primary" @click="save" class="mt-[80rpx]">
-			{{ t('confirm') }}
+		<u-button type="primary" :text="t('confirm') " @click="save" class="mt-[80rpx]">
 		</u-button>
 	</view>
 </template>
@@ -35,11 +34,13 @@
 			uni.showToast({ title: t('siteIdPlaceholder'), icon: 'none' });
 			return;
 		}
+
 		var reg = /^[0-9]+$/;
 		if (!reg.test(formData.siteId)) {
 			uni.showToast({ title: t('pleaseEnterNumber'), icon: 'none' });
 			return;
 		}
+
 		// if (formData.siteId > 9999999) {
 		// 	uni.showToast({ title: t('maximumCannotExceed') + '9999999', icon: 'none' });
 		// 	return;

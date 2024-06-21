@@ -10,7 +10,7 @@
 				</view>
 				<view class="set-icon flex items-center absolute right-0 top-2">
 					<view @click="redirect({ url: '/app/pages/setting/index' })">
-						<text class="iconfont iconshezhi text-[1.6rem] ml-[10rpx]" :style="{ color : diyComponent.textColor }"></text>
+						<text class="nc-iconfont nc-icon-shezhiV6xx-1 text-[40rpx] ml-[10rpx]" :style="{ color : diyComponent.textColor }"></text>
 					</view>
 				</view>
 			</view>
@@ -23,7 +23,7 @@
 				</view>
 				<view class="set-icon flex items-center absolute right-0 top-2">
 					<view @click="redirect({ url: '/app/pages/setting/index' })">
-						<text class="iconfont iconshezhi text-[1.6rem] ml-[10rpx]" :style="{ color : diyComponent.textColor }"></text>
+						<text class="nc-iconfont nc-icon-shezhiV6xx-1 text-[40rpx] ml-[10rpx]" :style="{ color : diyComponent.textColor }"></text>
 					</view>
 				</view>
 			</view>

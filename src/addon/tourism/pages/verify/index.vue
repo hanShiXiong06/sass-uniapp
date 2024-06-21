@@ -101,7 +101,7 @@
                     <u-button :text="t('search')" type="primary" shape="circle" :disabled="!verifyCode" @click="search"></u-button>
                 </view>
                 <view class="text-center mt-[20rpx]">
-                    <view @click="redirect({ url: '/tourism/pages/verify/record' })">
+                    <view @click="redirect({ url: '/addon/tourism/pages/verify/record' })">
                         <text class="text-primary text-sm">{{ t('verifyRecord') }}</text>
                     </view>
                 </view>
@@ -116,6 +116,7 @@
 
 <script setup lang="ts">
     import { ref } from 'vue'
+	import { img,redirect } from '@/utils/common';
     import { checkIsVerifier, getVerifyDetail, verify } from '@/addon/tourism/api/tourism'
     import { t } from '@/locale'
 

@@ -21,7 +21,7 @@ export function getGoodsList(params: Record<string, any>) {
 
 /**
  * 项目详情
- * @param id
+ * @param params
  * @returns
  */
 export function getGoodsDetail(params: Record<string, any>) {

@@ -113,7 +113,7 @@ export function getAreaByCode(code: number | string) {
  * @param params
  */
 export function getAddressByLatlng(params: Record<string, any>) {
-    return request.get(`area/address_by_latlng`, params)
+    return request.get(`area/address_by_latlng`, params, {showErrorMessage: true})
 }
 
 /**
