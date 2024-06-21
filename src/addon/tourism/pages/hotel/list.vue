@@ -4,7 +4,7 @@
 			<view class="flex items-center px-[24rpx] py-[20rpx]">
 				<view class="flex items-center bg-[#F2F2F2] ml-auto pl-[30rpx] pr-[24rpx] rounded-3xl text-[#949494] flex-1 h-[74rpx]">
 					<u--input :placeholder="t('searchHotelName')" class="w-[280rpx] text-sm" placeholderClass="text-sm" border="none" v-model="hotel_name"></u--input>
-					<text class="iconfont iconxiazai17 text-[32rpx]" @click="searchNameFn"></text>
+					<text class="nc-iconfont nc-icon-sousuoV6xx text-[32rpx]" @click="searchNameFn"></text>
 				</view>
 			</view>
 
@@ -26,7 +26,14 @@
 							</block>
 						</view>
 						<view class="flex items-center mt-auto text-[#F55246] text-xs">
-							<view><text class="price-font">￥</text><text class="text-base price-font">{{item.price}}</text>{{t('rise')}}</view>
+							<view class="">
+								<text class="price-font">￥</text>
+								<text class="text-base price-font">{{goodsPrice(item)}}</text>
+								<text class="ml-[4rpx] mr-[4rpx]"> {{t('rise')}} </text>
+								<text class="">
+									<image v-if="priceType(item) == 'member_price'" class="h-[22rpx] ml-[4rpx] w-[50rpx]" :src="img('addon/tourism/VIP.png')" mode="widthFix" />
+								</text>
+							</view>
 						</view>
 					</view>
 				</view>
@@ -38,7 +45,7 @@
 
 <script setup lang="ts">
 	import { ref, reactive, computed } from 'vue';
-	import { redirect, img } from '@/utils/common';
+	import { redirect, img, getToken } from '@/utils/common';
 	import { getHotelList } from '@/addon/tourism/api/tourism';
 	import { t } from '@/locale';
 	import MescrollBody from '@/components/mescroll/mescroll-body/mescroll-body.vue';
@@ -119,6 +126,27 @@
 
 		list.value = [];
 		getMescroll().resetUpScroll();
+	}
+	
+	// 价格类型
+	let priceType = (data:any) =>{
+		let type = "";
+		if(data.goods.member_discount && getToken()){
+			type = 'member_price' // 会员价
+		}else{ 
+			type = ""
+		}
+		return type;
+	}
+	// 商品价格
+	let goodsPrice = (data:any) =>{
+		let price = "0.00";
+		if(data.goods.member_discount && getToken()){
+			price = data.member_price // 会员价
+		}else{
+			price = data.price
+		}
+		return parseFloat(price).toFixed(2);
 	}
 
 	const toLink = (id : string) => {

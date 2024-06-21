@@ -4,17 +4,19 @@
             <view v-if="info.is_use">
                 <view class="sigin-header">
                 <!-- #ifdef MP-WEIXIN -->
-                    <view class="absolute  right-0 py-[4rpx] px-[14rpx] bg-color rounded-l-[30rpx]  text-[#fff] text-[24rpx] leading-[28rpx] z-10" :style="{top: topStyle}"  @click="signPopup = true">
-                        <text class="iconfont iconqiandao text-[24rpx] text-[#fff] mr-[4rpx]"></text>
-                        签到规则</view>
+                    <view class="flex items-center absolute right-0 px-[14rpx] bg-color rounded-l-[35rpx]  text-[#fff] text-[24rpx] h-[50rpx] z-10" :style="{top: topStyle}"  @click="signPopup = true">
+                         <text class="nc-iconfont nc-icon-meiriqiandaoV6xx text-[28rpx] text-[#fff] mr-[4rpx]"></text>
+                        <text class="text-[24rpx]">签到规则</text>
+					</view>
                     <view  :style="{height: headStyle, backgroundImage: 'url(' + img('static/resource/images/app/sigin_uniapp.png') + ')',backgroundSize: '100% 100%', backgroundRepeat: 'no-repeat'}">
                         <top-tabbar :data="topTabbarData" titleColor="#fff" class="top-header" />
                     </view>
                     <!-- #endif -->
                     <!-- #ifdef H5 -->
-                    <view class="absolute  top-[38rpx] right-0 py-[4rpx] px-[14rpx] bg-color rounded-l-[30rpx]  text-[#fff] text-[24rpx] leading-[28rpx] z-10" @click="signPopup = true">
-                        <text class="iconfont iconqiandao text-[24rpx] text-[#fff] mr-[4rpx]"></text>
-                        签到规则</view>
+                    <view v-if="info.rule_explain" class="flex items-center absolute top-[38rpx] right-0 px-[14rpx] bg-color rounded-l-[35rpx]  text-[#fff] text-[24rpx] h-[50rpx] z-10" @click="signPopup = true">
+                        <text class="nc-iconfont nc-icon-meiriqiandaoV6xx text-[28rpx] text-[#fff] mr-[4rpx]"></text>
+                        <text class="text-[24rpx]">签到规则</text>
+					</view>
                     <view  class="h-[382rpx]" :style="{ backgroundImage: 'url(' + img('static/resource/images/app/sigin_h5.png') + ')',backgroundSize: '100%', backgroundRepeat: 'no-repeat'}">
                         <top-tabbar :data="topTabbarData" class="top-header" />
                     </view>
@@ -30,18 +32,14 @@
                                     <text class="iconfont iconxiayibu1 text-[#999] text-[24rpx]"  @click="changeMonth('next')"></text>
                                 </view>
                                 <view class="flex items-center">
-                                    <view class="text-[24rpx] text-[#333] leading-[28rpx]"  @click="handleChange">
-                                        <text class="iconfont iconxiangshang text-[#666] !text-[16rpx] ml-[10rpx]"></text>
-                                    </view>
+                                    <text class="nc-iconfont nc-icon-shangV6xx-1 text-[#666] text-[30rpx] transform scale-80" @click="handleChange"></text>
                                 </view>
                             </view>
                             <view class="pt-[32rpx] mb-[40rpx] flex justify-between items-center" v-else>
                                 <view class="flex items-center">
                                     <view class="font-bold text-[32rpx] text-[#333] leading-[38rpx]">已连续签到<text class="text-[#EF000C] mx-[4rpx]">{{ info.days }}</text>天</view>
                                 </view>
-                                <view class="text-[24rpx] text-[#333] leading-[28rpx]" v-if="!flag" @click="flag = !flag">
-                                    <text class="iconfont iconxiangxia text-[#666] !text-[16rpx] ml-[10rpx]"></text>
-                                </view>
+                                <text class="nc-iconfont nc-icon-xiaV6xx text-[#666] text-[30rpx] transform scale-80" v-if="!flag" @click="flag = !flag"></text>
                             </view>
                             <view class="relative z-9 pb-[30rpx] bg-[#fff] rounded-[18rpx]">
                                 <view>
@@ -85,12 +83,14 @@
                                         </block>
                                     </view>
                                     <view class="mt-[50rpx] mx-[20rpx] flex justify-center"  v-if="state.curMonth + 1 == (new Date().getMonth() + 1) && state.curYear == new Date().getFullYear() ">
-                                        <u-button v-if="!info.is_sign" :customStyle="{width:'450rpx',height:'62rpx',border:'none', color:'#fff', fontSize:'28rpx',lineHeight:'66rpx',backgroundImage: `url(${img('static/resource/images/app/button_bg2.png')})`,backgroundSize: '100%', backgroundRepeat: 'no-repeat'}" shape="circle" @click="setSignFn">
-                                            <text class="iconfont iconqiandao text-[26rpx] text-[#fff] mr-[14rpx]"></text>
-                                            立即签到</u-button>
-                                        <u-button v-else :customStyle="{width:'450rpx',height:'62rpx',border:'none',color:'#fff', fontSize:'28rpx',lineHeight:'66rpx',backgroundImage: `url(${img('static/resource/images/app/button_bg1.png')})`,backgroundSize: '100%', backgroundRepeat: 'no-repeat'}" shape="circle">
-                                            <text class="iconfont iconqiandao text-[26rpx] text-[#fff] mr-[14rpx]"></text>
-                                            已签到</u-button>
+                                        <button v-if="!info.is_sign" class="rounded-[40rpx] !bg-transparent" :style="{width:'470rpx',height:'80rpx',border:'none', color:'#fff', fontSize:'28rpx',lineHeight:'76rpx',backgroundImage: `url(${img('static/resource/images/app/button_bg2.png')})`,backgroundSize: '100%', backgroundRepeat: 'no-repeat'}" shape="circle" @click="setSignFn">
+											<text class="nc-iconfont nc-icon-meiriqiandaoV6xx text-[30rpx] text-[#fff] mr-[8rpx]"></text>
+											<text>立即签到</text>
+										</button>
+										<button v-else class="rounded-[40rpx] !bg-transparent" :style="{width:'470rpx',height:'80rpx',border:'none',color:'#fff', fontSize:'28rpx',lineHeight:'76rpx',backgroundImage: `url(${img('static/resource/images/app/button_bg1.png')})`,backgroundSize: '100%', backgroundRepeat: 'no-repeat'}" shape="circle">
+											<text class="nc-iconfont nc-icon-meiriqiandaoV6xx text-[30rpx] text-[#fff] mr-[8rpx]"></text>
+											<text>已签到</text>
+										</button>
                                     </view>
                                     <!-- <view class="mx-[20rpx] flex items-baseline justify-between mt-[16rpx]">
                                         <text class="text-[26rpx] text-[#FF9000] leading-[30rpx]">查看签到记录</text>
@@ -101,7 +101,7 @@
                     </view>
                     <view class="mt-[20rpx] mb-[30rpx]  mx-[30rpx] p-[30rpx] bg-[#fff] rounded-[16rpx]">
                         <view class="mb-[30rpx] flex items-center">
-                            <view class="font-bold text-[32rpx] text-[#000] leading-[38rpx]">签到奖励</view>
+                            <view class="font-bold text-[32rpx] text-[#333] leading-[38rpx]">签到奖励</view>
                             <!-- <view class="text-[#666] text-[26rpx] leading-[30rpx]">
                                 <text>签到记录</text>
                                 <image :src="img('static/resource/images/app/more.png')" class="w-[12rpx] h-[18rpx] ml-[8rpx]"></image>
@@ -109,37 +109,29 @@
                         </view>
                         <view>
                             <view v-for="(item,index) in info.continue_award" :key="index" class="flex items-center  mt-[40rpx] border-box">
-                                <view class="w-[90rpx] h-[90rpx] rounded-[50%] bg-[#E7F6FF] flex items-center justify-center " v-if="(index + 1) % 4 == 1">
+                                <view class="w-[90rpx] h-[90rpx] rounded-[50%] bg-[#E7F6FF] flex items-center justify-center  flex-shrink-0" v-if="(index + 1) % 4 == 1">
                                     <image :src="img('static/resource/images/app/icon_02.png')" class="w-[40rpx] h-[40rpx]"></image>
                                 </view>
-                                <view class="w-[90rpx] h-[90rpx] rounded-[50%] bg-[#ffefef] flex items-center justify-center" v-else-if="(index + 1) % 4 == 2">
+                                <view class="w-[90rpx] h-[90rpx] rounded-[50%] bg-[#ffefef] flex items-center justify-center flex-shrink-0" v-else-if="(index + 1) % 4 == 2">
                                     <image :src="img('static/resource/images/app/icon_03.png')" class="w-[40rpx] h-[40rpx]"></image>
                                 </view>
-                                <view class="w-[90rpx] h-[90rpx] rounded-[50%] bg-[#d3feeb] flex items-center justify-center" v-else-if="(index + 1) % 4 == 3">
+                                <view class="w-[90rpx] h-[90rpx] rounded-[50%] bg-[#d3feeb] flex items-center justify-center flex-shrink-0" v-else-if="(index + 1) % 4 == 3">
                                     <image :src="img('static/resource/images/app/icon_04.png')" class="w-[40rpx] h-[40rpx]"></image>
                                 </view>
-                                <view class="w-[90rpx] h-[90rpx] rounded-[50%] bg-[#ffeddd] flex items-center justify-center" v-else-if="(index + 1) % 4 == 0">
+                                <view class="w-[90rpx] h-[90rpx] rounded-[50%] bg-[#ffeddd] flex items-center justify-center flex-shrink-0" v-else-if="(index + 1) % 4 == 0">
                                     <image :src="img('static/resource/images/app/icon_05.png')" class="w-[40rpx] h-[40rpx]"></image>
                                 </view>
                                 <view class="flex-1 mx-[20rpx]">
                                     <view class="font-500 text-[28rpx] text-[#333] leading-[33rpx] mb-[10rpx]">连续签到{{item.continue_sign}}天</view>
-                                    <view class="flex">
-                                        <view v-if="item.balance.is_use" class="flex items-center leading-normal">
-                                            <image :src="img('static/resource/images/app/packet01.png')" class="w-[26rpx] h-[30rpx]"></image>
-                                            <text class="text-[24rpx] ml-[3rpx] text-[#FF9000] leading-[28rx] max-w-[86rpx] truncate">{{item.balance.content}}</text>
-                                        </view>
-                                        <view v-if="item.point.is_use"  class="flex items-center leading-normal ml-[14rpx]">
-                                            <image :src="img('static/resource/images/app/point.png')" class="w-[28rpx] h-[28rpx]"></image>
-                                            <text class="text-[24rpx] ml-[3rpx] text-[#FF9000] leading-[28rx] max-w-[80rpx] truncate">{{item.point.content}}</text>
-                                        </view>
-                                        <view v-if="item.shop_coupon.is_use"  class="flex items-center leading-normal ml-[14rpx]">
-                                            <image :src="img('static/resource/images/app/coupon.png')" class="w-[28rpx] h-[28rpx]"></image>
-                                            <text class="text-[24rpx] ml-[3rpx] text-[#FF9000] leading-[28rx] max-w-[80rpx] truncate">{{item.shop_coupon.content}}</text>
-                                        </view>
+                                    <view class="flex flex-wrap" v-if="item.gift">
+                                        <view  class="flex  mb-[10rpx] ">
+                                            <image :src="img(item.gift.total.icon)" class="w-[30rpx] h-[30rpx] flex-shrink-0"></image>
+                                            <view class="text-[24rpx] ml-[6rpx] text-[#FF9000] leading-[30rpx] max-w-[330rpx]">{{item.gift.total.text}}</view>
+                                         </view>
                                     </view>
                                 </view>
                                 <view class="flex-shrink-0">
-                                    <view v-if="Number(info.days) < Number(item.continue_sign) " class="px-[28rpx] py-[8rpx] bg-[#fff2f0] rounded-[40rpx] font-500 text-[24rpx] text-[#EF000C] leading-[34rpx]">待完成</view>
+                                    <view v-if="Number(info.days) < Number(item.continue_sign) " class="px-[28rpx] py-[8rpx] bg-[#FFECE9] rounded-[40rpx] font-500 text-[24rpx] text-[rgba(239,0,12,.8)] leading-[34rpx]">待完成</view>
                                     <view v-else class="px-[28rpx] py-[8rpx]  rounded-[40rpx] font-500 text-[24rpx] text-[#fff] leading-[34rpx]" style="background:linear-gradient( 90deg, #FB7939 0%, #FE120E 100%) ;">已完成</view>
                                 </view>
                             </view>
@@ -149,19 +141,19 @@
             </view>
             <view class="min-h-screen flex flex-col justify-center bg-[#fff]" v-else>
                 <image class="rounded-[8rpx] overflow-hidden mx-auto w-[320rpx] h-[184rpx]" :src="img('static/resource/images/system/empty.png')" model="aspectFill" />
-                <view class="text-[#999] text-[26rpx] font-400 mt-[26rpx] text-center leading-[30rpx]">暂无内容</view>
+                <view class="text-[#999] text-[26rpx] font-400 mt-[26rpx] text-center leading-[30rpx]">签到未开启</view>
             </view>
             <!-- 签到规则-->
             <u-popup :show="signPopup" :round="16" mode="bottom" :closeable="true" @close="signPopup = false">
                 <view class="pt-[30rpx] px-[32rpx] pb-[20rpx]">
                     <view class="text-center text-[32rpx] font-700 text-[#323233]">签到规则</view>
-                    <view class="mt-[60rpx] mx-[20rpx] mb-[120rpx]">
+                    <view class="mt-[60rpx] mx-[20rpx] mb-[120rpx] h-[260rpx] overflow-auto">
                         <block v-for="(item) in info.rule_explain.split('\n')">
                             <view class="leading-[40rpx] mb-[20rpx]">{{ item }}</view>
                         </block>
                     </view>
                     <view>
-                        <u-button :customStyle="{height:'66rpx',color:'#fff', fontSize:'28rpx',lineHeight:'66rpx',background: 'linear-gradient( 90deg, #fc7035 0%, #EF000C 100%)',border:'none'}" shape="circle" @click="signPopup = false">知道了</u-button>
+                        <u-button text="知道了" :customStyle="{height:'66rpx',color:'#fff', fontSize:'28rpx',lineHeight:'66rpx',background: 'linear-gradient( 90deg, #fc7035 0%, #EF000C 100%)',border:'none'}" shape="circle" @click="signPopup = false"></u-button>
                     </view>
                 </view> 
             </u-popup>
@@ -176,28 +168,22 @@
                             <view class="text-[48rpx] text-[#EF000C] font-bold leading-[56rpx] mb-[4rpx] text-center">{{ signAward.title }}</view>
                             <view class="text-[24rpx] text-[#F05F66] leading-[28rpx] text-center mb-[60rpx]">{{ signAward.info }}</view>
                             <view class="px-[68rpx] mb-[54rpx]">
-                                <view class="flex items-center mb-[30rpx]" v-if="signAward.awards.point.is_use"> 
-                                    <image :src="img('static/resource/images/app/point01.png')" class="w-[40rpx] h-[40rpx]"></image>
-                                    <view class="ml-[20rpx] text-[28rpx] text-[#333] leading-[32rpx]">{{signAward.awards.point.content  }}</view>
-                                </view>
-                                <block v-if="signAward.awards.shop_coupon.is_use">
-                                    <view class="flex items-center mb-[30rpx]"  v-for="(item,index) in signAward.awards.shop_coupon.content.split(',')" :key="index" > 
-                                        <image :src="img('static/resource/images/app/coupon01.png')" class="w-[40rpx] h-[34rpx]"></image>
-                                        <view class="ml-[20rpx] text-[28rpx] text-[#333] leading-[32rpx]">{{ item  }}</view>
-                                    </view>
+                                <block v-for="(item,index) in signAward.awards">
+                                    <template v-if="item.content" v-for="(subItem,subIndex) in item.content">
+                                        <view class="flex items-center mb-[30rpx]" > 
+                                            <image :src="img(subItem.icon)" class="w-[42rpx] h-[42rpx]"></image>
+                                            <view class="ml-[20rpx] text-[28rpx] text-[#333] leading-[32rpx]">{{subItem.text }}</view>
+                                        </view>
+                                    </template>
                                 </block>
-                                <view class="flex items-center" v-if="signAward.awards.balance.is_use"> 
-                                    <image :src="img('static/resource/images/app/packet.png')" class="w-[34rpx] h-[40rpx]"></image>
-                                    <view class="ml-[20rpx] text-[28rpx] text-[#333] leading-[32rpx]">{{signAward.awards.balance.content  }}</view>
-                                </view>
                             </view>
                             <view class="flex justify-center">
-                                <image :src="img('static/resource/images/app/button.png')" class="w-[380rpx] h-[112rpx]"  @click="awardShow = false"></image>
+								<view class="w-[380rpx] h-[80rpx] bg-gradient-to-r from-[#FB7939] to-[#FE120E] rounded-[50rpx] text-[#ffffff] text-center leading-[80rpx] text-[30rpx]"  @click="awardShow = false">我知道了</view>
                             </view>
                         </view>
                     </view> 
                     <view class="flex justify-center">
-                        <text class="iconfont iconguanbi1 text-[#fff] text-[60rpx]" @click="awardShow = false"></text>
+                        <text class="nc-iconfont nc-icon-cuohaoV6xx text-[#fff] text-[60rpx]" @click="awardShow = false"></text>
                     </view>
                 </view>
             </u-popup>
@@ -212,28 +198,22 @@
                             <view class="text-[48rpx] text-[#EF000C] font-bold leading-[56rpx] mb-[4rpx] text-center opacity-60">签到奖励</view>
                             <view class="text-[24rpx] text-[#F05F66] opacity-60 leading-[28rpx] text-center mb-[60rpx]">您将获得以下奖励</view>
                             <view class="px-[68rpx] mb-[54rpx]">
-                                <view class="flex items-center mb-[32rpx]" v-if="packInfo.point.is_use"> 
-                                    <image :src="img('static/resource/images/app/point01.png')" class="w-[40rpx] h-[40rpx]"></image>
-                                    <view class="ml-[20rpx] text-[28rpx] text-[#333] leading-[32rpx]">{{packInfo.point.content  }}</view>
-                                </view>
-                                <block v-if="packInfo.shop_coupon.is_use">
-                                    <view class="flex items-center mb-[32rpx]" v-for="(item,index) in packInfo.shop_coupon.content.split(',')" :key="index"> 
-                                        <image :src="img('static/resource/images/app/coupon01.png')" class="w-[40rpx] h-[34rpx]"></image>
-                                        <view class="ml-[20rpx] text-[28rpx] text-[#333] leading-[32rpx]">{{ item  }}</view>
-                                    </view>
+                                <block v-for="(item,index) in packInfo">
+                                    <template v-if="item.content">
+                                        <view class="flex items-center mb-[32rpx]" v-for="(subItem,subIndex)  in item.content" :key="subIndex"> 
+                                            <image :src="img(subItem.icon)" class="w-[42rpx] h-[42rpx]"></image>
+                                            <view class="ml-[20rpx] text-[28rpx] text-[#333] leading-[32rpx]">{{ subItem.text  }}</view>
+                                        </view>
+                                    </template>
                                 </block>
-                                <view class="flex items-center" v-if="packInfo.balance.is_use"> 
-                                    <image :src="img('static/resource/images/app/packet.png')" class="w-[34rpx] h-[40rpx]"></image>
-                                    <view class="ml-[20rpx] text-[28rpx] text-[#333] leading-[32rpx]">{{packInfo.balance.content  }}</view>
-                                </view>
                             </view>
                             <view class="flex justify-center">
-                                <image :src="img('static/resource/images/app/button.png')" class="w-[380rpx] h-[112rpx]"  @click="packShow = false"></image>
+								<view class="w-[380rpx] h-[80rpx] bg-gradient-to-r from-[#FB7939] to-[#FE120E] rounded-[50rpx] text-[#ffffff] text-center leading-[80rpx] text-[30rpx]"  @click="packShow = false">我知道了</view>
                             </view>
                         </view>
                     </view>
                     <view class="flex justify-center">
-                        <text class="iconfont iconguanbi1 text-[#fff] text-[60rpx]" @click="packShow = false"></text>
+                        <text class="nc-iconfont nc-icon-cuohaoV6xx text-[#fff] text-[60rpx]" @click="packShow = false"></text>
                     </view>
                 </view>
             </u-popup>
@@ -314,7 +294,6 @@ const getSignInfoFn =  (data:any) =>{
     })
 }
 
-
 //获取当月总天数
 const getDayCounts= () => {
     let counts = new Date(state.curYear,state.curMonth+1,0).getDate()
@@ -352,7 +331,6 @@ const handleChange = () =>{
         flag.value = !flag.value
     }
 }
-
 
 //更改月份
 const changeMonth=(type: string)=>{
@@ -417,15 +395,12 @@ const getDayPackFn = (date:number) =>{
     })
 }
 
-
 // 判断是否签到
 const isVerDate = (val:any) => {
     return state.signInList.includes(val)
 }
 
-
 //判断是否是当前日期
- 
 const isCurrentDate=(date)=>{
     if(date> 0 && date <= state.dataCount.length){
         if(date == state.curDate && currentYear == state.curYear && currentMonth == state.curMonth){
@@ -445,13 +420,10 @@ const isPackDate = (date:any) =>{
     return flag
 }
 
-
-
 // 过滤日期
 const filteredDate=(date :any)=>{
     return date > 0 ? date : ''
 }
-
 
 // 获取系统状态栏的高度
 let menuButtonInfo = {};

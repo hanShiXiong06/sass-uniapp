@@ -1,7 +1,7 @@
 <template>
 	<template v-if="tabbar && Object.keys(tabbar).length">
 		<u-tabbar :value="value" @change="tabbarChange" zIndex="9999" :fixed="true" :placeholder="true" :safeAreaInsetBottom="true"
-			:inactive-color="tabbar.value.textColor" :active-color="tabbar.value.textHoverColor" v-if="tabbar">
+			:inactive-color="tabbar.value.textColor" :active-color="tabbar.value.textHoverColor">
 			<block v-for="item in tabbar.value.list">
 				<u-tabbar-item class="py-[5rpx]" :style="{'background-color': tabbar.value.backgroundColor}" :text="item.text"
 					:icon="img(value == item.link.url ? item.iconSelectPath : item.iconPath)" :name="item.link.url"
@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-	import { computed } from 'vue'
+	import { ref,reactive,computed,watch } from 'vue'
 	import { redirect, currRoute,currShareRoute, img } from '@/utils/common'
 	import useConfigStore from '@/stores/config'
 
@@ -29,14 +29,36 @@
         }
     })
 
-	if(props.addon){
-        const configStore = useConfigStore()
-        configStore.getTabbarConfig(props.addon)
+	let addon:any = props.addon;
+
+    const configStore = useConfigStore()
+	if(!addon && configStore.addon){
+        addon = configStore.addon;
 	}
 
-	const tabbar = computed(() => {
-        return useConfigStore().tabbar
-	})
+    const tabbar:any = reactive({})
+
+    const setTabbar = ()=>{
+        let list = useConfigStore().tabbarList;
+        for(let i=0;i<list.length;i++){
+            if(list[i].key == addon){
+                Object.assign(tabbar,list[i]);
+                break;
+            }
+        }
+    }
+
+    setTabbar()
+
+    watch(
+        () => props.addon,
+        (newValue, oldValue) => {
+            if(newValue && oldValue) {
+                setTabbar()
+            }
+        }
+        , { immediate: true }
+    )
 
 	const value = computed(() => {
         let query:any = currShareRoute().params;
@@ -66,13 +88,7 @@
         }
 	}
 
-	const setAddon = (addon:any)=> {
-        const configStore = useConfigStore()
-        configStore.getTabbarConfig(addon)
-    }
-
     defineExpose({
-        setAddon
     })
 </script>
 

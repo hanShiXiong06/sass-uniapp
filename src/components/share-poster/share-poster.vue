@@ -84,10 +84,11 @@ let sharePopupShow = ref(false);
 // 复制
 const copyUrl = () => {
 	let data = ''
-	if(props.copyUrl)
-		data = location.origin +  props.copyUrl + props.copyUrlParam;
-	else
-		data = location.origin +  location.pathname + props.copyUrlParam;
+	if(props.copyUrl) {
+        data = location.origin + props.copyUrl + props.copyUrlParam;
+    }else {
+        data = location.origin + location.pathname + props.copyUrlParam;
+    }
 	copy(data, () => {
 		sharePopupShow.value = false;
 	});
@@ -180,7 +181,6 @@ const saveGoodsPoster = () => {
 }
 // #endif
 
-
 let shareTop = ref(0)
 /************ 获取微信头部-start ****************/
 // 获取系统状态栏的高度
@@ -198,11 +198,9 @@ const sharePopuClose = ()=>{
 	isPosterImg.value = false;
 } 
 
-
 defineExpose({
     openShare
 })
-	
 </script>
 <style lang="scss" scoped>
 .share-popup {

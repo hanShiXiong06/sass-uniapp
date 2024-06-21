@@ -3,7 +3,7 @@
 		<view class="fixed left-0 right-0 top-0 bg-[#fff] px-[24rpx] py-[10rpx] z-10">
 			<view class="bg-[#F6F8F8] rounded-[36rpx] flex items-center pr-[20rpx]">
 				<input class=" h-[70rpx] pl-[20rpx] text-sm flex-1  mr-[20px]" type="text" clearable v-model="searchName" :placeholder="t('searchPlaceholder')" @confirm="searchNameFn">
-				<text class="iconfont iconxiazai17  !text-[32rpx]  leading-[70px]" @click="searchNameFn"></text>
+				<text class="nc-iconfont nc-icon-sousuoV6xx  !text-[28rpx]  leading-[70px]" @click="searchNameFn"></text>
 			</view>
 		</view>
 		<mescroll-body ref="mescrollRef" top="90rpx" @init="mescrollInit" @down="downCallback" @up="getTechnicianListFn">
@@ -39,11 +39,11 @@
 						</view>
 						<view class="flex flex-1 ml-[20rpx] py-[10rpx] items-center text-[#aaaaaa] leading-[32rpx]">
 							<view class="flex items-center">
-								<text class="iconfont iconpinglun"></text>
+								<text class="nc-iconfont nc-icon-dianxinxiV6xx text-[32rpx]"></text>
 								<text class="text-[22rpx] ml-[5rpx]">5</text>
 							</view>
 							<view class="flex items-center ml-[10rpx]">
-								<text class="iconfont iconxiangqing"></text>
+								<text class="nc-iconfont nc-icon-dakaixinxiV6xx text-[30rpx]"></text>
 								<text class="text-[22rpx] ml-[5rpx]">{{ t('detail') }}</text>
 							</view>
 						</view>

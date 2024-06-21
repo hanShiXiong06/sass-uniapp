@@ -2,28 +2,27 @@
 	<view class="bg-gray-100 min-h-[100vh]" :style="themeColor()">
 		<view class="fixed left-0 right-0 top-0 product-warp bg-[#fff] px-[24rpx]">
 			<view class="flex items-center h-[106rpx] box-border py-[24rpx]">
-				<view
-					class="bg-[#F5F5F5]  flex items-center justify-between h-[66rpx] rounded-[33rpx] flex-1 pl-[20rpx] mr-[40rpx]">
+				<view class="bg-[#F5F5F5]  flex items-center justify-between h-[66rpx] rounded-[33rpx] flex-1 pl-[20rpx] mr-[40rpx]">
 					<input class="uni-input text-[24rpx] flex-1" maxlength="50" v-model="goods_name" @confirm="searchTypeFn('all')" :placeholder="t('searchPlaceholder')" />
-					<text class="iconfont iconxiazai17 text-[30rpx] mr-[18rpx]" @click="searchTypeFn('all')"></text>
+					<text class="nc-iconfont nc-icon-sousuoV6xx text-[30rpx] mr-[18rpx]" @click="searchTypeFn('all')"></text>
 				</view>
-				<text :class="['iconfont text-[44rpx]', listType ? 'iconshangpinliebiao' : 'iconliebiaoxingshi']" @click="listIconBtn"></text>
+				<text :class="['nc-iconfont text-[44rpx]', listType ? 'nc-icon-yingyongzhongxinV6xx' : 'nc-icon-yingyongliebiaoV6xx']" @click="listIconBtn"></text>
 			</view>
 			<view class="pb-3 pt-1 flex items-center justify-between">
 				<text :class="['text-sm', { 'text-color': searchType == 'all' }]" @click="searchTypeFn('all')">{{ t('synthesis') }}</text>
 				<view class="flex items-center" :class="[{ 'text-color': searchType == 'sale_num' }]" @click="searchTypeFn('sale_num')">
 					<text class="text-sm mr-[4rpx]">{{ t('sales') }}</text>
-					<text v-if="sale_num == 'asc'" class="text-xs iconfont iconjiantoushang font-bold"></text>
-					<text v-else class="text-xs iconfont iconxialajiantouxiao"></text>
+					<text v-if="sale_num == 'asc'" class="text-[26rpx] nc-iconfont nc-icon-shangV6xx-1 font-bold"></text>
+					<text v-else class="text-[26rpx] nc-iconfont nc-icon-xiaV6xx"></text>
 				</view>
 				<view class="flex items-center" :class="[{ 'text-color': searchType == 'price' }]" @click="searchTypeFn('price')">
 					<text class="text-sm mr-[4rpx]">{{ t('price') }}</text>
-					<text v-if="price == 'asc'" class="text-xs iconfont iconjiantoushang font-bold"></text>
-					<text v-else class="text-xs iconfont iconxialajiantouxiao"></text>
+					<text v-if="price == 'asc'" class="text-[26rpx] nc-iconfont nc-icon-shangV6xx-1 font-bold"></text>
+					<text v-else class="text-[26rpx] nc-iconfont nc-icon-xiaV6xx"></text>
 				</view>
 				<view class="flex items-center" :class="[{ 'text-color': searchType == 'label' }]" @click="searchTypeFn('label')">
 					<text class="text-sm mr-[2rpx]">{{ t('screen') }}</text>
-					<text class="iconfont iconshaixuan"></text>
+					<text class="iconfont icon-Vector-102"></text>
 				</view>
 			</view>
 		</view>
@@ -53,8 +52,10 @@
 								</view>
 								<view class="mt-auto flex justify-between items-end">
 									<view class="flex flex-col">
-										<text class="text-[28rpx] text-[var(--price-text-color)] price-font">￥{{item.price }}</text>
-
+										<text class="text-[28rpx] text-[var(--price-text-color)] price-font">
+											￥{{goodsPrice(item) }}
+											<image v-if="priceType(item) == 'member_price'" class="h-[24rpx] ml-[4rpx] w-[60rpx]" :src="img('addon/o2o/VIP.png')" mode="heightFix" />
+										</text>
 									</view>
 									<text class="text--[24rpx] text-[#666]">已售{{ item.sale_num }}</text>
 								</view>
@@ -73,7 +74,10 @@
 							</view>
 							<view class="pl-[22rpx] pb-[20rpx] pr-[30rpx] flex justify-between items-end mt-[12rpx]">
 								<view class="flex justify-between items-end">
-									<text class="text-[28rpx] text-[var(--price-text-color)] price-font">￥{{item.price }}</text>
+									<text class="text-[28rpx] text-[var(--price-text-color)] price-font">
+										￥{{goodsPrice(item) }}
+										<image  v-if="priceType(item) == 'member_price'" class="h-[24rpx] ml-[4rpx] w-[60rpx]" :src="img('addon/o2o/VIP.png')" mode="heightFix" />
+									</text>
 								</view>
 								<text class="text--[24rpx] text-[#666] leading-[31rpx]">{{t('soldOut')}}{{ item.sale_num }}</text>
 							</view>
@@ -90,20 +94,14 @@
 <script setup lang="ts">
 import { reactive, ref, onMounted } from 'vue'
 import { t } from '@/locale'
-import { redirect, img } from '@/utils/common';
+import { redirect, img, getToken } from '@/utils/common';
 import { getCategory, getGoodsList } from '@/addon/o2o/api/goods';
 import MescrollBody from '@/components/mescroll/mescroll-body/mescroll-body.vue';
 import MescrollEmpty from '@/components/mescroll/mescroll-empty/mescroll-empty.vue';
 import useMescroll from '@/components/mescroll/hooks/useMescroll.js';
-import { onLoad, onPageScroll, onReachBottom } from '@dcloudio/uni-app';
-import { useShare } from '@/hooks/useShare'
+import { onLoad,onShow, onPageScroll, onReachBottom } from '@dcloudio/uni-app';
 
 const { mescrollInit, downCallback, getMescroll } = useMescroll(onPageScroll, onReachBottom);
-
-const { setShare, onShareAppMessage, onShareTimeline } = useShare()
-setShare()
-onShareAppMessage()
-onShareTimeline()
 
 let categoryList = ref<Array<Object>>([]);
 let articleList = ref<Array<any>>([]);
@@ -202,6 +200,27 @@ onMounted(() => {
 		getMescroll().optUp.textNoMore = t("end");
 	}, 500)
 });
+
+// 价格类型
+let priceType = (data:any) =>{
+	let type = "";
+	if(data.member_discount && getToken()){
+		type = 'member_price' // 会员价
+	}else{ 
+		type = ""
+	}
+	return type;
+}
+// 商品价格
+let goodsPrice = (data:any) =>{
+	let price = "0.00";
+	if(data.member_discount && getToken()){
+		price = data.goods_sku.member_price || '0.00' // 会员价
+	}else{
+		price = data.goods_sku.price || '0.00'
+	}
+	return parseFloat(price).toFixed(2);
+}
 </script>
 
 <style lang="scss" scoped>

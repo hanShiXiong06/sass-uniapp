@@ -51,7 +51,7 @@
 								<view class="desc">{{item.goods_name}}</view>
 								<view class="desc">{{item.num}}张 {{dateFormat(item.start_time, 'monthDay')}}（出游）</view>
 								<!-- <view class="time-wrap">
-									<text class="iconfont iconshijian"></text>
+									<text class="nc-iconfont nc-icon-shijianV6xx"></text>
 									<text>剩余支付时间：</text>
 									<text>29分钟</text>
 								</view> -->

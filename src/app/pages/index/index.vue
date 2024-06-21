@@ -32,22 +32,15 @@
 <script setup lang="ts">
     import {ref} from 'vue';
     import {useDiy} from '@/hooks/useDiy'
-    import {useShare} from '@/hooks/useShare'
     import {redirect} from '@/utils/common';
     import diyGroup from '@/addon/components/diy/group/index.vue'
     import fixedGroup from '@/addon/components/fixed/group/index.vue'
-
-    const {setShare, onShareAppMessage, onShareTimeline} = useShare()
 
     const diy = useDiy({
         name: 'DIY_INDEX'
     })
 
     const diyGroupRef = ref(null)
-
-    setShare();
-    onShareAppMessage()
-    onShareTimeline()
 
     // 监听页面加载
     diy.onLoad();
@@ -73,4 +66,17 @@
 </script>
 <style lang="scss" scoped>
 	@import '@/styles/diy.scss';
+</style>
+<style lang="scss">
+.diy-template-wrap {
+  /* #ifdef MP */
+  .child-diy-template-wrap {
+    ::v-deep .diy-group {
+      > .draggable-element.top-fixed-diy {
+        display: block !important;
+      }
+    }
+  }
+  /* #endif */
+}
 </style>

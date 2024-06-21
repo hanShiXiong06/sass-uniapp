@@ -6,13 +6,15 @@
 				<view class="font-bold text-[30rpx]">选择日期</view>
 				<view class="flex pt-[28rpx] pb-[24rpx]">
 					<view :class="['relative flex flex-col items-center justify-center w-[130rpx] h-[142rpx] border-1 border-solid border-[#F0F0F0] mr-[14rpx] text-sm rounded',{'border-color': index == departureDateSelect,'border-[#F0F0F0]': index != departureDateSelect}]" v-for="(item,index) in departureDate" @click="departureDateFn(item,index)">
-						<image class="w-[26rpx] h-[26rpx] absolute bottom-0 right-0" :src="img('addon/tourism/tourism/way/check.png')" mode="aspectFill" v-if="index == departureDateSelect"></image>
+						<view class="absolute bottom-[0] right-[0] bg-[var(--primary-color)] rounded-tl-[16rpx] flex items-center justify-center leading-[1] px-[2rpx] pt-[4rpx]" v-if="index == departureDateSelect">
+							<text class="nc-iconfont nc-icon-duihaoV6xx-1 text-[#fff] text-[28rpx]"></text>
+						</view>
 						<text class="text-[#9B9B9B] text-xs">{{item.topInfo}}</text>
 						<text class="mt-[4rpx]">{{item.centerInfo}}</text>
 						<text class="text-[#FA6400] text-xs" v-if="item.bottomInfo">{{item.bottomInfo}}</text>
 					</view>
 					<view class="relative flex flex-col items-center justify-center w-[130rpx] h-[142rpx] border-1 border-solid border-[#F8F8F8] text-sm rounded bg-[#F8F8F8]" @click="scenicShow=true">
-						<text class="iconfont iconrili text-[44rpx] text-[#707070]"></text>
+						<text class="nc-iconfont nc-icon-riliV6xx text-[44rpx] text-[#707070]"></text>
 						<text class="text-xs text-[#9B9B9B] mt-[4rpx]">更多</text>
 					</view>
 				</view>
@@ -21,7 +23,7 @@
 				<text class="text-xs text-[#7A5238]">{{Number(scenicRefund) ? '随时可退' : '购买后不可退款'}}</text>
 				<view class="flex items-center text-[#7A5238] text-xs" @click="buyInfoShow = true">
 					<text>购买须知</text>
-					<text class="iconfont iconxiangyoujiantou text-xs"></text>
+					<text class="nc-iconfont nc-icon-youV6xx text-[26rpx]"></text>
 				</view>
 			</view>
 			<view class="flex justify-between items-center mt-3">
@@ -59,7 +61,7 @@
 					</view>
 					<view class="w-[164rpx] h-[80rpx] rounded-md border-1 border-solid border-[#F0F0F0] relative flex items-center justify-center text-[#222]">
 						<text class="text-sm">新增</text>
-						<text class="iconfont iconxiangyoujiantou text-xs"></text>
+						<text class="nc-iconfont nc-icon-youV6xx text-[26rpx]"></text>
 					</view>
 				</view>
 				<u--form labelPosition="left" ref="form1" labelWidth="70" :labelStyle="{color: '#A3A3A3', fontSize: '14px'}">
@@ -139,7 +141,7 @@
 					<image class="w-[42rpx] h-[42rpx]" :src="img('addon/tourism/tourism/way/discount_coupon.png')" mode="widthFix"></image>
 					<text class="ml-1 text-xs">抵用券</text>
 				</view>
-				<text class="text-[#999] text-xs flex items-center">查看<text class="iconfont iconxiangyoujiantou text-xs"></text></text>
+				<text class="text-[#999] text-xs flex items-center">查看<text class="nc-iconfont nc-icon-youV6xx text-[26rpx]"></text></text>
 			</view>
 		</view> -->
 
@@ -152,9 +154,9 @@
 			</view>
 			<view class="ml-auto mr-2" @click="detailPopupShow = !detailPopupShow">
 				<text class="text-[#686868] text-xs mr-1">明细</text>
-				<text class="iconfont iconjiantoushang text-[#C2C2C2] text-xs font-bold"></text>
+				<text class="nc-iconfont nc-icon-shangV6xx-1 text-[#C2C2C2] text-xs font-bold"></text>
 			</view>
-			<u-button color="var(--primary-color)" shape="circle" :customStyle="{lineHeight:'76rpx', margin:'0rpx', color:'#fff',width:'278rpx'}" type="primary" size="16" :loading="createLoading"  @click="orderCreate">提交订单</u-button>
+			<u-button text="提交订单" color="var(--primary-color)" shape="circle" :customStyle="{lineHeight:'76rpx', margin:'0rpx', color:'#fff',width:'278rpx'}" type="primary" size="16" :loading="createLoading"  @click="orderCreate"></u-button>
 		</view>
 		<u-popup :show="detailPopupShow" @close="detailPopupShow = false" :closeable="true">
 		    <view class="text-center py-[30rpx] font-bold leading-none">

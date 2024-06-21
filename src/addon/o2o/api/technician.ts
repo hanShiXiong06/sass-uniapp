@@ -33,8 +33,6 @@ export function getTechnicianDetail(id: number) {
 }
 /**
  * 验证是否是技师
- * @param id
- * @returns
  */
 export function checkTechnician() {
     return request.get(`o2o/checktechnician`)

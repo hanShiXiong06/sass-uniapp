@@ -6,7 +6,7 @@
                     <text>{{ paymentData.goods_info.goods_name }}</text>
                     <view class="text-[#797C8D] text-xs" @click="selectRoomTypeFn">
                         <text class="!font-normal">房型详情</text>
-                        <text class="iconfont iconxiangyoujiantou text-xs"></text>
+                        <text class="nc-iconfont nc-icon-youV6xx text-[26rpx]"></text>
                     </view>
                 </view>
                 <view class="text-[26rpx] text-[#19293F] font-bold mt-3">{{ paymentData.start_time }} - {{ paymentData.end_time }} 共{{ paymentData.days }}晚</view>
@@ -14,7 +14,7 @@
                     <text class="house-type-item" v-for="item in goodsAttribute">{{ item }}</text>
                 </view>
                 <view class="border-0 border-t border-solid border-[#F2F2F2] mt-2 h-[80rpx] flex items-center">
-                    <text class="iconfont iconyuandianfengefu text-[#D1D7E0]"></text>
+                    <text class="nc-iconfont nc-icon-fengefuV6xx text-[#D1D7E0]"></text>
                     <text class="text-xs">入住时间：14:00以后  离店时间：12:00以前</text>
                 </view>
             </view>
@@ -30,7 +30,7 @@
                                 <view>{{ createData.num }}间</view>
                                 <view class="text-xs text-[#797C8D] absolute select-room">
                                     <text>选择</text>
-                                    <text class="iconfont iconxiangyoujiantou text-xs"></text>
+                                    <text class="nc-iconfont nc-icon-youV6xx text-[26rpx]"></text>
                                 </view>
                             </view>
                         </u-form-item>
@@ -52,9 +52,10 @@
 
             <u-picker :show="roomSelectShow" :columns="roomNumList" keyName="label" :closeOnClickOverlay="true" @cancel="roomSelectShow = false" @confirm="updateNum" :immediateChange ='true'></u-picker>
 
-            <u-popup :show="detailPopupShow" @close="detailPopupShow = false" :closeable="true">
-                <view class="text-center py-[30rpx] font-bold leading-none">
-                    <text>费用明细</text>
+            <u-popup :show="detailPopupShow" @close="detailPopupShow = false">
+                <view class="text-base font-bold flex justify-center items-center h-[96rpx] px-[26rpx] bg-[#fff] relative">
+                    <text class="text-[30rpx]">费用明细</text>
+                    <text class="nc-iconfont nc-icon-guanbiV6xx text-[#666] absolute text-[32rpx] right-[26rpx]"  @click="detailPopupShow = false"></text>
                 </view>
                 <scroll-view scroll-y="true" class="max-h-[40vh]">
                     <view class="flex px-[30rpx] mt-[20rpx]">
@@ -92,9 +93,9 @@
                 </view>
                 <view class="ml-auto mr-2" @click="detailPopupShow = !detailPopupShow">
                     <text class="text-[#686868] text-xs mr-1">明细</text>
-                    <text class="iconfont iconjiantoushang text-[#C2C2C2] text-xs font-bold"></text>
+                    <text class="nc-iconfont nc-icon-shangV6xx-1 text-[#C2C2C2] text-xs font-bold"></text>
                 </view>
-                <u-button color="var(--primary-color)" shape="circle" :customStyle="{lineHeight:'76rpx', margin:'0rpx', color:'#fff',width:'278rpx'}" type="primary" size="16" :loading="createLoading"  @click="orderCreate">提交订单</u-button>
+                <u-button text="提交订单" color="var(--primary-color)" shape="circle" :customStyle="{lineHeight:'76rpx', margin:'0rpx', color:'#fff',width:'278rpx'}" type="primary" size="16" :loading="createLoading"  @click="orderCreate"></u-button>
             </view>
 
             <!-- 酒店房型详情 -->
@@ -102,30 +103,30 @@
                 <view class="flex flex-col rounded-t-3xl bg-[#f8f8f8] overflow-hidden relative z-10">
                     <view class="text-base font-bold flex justify-between items-center h-[96rpx] px-[26rpx] bg-[#fff]">
                         <text class="text-[30rpx]">{{roomData.goods_name}}</text>
-                        <text class="iconfont iconguanbi text-[#666]"  @click="hotelType = false"></text>
+                        <text class="nc-iconfont nc-icon-guanbiV6xx text-[32rpx] text-[#666]"  @click="hotelType = false"></text>
                     </view>
                     <scroll-view class="max-h-[60vh]" :scroll-y="true">
                         <image :src="img(roomData.goods_cover)" class="w-[750rpx] h-[218]" mode="aspectFill"></image>
                         <view class="px-4 bg-[#fff]">
                             <view class="flex justify-between border-0 border-b-1 border-[#F2F2F2] border-solid px-1 py-4">
                                 <view class="flex flex-col items-center justify-center">
-                                    <text class="iconfont iconchuang1 text-[36rpx] text-[#555] mb-1"></text>
+                                    <text class="nc-iconfont nc-icon-chuangV6xx text-[36rpx] text-[#555] mb-1"></text>
                                     <text class="text-xs font-bold">{{roomData.room_bed || '双人床'}}</text>
                                 </view>
                                 <view class="flex flex-col items-center justify-center">
-                                    <text class="iconfont iconlouceng text-[36rpx] text-[#555] mb-1"></text>
+                                    <text class="nc-iconfont nc-icon-loucengV6xx text-[36rpx] text-[#555] mb-1"></text>
                                     <text class="text-xs font-bold">{{roomData.room_floor || '1层'}}</text>
                                 </view>
                                 <view class="flex flex-col items-center justify-center">
-                                    <text class="iconfont iconfangzi text-[36rpx] text-[#555] mb-1"></text>
+                                    <text class="nc-iconfont nc-icon-fangziV6xx text-[36rpx] text-[#555] mb-1"></text>
                                     <text class="text-xs font-bold">{{roomData.room_area || 0}}㎡</text>
                                 </view>
                                 <view class="flex flex-col items-center justify-center">
-                                    <text class="iconfont iconpeople text-[36rpx] text-[#555] mb-1"></text>
+                                    <text class="nc-iconfont nc-icon-jiamengV6xx text-[36rpx] text-[#555] mb-1"></text>
                                     <text class="text-xs font-bold">{{roomData.room_stay|| 1}}人</text>
                                 </view>
                                 <view class="flex flex-col items-center justify-center">
-                                    <text class="iconfont iconshuliang text-[36rpx] text-[#555] mb-1"></text>
+                                    <text class="nc-iconfont nc-icon-liebiaoV6xx text-[36rpx] text-[#555] mb-1"></text>
                                     <text class="text-xs font-bold">{{roomData.stock || 0}}间</text>
                                 </view>
                             </view>

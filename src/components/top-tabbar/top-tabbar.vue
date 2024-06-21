@@ -4,13 +4,13 @@
 		<view class="u-navbar" :style="{ backgroundColor: bgColor}">
 			<view class="navbar-inner" :style="{ width: '100%', height: placeholderHeight + 'px' }">
 				<view v-if="topStatusBarData.style == 'style-1'" class="content-wrap" :class="[topStatusBarData.textAlign]" :style="navbarInnerStyle">
-					<view v-if="isBack && isBackShow" class="back-wrap iconfont iconjiantou3" :style="{ color: topStatusBarData.textColor || titleColor }" @tap="goBack"></view>
+					<view v-if="isBack && isBackShow" class="back-wrap text-[26px] nc-iconfont nc-icon-zuoV6xx" :style="{ color: topStatusBarData.textColor || titleColor }" @tap="goBack"></view>
 					<view class="title-wrap" :style="styleOneFontSize">
 						{{ data.title }}
 					</view>
 				</view>
-				<view v-if="topStatusBarData.style == 'style-2'" class="content-wrap"  :style="navbarInnerStyle" @click="toRedirect(topStatusBarData.link)">
-					<view v-if="isBack && isBackShow" class="back-wrap iconfont iconjiantou3" :style="{ color: topStatusBarData.textColor || titleColor }" @tap="goBack"></view>
+				<view v-if="topStatusBarData.style == 'style-2'" class="content-wrap"  :style="navbarInnerStyle" @click="diyStore.toRedirect(topStatusBarData.link)">
+					<view v-if="isBack && isBackShow" class="back-wrap text-[26px] nc-iconfont nc-icon-zuoV6xx" :style="{ color: topStatusBarData.textColor || titleColor }" @tap="goBack"></view>
 					<view class="title-wrap" :style="{ color: topStatusBarData.textColor }">
 						<view>
 							<image :src="img(topStatusBarData.imgUrl)" mode="heightFix"></image>
@@ -20,26 +20,26 @@
 				</view>
 	
 				<view v-if="topStatusBarData.style == 'style-3'" :style="navbarInnerStyle" class="content-wrap">
-					<view v-if="isBack && isBackShow" class="back-wrap iconfont iconjiantou3" :style="{ color: topStatusBarData.textColor || titleColor }" @tap="goBack"></view>
-					<view class="title-wrap" @click="toRedirect(topStatusBarData.link)">
+					<view v-if="isBack && isBackShow" class="back-wrap text-[26px] nc-iconfont nc-icon-zuoV6xx" :style="{ color: topStatusBarData.textColor || titleColor }" @tap="goBack"></view>
+					<view class="title-wrap" @click="diyStore.toRedirect(topStatusBarData.link)">
 						<image :src="img(topStatusBarData.imgUrl)" mode="heightFix"></image>
 					</view>
-					<view class="search" @click="toRedirect(topStatusBarData.link)" :style="{ height: menuButtonInfo.height - 2 + 'px', lineHeight: menuButtonInfo.height - 2 + 'px' }">
-						<text class="iconfont iconsousuo absolute left-[20rpx]"></text>
+					<view class="search" @click="diyStore.toRedirect(topStatusBarData.link)" :style="{ height: menuButtonInfo.height - 2 + 'px', lineHeight: menuButtonInfo.height - 2 + 'px' }">
+						<text class="nc-iconfont nc-icon-sousuoV6xx absolute left-[20rpx]"></text>
 						<text class="text-[28rpx]">{{topStatusBarData.inputPlaceholder}}</text>
 					</view>
 					<view :style="{ 'width': capsuleWidth }"></view>
 				</view>
 	 
 				<view v-if="topStatusBarData.style == 'style-4'" :style="navbarInnerStyle" class="content-wrap">
-					<view v-if="isBack && isBackShow" class="back-wrap iconfont iconjiantou3" :style="{ color: topStatusBarData.textColor || titleColor }" @tap="goBack"></view>
-					<text class="iconfont iconxiazai19 text-[28rpx]" :style="{ color: topStatusBarData.textColor }"></text>
+					<view v-if="isBack && isBackShow" class="back-wrap text-[26px] nc-iconfont nc-icon-zuoV6xx" :style="{ color: topStatusBarData.textColor || titleColor }" @tap="goBack"></view>
+					<text class="nc-iconfont nc-icon-dizhiguanliV6xx text-[28rpx]" :style="{ color: topStatusBarData.textColor }"></text>
 					<view class="title-wrap"  @click="reposition()" :style="{ color: topStatusBarData.textColor }">{{ currentPosition }}</view>
-					<text class="iconfont iconxiangyoujiantou text-[24rpx]" @click="reposition()" :style="{ color: topStatusBarData.textColor }"></text>
+					<text class="nc-iconfont nc-icon-youV6xx text-[26rpx]" @click="reposition()" :style="{ color: topStatusBarData.textColor }"></text>
 				</view>
 				<!-- #ifdef MP-WEIXIN -->
 				<view v-if="topStatusBarData.style == 'style-5'" class="content-wrap" :style="navbarInnerStyle">
-					<view v-if="isBack && isBackShow" class="back-wrap iconfont iconjiantou3" :style="{ color: topStatusBarData.textColor || titleColor }" @tap="goBack"></view>
+					<view v-if="isBack && isBackShow" class="back-wrap text-[26px] nc-iconfont nc-icon-zuoV6xx" :style="{ color: topStatusBarData.textColor || titleColor }" @tap="goBack"></view>
 				</view>
 				<!-- #endif -->
 			</view>
@@ -69,10 +69,9 @@ menuButtonInfo = uni.getMenuButtonBoundingClientRect();
 // #endif
 
 import { ref, computed, watch, onMounted, getCurrentInstance, nextTick } from 'vue';
-import { img, redirect, getLocation, locationStorage, getToken, currRoute, diyRedirect } from '@/utils/common';
+import { img, getLocation, locationStorage } from '@/utils/common';
 import { getAddressByLatlng } from '@/app/api/system';
 import useSystemStore from '@/stores/system';
-import { useLogin } from '@/hooks/useLogin';
 import useDiyStore from '@/app/stores/diy';
 import manifestJson from '@/manifest.json'
 const diyStore = useDiyStore();
@@ -210,20 +209,6 @@ const navbarPlaceholderHeight = () => {
     })
 }
 
-// 跳转链接
-const toRedirect = (data: {}) => {
-	if (Object.keys(data).length) {
-		if (!data.url) return;
-		if (currRoute() == 'app/pages/member/index' && !getToken()) {
-			useLogin().setLoginBack({ url: data.url })
-			return;
-		}
-		diyRedirect(data);
-	} else {
-		redirect(data)
-	}
-}
-
 /******************************* 定位-start ***********************/ 
 // 获取地图配置
 const systemStore = useSystemStore();
@@ -330,18 +315,20 @@ let style5Height = ref('')
 watch(() => topStatusBarData.value.style, (nval, oval)=> {
 	if(topStatusBarData.value.style == 'style-5'){
 		style5Height.value = '';
-		let sysWidth = systemInfo.windowWidth
-		let sysHeight =sysWidth / data.value.imgWidth * data.value.imgHeight
-		style5Height.value += `width:100%;`
-		// #ifdef H5
-		sysHeight = sysHeight - 88; //使用图片高度减去88
-		style5Height.value += `padding-top:${sysHeight}px;`
-		style5Height.value += `height:0;` //h5需要去掉兼容微信胶囊的高度
-		// #endif
-		// #ifdef MP
-		sysHeight = sysHeight - menuButtonInfo.top - menuButtonInfo.height - 5; //图片高度减去兼容小程序头部的高度[胶囊高度、padding-bottom、padding-top]
-		style5Height.value += `padding-top:${sysHeight}px;`
-		// #endif
+        if(data.value.imgWidth && data.value.imgHeight) {
+            let sysWidth = systemInfo.windowWidth
+            let sysHeight = sysWidth / data.value.imgWidth * data.value.imgHeight
+            style5Height.value += `width:100%;`
+            // #ifdef H5
+            sysHeight = sysHeight - 88; //使用图片高度减去88
+            style5Height.value += `padding-top:${ sysHeight }px;`
+            style5Height.value += `height:0;` //h5需要去掉兼容微信胶囊的高度
+            // #endif
+            // #ifdef MP
+            sysHeight = sysHeight - menuButtonInfo.top - menuButtonInfo.height - 5; //图片高度减去兼容小程序头部的高度[胶囊高度、padding-bottom、padding-top]
+            style5Height.value += `padding-top:${ sysHeight }px;`
+            // #endif
+        }
 	}
 },{immediate: true, deep:true})
 /******************************* 风格五-end ***********************/ 

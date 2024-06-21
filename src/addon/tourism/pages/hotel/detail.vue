@@ -7,8 +7,8 @@
 					<view class="font-bold multi-hidden">
 						{{detail.hotel_name}}
 					</view>
-					<view class="font-bold multi-hidden text-[#ffaf00] flex items-center text-xs mt-2">
-						<text class="iconfont iconxingxing mr-[2rpx] text-xs"></text>
+					<view class="font-bold multi-hidden text-[#ffaf00] flex items-center text-xs mt-[-4rpx] ml-2">
+						<text class="iconfont iconxingxing mr-[4rpx] text-xs mt-[-4rpx]"></text>
 						<text>{{detail.hotel_star}}星</text>
 					</view>
 				</view>
@@ -26,8 +26,8 @@
 						</block>
 					</view>
 					<view class="flex items-center" @click="hotelTab = !hotelTab">
-						<view class="text-xs flex items-baseline">详情<text class="iconfont iconyuandianfengefu text-xs"></text>设施</view>
-						<text class="iconfont iconxiangyoujiantou text-sm font-bold"></text>
+						<view class="text-xs flex items-baseline">详情<text class="nc-iconfont nc-icon-fengefuV6xx text-xs"></text>设施</view>
+						<text class="nc-iconfont nc-icon-youV6xx text-[26rpx]"></text>
 					</view>
 				</view>
 
@@ -35,7 +35,7 @@
 					<view class="flex flex-col p-3 rounded-t-3xl">
 						<view class="text-base font-bold flex justify-between items-center">
 							<text>{{t('hotelTab')}}</text>
-							<text class="iconfont iconguanbi text-[#666]"  @click="hotelTab = false"></text>
+							<text class="nc-iconfont nc-icon-guanbiV6xx text-[#666]"  @click="hotelTab = false"></text>
 						</view>
 						<view class="mt-2 flex flex-col">
 							<view v-if="detail.hotel_tag">
@@ -61,8 +61,13 @@
 					<view class="flex-1 leading-tight text-[#19293F] text-[26rpx] font-bold">{{detail.full_address}}</view>
 					<view class="flex ml-auto">
 						<view class="flex flex-col items-center justify-center mr-[20rpx]" @click="mapPopupShow = true">
-							<text class="iconfont iconxiazai19 bg-[#F1F1F1] w-[44rpx] h-[44rpx] rounded-full flex items-center justify-center"></text>
+							<text class="nc-iconfont nc-icon-dizhiguanliV6xx bg-[#F1F1F1] w-[44rpx] h-[44rpx] rounded-full flex items-center justify-center"></text>
 							<text class="text-xs mt-1">{{t('map')}}</text>
+						</view>
+						
+						<view class="flex flex-col items-center justify-center mr-[20rpx]" @click="openShareFn">
+							<text class="nc-iconfont nc-icon-fenxiangV6xx text-[30rpx] bg-[#F1F1F1] w-[44rpx] h-[44rpx] rounded-full flex items-center justify-center"></text>
+							<text class="text-xs mt-1">分享</text>
 						</view>
 					</view>
 				</view>
@@ -91,7 +96,7 @@
 					</view>
 					<view class="text-sm flex items-center">
 						<text class="text-color">{{t('common')}}{{timeShow.day}}{{t('lateness')}}</text>
-						<text class="iconfont iconxiangyoujiantou text-sm text-[#666]"></text>
+						<text class="nc-iconfont nc-icon-youV6xx text-[26rpx] text-[#666]"></text>
 					</view>
 				</view>
 
@@ -104,7 +109,10 @@
 								<text v-for="(item,index) in item.attr_name" class="mr-[10rpx]">{{item}}</text>
 							</view>
 							<!-- <view class="text-color text-[26rpx] mt-[10rpx]">15分钟内可免费取消</view> -->
-							<view class="flex items-center mt-auto text-[#F55246] text-base font-bold price-font"><text class="text-xs">￥</text>{{item.price}}</view>
+							<view class="flex items-center mt-auto text-[#F55246] text-base font-bold price-font"><text class="text-xs">￥</text>
+							{{goodsPrice(item)}}
+							<image v-if="priceType(item) == 'member_price'" class="h-[22rpx] ml-[6rpx] w-[55rpx]" :src="img('addon/tourism/VIP.png')" mode="widthFix" />
+							</view>
 							<view v-if="item.stock" class="flex flex-col border-[2rpx] border-solid border-[#FC565F] border-md absolute right-0 bottom-[4rpx] rounded w-[90rpx]" @click.stop="toOrder(item)">
 								<text class="bg-[#FC565F] font-bold text-white font-bold text-[34rpx] text-center py-[8rpx]">{{t('rob')}}</text>
 								<text class="text-xs text-scale py-[2rpx] text-center text-[#FC565F]">{{t('onlinePayment')}}</text>
@@ -122,7 +130,7 @@
 					<view class="h-[1000rpx] relative rounded-t-3xl bg-[#f8f8f8] overflow-hidden">
 						<view class="text-base font-bold flex justify-between items-center h-[96rpx] px-[26rpx] bg-[#fff] absolute top-0 left-0 right-0 z-10">
 							<text class="text-[30rpx]">{{roomData.goods_name}}</text>
-							<text class="iconfont iconguanbi text-[#666]"  @click="hotelType = false"></text>
+							<text class="nc-iconfont nc-icon-guanbiV6xx text-[32rpx] text-[#666]"  @click="hotelType = false"></text>
 						</view>
 						<scroll-view scroll-y="true" class="flex h-[1000rpx] flex-col bg-[#f8f8f8] !rounded-none">
 							<view class="pt-[96rpx]"></view>
@@ -130,23 +138,23 @@
 							<view class="px-4 bg-[#fff]">
 								<view class="flex justify-between border-0 border-b-1 border-[#F2F2F2] border-solid px-1 py-4">
 									<view class="flex flex-col items-center justify-center">
-										<text class="iconfont iconchuang1 text-[36rpx] text-[#555] mb-1"></text>
+										<text class="nc-iconfont nc-icon-chuangV6xx text-[36rpx] text-[#555] mb-1"></text>
 										<text class="text-xs font-bold">{{roomData.room_bed || '双人床'}}</text>
 									</view>
 									<view class="flex flex-col items-center justify-center">
-										<text class="iconfont iconlouceng text-[36rpx] text-[#555] mb-1"></text>
+										<text class="nc-iconfont nc-icon-loucengV6xx text-[36rpx] text-[#555] mb-1"></text>
 										<text class="text-xs font-bold">{{roomData.room_floor || '1层'}}</text>
 									</view>
 									<view class="flex flex-col items-center justify-center">
-										<text class="iconfont iconfangzi text-[36rpx] text-[#555] mb-1"></text>
+										<text class="nc-iconfont nc-icon-fangziV6xx text-[36rpx] text-[#555] mb-1"></text>
 										<text class="text-xs font-bold">{{roomData.room_area || 0}}m²</text>
 									</view>
 									<view class="flex flex-col items-center justify-center">
-										<text class="iconfont iconpeople text-[36rpx] text-[#555] mb-1"></text>
+										<text class="nc-iconfont nc-icon-jiamengV6xx text-[36rpx] text-[#555] mb-1"></text>
 										<text class="text-xs font-bold">{{roomData.room_stay|| '0人'}}</text>
 									</view>
 									<view class="flex flex-col items-center justify-center">
-										<text class="iconfont iconshuliang text-[36rpx] text-[#555] mb-1"></text>
+										<text class="nc-iconfont nc-icon-liebiaoV6xx text-[36rpx] text-[#555] mb-1"></text>
 										<text class="text-xs font-bold">{{roomData.stock || '0间'}}</text>
 									</view>
 								</view>
@@ -169,7 +177,10 @@
 							<view class="h-[136rpx]"></view>
 						</scroll-view>
 						<view class="flex justify-between items-center px-4 py-3 mt-2 bg-[#fff] absolute bottom-0 left-0 right-0 z-10">
-							<text class="text-[var(--price-color)] price-font">￥{{roomData.price}}</text>
+							<text class="text-[var(--price-color)] price-font">
+								￥{{goodsPrice(roomData)}}
+								<image v-if="priceType(roomData) == 'member_price'" class="h-[22rpx] ml-[6rpx] w-[55rpx]" :src="img('addon/tourism/VIP.png')" mode="widthFix" />
+								</text>
 							<button v-if="roomData.stock"  type="primary" class="w-[276rpx] h-[88rpx] rounded-3xl flex items-center justify-center text-base m-0 !bg-[var(--primary-color)]" @click.stop="toOrder(roomData)">立即抢购</button>
 							<button v-else type="primary"  class="w-[276rpx] h-[88rpx] rounded-3xl flex items-center justify-center text-base m-0 !bg-[#999]" @click.stop="toOrder(roomData,'empty')">立即抢购</button>
 						</view>
@@ -199,17 +210,20 @@
 				monthNum="2"
 			></u-calendar>
 		</block>
+		<share-poster ref="sharePosterRef" posterType="tourism_hotel" :posterId="detail.poster_id" :posterParam="posterParam" :copyUrlParam="copyUrlParam" />
 	</view>
 </template>
 
 <script setup lang="ts">
-	import { ref, reactive, computed, watch } from 'vue';
+	import { ref, reactive, computed } from 'vue';
 	import { onLoad } from '@dcloudio/uni-app'
-	import { img, timeStampTurnTime, redirect, getToken } from '@/utils/common';
+	import { img, timeStampTurnTime, redirect, getToken, handleOnloadParams } from '@/utils/common';
 	import { getHotelInfo, getTourismGoodsDay, getHotelRoom } from '@/addon/tourism/api/tourism';
 	import { useLogin } from '@/hooks/useLogin';
 	import { t } from '@/locale';
 	import Map from '@/addon/tourism/utils/map/openMap.js';
+	import sharePoster from '@/components/share-poster/share-poster.vue'
+	import useMemberStore from '@/stores/member'
 
 	let carousel = ref([])
 	let detail = ref<Array<any>>([]);
@@ -218,6 +232,7 @@
 	let hotelType = ref<boolean>(false);
 	let mapPopupShow = ref<boolean>(false);
 	let roomList = ref([]);
+	
 	// 用于时间展示
 	let timeShow = ref({
 		start_time: '',
@@ -236,6 +251,11 @@
 	let calendarShow = ref<boolean>(false);
 	// 控制日历显示
 	let isCalendarShow = ref<boolean>(false);
+	
+	const memberStore = useMemberStore()
+
+	// 会员信息
+	const userInfo = computed(() => memberStore.info)
 
 	const formatter = (day) => {
 		const time = timeStampTurnTime(Date.parse(day.date)/1000,"year_month_day");
@@ -270,6 +290,11 @@
 	let hotelId = ref("");
 	let covers = ref([])
 	onLoad((option) => {
+		// #ifdef MP-WEIXIN
+		// 处理小程序场景值参数
+		option = handleOnloadParams(option);
+		// #endif
+		
 		hotelId.value = option.id;
 		loading.value = true;
 		getTourismGoodsDayFn(option.id);
@@ -321,7 +346,7 @@
 
 			// 房型列表
 			roomList.value = detail.value.room_list||[];
-
+			copyUrlFn();
 			loading.value = false;
 		});
 	})
@@ -401,6 +426,47 @@
 			}
 		});
 	}
+
+/************* 分享海报-start **************/
+let sharePosterRef = ref(null);
+let copyUrlParam = ref('');
+let posterParam = {};
+
+// 分享海报链接
+const copyUrlFn = ()=>{
+	copyUrlParam.value = '?id='+detail.value.hotel_id;
+	if (userInfo.value && userInfo.value.member_id) copyUrlParam.value += '&mid=' + userInfo.value.member_id;
+}
+
+const openShareFn = ()=>{
+	
+    posterParam.id = detail.value.hotel_id;
+    if (userInfo.value && userInfo.value.member_id)
+        posterParam.member_id = userInfo.value.member_id;
+	sharePosterRef.value.openShare()
+}
+/************* 分享海报-end **************/
+
+// 价格类型
+let priceType = (data:any) =>{
+	let type = "";
+	if(data.member_discount && getToken()){
+		type = 'member_price' // 会员价
+	}else{ 
+		type = ""
+	}
+	return type;
+}
+// 商品价格
+let goodsPrice = (data:any) =>{
+	let price = "0.00";
+	if(data.member_discount && getToken()){
+		price = data.member_price || data.price // 会员价
+	}else{
+		price = data.price
+	}
+	return parseFloat(price).toFixed(2);
+}
 
 </script>
 

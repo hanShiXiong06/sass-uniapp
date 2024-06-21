@@ -1,25 +1,22 @@
 <template>
     <view class="bg-[#f8f8f8] min-h-screen overflow-hidden" :style="themeColor()">
-        <mescroll-body ref="mescrollRef" top="20rpx" @init="mescrollInit" @down="downCallback" @up="geVerifyRecordFn">
-        	<view class="goods-wrap">
+        <mescroll-body ref="mescrollRef" top="30rpx" @init="mescrollInit" @down="downCallback" @up="geVerifyRecordFn">
+        	<view class="ml-[30rpx] mr-[30rpx]">
         		<block v-for="(item,index) in list"	:key="item.id">
-        			<view class="goods-item" @click="toLink(item)">
-        				<view class="flex items-center justify-between border-0 border-b-[2rpx] border-[#ccc] border-solid pb-[20rpx]">
-        					<text class="truncate w-[460rpx] text-[#999]">核销码：{{ item.code }}</text>
-							<text class="text-[#999]">核销员：{{ item.member ? item.member.nickname : '--' }}</text>
+        			<view class="w-full flex flex-col mb-3 bg-[#fff] py-3 px-4 box-border rounded-[18rpx] " @click="toLink(item)">
+        				<view class="flex items-center justify-between border-0 border-b-[4rpx] border-[#eee] border-solid pb-[20rpx]">
+        					<text class="truncate w-[460rpx] text-[#999] text-xs">核销码：{{ item.code }}</text>
+							<text class="text-[#999] text-xs ">核销员：{{ item.member ? item.member.nickname : '--' }}</text>
         				</view>
-        				<view class="py-[20rpx]">
-							<view class="py-[10rpx] flex" v-for="(dataItem,dataIndex) in item.value.list" :key="dataIndex">
-								<image class="w-[80rpx] h-[80rpx]" mode="aspectFit" v-if="dataItem.cover" :src="img(dataItem.cover)"></image>
+							<view class="py-[30rpx] flex" v-for="(dataItem,dataIndex) in item.value.list" :key="dataIndex">
+								<image class="w-[120rpx] h-[120rpx]" mode="aspectFit" v-if="dataItem.cover" :src="img(dataItem.cover)"></image>
 								<image class="w-[80rpx] h-[80rpx]" mode="aspectFit" v-else :src="img('addon/tourism/tourism/member/hotel.png')"></image>
-								<view class="flex flex-col flex-1 ml-[10rpx]">
-									<view class="multi-hidden leading-[1.2]">{{dataItem.name}}</view>
-									<view class="ml-auto text-[#999]">x{{dataItem.num}}</view>
+
+								<view class="flex flex-col justify-between ml-[20rpx]" >
+									<view class="multi-hidden leading-[1.2] text-xs">{{dataItem.name}}</view>
+									<text class="text-[#999] text-xs mt-[20rpx]">核销时间：{{ item.create_time }}</text>
+									<view class="text-[#999] mt-[6rpx]">x1</view>
 								</view>
-							</view>
-						</view>
-						<view class="flex items-center justify-between border-0 border-t-[2rpx] border-[#ccc] border-solid pt-[20rpx]">
-							<text class="text-[#999]">核销时间：{{ item.create_time }}</text>
 						</view>
         			</view>
         		</block>
@@ -71,98 +68,4 @@
 </script>
 
 <style lang="scss" scoped>
-    .font-scale{
-    	transform: scale(0.75);
-    }
-    .text-color{
-    	color: $u-primary;
-    }
-    .bg-color{
-    	background-color: $u-primary;
-    }
-
-    .goods-wrap{
-    	margin: 20rpx 20rpx 0;
-    	.goods-item{
-    		@apply w-full flex flex-col mb-3 bg-[#fff] py-3 px-4 box-border;
-    		border-radius: 18rpx;
-    		overflow: hidden;
-    		.goods-head{
-    			@apply flex justify-between pb-3 border-0 border-b-1 border-solid border-[#F0F0F0] mb-4;
-    			font-size: 26rpx;
-    			color: #666;
-    		}
-    		.goods-content{
-    			@apply flex;
-    			& > image{
-    				width: 40rpx;
-    				height: 40rpx;
-    				margin-right: 30rpx;
-    			}
-    			& > view{
-    				flex: 1;
-    			}
-    			.name-wrap{
-    				display: flex;
-    				justify-content: space-between;
-    				margin-bottom: 20rpx;
-    				&> view{
-    					&:first-of-type{
-    						font-weight: bold;
-    						font-size: 30rpx;
-    					}
-    				}
-    			}
-    			.desc{
-    				color: #686868;
-    				font-size: 26rpx;
-    				margin-bottom: 14rpx;
-    			}
-    			.time-wrap{
-    				display: flex;
-    				align-items: center;
-    				background-color: #F6F7FB;
-    				border-radius: 8rpx;
-    				height: 62rpx;
-    				font-size: 26rpx;
-    				padding: 0 16rpx;
-    				text{
-    					&:nth-child(1){
-    						color: #444;
-    						margin-right: 14rpx;
-    					}
-    					&:nth-child(2){
-    						color: #686868;
-    					}
-    					&:nth-child(3){
-    						color: #333;
-    						font-weight: bold;
-    					}
-    				}
-    			}
-    			.btn-wrap{
-    				justify-content: flex-end;
-    				@apply flex margin-0 mt-2 flex-wrap;
-    				button{
-    					width: 172rpx;
-    					height: 64rpx;
-    					font-size: 26rpx;
-    					@apply rounded-3xl;
-    					line-height: 64rpx;
-    					background-color: transparent;
-    					margin: 0;
-    					margin-left: 20rpx;
-    					@apply mt-2;
-    					border: 2rpx solid #E2E2E2;
-    					&[type="primary"]{
-    						background-color: $u-primary;
-    					}
-    					&::after{
-    						border: none;
-    					}
-    				}
-    			}
-    		}
-    	}
-    }
 </style>

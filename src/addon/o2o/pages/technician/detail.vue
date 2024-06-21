@@ -11,11 +11,11 @@
                         <view>
                             <text>{{ technicianDetail.name }}</text>
                         </view>
-                        <!-- <view class="mt-[10rpx] flex flex-wrap items-center" v-if="technicianDetail.label != ''">
-                            <text class=" text-[22rpx] px-[10rpx] py-[6rpx] border-solid border-[2rpx] border-[var(--primary-color)] text-[var(--primary-color)] rounded-full mb-[10rpx]" :class="{'ml-[10rpx]':index}" v-for="(item,index) in technicianDetail.label.split(',')" :key="index">{{ item }}</text>
-                        </view> -->
+                        <view class="mt-[2rpx] flex flex-wrap items-center" v-if="technicianDetail.label != ''">
+                            <text class=" text-[22rpx] px-[10rpx] py-[6rpx] border-solid border-[2rpx] border-[var(--primary-color)] text-[var(--primary-color)] rounded-full mb-[4rpx] mr-[10rpx]" v-for="(item,index) in technicianDetail.label.split(',')" :key="index">{{ item }}</text>
+                        </view>
                     </view>
-                    <view class="iconfont icondianhua text-[36rpx]" @click="callPhoto(technicianDetail.mobile)"></view>
+                    <view class="nc-iconfont nc-icon-dianhuaV6xx text-[36rpx]" @click="callPhoto(technicianDetail.mobile)"></view>
                 </view>
                 <view class="mt-[30rpx] bg-[#fff] mx-3  p-3 rounded-lg ">
                     <u-row justify="space-between">
@@ -52,18 +52,21 @@
                 <view class="text-[28rpx] mb-[20rpx]">
                     {{ t('serviceItem') }}
                 </view>
-                <block v-for="(item,index) in technicianDetail.goods" :key="index">
-                    <view v-for="(subItem,subIndex) in item.goods_info" :key="subIndex" class="flex" :class="{'mt-[20rpx]':index}">
-                        <view class="w-[160rpx] h-[160rpx]" @click="toLink(subItem.goods_id)">
-                            <u--image class="rounded-[10rpx] overflow-hidden" width="160rpx" height="160rpx" :src="img(subItem.cover_thumb_small ? subItem.cover_thumb_small : '')" model="aspectFill">
+                <block v-for="(subItem,index) in technicianDetail.goods" :key="index">
+                    <view class="flex" :class="{'mt-[20rpx]':index}">
+                        <view class="w-[160rpx] h-[160rpx]" @click="toLink(subItem.goods_info.goods_id)">
+                            <u--image class="rounded-[10rpx] overflow-hidden" width="160rpx" height="160rpx" :src="img(subItem.goods_info.cover_thumb_small ? subItem.goods_info.cover_thumb_small : '')" model="aspectFill">
                                 <template #error>
                                     <u-icon name="photo" color="#999" size="50"></u-icon>
                                 </template>
                             </u--image>
                         </view>
                         <view class="flex-1 ml-[20rpx]  flex flex-col justify-between">
-                            <view>{{ subItem.goods_name }}</view>
-                            <view class="text-[var(--primary-color)] text-[28rpx]">{{ subItem.price }}</view>
+                            <view>{{ subItem.goods_info.goods_name }}</view>
+							<text class="text-[var(--primary-color)] text-[28rpx] price-font">
+								￥{{goodsPrice(subItem.goods_info) }}
+								<image  v-if="priceType(subItem.goods_info) == 'member_price'" class="h-[24rpx] ml-[4rpx] w-[60rpx]" :src="img('addon/o2o/VIP.png')" mode="heightFix" />
+							</text>
                         </view>
                     </view>
                 </block>
@@ -76,7 +79,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { t } from '@/locale'
-import { img, redirect } from '@/utils/common';
+import { img, redirect, getToken } from '@/utils/common';
 import { getTechnicianDetail } from '@/addon/o2o/api/technician'
 import { onLoad, onShow } from '@dcloudio/uni-app'
 
@@ -106,6 +109,27 @@ const callPhoto = (tel) => {
 // 跳转商品详情
 const toLink = (id) => {
 	redirect({url:'/addon/o2o/pages/goods/detail',param:{goods_id:id}})
+}
+
+// 价格类型
+let priceType = (data:any) =>{
+	let type = "";
+	if(data.member_discount && getToken()){
+		type = 'member_price' // 会员价
+	}else{ 
+		type = ""
+	}
+	return type;
+}
+// 商品价格
+let goodsPrice = (data:any) =>{
+	let price = "0.00";
+	if(data.member_discount && getToken()){
+		price = data.goodsSku.member_price // 会员价
+	}else{
+		price = data.goodsSku.price
+	}
+	return parseFloat(price).toFixed(2);
 }
 </script>
 

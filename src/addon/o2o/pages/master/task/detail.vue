@@ -131,19 +131,19 @@
             <view class="h-[160rpx] w-full"></view>
             <view class="flex justify-end items-center bg-white px-3 py-1 fixed left-0 right-0 bottom-0 z-10">
                 <view class="flex flex-col items-center justify-center w-[110rpx] mr-auto" @click="goBackIndex()">
-                    <text class="iconfont iconshouye-zhihui text-[46rpx] text-[#333]"></text>
+                    <text class="nc-iconfont nc-icon-shouye-xiaolianV6xx text-[36rpx] text-[#333]"></text>
                     <text class="text-xs mt-[2rpx] font-scale">{{ t('index') }}</text>
                 </view>
                 <view class="flex flex-wrap justify-end">
-                    <u-button :customStyle="{ border: 'solid 3rpx #999', width:'170rpx',height:'64rpx',lineHeight:'64rpx',fontSize:'26rpx',margin:'16px 0 16px 24rpx' }" shape="circle"  @click="callPhoto(detail.taker_mobile)">{{ t('contact') }}</u-button>
+                    <u-button :text="t('contact')" :customStyle="{ border: 'solid 3rpx #999', width:'170rpx',height:'64rpx',lineHeight:'64rpx',fontSize:'26rpx',margin:'16px 0 16px 24rpx' }" shape="circle"  @click="callPhoto(detail.taker_mobile)"></u-button>
                     <block v-for="(btnItem, btnIndex) in detail.order_status_info.technician_action" :key="btnIndex">
-                        <u-button @click="orderBtnFn(detail, btnItem.key)" shape="circle"  :customStyle="{ border: 'solid 3rpx #999', width:'170rpx',height:'64rpx',lineHeight:'64rpx',fontSize:'26rpx',margin:'16px 0 16px 24rpx' }">{{ btnItem.name }}</u-button>
+                        <u-button :text="btnItem.name" @click="orderBtnFn(detail, btnItem.key)" shape="circle"  :customStyle="{ border: 'solid 3rpx #999', width:'170rpx',height:'64rpx',lineHeight:'64rpx',fontSize:'26rpx',margin:'16px 0 16px 24rpx' }"></u-button>
                     </block>
                 </view>
             </view>
             <!-- 刷新 -->
             <view class="fixed bottom-[160rpx] right-[20rpx] rounded-full  bg-[#fff] w-[80rpx] h-[80rpx] flex flex-col items-center justify-center shadow-xl" @click="getTechnicianDetail">
-                <text class="iconfont iconshuaxin1 text-[36rpx]"></text>
+                <text class="nc-iconfont nc-icon-shuaxinV6xx text-[36rpx]"></text>
                 <text class="text-[22rpx] mt-[6rpx]">{{ t('refresh') }}</text>
             </view>
         </view>

@@ -2,8 +2,8 @@
 	<view :style="themeColor()">
         <scroll-view scroll-y="true" v-if="!loading">
             <u-swipe-action>
-                <view class="p-[30rpx]">
-                    <u-swipe-action-item :options="addressOptions" @click="swipeClick"  v-for="item in addressList">
+                <view class="p-[30rpx] pt-[0]">
+                    <u-swipe-action-item :options="addressOptions" @click="swipeClick(key)" v-for="(item, key) in addressList">
                         <view class="border-0 !border-b !border-[#f5f5f5] border-solid py-[20rpx] flex items-center">
                             <view class="flex-1 line-feed" @click="selectAddress(item)">
                                 <view class="font-bold my-[10rpx] text-sm line-feed w-full">{{ item.full_address }}</view>
@@ -13,7 +13,7 @@
                                     <view class="bg-primary text-white text-xs px-[10rpx] leading-none flex items-center h-[32rpx] ml-[10rpx] rounded min-w-[100rpx]" v-if="item.is_default == 1">{{ t('default') }}</view>
                                 </view>
                             </view>
-                            <text class="iconfont iconbianji mr-[24rpx] shrink-0" @click="editAddress(item.id)"></text>
+                            <text class="iconfont iconVector-77 mr-[24rpx] shrink-0" @click="editAddress(item.id)"></text>
                         </view>
                     </u-swipe-action-item>
                     <view v-if="!addressList.length" class="pt-[15vh]">
@@ -41,11 +41,7 @@
     const addressList = ref<object[]>([])
     const getAddressListFn = ()=>{
         getAddressList({}).then(({ data }) => {
-            const address = []
-            data.forEach(item => { 
-                item.type == 'address' ? address.push(item) : ''
-            })
-            addressList.value = address
+            addressList.value = data
             loading.value = false
         })
         .catch(() => {
@@ -87,11 +83,11 @@
         }
     }
     
-    const swipeClick = (event: any) => {
-        const data = addressList.value[event.index]
+    const swipeClick = (index: any) => {
+        const data = addressList.value[index]
         deleteAddress(data.id)
             .then(()=>{
-                addressList.value.splice(event.index, 1)
+                addressList.value.splice(index, 1)
             }).catch()
     }
 </script>
@@ -99,15 +95,12 @@
 <style lang="scss" scoped>
     :deep(.u-tabs__wrapper__nav__line) {
         bottom: 0;
+        background: var(--primary-color) !important;
     }
-    :deep(.u-swipe-action-item__right){
-        height: 124rpx;
-        top: 2px;
-        bottom: 2px;
-        right: 2px;
-    }
+     
     .line-feed{
         word-wrap:break-word;
         word-break: break-all;
     }
+	
 </style>

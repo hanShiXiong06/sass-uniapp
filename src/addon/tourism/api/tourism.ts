@@ -324,7 +324,7 @@ export function getMemberOrderStatus() {
  * @returns
  */
 export function getVerifyRecord(params: Record<string, any>) {
-    return request.get(`tourism/verify/record`, {params})
+    return request.get(`tourism/verify/record`, params)
 }
 
 /**

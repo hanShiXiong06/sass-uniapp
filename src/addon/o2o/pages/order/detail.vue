@@ -4,7 +4,7 @@
             <view v-if="detail" class="bg-[#f7f7f7] min-h-screen overflow-hidden">
                 <view class="bg-linear h-[480rpx] text-white px-3 pt-5">
                     <view class="text-[42rpx] flex items-baseline text-[#fff]">
-                        <text class="iconfont iconshijian text-[42rpx] mr-1"></text>
+                        <text class="nc-iconfont nc-icon-shijianV6xx text-[42rpx] mr-1"></text>
                         <text class="font-bold">{{t('order')}}{{detail?.order_status_info?.name}}</text>
                     </view>
                 </view>
@@ -145,7 +145,7 @@
                 <view
                     class="flex z-2 justify-between items-center bg-[#fff] fixed left-0 right-0 bottom-0 min-h-[100rpx] px-1 flex-wrap  pb-ios">
                     <view class="flex ml-[30rpx] w-[70rpx] flex-col justify-center items-center" @click="orderBtnFn('index')">
-                        <text class="iconfont iconshouye text-[32rpx]"></text>
+                        <text class="nc-iconfont nc-icon-shouye-xiaolianV6xx text-[36rpx]"></text>
                         <text class="text-xs mt-1">{{ t('index') }}</text>
                     </view>
                     <view class="flex justify-end mr-[30rpx]" v-if="detail.order_status_info">
@@ -159,7 +159,7 @@
             </view>
             <!-- 刷新 -->
             <view class="fixed bottom-[calc(160rpx+env(safe-area-inset-bottom))] right-[30rpx] rounded-full  bg-[#fff] w-[80rpx] h-[80rpx] flex flex-col items-center justify-center shadow-xl" @click="getDetail">
-                <text class="iconfont iconshuaxin1 text-[36rpx]"></text>
+                <text class="nc-iconfont nc-icon-shuaxinV6xx text-[36rpx]"></text>
                 <text class="text-[22rpx] mt-[6rpx]">{{ t('refresh') }}</text>
             </view>
         </block>

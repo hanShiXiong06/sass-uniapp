@@ -4,11 +4,11 @@
 			<view class="flex items-center bg-[#F2F2F2] px-[30rpx] rounded-3xl text-[#949494] h-[74rpx]">
 					<!-- <view class="flex items-center text-[#5A6677]">
 						<text class="ml-[14rpx] leading-1 text-base">太原</text>
-						<text class="iconfont iconjiantouxia text-lg"></text>
+						<text class="nc-iconfont nc-icon-xiangxiaV6xx-1 text-lg"></text>
 					</view>
 					<text class="mx-[14rpx] text-[#D8D8D8]">|</text> -->
 				<u--input :placeholder="t('searchWayName')" class="text-sm" placeholderClass="text-sm" border="none" v-model="search_name"></u--input>
-				<text class="iconfont iconxiazai17 text-[#666] text-[32rpx]" @click="searchNameFn"></text>
+				<text class="nc-iconfont nc-icon-sousuoV6xx text-[#666] text-[32rpx]" @click="searchNameFn"></text>
 			</view>
 
 			<!-- :scroll-top="scrollTop" @scrolltoupper="upper" @scrolltolower="lower" @scroll="scroll" -->
@@ -29,7 +29,14 @@
 				<view class="goods-item" v-for="(item,index) in list" :key="item.goods.goods_id" @click="toLink(item)">
 					<image :src="img(item.goods.cover_thumb_mid)" mode="aspectFill"></image>
 					<view class="name multi-hidden">{{item.way_name}}</view>
-					<view class="price price-font"><text>￥</text>{{item.price}}</view>
+					 
+					<view class="price">
+						<text class="price-font">￥</text>
+						<text class="text-base price-font">{{goodsPrice(item)}}</text>
+						<text class="">
+							<image v-if="priceType(item) == 'member_price'" class="h-[22rpx] ml-[4rpx] w-[50rpx]" :src="img('addon/tourism/VIP.png')" mode="widthFix" />
+						</text>
+					</view>
 				</view>
 			</view>
 			<mescroll-empty :option="{'icon': img('static/resource/images/empty.png')}" v-if="!list.length && loading"></mescroll-empty>
@@ -39,7 +46,7 @@
 
 <script setup lang="ts">
 	import { ref, reactive, computed } from 'vue';
-	import { redirect, img } from '@/utils/common';
+	import { redirect, img, getToken } from '@/utils/common';
 	import { getWayList } from '@/addon/tourism/api/tourism';
 	import { t } from '@/locale';
 	import MescrollBody from '@/components/mescroll/mescroll-body/mescroll-body.vue';
@@ -100,6 +107,28 @@
 	const toLink = (data : Object) => {
 		redirect({ url: '/addon/tourism/pages/way/detail', param: { way_id : data.way_id}})
 	}
+	
+	// 价格类型
+	let priceType = (data:any) =>{
+		let type = "";
+		if(data.goods.member_discount && getToken()){
+			type = 'member_price' // 会员价
+		}else{ 
+			type = ""
+		}
+		return type;
+	}
+	// 商品价格
+	let goodsPrice = (data:any) =>{
+		let price = "0.00";
+		if(data.goods.member_discount && getToken()){
+			price = data.member_price // 会员价
+		}else{
+			price = data.price
+		}
+		return parseFloat(price).toFixed(2);
+	}
+	
 </script>
 <style lang="scss" scoped>
 	.font-scale{
@@ -120,7 +149,7 @@
 			padding-bottom: 10rpx;
 			border-radius: 10rpx;
 			overflow: hidden;
-			image{
+			>image{
 				width: 336rpx;
 				height: 240rpx;
 			}
@@ -131,9 +160,7 @@
 			}
 			.price{
 				@apply text-white bottom-2 left-3 px-1 pt-1 rounded text-base flex items-center mt-auto;
-				text{
-					@apply text-xs;
-				}
+			
 				color: #F55246;
 			}
 		}

@@ -9,8 +9,8 @@
 						<view class="text-[34rpx] font-bold multi-hidden leading-6">{{detail.scenic_name}}</view>
 						<view class="text-xs mt-2">景点级别「{{detail.scenic_level}}星」</view>
 					</view>
-					<view class="flex flex-col items-center text-[#6D7278] ml-[40rpx] pl-[50rpx] pr-[30rpx] border-0 border-l border-solid border-[#F0F0F0]"  @click="sharePopupShow = true">
-						<text class="iconfont iconfenxiang font-bold text-lg"></text>
+					<view class="flex flex-col items-center text-[#6D7278] ml-[40rpx] pl-[50rpx] pr-[30rpx] border-0 border-l border-solid border-[#F0F0F0]"  @click="openShareFn">
+						<text class="nc-iconfont nc-icon-fenxiangV6xx-1 text-lg"></text>
 						<text class="mt-1 text-xs">分享</text>
 					</view>
 				</view>
@@ -21,7 +21,7 @@
 					</view>
 					<view class="text-xs flex items-center">
 						<text>39条评论</text>
-						<text class="iconfont iconxiangyoujiantou text-base"></text>
+						<text class="nc-iconfont nc-icon-youV6xx text-[26rpx]"></text>
 					</view>
 				</view> -->
 				<view class="flex mt-3">
@@ -29,7 +29,7 @@
 						<text class="text-[26rpx] font-bold">营业中</text>
 						<view class="text-xs mt-1">
 							<text>{{detail.open_time}}</text>
-							<text class="iconfont text-xs iconxiangyoujiantou"></text>
+							<text class="text-[26rpx] nc-iconfont nc-icon-youV6xx"></text>
 						</view>
 					</view>
 					<view class="bg-[#F2F4F9] py-2 px-3 rounded-md flex flex-1 items-center" @click="mapPopupShow = true">
@@ -38,28 +38,16 @@
 							<text class="text-[26rpx] font-bold">景点地址</text>
 							<view class="text-xs mt-1">
 								<text>{{detail.address}}</text>
-								<text class="iconfont text-xs iconxiangyoujiantou"></text>
+								<text class="text-[26rpx] nc-iconfont nc-icon-youV6xx"></text>
 							</view>
 						</view>
 						<view class="flex flex-col ml-3">
-							<text class="iconfont iconzuobiaofill p-[6rpx] text-center bg-[#fff] rounded-full"></text>
+							<text class="nc-iconfont nc-icon-dizhiV6mm leading-[1] p-[8rpx] text-center bg-[#fff] text-[32rpx] rounded-full"></text>
 							<text class="text-xs mt-[4rpx]">地图</text>
 						</view>
 					</view>
 				</view>
 			</view>
-
-			<u-popup :show="sharePopupShow" @close="sharePopupShow = false" :closeable="true">
-			    <view class="text-center py-[30rpx] font-bold leading-none">
-			        <text>分享</text>
-			    </view>
-			    <view class="flex justify-center pt-3 pb-5">
-					<view class="flex flex-col items-center" @click="copyFn()">
-						<text class="iconfont iconlianjie-tianchong text-3xl text-[#07c160] "></text>
-						<text class="text-sm mt-1">复制</text>
-					</view>
-				</view>
-			</u-popup>
 
 			<u-popup :show="mapPopupShow" @close="mapPopupShow = false" :closeable="true">
 			    <view class="text-center py-[30rpx] font-bold leading-none">
@@ -85,11 +73,17 @@
 								<text class="text-color">无需换票</text>
 							</view>
 							<view class="flex text-xs text-[#646464] mt-1" @click="handleGoodsContent(item.goods_content)">
-								<text>门票说明<text class="iconfont iconxiangyoujiantou text-xs"></text></text>
+								<text>门票说明<text class="nc-iconfont nc-icon-youV6xx text-[26rpx]"></text></text>
 							</view>
 						</view>
 						<view class="flex flex-col justify-center">
-							<view class="text-xs text-[#626262]"><text class="text-[#FA6400] price-font">￥</text><text class="text-lg font-bold text-[#FA6400] price-font">{{item.price}}</text>起</view>
+							<view class="text-xs text-[#626262]">
+								<text class="text-[#FA6400] price-font">￥</text>
+								<text class="text-lg font-bold text-[#FA6400] price-font">{{goodsPrice(item)}}</text>
+								<image v-if="priceType(item) == 'member_price'" class="h-[22rpx] ml-[6rpx] w-[55rpx]" :src="img('addon/tourism/VIP.png')" mode="widthFix" />
+								起
+								
+								</view>
 							<button class="w-[128rpx] h-[60rpx] leading-[60rpx] text-sm text-white bg-color rounded-2xl mt-[20rpx]" @click="toOrder(item)">预订</button>
 						</view>
 					</view>
@@ -139,26 +133,47 @@
 			</view>
 		</view>
 		<u-loading-page bg-color="rgb(248,248,248)" :loading="loading" fontSize="16" color="#333"></u-loading-page>
+
+		<!-- #ifdef MP-WEIXIN -->
+		<!-- 小程序隐私协议 -->
+		<wx-privacy-popup ref="wxPrivacyPopup"></wx-privacy-popup>
+		<!-- #endif -->
+		
+		<share-poster ref="sharePosterRef" posterType="tourism_scenic" :posterId="detail.poster_id" :posterParam="posterParam" :copyUrlParam="copyUrlParam" />
 	</view>
 </template>
 
 <script setup lang="ts">
 	import { ref, reactive, computed } from 'vue';
-	import { img, redirect, getToken, copy } from '@/utils/common';
+	import { img, redirect, getToken, copy,handleOnloadParams } from '@/utils/common';
 	import { onLoad } from '@dcloudio/uni-app'
 	import { getScenicInfo } from '@/addon/tourism/api/tourism';
 	import { useLogin } from '@/hooks/useLogin';
+	import sharePoster from '@/components/share-poster/share-poster.vue'
+	import useMemberStore from '@/stores/member'
 
 	let carousel = ref([])
 	let detail = ref<Array<any>>([]);
 	let loading = ref<boolean>(true);
 	let scenic_id = ref("");
-	let sharePopupShow = ref<boolean>(false);
+	
 	let mapPopupShow = ref<boolean>(false);
 	let covers = ref([]);
 	let goodsContentShow = ref(false) // 门票说明弹框展示
 	let goodsContent = ref(""); // 门票展示弹框内容
+	
+	const memberStore = useMemberStore()
+
+	// 会员信息
+	const userInfo = computed(() => memberStore.info)
+	
 	onLoad((option) => {
+		
+		// #ifdef MP-WEIXIN
+		// 处理小程序场景值参数
+		option = handleOnloadParams(option);
+		// #endif
+		
 		loading.value = true;
 		getScenicInfo(option.scenic_id).then((res) => {
 			scenic_id.value = option.scenic_id
@@ -177,7 +192,7 @@
 			}else{
 				carousel.value.push(img(detail.value.cover_thumb_big))
 			}
-
+			copyUrlFn()
 			loading.value = false;
 		}).catch(() => {
 			loading.value = false;
@@ -219,16 +234,55 @@
 		uni.setStorageSync('scenicCreateData', orderData.value);
 		redirect({ url: '/addon/tourism/pages/scenic/order' });
 	}
-	// 复制链接
-	const copyFn = ()=>{
-		let data = location.origin + location.pathname + '?scenic_id='+scenic_id.value;
-		copy(data);
-	}
+ 
 	// 门票说明弹框
 	const handleGoodsContent = (data) =>{
 		goodsContentShow.value = true;
 		goodsContent.value = data;
 	}
+	
+	
+	/************* 分享海报-start **************/
+	let sharePosterRef = ref(null);
+	let copyUrlParam = ref('');
+	let posterParam = {};
+	
+	// 分享海报链接
+	const copyUrlFn = ()=>{
+		copyUrlParam.value = '?scenic_id='+detail.value.scenic_id;
+		if (userInfo.value && userInfo.value.member_id) copyUrlParam.value += '&mid=' + userInfo.value.member_id;
+	}
+	
+	const openShareFn = ()=>{
+		
+	    posterParam.scenic_id = detail.value.scenic_id;
+	    if (userInfo.value && userInfo.value.member_id)
+	        posterParam.member_id = userInfo.value.member_id;
+		sharePosterRef.value.openShare()
+	}
+	/************* 分享海报-end **************/
+	
+	// 价格类型
+	let priceType = (data:any) =>{
+		let type = "";
+		if(data.member_discount && getToken()){
+			type = 'member_price' // 会员价
+		}else{ 
+			type = ""
+		}
+		return type;
+	}
+	// 商品价格
+	let goodsPrice = (data:any) =>{
+		let price = "0.00";
+		if(data.member_discount && getToken()){
+			price = data.member_price || data.price // 会员价
+		}else{
+			price = data.price
+		}
+		return parseFloat(price).toFixed(2);
+	}
+	
 </script>
 
 <style lang="scss" scoped>

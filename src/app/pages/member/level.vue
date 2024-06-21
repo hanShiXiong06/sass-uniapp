@@ -1,41 +1,39 @@
 <template>
 	<view :style="themeColor()">
 		<u-loading-page :loading="loading && memberInfo" loadingText="" bg-color="#f7f7f7"></u-loading-page>
-		<view v-if="!loading && memberInfo && list && list.length" class="bg-[#2f3a58] min-h-[100vh] overflow-hidden flex flex-col">
+		<view v-if="!loading && memberInfo && list && list.length" class=" min-h-[100vh] overflow-hidden flex flex-col" :style="{backgroundColor: currLevelInfo.level_style.bg_color }">
 			<!-- #ifdef MP -->
 			<top-tabbar :data="topTabbarData" titleColor="#fff"/>
 			<!-- #endif -->
-			<view class="pb-[36rpx]">
-				<view class="pt-[40rpx] pb-[70rpx]">
+			<view>
+				<view class="pt-[40rpx] mb-[20rpx]">
 					<!-- 轮播图 -->
-					<view class="relative mx-[20rpx]">
-						<swiper class="swiper ns-indicator-dots" :style="{ height: '340rpx' }" @change="swiperChange"
-							indicator-color="rgb(139,139,139)" indicator-active-color="#fff"
-							:current = "swiperIndex" :indicator-dots="isIndicatorDots"
-							previous-margin="40rpx" next-margin="40rpx">
+					<view class="relative">
+						<swiper class="swiper ns-indicator-dots relative" :style="{ height: '300rpx' }" @change="swiperChange" :current = "swiperIndex"
+							previous-margin="48rpx" next-margin="48rpx">
 							<swiper-item class="swiper-item" v-for="(item,index) in list" :key="item.id">
-								<view class="h-[340rpx] relative">
-									<view v-if="memberInfo.member_level == item.level_id && swiperIndex == index" class="text-[24rpx] absolute top-[42rpx] left-0 z-10 h-[38rpx] !bg-contain w-[144rpx] text-[#fff] flex items-center justify-center" :style="{ background: 'url(' + img('addon/shop/level/carousel_bg_02.png') + ') no-repeat'}">
+								<view class="h-[300rpx] relative">
+									<view v-if="memberInfo.member_level == item.level_id && swiperIndex == index" class="text-[24rpx] absolute top-0 left-0 z-10 h-[66rpx] !bg-contain w-[150rpx] flex pt-[12rpx] pl-[16rpx] leadinig-[34rpx] box-border" :style="{ background: 'url(' + img(currLevelInfo.level_tag) + ') no-repeat',color: currLevelInfo.level_style.level_color}">
 										当前等级
 									</view>
-									<view class="absolute left-0 right-0 z-10 px-[40rpx]" :class="{'pt-[108rpx]': memberInfo.member_level == item.level_id, 'pt-[90rpx]': memberInfo.member_level != item.level_id}">
-										<view class="flex items-end">
-											<view class="flex items-center mb-[-4rpx] mr-[6rpx]">
-												<text class="text-[60rpx] skewed-text-10">V</text>
-												<text class="text-[60rpx] skewed-text-10">{{index+1}}</text>
-											</view>
-											<text class="text-[32rpx] text-[#3C2913]">{{item.level_name}}</text>
+									<view v-else-if="Number(memberInfo.growth) < Number(currLevelInfo.growth) && swiperIndex == index" class="text-[24rpx] absolute top-0 left-0 z-10 h-[66rpx] !bg-contain w-[150rpx] text-[#999] flex pt-[12rpx] pl-[16rpx] leadinig-[34rpx] box-border" :style="{ background: 'url(' + img('static/resource/images/member/level/not_reach.png') + ') no-repeat'}" >
+										未达标
+									</view>
+									<view class="absolute top-0 left-0 right-0 bottom-0 z-20 px-[30rpx] pt-[76rpx] box-border" :class="{'px-[50rpx]': swiperIndex != index}">
+										<view class="flex items-center leading-[50rpx] mb-[70rpx]">
+											<image class="h-[32rpx] w-[34rpx] align-middle" :src="img(item.level_icon ? item.level_icon : '')" mode="aspectFill" />
+											<view class="text-[36rpx]  font-bold ml-[10rpx] max-w-[340rpx] truncate" :style="{color:currLevelInfo.level_style.level_color}">{{item.level_name}}</view>
 										</view>
-										<view class="text-[#977B48] text-[26rpx] mt-[20rpx]">成长值已达到 {{memberInfo.growth}}</view>
-										<view class="flex justify-between items-center mt-[50rpx]">
+										<view class="flex items-center" :style="{color: currLevelInfo.level_style.level_color}">
+											<view class="text-[28rpx] font-bold leading-[38rpx]">{{ memberInfo.growth }}</view>
+											<view class="text-[24rpx] leading-[34rpx]">/{{list[index].growth}}成长值</view>
+										</view>
+										<view class="flex justify-between items-center mt-[10rpx]">
 											<view class="flex flex-col flex-1">
 												<view>
-													<progress :percent="progress(index)" :border-radius="100" activeColor="#DB9400" backgroundColor="#D9D9D9" stroke-width="6" />
+													<progress :percent="progress(index)" :border-radius="100" :activeColor="currLevelInfo.level_style.level_color" backgroundColor="#fff" stroke-width="6" />
 												</view>
-												<view class="text-[#977B48] mt-[10rpx] text-[24rpx]" v-if="upgradeGrowth(index) > 0">还需要{{upgradeGrowth(index)}}点成长值升级</view>
-												<view class="text-[#977B48] mt-[10rpx] text-[24rpx]" v-if="upgradeGrowth(list.length-1) <= 0 && list.length-1 == index">恭喜您升级到最高等级</view>
 											</view>
-											<text v-if="upgradeGrowth(index) > 0" class="flex justify-center items-center ml-[90rpx] text-[30rpx] rounded-[50rpx] w-[180rpx] h-[60rpx] text-[#fff] bg-[#3A3842]">加速升级</text>
 										</view>
 									</view>
 									<view class="relatvie h-full w-full">
@@ -44,60 +42,63 @@
 								</view>
 							</swiper-item>
 						</swiper>
-						<!-- #ifdef MP-WEIXIN -->
-						<view v-if="list.length > 1" :class="['swiper-dot-box straightLine']">
-							<view v-for="(numItem, numIndex) in list" :key="numIndex" :class="['swiper-dot', { active: numIndex == swiperIndex }]"></view>
-						</view>
-						<!-- #endif -->
 					</view>
 				</view>
-				<view class="flex px-[58rpx] items-center flex-col" v-if="currLevelInfo.benefits_arr && currLevelInfo.benefits_arr.length">
-					<view class="flex items-center justify-center">
-						<image class="h-[24rpx]" :src="img('addon/shop/level/arrows_left_01.png')" mode="heightFix" />
-						<text class="mx-[30rpx] text-[#FACC80] text-[32rpx] font-bold">会员权益</text>
-						<image class="h-[24rpx]" :src="img('addon/shop/level/arrows_right_01.png')" mode="heightFix" />
+				<view class="mb-[30rpx] relative">
+					<view class="bg-[#fff] opacity-15 h-[2rpx] w-full absolute top-[15rpx]"></view>
+					<view :style="lineStyle" class="bg-[#fff] opacity-60 h-[2rpx]  absolute top-[15rpx] z-4 left-[50%]"></view>
+					<view class="mx-[86rpx]">
+						<scroll-view :scroll-x="true" scroll-with-animation :scroll-into-view="'id' + ( levelIndex  ? levelIndex - 1 : 0)">
+							<view class="flex flex-nowrap py-[10rpx]">
+								<block v-for="(item,index) in list" :key="item.id">
+									<view :style="levelStyle" class=" flex-shrink-0 flex flex-col items-center justify-center" @click="changeLevel(index)" :id="'id' + index">
+										<view class="w-[14rpx] h-[14rpx] level-class" :class="{'level-select': levelIndex == (index)}"></view>
+										<view :style="maxWidth" class="text-[24rpx] text-[#aaa] mt-[10rpx]   truncate">{{item.level_name}}</view>
+									</view>
+								</block>
+							</view>
+						</scroll-view>
 					</view>
-					<view class="flex flex-wrap w-full mt-[46rpx]">
+				</view>
+				<view class="flex mx-[30rpx]  px-[38rpx] pt-[30rpx]  pb-[46rpx]  items-center flex-col level_benefits" v-if="currLevelInfo.benefits_arr && currLevelInfo.benefits_arr.length" :style="{ backgroundImage: 'url(' + img(currLevelInfo.member_bg) + ')'}">
+					<view class="flex items-center justify-center">
+						<text class="text-[#fff] text-[32rpx] font-bold leading-[44rpx]">会员权益</text>
+					</view>
+					<view class="flex flex-wrap w-[690rpx] mt-[40rpx] justify-between">
 						<view class="flex flex-col w-[25%] items-center" v-for="(item,index) in currLevelInfo.benefits_arr" :key="index">
 							<image class="h-[100rpx] w-[100rpx]" :src="img(item.icon)" mode="heightFix" />
-							<text class="bg-[#2f3a58] -mt-[18rpx] text-[#FACC80] text-[20rpx] flex items-center h-[36rpx] px-[16rpx] rounded-full border-[2rpx] border-solid border-[#FACC80]">{{item.desc}}</text>
 							<text class="text-[rgba(255,255,255,0.9)] mt-[10rpx] text-[24rpx]">{{item.title}}</text>
 						</view>
 					</view>
 				</view>
 			</view>
 			
-			<view class="bg-[#fff] flex-1 rounded-t-[16rpx] px-[30rpx] pt-[30rpx]  tab-bar">
+			<view class="flex-1 rounded-t-[40rpx] px-[30rpx] pt-[30rpx] mt-[-16rpx]  relative tab-bar" :style="{background: `linear-gradient( 180deg, ${currLevelInfo.level_style.gift} 0%, #FFFFFF 20%)`}">
 				<!-- 升级礼包 -->
 				<view v-if="currLevelInfo.gifts_arr && currLevelInfo.gifts_arr.length">
-					<view class="pt-[10rpx] pb-[40rpx] flex items-center justify-center">
-						<image class="h-[24rpx]" :src="img('addon/shop/level/arrows_left_02.png')" mode="heightFix" />
-						<text class="mx-[30rpx] text-[32rpx] text-[#3A3945] font-bold">升级礼包</text>
-						<image class="h-[24rpx]" :src="img('addon/shop/level/arrows_right_02.png')" mode="heightFix" />
+					<view class="pt-[10rpx] pb-[30rpx] flex items-center">
+						<text class="text-[32rpx] text-[#3A3945] font-bold leading-[44rpx]">升级礼包</text>
 					</view>
 					<view class="flex flex-wrap">
-						<view v-for="(item,index) in currLevelInfo.gifts_arr" :key="idnex" class="relative box-border mb-[40rpx] leading-1 bg-[#FFEAD3] w-[216rpx] h-[220rpx] px-[30rpx] pb-[20rpx] pt-[46rpx] relative rounded-[16rpx] !bg-contain"
-							:class="{'mr-[20rpx]': (index+1)%3!=0}"
-							:style="{ background: 'url(' + img(item.background) + ') no-repeat'}"
-						>
-							<text class="absolute left-0 right-0 text-[rgba(58,57,69,0.8)] bottom-[34rpx] text-center text-[24rpx] font-bold z-10">{{item.text}}</text>
+						<view  v-for="(item,index) in currLevelInfo.gifts_arr" :key="index" class="mb-[20rpx]"  :class="{'mr-[20rpx]': (index+1) % 3 != 0}">
+							<view class="relative box-border mb-[12rpx] w-[216rpx] h-[180rpx] !bg-contain"  :style="{ background: 'url(' + img(item.background) + ') no-repeat'}">
+							</view>
+							<view class="text-center text-[#333] text-[28rpx] font-500 truncate leading-[40rpx] max-w-[216rpx]">{{item.text}}</view>
 						</view>
 					</view>
 				</view>
 				
 				<!-- 升级技巧 -->
 				<view v-if="upgradeSkills && upgradeSkills.length">
-					<view class="pt-[10rpx] pb-[40rpx] flex items-center justify-center">
-						<image class="h-[24rpx]" :src="img('addon/shop/level/arrows_left_02.png')" mode="heightFix" />
-						<text class="mx-[30rpx] text-[32rpx] text-[#3A3945] font-bold">升级技巧</text>
-						<image class="h-[24rpx]" :src="img('addon/shop/level/arrows_right_02.png')" mode="heightFix" />
+					<view class="pt-[10rpx] pb-[30rpx] flex items-center">
+						<text class="text-[32rpx] text-[#333] font-bold leading-[44rpx]">升级技巧</text>
 					</view>
 					<view>
 						<view class="flex items-center mb-[30rpx]" v-for="(item,index) in upgradeSkills" :key="index">
 							<image class="h-[100rpx] w-[100rpx] mr-[20rpx]" :src="img(item.icon)" mode="heightFix" />
 							<view class="flex flex-col">
-								<view class="text-[#3A3945] text-[28rpx] font-bold mb-[12rpx]">{{item.title}}</view>
-								<view class="text-[24rpx] text-[#3A3945]">{{item.desc}}</view>
+								<view class="text-[#3A3945] text-[28rpx] font-bold leading-[38rpx] mb-[8rpx]">{{item.title}}</view>
+								<view class="text-[24rpx] text-[#3A3945] leading-[34rpx]">{{item.desc}}</view>
 							</view>
 							<text class="skill-btn" @click="redirect({ url: item.button.wap_redirect, param: {} , mode: 'redirectTo'})">{{item.button.text}}</text>
 						</view>
@@ -105,7 +106,7 @@
 				</view>
 			</view>
 		</view>
-		<u-empty v-if="!loading && (!list || !list.length)" :icon="img('static/resource/images/empty.png')" text="暂无会员等级" />
+		<u-empty v-if="!loading && !list && !list.length " :icon="img('static/resource/images/empty.png')" text="暂无会员等级" />
 	</view>
 </template>
 
@@ -122,12 +123,7 @@
 	let list = ref([]) // 会员等级
 	let upgradeSkills = ref([]) // 升级技巧
 	const swiperIndex = ref(0); //当前滑块的索引
-	
-	let isIndicatorDots = ref(true) // 是否展示显示面板指示点
-	// #ifdef MP
-	isIndicatorDots.value = false
-	// #endif
-	
+	const levelIndex = ref(0); //当前等级的索引
 	// 自定义头部
 	let topTabbarData = ref({
 		title: '会员等级',
@@ -170,9 +166,12 @@
         }
 	    return num
 	}
-	
+	const levelStyle = ref(''); // 等级样式
+	const maxWidth = ref(''); // 等级样式
+	const lineStyle = ref(''); // 线样式
 	const getMemberLevelFn = ()=>{
 		loading.value = true;
+		
 		getMemberLevel().then((res) => {
 			list.value = res.data || [];
 			
@@ -183,12 +182,32 @@
 					if(item.level_id == memberInfo.value.member_level){
 						bool = false;
 						swiperIndex.value = index;
+						levelIndex.value = swiperIndex.value;
 						infoStructureFn(index);
 					}
 				})
 			}
 			if(bool) infoStructureFn(0);
-			
+			if(list.value && list.value.length >= 5){
+				levelStyle.value ='width:115rpx;'
+				maxWidth.value = 'max-width:115rpx;'
+				lineStyle.value = `width:470rpx;transform: translateX(-235rpx);`
+			}else if(list.value && list.value.length == 4){
+				levelStyle.value ='width:144rpx;'
+				maxWidth.value = 'max-width:144rpx;'
+				lineStyle.value = `width:436rpx;transform: translateX(-218rpx);`
+			}else if(list.value && list.value.length == 3){
+				levelStyle.value ='width:192rpx;'
+				maxWidth.value = 'max-width:192rpx;'
+				lineStyle.value = `width:388rpx;transform: translateX(-194rpx);`
+			}else if(list.value && list.value.length == 2){
+				levelStyle.value ='width:289rpx;'
+				maxWidth.value = 'max-width:289rpx;'
+				lineStyle.value = `width:289rpx;transform: translateX(-144rpx);`
+			}else{
+				maxWidth.value = 'max-width:578rpx;'
+				levelStyle.value ='width:100%;'
+			}
 			loading.value = false;
 		}).catch(()=>{
 			loading.value = false;
@@ -201,16 +220,16 @@
 		})
 	}
 	
-	const swiperChange = e => {
+	const swiperChange = (e) => {
 	    swiperIndex.value = e.detail.current;
+		levelIndex.value = swiperIndex.value
 		infoStructureFn(e.detail.current);
 	};
 	
 	// 当前的会员等级信息
-	let currLevelInfo = ref({});
+	let currLevelInfo = ref<any>({});
 	let infoStructureFn = (index:number)=>{
-		let data = {}
-		data = deepClone(list.value[index]);
+		let data:any = deepClone(list.value[index]);
 		// 会员权益
 		if(data && data.level_benefits){
 			data.benefits_arr = [];
@@ -236,6 +255,12 @@
 		}
 		currLevelInfo.value = data;
 	}
+	// 改变会员等级
+	const changeLevel = (index : any) =>{
+		levelIndex.value = index;
+		swiperIndex.value = index;
+		infoStructureFn(index);
+	}
 </script>
 
 <style lang="scss" scoped>
@@ -243,65 +268,16 @@
 		padding: 0 20rpx;
 		height: 54rpx;
 		line-height: 56rpx;
-		color: rgba(255,255,255,0.9);
-		background: linear-gradient( 180deg, #F1C28C 0%, #DB9E32 85%);
-		border-radius: 50rpx;
+		color: #333;
+		background: linear-gradient( 180deg, #FEE8AC 0%, #F5D36E 85%);
+		border-radius: 30rpx;
 		margin-left: auto;
 		font-size: 24rpx;
 	}
 	.swiper-animation{
-		transform: scale(0.94, 0.94);
+		transform: scale(0.92, 0.92);
 		transition-duration: 0.3s;
 		transition-timing-function: ease;
-	}
-	
-	// 轮播指示器
-	/* #ifdef H5 */ 
-	.swiper :deep(.uni-swiper-wrapper){
-		overflow: initial;
-	}
-	/* #endif */
-	.swiper :deep(.uni-swiper-dots-horizontal) {
-		bottom: -30rpx;
-	}
-	.swiper.ns-indicator-dots :deep(.uni-swiper-dot) {
-		width: 18rpx;
-		height: 6rpx;
-		border-radius: 4rpx;
-	}
-	.swiper.ns-indicator-dots :deep(.uni-swiper-dot-active) {
-		width: 36rpx;
-	}
-	.swiper-dot-box {
-		position: absolute;
-		bottom: -50rpx;
-		width: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		padding: 0 80rpx 8rpx;
-		box-sizing: border-box;
-	
-		.swiper-dot {
-			background-color: #b2b2b2;
-			width: 15rpx;
-			border-radius: 50%;
-			height: 15rpx;
-			margin: 8rpx;
-		}
-	
-		&.straightLine {
-			.swiper-dot {
-				width: 18rpx;
-				height: 6rpx;
-				border-radius: 4rpx;
-	
-				&.active {
-					width: 36rpx;
-					background-color: #fff;
-				}
-			}
-		}
 	}
 	:deep(.uni-progress) .uni-progress-bar, :deep(.uni-progress) .uni-progress-inner-bar{
 		border-radius: 10rpx;
@@ -311,12 +287,39 @@
 		padding-bottom: env(safe-area-inset-bottom);
 	}
 	
-	.skewed-text-5 {
-	  transform: skew(-5deg);
-	  font-weight: 900;
+	.level-class{
+		position: relative;
+		&::before {
+			content: "";
+			position: absolute;
+			width: 14rpx;
+			height: 14rpx;
+			background-color: #aaa;
+			border-radius: 14rpx;
+			top:50%;
+			left: 50%;
+			transform: translate(-50%,-50%);
+			z-index: 10;
+		}
 	}
-	.skewed-text-10 {
-	  transform: skew(-10deg);
-	  font-weight: 900;
+	.level-select{
+		position: relative;
+		&::after {
+			content: "";
+			position: absolute;
+			width: 26rpx;
+			height: 26rpx;
+			background-color: #F6F6F6;
+			opacity: 0.4;
+			border-radius: 26rpx;
+			top:50%;
+			left: 50%;
+			transform: translate(-50%,-50%);
+			z-index: 1;
+		}
+	}
+	.level_benefits{
+		background-repeat: no-repeat;
+		background-size:  100% 100%;
 	}
 </style>

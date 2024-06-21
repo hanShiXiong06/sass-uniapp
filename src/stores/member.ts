@@ -25,6 +25,7 @@ const useMemberStore = defineStore('member', {
             if (!this.token) return
             await getMemberInfo().then((res: any) => {
                 this.info = res.data
+                uni.setStorageSync('wap_member_id',res.data.member_id)
             }).catch(async () => {
                 await this.logout()
             })
@@ -33,12 +34,11 @@ const useMemberStore = defineStore('member', {
             if (!this.token) return
             this.token = ''
             this.info = null
+            uni.setStorageSync('autoLoginLock', true)
             await logout().then(() => {
-				uni.removeStorageSync('pid');
                 removeToken()
                 isRedirect && redirect({ url: '/app/pages/index/index', mode: 'switchTab' })
             }).catch(() => {
-				uni.removeStorageSync('pid');
                 removeToken()
                 isRedirect && redirect({ url: '/app/pages/index/index', mode: 'switchTab' })
             })

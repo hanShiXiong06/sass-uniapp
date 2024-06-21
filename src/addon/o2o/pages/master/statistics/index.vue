@@ -14,9 +14,9 @@
                                 <text class="text-[30rpx] font-bold text-[#ffffff] leading-[35rpx]">{{ technicianInfo.name }}</text>
                                 <text class="ml-[8rpx] text-[18rpx] text-[#fff] leading-[21rpx]">{{ technicianInfo.position_name}}</text>
                             </view>
-                            <view class="flex items-center mt-[14rpx]">
+                            <view class="flex items-center mt-[14rpx] flex-wrap">
                                 <block v-for="(item,index) in technicianInfo.label" :key="index">
-                                    <view class="flex items-center bg-[#fff]  py-[4rpx] pl-[7rpx] pr-[17rpx] rounded-full border-[1rpx] border-solid border-[#E18547]" :class="{'ml-[10px]': index}">
+                                    <view class="flex items-center bg-[#fff]  py-[4rpx] pl-[7rpx] pr-[17rpx] rounded-full border-[1rpx] border-solid border-[#E18547] mr-[10px]" >
                                         <image style="width: 16rpx; height: 16rpx;" mode="aspectFill" :src="img('addon/o2o/technician/label.png')"></image>
                                         <text class="text-[16rpx] text-[#666] leading-[16rpx] ml-[5rpx]">{{ item }}</text>
                                     </view>

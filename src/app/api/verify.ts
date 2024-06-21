@@ -11,7 +11,7 @@ export function getVerifyCode(type: string ,params: AnyObject) {
  * 获取核销记录
  */
 export function getVerifyRecords(params: Record<string, any>) {
-	return request.get('verify_records', {params})
+	return request.get('verify_records', params)
 }
 
 /**

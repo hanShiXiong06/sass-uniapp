@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-    import { ref, reactive, computed, watch } from 'vue'
+    import { ref, reactive, watch } from 'vue'
     import { getAreaListByPid, getAreaByCode } from '@/app/api/system'
     
     const prop = defineProps({
@@ -60,11 +60,9 @@
         district: null
     })
     
-    getAreaListByPid(0)
-        .then(({ data }) => {
-            areaList.province = data
-        })
-        .catch()
+    getAreaListByPid(0).then(({ data }) => {
+        areaList.province = data
+    }).catch()
     
     watch(() => prop.areaId, (nval, oval)=> {
         if (nval && !oval) {
@@ -75,31 +73,31 @@
             })
             .catch()
         }
-    })
+    },{
+		immediate:true
+	})
     
     /**
      * 监听省变更
      */
     watch(() => selected.province, ()=> {
-        getAreaListByPid(selected.province.id)
-            .then(({ data }) => {
-                areaList.city = data
-                currSelect.value = 'city'
-                
-                if (selected.city) {
-                    let isExist = false
-                    for (let i = 0; i < data.length; i++) {
-                        if (selected.city.id == data[i].id) {
-                            isExist = true
-                            break
-                        }
-                    }
-                    if (!isExist) {
-                        selected.city = null
+        getAreaListByPid(selected.province.id).then(({ data }) => {
+            areaList.city = data
+            currSelect.value = 'city'
+
+            if (selected.city) {
+                let isExist = false
+                for (let i = 0; i < data.length; i++) {
+                    if (selected.city.id == data[i].id) {
+                        isExist = true
+                        break
                     }
                 }
-            })
-            .catch()
+                if (!isExist) {
+                    selected.city = null
+                }
+            }
+        }).catch()
     }, { deep: true })
     
     /**
@@ -107,30 +105,28 @@
      */
     watch(() => selected.city, (nval)=> {
         if (nval) {
-            getAreaListByPid(selected.city.id)
-                .then(({ data }) => {
-                    areaList.district = data
-                    currSelect.value = 'district'
-                    
-                    if (selected.district) {
-                        let isExist = false
-                        for (let i = 0; i < data.length; i++) {
-                            if (selected.district.id == data[i].id) {
-                                isExist = true
-                                break
-                            }
-                        }
-                        if (!isExist) {
-                            selected.district = null
+            getAreaListByPid(selected.city.id).then(({ data }) => {
+                areaList.district = data
+                currSelect.value = 'district'
+
+                if (selected.district) {
+                    let isExist = false
+                    for (let i = 0; i < data.length; i++) {
+                        if (selected.district.id == data[i].id) {
+                            isExist = true
+                            break
                         }
                     }
-                })
-                .catch()
+                    if (!isExist) {
+                        selected.district = null
+                    }
+                }
+            }).catch()
         } else {
             areaList.district = []
             selected.district = null
         }
-        
+
     }, { deep: true })
     
     const emits = defineEmits(['complete'])

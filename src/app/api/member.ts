@@ -17,6 +17,12 @@ export function getPointList(data : AnyObject) {
 export function getBalanceList(data : AnyObject) {
 	return request.get('member/account/balance', data)
 }
+/**
+ * 获取余额流水,条件获取
+ */
+export function getBalanceListAll(data : AnyObject) {
+	return request.get('member/account/balance_list', data)
+}
 
 /**
  * 获取可提现余额流水
@@ -117,10 +123,23 @@ export function deleteCashoutAccount(accountId: number) {
 }
 
 /**
+ * 佣金账户流水
+ */
+export function getMemberCommission(data : AnyObject) {
+	return request.get(`member/account/commission`,data)
+}
+/**
  * 佣金列表
  */
 export function getCommissionList(data : AnyObject) {
 	return request.get(`member/account/commission`, data)
+}
+
+/**
+ * 获取账号变动类型
+ */
+export function getAccountType(params: Record<string, any>) {
+	return request.get(`member/account/fromtype/${params.account_type}`)
 }
 
 /**
@@ -129,7 +148,7 @@ export function getCommissionList(data : AnyObject) {
  * @returns
  */
 export function getAddressList(params: Record<string, any>) {
-	return request.get(`member/address`, {params})
+	return request.get(`member/address`, params)
 }
 
 /**
@@ -204,9 +223,22 @@ export function getSignConfig() {
 
 /**
  * 点击签到
- * @param params
  * @returns
  */
 export function setSign() {
 	return request.post('member/sign')
+}
+
+/**
+ * 获取个人积分
+ */
+export function getMemberAccountPointcount() {
+	return request.get(`member/account/pointcount`)
+}
+
+/**
+ * 获取积分任务
+ */
+export function getTaskPoint() {
+	return request.get(`task/point`)
 }

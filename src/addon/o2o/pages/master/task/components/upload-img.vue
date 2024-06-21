@@ -6,13 +6,13 @@
                     <u-icon name="photo" color="#999" size="50"></u-icon>
                 </template>
             </u--image>
-            <text class="iconguanbi iconfont absolute top-0 right-[0rpx] text-[#fff] bg-[#888] rounded-bl-[16rpx]" @click.stop="deleteImg(index)"></text>
+            <text class="nc-iconfont nc-icon-guanbiV6xx text-[32rpx] absolute top-0 right-[0rpx] text-[#fff] bg-[#888] rounded-bl-[16rpx]" @click.stop="deleteImg(index)"></text>
         </view>
         <view class="w-[168rpx] h-[168rpx]" v-if="value.length < maxCount">
             <u-upload @afterRead="afterRead" :maxCount="maxCount" :multiple="prop.multiple">
                 <view class="flex items-center justify-center w-[168rpx] h-[168rpx] border-[2rpx] border-dashed border-[#ebebec] text-center text-[#888]">
                     <view>
-                        <view class="iconfont iconzhaoxiangji text-[50rpx]"></view>
+                        <view class="nc-iconfont nc-icon-xiangjiV6xx text-[50rpx]"></view>
                         <view class=" text-[24rpx] mt-[10rpx]">{{ value.length }}/{{ maxCount }}</view>
                     </view>
                 </view>
@@ -31,7 +31,7 @@ const prop = defineProps({
     },
     maxCount: {
         type: Number,
-        default: 6
+        default: 9
     },
     multiple: {
         type: Boolean,

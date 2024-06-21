@@ -3,7 +3,7 @@
         <view class="bg-[#f8f8f8] min-h-screen overflow-hidden" v-if="!loading">
             <view class="bg-linear h-[480rpx] text-white px-4 pt-5">
                 <view class="text-[42rpx] flex items-baseline" @click="orderStepsShow = true">
-                    <text class="iconfont iconshijian text-[42rpx] mr-1"></text>
+                    <text class="nc-iconfont nc-icon-shijianV6xx text-[42rpx] mr-1"></text>
                     <text class="font-bold">订单{{detail?.order_status_info?.name}}</text>
                     <view class="text-xs flex items-center ml-[20rpx]" v-if="distance > 0 &&detail.order_status_info.status == 0">
                         <text>剩余支付时间：</text>
@@ -51,7 +51,7 @@
                         <view class="flex items-center justify-between">
                             <view class="flex items-center">
                                 <text class="text-sm">{{type == 'hotel' ? '券码' : '入园码' }}  {{detail.verify_code}}</text>
-                                <text class="iconfont iconfuzhi ml-2 text-[#636363]" @click="copy(detail.verify_code)"></text>
+                                <text class="nc-iconfont nc-icon-fuzhiV6xx text-[32rpx] ml-2 text-[#636363]" @click="copy(detail.verify_code)"></text>
                             </view>
                             <text class="text-[#696969] text-[26rpx]">{{detail.order_status_info.name}}</text>
                         </view>
@@ -80,7 +80,7 @@
                         {{detail.hotel.hotel_name}}（{{detail.goods_name}}）
                     </view>
                     <view class="mt-1 text-[#1A2336] text-[26rpx] font-bold flex items-center">
-                        <text class="iconfont iconyuandianfengefu"></text>
+                        <text class="nc-iconfont nc-icon-fengefuV6xx text-[32rpx]"></text>
                         <text>共{{detail.num}}间</text>
                     </view>
                     <!-- <view class="mt-3 text-[#1A2336] text-[26rpx] font-bold">
@@ -141,15 +141,15 @@
 
             <view class="h-[160rpx] w-full"></view>
             <view class="flex justify-end items-center bg-white px-3 py-1 fixed left-0 right-0 bottom-0 z-10">
-                <view class="flex flex-col items-center justify-center w-[110rpx] mr-auto" @click="orderBtnFn(detail,'index')">
-                    <text class="iconfont iconshouye-zhihui text-[46rpx] text-[#333]"></text>
-                    <text class="text-xs mt-[2rpx] font-scale">返回首页</text>
+                <view class="flex flex-col items-center justify-center mr-auto" @click="orderBtnFn(detail,'index')">
+                    <text class="nc-iconfont nc-icon-shouye-xiaolianV6xx text-[46rpx] text-[#333]"></text>
+                    <text class="text-xs mt-[2rpx] font-scale">首页</text>
                 </view>
                 <view class="flex flex-wrap justify-end">
-                    <u-button color="var(--primary-color)" shape="circle" :customStyle="{lineHeight:'70rpx', margin:'16rpx 0rpx 16rpx 24rpx',  color:'#fff',width:'200rpx',height:'70rpx',fontSize:'26rpx'}" type="primary"  @click="orderBtnFn(detail,btnItem.key)" v-for="(btnItem,btnIndex) in detail.order_status_info.member_action">{{btnItem.name}}</u-button>
-                    <u-button v-if="detail.is_enable_refund && ['', 'refund_refuse'].includes(detail.refund_status)" type="primary"  color="var(--primary-color)" shape="circle" :customStyle="{lineHeight:'70rpx', margin:'16rpx 0rpx 16rpx 24rpx',  color:'#fff',width:'200rpx',height:'70rpx',fontSize:'26rpx'}"  @click="refundApplyFn(detail)">申请退款</u-button>
-                    <u-button v-if="detail.refund_no" type="primary" color="var(--primary-color)" shape="circle" :customStyle="{lineHeight:'70rpx', margin:'16rpx 0rpx 16rpx 24rpx',  color:'#fff',width:'200rpx',height:'70rpx',fontSize:'26rpx'}" @click="refundStepsShow = true">查看退款</u-button>
-                    <u-button v-if="detail.refund_no && detail.refund_status == 'wait_refund'" type="primary" color="var(--primary-color)" shape="circle" :customStyle="{lineHeight:'70rpx', margin:'16rpx 0rpx 16rpx 24rpx',  color:'#fff',width:'200rpx',height:'70rpx',fontSize:'26rpx'}" @click="cancelRefundFn(detail)">取消退款</u-button>
+                    <u-button :text="btnItem.name" color="var(--primary-color)" shape="circle" :customStyle="{lineHeight:'70rpx', margin:'16rpx 0rpx 16rpx 24rpx',  color:'#fff',width:'200rpx',height:'70rpx',fontSize:'26rpx'}" type="primary"  @click="orderBtnFn(detail,btnItem.key)" v-for="(btnItem,btnIndex) in detail.order_status_info.member_action"></u-button>
+                    <u-button text="申请退款" v-if="detail.is_enable_refund && ['', 'refund_refuse'].includes(detail.refund_status)" type="primary"  color="var(--primary-color)" shape="circle" :customStyle="{lineHeight:'70rpx', margin:'16rpx 0rpx 16rpx 24rpx',  color:'#fff',width:'200rpx',height:'70rpx',fontSize:'26rpx'}"  @click="refundApplyFn(detail)"></u-button>
+                    <u-button text="查看退款" v-if="detail.refund_no" type="primary" color="var(--primary-color)" shape="circle" :customStyle="{lineHeight:'70rpx', margin:'16rpx 0rpx 16rpx 24rpx',  color:'#fff',width:'200rpx',height:'70rpx',fontSize:'26rpx'}" @click="refundStepsShow = true"></u-button>
+                    <u-button text="取消退款" v-if="detail.refund_no && detail.refund_status == 'wait_refund'" type="primary" color="var(--primary-color)" shape="circle" :customStyle="{lineHeight:'70rpx', margin:'16rpx 0rpx 16rpx 24rpx',  color:'#fff',width:'200rpx',height:'70rpx',fontSize:'26rpx'}" @click="cancelRefundFn(detail)"></u-button>
                 </view>
             </view>
             <pay ref="payRef" @close="payClose"></pay>
@@ -187,6 +187,11 @@
         </view>
 
         <u-loading-page bg-color="rgb(248,248,248)" :loading="loading" fontSize="16" color="#333"></u-loading-page>
+
+        <!-- #ifdef MP-WEIXIN -->
+        <!-- 小程序隐私协议 -->
+        <wx-privacy-popup ref="wxPrivacyPopup"></wx-privacy-popup>
+        <!-- #endif -->
     </view>
 </template>
 

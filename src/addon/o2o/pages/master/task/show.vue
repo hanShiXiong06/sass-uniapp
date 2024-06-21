@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 	import { t } from '@/locale'
-    import { onLoad } from '@dcloudio/uni-app'
+    import { onLoad,onUnload } from '@dcloudio/uni-app'
 	import { ref, reactive } from 'vue';
 	import { img, redirect } from '@/utils/common';
 	import { addService,editService } from '@/addon/o2o/api/o2o'
@@ -75,6 +75,12 @@ const imgListPreview = (url) => {
 	})
 }
 
+// 关闭预览图片
+onUnload(()=>{
+    // #ifdef  H5 || APP
+    uni.closePreviewImage()
+    // #endif
+})
 </script>
 
 <style lang="scss" scoped>

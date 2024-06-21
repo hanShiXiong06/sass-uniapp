@@ -15,10 +15,11 @@
                     <view class="font-bold multi-hidden">{{ detail.goods.goods_name }}</view>
                     <view class="flex items-center justify-between mt-2 ">
                         <view class="flex items-center">
-                            <view class="text-[var(--price-text-color)] text-[28rpx] font-bold">
+                            <view class="text-[var(--price-text-color)] text-[28rpx] font-bold flex items-center">
                                 <text class="text-[28rpx] price-font">￥</text>
-                                <text class="price-font text-[28rpx]">{{ detail.price }}</text>
+                                <text class="price-font text-[28rpx]">{{ goodsPrice }}</text>
                                 <text v-if="detail.sku_unit">/{{ detail.sku_unit}}</text>
+								<image  v-if="priceType == 'member_price'" class="h-[28rpx] ml-[12rpx] w-[60rpx]" :src="img('addon/o2o/VIP.png')" mode="heightFix" />
                             </view>
                             <view class="text-[24rpx] flex ml-[20rpx]">
                                 <text class="text-[var(--primary-color)] rounded-[6rpx] py-[6rpx] bg-[var(--label-bg-color)] px-[10rpx]">{{ detail.goods.buy_type_name }}</text>
@@ -32,7 +33,7 @@
                     <view class="flex-1 text-[#343434] text-sm leading-[42rpx] font-500">
                         {{ detail.sku_name }}
                     </view>
-                    <text class="iconfont iconxiangyoujiantou text-sm"></text>
+                    <text class="nc-iconfont nc-icon-youV6xx text-[26rpx] text-[#666]"></text>
                 </view>
                 <view class="chunk-wrap pt-[34rpx] pb-[24rpx] scheduling rounded-lg">
                     <view class="flex items-center">
@@ -89,10 +90,15 @@
                 <view class="flex justify-between bg-white px-3 py-2 fixed bottom-0 left-0 right-0">
                     <view class="flex items-center">
                         <view class="flex flex-col items-center mr-[44rpx]" @click="redirect({ url: '/addon/o2o/pages/index', mode: 'reLaunch' })">
-                            <image class="w-[44rpx] h-[44rpx]" :src="img('addon/o2o/service/index.png')" mode="aspectFill">
+                            <image class="w-[43rpx] h-[43rpx] " :src="img('addon/o2o/service/index.png')" mode="aspectFill">
                             </image>
-                            <text class="text-[24rpx] text-[#454545] mt-1">{{ t('index') }}</text>
+                            <text class="text-[24rpx] text-[#454545] mt-1.5">{{ t('index') }}</text>
                         </view>
+						<view class="flex flex-col items-center mr-[44rpx]" @click="openShareFn">
+						    <view class="nc-iconfont nc-icon-fenxiangV6xx text-[36rpx] mt-[4rpx] mb-[6rpx] font-bold"></view>
+						    <text class="text-[24rpx] text-[#454545] mt-1">{{ t('share') }}</text>
+						</view>
+						 
                         <view class="flex flex-col items-center mr-[44rpx]">
                             <image class="w-[44rpx] h-[44rpx]" :src="img('addon/o2o/service/service.png')" mode="aspectFill">
                             </image>
@@ -108,6 +114,9 @@
                     :text="detail.goods.status ? (detail.goods.buy_type == 'reservation' ? t('bookNow') : t('orderNow')) : t('delisted')"	@click="toOrder(detail)"></u-button>
                 </view>
             </view>
+			
+			<share-poster ref="sharePosterRef" posterType="o2o_goods" :posterId="detail.goods.poster_id" :posterParam="posterParam" :copyUrlParam="copyUrlParam" />
+			
         </view>
         <ns-goods-sku ref="goodsSkuRef" :goods-detail="detail" @change="specSelectFn"></ns-goods-sku>
         <u-loading-page bg-color="rgb(248,248,248)" :loading="loading" fontSize="16" color="#333"></u-loading-page>
@@ -118,7 +127,7 @@
 import { ref, reactive, computed, watch } from 'vue';
 import { onLoad, onShow } from '@dcloudio/uni-app'
 import { useLogin } from '@/hooks/useLogin';
-import { img, redirect, getToken } from '@/utils/common';
+import { img, redirect, getToken, handleOnloadParams } from '@/utils/common';
 import { getGoodsDetail, setCollect, getCollect, deleteCollect } from '@/addon/o2o/api/goods';
 import useMemberStore from '@/stores/member'
 import { t } from '@/locale';
@@ -127,11 +136,15 @@ import uniTable from '@/addon/o2o/components/uni-table/components/uni-table/uni-
 import uniTr from '@/addon/o2o/components/uni-table/components/uni-tr/uni-tr.vue'
 import uniTh from '@/addon/o2o/components/uni-table/components/uni-th/uni-th.vue'
 import uniTd from '@/addon/o2o/components/uni-table/components/uni-td/uni-td.vue'
+import sharePoster from '@/components/share-poster/share-poster.vue'
 
 let detail = ref<Array<any>>([]);
 let loading = ref<boolean>(true);
 const memberStore = useMemberStore()
 const goodsSkuRef = ref(null)
+
+// 会员信息
+const userInfo = computed(() => memberStore.info)
 
 let goodsState = ref('goods_content')
 
@@ -145,6 +158,11 @@ let goods = ref({
 	goods_id: ''
 });
 onLoad((option) => {
+	// #ifdef MP-WEIXIN
+	// 处理小程序场景值参数
+	option = handleOnloadParams(option);
+	// #endif
+	
 	goods.value.sku_id = option.sku_id
 	goods.value.goods_id = option.goods_id
 	loading.value = true
@@ -164,6 +182,7 @@ onLoad((option) => {
 			detail.value.goods.goods_image_thumb_mid[index] = img(item);
 		})
 		loading.value = false;
+		copyUrlFn();
 	});
 })
 // 订单计算创建
@@ -201,47 +220,42 @@ const specSelectFn = (id) => {
 	})
 }
 
+/************* 分享海报-start **************/
+let sharePosterRef = ref(null);
+let copyUrlParam = ref('');
+let posterParam = {};
 
-// let collect_id = ref(0)
-// onShow(() => {
-// 	if(getToken()){
-// 		setTimeout(function(){
-// 			getMemberCollect()
-// 		}, 700)
-// 	}
-// })
+// 分享海报链接
+const copyUrlFn = ()=>{
+	copyUrlParam.value = '?sku_id='+detail.value.sku_id;
+	if (userInfo.value && userInfo.value.member_id) copyUrlParam.value += '&mid=' + userInfo.value.member_id;
+}
 
-// const getMemberCollect = () => {
-// 	getCollect({
-// 		member_id: memberStore.info.member_id,
-// 		goods_id: goodsId.value,
-// 		type: 'o2o'
-// 	}).then(res =>{
-// 		if(res.data) collect_id.value = res.data.id
-// 		if(!res.data) collect_id.value = 0
-// 	})
-// }
+const openShareFn = ()=>{
+	
+    posterParam.sku_id = detail.value.sku_id;
+    if (userInfo.value && userInfo.value.member_id)
+        posterParam.member_id = userInfo.value.member_id;
+	sharePosterRef.value.openShare()
+}
+/************* 分享海报-end **************/
 
-// const collect = (data) => {
-// 	if(!getToken()){
-// 		useLogin().setLoginBack({ url: '/addon/o2o/pages/service/detail',param:{id: data.goods_id}})
-// 		return false;
-// 	}
+// 价格类型
+let priceType = ref('') //''=>原价，discount_price=>折扣价，member_price=>会员价
 
-// 	if(collect_id.value > 0){
-// 		deleteCollect(collect_id.value).then(() => {
-// 			getMemberCollect()
-// 		})
-// 	}else{
-// 		setCollect({
-// 			member_id: memberStore.info.member_id,
-// 			goods_id: goodsId.value,
-// 			type: 'o2o'
-// 		}).then(() => {
-// 			getMemberCollect()
-// 		})
-// 	}
-// }
+// 商品价格
+let goodsPrice = computed(() =>{
+	let price = "0.00";
+	if(Object.keys(detail.value).length && Object.keys(detail.value.goods).length && detail.value.goods.member_discount && getToken()){
+		// 会员价
+		price = detail.value.member_price || detail.value.price
+		priceType.value = 'member_price'
+	}else{
+		price = detail.value.price
+		priceType.value = ''
+	}
+	return parseFloat(price).toFixed(2);
+})
 
 </script>
 

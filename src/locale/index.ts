@@ -1,11 +1,10 @@
 import i18n, { language } from "./i18n"
 import useSystemStore from '@/stores/system'
-import { currRoute } from '@/utils/common'
 
 const t = (message: string) => {
-    const route = currRoute()
-    const file = language.getFileKey(`/${route}`)
-    const key = `${file.fileKey}.${message}`
+    const route = useSystemStore().currRoute
+    const file = language.getFileKey(`/${ route }`)
+    const key = `${ file.fileKey }.${ message }`
     if (i18n.global.t(message) != message) return i18n.global.t(message)
     return i18n.global.t(key) != key ? i18n.global.t(key) : ''
 }

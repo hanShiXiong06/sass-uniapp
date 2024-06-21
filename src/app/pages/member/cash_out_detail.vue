@@ -18,9 +18,9 @@
 				<text class="label">{{t('createTime')}}</text>
 				<text class="value">{{ cashOutInfo.create_time }}</text>
 			</view>
-			<view class="line-wrap" v-if="cashOutInfo.status">
+			<view class="line-wrap" v-if="cashOutInfo.status && cashOutInfo.audit_time">
 				<text class="label">{{t('auditTime')}}</text>
-				<text class="value">{{ cashOutInfo.audit_time }}</text>
+				<text class="value">{{ cashOutInfo.audit_time  }}</text>
 			</view>
 			<view class="line-wrap" v-if="cashOutInfo.transfer_bank">
 				<text class="label">{{t('transferBank')}}</text>
@@ -38,7 +38,7 @@
 				<text class="label">{{t('transferTypeName')}}</text>
 				<text class="value">{{ cashOutInfo.transfer_type_name }}</text>
 			</view>
-			<view class="line-wrap" v-if="cashOutInfo.status == 2">
+			<view class="line-wrap" v-if="cashOutInfo.status == 2 && cashOutInfo.transfer_time">
 				<text class="label">{{t('transferTime')}}</text>
 				<text class="value">{{ cashOutInfo.transfer_time }}</text>
 			</view>

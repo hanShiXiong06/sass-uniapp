@@ -1,9 +1,6 @@
 import { getTabbarPages } from './pages'
 import useDiyStore from '@/app/stores/diy'
 import useMemberStore from '@/stores/member'
-import pagesZh from '@/locale/zh-Hans.json'
-import pagesEn from '@/locale/en.json'
-import { onReady } from '@dcloudio/uni-app'
 import useSystemStore from '@/stores/system'
 
 /**
@@ -60,17 +57,15 @@ export const redirect = (redirect : redirectOptions) => {
 * 自定义跳转链接
 * @param {Object} link
 */
-export const diyRedirect = (link : any) => {
+export const diyRedirect = (link: any) => {
 	const diyStore = useDiyStore();
 	// 装修模式禁止跳转
 	if (diyStore.mode == 'decorate') return;
 
 	if (link == null || Object.keys(link).length == 1) return;
 
-	if (!link.url) return;
-
 	// 外部链接
-	if (link.url.indexOf('http') != -1 || link.url.indexOf('http') != -1) {
+	if (link.url && (link.url.indexOf('https') != -1 || link.url.indexOf('http') != -1)) {
 
 		// #ifdef H5
 		window.location.href = link.url;
@@ -82,6 +77,24 @@ export const diyRedirect = (link : any) => {
 			param: { src: encodeURIComponent(link.url) }
 		});
 		// #endif
+	} else if (link.appid) {
+		// 跳转其他小程序
+
+		// #ifdef MP
+		uni.navigateToMiniProgram({
+			appId: link.appid,
+			path: link.page
+		})
+		// #endif
+	} else if (link.name == 'DIY_MAKE_PHONE_CALL' && link.mobile) {
+		// 拨打电话
+
+		uni.makePhoneCall({
+			phoneNumber: link.mobile,
+			success: (res) => {},
+			fail: (res) => {}
+		});
+
 	} else {
 		redirect({ url: link.url });
 	}
@@ -99,6 +112,12 @@ export const currRoute = () => {
 // 获取分享路由
 export const currShareRoute = () => {
 	const pages = getCurrentPages()
+	if (pages.length == 0) {
+		return {
+			path: '/',
+			params: {}
+		}
+	}
 	let currentRoute = pages[pages.length - 1].route //获取当前页面路由
 
 	// #ifdef H5
@@ -236,18 +255,21 @@ export function mobileConceal(mobile : string) : string {
 /**
  * 获取站点id
  */
-export function getSiteId(siteid : number) {
+export function getSiteId(siteId : number | string) {
     // #ifdef H5
     const match = location.href.match(/\/wap\/(\d*)\//);
-    if (match) return match[1]
-    else return siteid
+	match && (siteId = match[1])
     // #endif
 
-    // #ifndef H5
-    return siteid
-    // #endif
+	// #ifdef MP-WEIXIN
+	if (uni.getExtConfigSync) {
+		const extConfig = uni.getExtConfigSync()
+		extConfig.site_id && (siteId = extConfig.site_id)
+	}
+	// #endif
+
+    return siteId
 }
-
 
 /**
  * 时间戳转日期格式
@@ -284,7 +306,7 @@ export function timeStampTurnTime(timeStamp, type = "") {
 
 /**
  * 复制
- * @param {Object} message
+ * @param {Object} value
  * @param {Object} callback
  */
 export function copy(value, callback) {
@@ -413,9 +435,29 @@ export function deepClone(obj: object) {
     return o
 }
 
+/**
+ * 防抖函数
+ * @param fn
+ * @param delay
+ * @returns
+ */
+export function debounce(fn: (args?: any) => any, delay: number = 300) {
+    let timer: null | number = null
+    return function (...args) {
+        if (timer != null) {
+            clearTimeout(timer)
+            timer = null
+        }
+        timer = setTimeout(() => {
+            fn.call(this, ...args)
+        }, delay);
+    }
+}
+
 const isArray = (value: any) => {
     if (typeof Array.isArray === 'function') {
         return Array.isArray(value)
     }
     return Object.prototype.toString.call(value) === '[object Array]'
 }
+

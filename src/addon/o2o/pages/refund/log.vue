@@ -8,7 +8,7 @@
             </view>
             <view class="pt-[140rpx]"></view>
             <view class="flex tab-bar items-center bg-[#fff] fixed left-0 right-0 bottom-0 min-h-[120rpx] px-1 flex-wrap">
-                <u-button class="!text-sm" type="primary" shape="circle" @click="redirect({url: '/addon/o2o/pages/refund/detail', param: { refund_no: refundNo }})">{{ t('detail') }}</u-button>
+                <u-button :text="t('detail')" class="!text-sm" type="primary" shape="circle" @click="redirect({url: '/addon/o2o/pages/refund/detail', param: { refund_no: refundNo }})"></u-button>
             </view>
         </view>
 

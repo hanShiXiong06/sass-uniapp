@@ -62,7 +62,8 @@
 		pay({
 			trade_type: payInfo.value?.trade_type,
             trade_id: payInfo.value?.trade_id,
-			type: type.value
+			type: type.value,
+            openid: uni.getStorageSync('openid') || ''
 		}).then(res => {
 			switch (type.value) {
 				case 'wechatpay':
