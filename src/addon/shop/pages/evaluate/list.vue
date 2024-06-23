@@ -15,8 +15,8 @@
                     <view class=" py-[20rpx] px-[24rpx] bg-[#fff] mb-[20rpx] rounded-[12rpx]">
                         <view class="flex items-center  justify-between">
                             <view class="flex items-center">
-                                <u-avatar class="mr-[10rpx]" :src="img(item.member_head)" :size="'50rpx'" leftIcon="none"></u-avatar>
-                                <text class="text-[28rpx]">{{ item.member_name }}</text>
+                                <u-avatar :src="img(item.member_head)" :size="'50rpx'" leftIcon="none"></u-avatar>
+                                <text class="text-[28rpx] ml-[10rpx]">{{ item.member_name }}</text>
                             </view>
                             <text class="text--[26rpx] text-[#737373]">{{ item.create_time ? item.create_time.slice(0, 10) : '' }}</text>
                         </view>

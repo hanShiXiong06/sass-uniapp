@@ -1,9 +1,9 @@
 <template>
-    <u-popup :show="show" @close="show = false" mode="bottom" :round="10" :closeable="true">
+    <u-popup :show="show" @close="show = false" mode="bottom" :round="10" :closeable="true" :safeAreaInsetBottom="true" :customStyle="{maxHeight:'50vh'}">
         <view @touchmove.prevent.stop>
 			<view class="text-center p-[30rpx]">请填写发票信息</view>
-			<scroll-view scroll-y="true" class="max-h-[50vh]">
-				<view class="p-[30rpx] pt-0 text-sm">
+			<scroll-view :scroll-y="true"  class="max-h-[50vh]">
+				<view class="p-[30rpx] pt-0 text-sm ">
 					<u-form labelPosition="left" :model="formData" labelWidth="200rpx" errorType='toast' :rules="rules" ref="formRef">
 						<view class="mt-[10rpx]">
 							<u-form-item label="需要发票" :border-bottom="true">
@@ -59,7 +59,7 @@
 									<text class="text-xs text-gray-subtitle ml-[10rpx]">注册地址、电话、开户银行及账号</text>
 									<view class="text-xs text-right flex-1" @click="optionalShow = !optionalShow">
 										<text>{{ optionalShow ? '收起' : '展开' }}</text>
-										<text class="text-xs iconfont text-gray-subtitle ml-[5rpx]" :class="optionalShow ? 'iconjiantoushang' : 'iconxialajiantouxiao'"></text>
+										<text class="text-[30rpx] nc-iconfont text-gray-subtitle ml-[5rpx]" :class="optionalShow ? 'nc-icon-shangV6xx-1' : 'nc-icon-xiaV6xx'"></text>
 									</view>
 								</view>
 								<view v-show="optionalShow">
@@ -90,7 +90,7 @@
 				</view>
 			</scroll-view>
 			<view class="p-[30rpx]">
-				<u-button type="primary" shape="circle" @click="confirm">确认</u-button>
+				<u-button type="primary" text="确认" shape="circle" @click="confirm"></u-button>
 			</view>
 		</view>
     </u-popup>
@@ -127,7 +127,6 @@
         config.value = data
         data.invoice_content.length && (formData.value.name = data.invoice_content[0])
     }).catch()
-
 
     const formRef = ref(null)
 

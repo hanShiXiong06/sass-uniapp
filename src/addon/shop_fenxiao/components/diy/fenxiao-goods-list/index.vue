@@ -2,7 +2,7 @@
 	<x-skeleton :type="skeleton.type" :loading="skeleton.loading" :config="skeleton.config">
 		<view :style="warpCss">
 			<view :style="maskLayer"></view>
-			<div class="diy-shop-goods-list relative flex flex-wrap justify-between">
+			<div class="diy-fenxiao-goods-list relative flex flex-wrap justify-between">
 				<block v-if="diyComponent.style == 'style-1'">
 					<view class="bg-white w-full flex p-[20rpx] mx-[20rpx] rounded-[8rpx] overflow-hidden" :class="{ 'mt-[20rpx]': index > -10,'mb-[20rpx]': (index+1) == goodsList.length }" :style="itemCss" v-for="(item,index) in goodsList" :key="item.goods_id" @click="toLink(item)">
 						<u--image class="rounded-[10rpx] overflow-hidden" width="190rpx" height="190rpx" :src="img(item.goods_cover_thumb_mid || '')" model="aspectFill">
@@ -23,7 +23,7 @@
 									<text class="text-[26rpx] mx-[4rpx]">￥</text>
 									<text class="text-[26rpx]">{{ parseFloat(item.commission).toFixed(2) }}</text>
 								</view>
-								<text v-if="item.fenxiao" @click.stop="openShareFn(item)" class="iconfont iconfenxiang1 leading-0 flex items-center justify-center rounded-full ml-auto w-[48rpx] h-[48rpx] bg-[var(--price-text-color)] text-[#fff]" :style="{ 'background-color' : diyComponent.commissionStyle.color }"></text>
+								<text v-if="item.fenxiao" @click.stop="openShareFn(item)" class="nc-iconfont nc-icon-fenxiangV6xx-1 leading-0 flex items-center justify-center rounded-full ml-auto w-[48rpx] h-[48rpx] bg-[var(--price-text-color)] text-[#fff]" :style="{ 'background-color' : diyComponent.commissionStyle.color }"></text>
 								<text v-if="!item.fenxiao && diyComponent.is_become_fenxiao == 1" @click.stop="toFenxiaoLink()" class="leading-0 flex items-center justify-center rounded-[50rpx] ml-auto w-[150rpx] h-[56rpx] bg-[#fe4c19] text-[24rpx] text-[#fff]" :style="{ 'background-color' : diyComponent.commissionStyle.color }">
 									成为分销商
 								</text>
@@ -51,7 +51,7 @@
 									<text class="text-[36rpx] font-500">{{ parseFloat(item.goodsSku.price).toFixed(2).split('.')[0] }}</text>
 									<text class="text-[24rpx] font-500">.{{ parseFloat(item.goodsSku.price).toFixed(2).split('.')[1] }}</text>
 								</view>
-								<text v-if="item.fenxiao" @click.stop="openShareFn(item)" class="iconfont iconfenxiang1 leading-0 flex items-center justify-center rounded-full ml-auto w-[48rpx] h-[48rpx] bg-[var(--price-text-color)] text-[#fff]" :style="{ 'background-color' : diyComponent.commissionStyle.color }"></text>
+								<text v-if="item.fenxiao" @click.stop="openShareFn(item)" class="nc-iconfont nc-icon-fenxiangV6xx-1 leading-0 flex items-center justify-center rounded-full ml-auto w-[48rpx] h-[48rpx] bg-[var(--price-text-color)] text-[#fff]" :style="{ 'background-color' : diyComponent.commissionStyle.color }"></text>
 								<text v-if="!item.fenxiao && diyComponent.is_become_fenxiao == 1" @click.stop="toFenxiaoLink()" class="leading-0 flex items-center justify-center rounded-[50rpx] ml-auto w-[150rpx] h-[56rpx] bg-[#fe4c19] text-[24rpx] text-[#fff]" :style="{ 'background-color' : diyComponent.commissionStyle.color }">
 									成为分销商
 								</text>
@@ -61,8 +61,8 @@
 				</block>
 				<block v-if="diyComponent.style == 'style-3'">
 					<scroll-view class="whitespace-nowrap" :scroll-x="true" :style="style3Css">
-						<view class="w-[200rpx] rounded-[10rpx] inline-block bg-[#fff] box-border overflow-hidden" :class="{'mr-[14rpx]' : index != goodsList.length-1}" :style="itemCss" v-for="(item,index) in goodsList" :key="item.goods_id" @click="toLink(item)">
-							<u--image width="200rpx" height="160rpx" :src="img(item.goods_cover_thumb_mid || '')" model="aspectFill">
+						<view class="w-[214rpx] rounded-[10rpx] inline-block bg-[#fff] box-border overflow-hidden" :class="{'mr-[14rpx]' : index != goodsList.length-1}" :style="itemCss" v-for="(item,index) in goodsList" :key="item.goods_id" @click="toLink(item)">
+							<u--image width="214rpx" height="160rpx" :src="img(item.goods_cover_thumb_mid || '')" model="aspectFill">
 								<template #error>
 									<u-icon name="photo" color="#999" size="50"></u-icon>
 								</template>
@@ -191,16 +191,24 @@
 	)
 
 	const getGoodsListFn = () => {
-		let data = {
-			num: (diyComponent.value.source == 'all' || diyComponent.value.source == 'category') ? diyComponent.value.num : '',
-			goods_category: diyComponent.value.source == 'category' ? diyComponent.value.goods_category : '',
+        let data = {
+            num: (diyComponent.value.source == 'all' || diyComponent.value.source == 'category') ? diyComponent.value.num : '',
+            goods_category: diyComponent.value.source == 'category' ? diyComponent.value.goods_category : '',
             order: diyComponent.value.sortWay
-		}
-		getFenxiaoComponents(data).then((res) => {
-			goodsList.value = res.data;
+        }
+        getFenxiaoComponents(data).then((res) => {
+            goodsList.value = res.data;
             skeleton.loading = false;
-		});
-	}
+            if(diyComponent.value.componentBgUrl) {
+                setTimeout(() => {
+                    const query = uni.createSelectorQuery().in(instance);
+                    query.select('.diy-fenxiao-goods-list').boundingClientRect((data: any) => {
+                        height.value = data.height;
+                    }).exec();
+                }, 1000)
+            }
+        });
+    }
 
 	const initSkeleton = ()=> {
         if (diyComponent.value.style == 'style-1') {
@@ -245,10 +253,10 @@
             watch(
                 () => diyComponent.value,
                 (newValue, oldValue) => {
-                    if (newValue && newValue.componentName == 'GoodsList') {
+                    if (newValue && newValue.componentName == 'FenxiaoGoodsList') {
                         nextTick(() => {
                             const query = uni.createSelectorQuery().in(instance);
-                            query.select('.diy-shop-goods-list').boundingClientRect((data: any) => {
+                            query.select('.diy-fenxiao-goods-list').boundingClientRect((data: any) => {
                                 height.value = data.height;
                             }).exec();
                         })
@@ -315,8 +323,9 @@
 	}
 	const openShareFn = (data)=>{
 		posterParam.sku_id = data.goodsSku.sku_id;
-		if (userInfo.value && userInfo.value.member_id)
-			posterParam.member_id = userInfo.value.member_id;
+		if (userInfo.value && userInfo.value.member_id) {
+            posterParam.member_id = userInfo.value.member_id;
+        }
 		copyUrlFn(data);
 		sharePosterRef.value.openShare()
 	}

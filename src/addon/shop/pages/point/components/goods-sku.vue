@@ -2,7 +2,7 @@
 	<view @touchmove.prevent.stop>
 		<u-popup class="popup-type" :show="goodsSkuPop" @close="closeFn" mode="bottom">
 			<view class="p-[32rpx] relative" v-if="goodsDetail.detail" @touchmove.prevent.stop>
-				<view class="absolute right-[37rpx]  iconfont iconguanbi text-[36rpx]" @click="closeFn"></view>
+				<view class="absolute right-[37rpx]  nc-iconfont nc-icon-guanbiV6xx text-[36rpx]" @click="closeFn"></view>
 				<view class="flex mb-[58rpx]">
 
 					<view class="rounded-[8rpx] overflow-hidden">
@@ -52,13 +52,13 @@
 						<view class="text-[26rpx]">购买数量</view>
 						<u-number-box :min="1" :max="parseInt(goodsDetail.detail.limit_num)<goodsDetail.stock?parseInt(goodsDetail.detail.limit_num):goodsDetail.stock" integer :step="1" input-width="98rpx" v-model="buyNum" input-height="54rpx">
 							<template #minus>
-								<text class="text-[44rpx] iconfont iconjian" :class="{ '!text-[#c8c9cc]': buyNum === 1 }"></text>
+								<text class="text-[44rpx] nc-iconfont nc-icon-jianV6xx" :class="{ '!text-[#c8c9cc]': buyNum === 1 }"></text>
 							</template>
 							<template #input>
 								<text class="number-input text-[#303133] text-center bg-[#f2f2f2] w-[82rpx] fext-[23rpx] mx-[16rpx]">{{ buyNum }}</text>
 							</template>
 							<template #plus>
-								<text class="text-[44rpx] iconfont iconjia" :class="{ '!text-[#c8c9cc]': buyNum === goodsDetail.stock || buyNum ==parseInt(goodsDetail.detail.limit_num)}"></text>
+								<text class="text-[44rpx] nc-iconfont nc-icon-jiahaoV6xx" :class="{ '!text-[#c8c9cc]': buyNum === goodsDetail.stock || buyNum ==parseInt(goodsDetail.detail.limit_num)}"></text>
 							</template>
 						</u-number-box>
 					</view>
@@ -80,6 +80,7 @@
 	import { useLogin } from '@/hooks/useLogin'
 	import useMemberStore from '@/stores/member'
 	import { t } from '@/locale';
+
 	const props = defineProps(['goodsDetail']);
 	let goodsSkuPop = ref(false);
 	let callback:any = ref(null);
@@ -94,9 +95,11 @@
 	let goodsPrice = computed(() =>{
 		let price = "0.00";
 		if(Object.keys(goodsDetail.value).length && Object.keys(goodsDetail.value.goods).length && goodsDetail.value.goods.is_discount){
-			price = goodsDetail.value.sale_price // 折扣价
+			// 折扣价
+			price = goodsDetail.value.sale_price ? goodsDetail.value.sale_price : goodsDetail.value.price;
 		}else if(Object.keys(goodsDetail.value).length && Object.keys(goodsDetail.value.goods).length && goodsDetail.value.goods.member_discount && getToken()){
-			price = goodsDetail.value.member_price // 会员价
+			// 会员价
+			price = goodsDetail.value.member_price ? goodsDetail.value.member_price : goodsDetail.value.price;
 		}else{
 			price = goodsDetail.value.price
 		}
@@ -158,6 +161,7 @@
 
 	const change = (data, index)=>{
 		currSpec.value.name[index] = data.name;
+		buyNum.value = 1
 		getSkuId();
 	}
 

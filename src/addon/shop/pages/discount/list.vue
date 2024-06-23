@@ -14,7 +14,12 @@
                 </swiper-item>
             </swiper>
 			<image v-if="!bannerListLoading&&!bannerList.length" :src="img('addon/shop/discount/discount_banner.png')" mode="scaleToFill" class="w-full h-[490rpx]" :show-menu-by-longpress="true"/>
+			<!-- #ifdef H5 -->
             <view class="relative w-full h-[110rpx] mt-[-40rpx] z-5" v-if="discountList.length">
+			<!-- #endif -->
+			<!-- #ifdef MP-WEIXIN -->
+			<view class="relative w-full h-[110rpx] mt-[-24rpx] z-5" v-if="discountList.length">
+			<!-- #endif -->
                 <view class="bg-[#f24f3d] w-[750rpx] rounded-tl-[24rpx] rounded-tr-[24rpx] h-[96rpx] absolute left-0 bottom-0"></view>
                 <scroll-view :scroll-x="true" class="h-[110rpx] absolute left-0 bottom-0 z-5">
                     <view class="flex items-end h-[100%]" :style="{'width':187.5*discountList.length+'rpx'}" >
@@ -36,22 +41,17 @@
 
         </view>
 
-	    <!-- #ifdef MP-WEIXIN -->
-	    <mescroll-body ref="mescrollRef" :top="discountList.length?'408rpx':'340rpx'" @init="mescrollInit" @down="downCallback" @up="getActiveDiscountGoodsListFn">
-	    <!-- #endif -->
-	    <!-- #ifdef H5 -->
-	    <mescroll-body ref="mescrollRef" :top="discountList.length?'590rpx':'520rpx'" @init="mescrollInit" @down="downCallback" @up="getActiveDiscountGoodsListFn">
-	    <!-- #endif -->
+	    <mescroll-body v-if="discountList.length" ref="mescrollRef" :top="mescrollTop" @init="mescrollInit" :down="{ use: false }" @up="getActiveDiscountGoodsListFn">
             <view class="px-[30rpx] bg-[#F4F6F8]">
 				<block v-for="(item,index) in list" :key="index">
-					<view class="bg-[#fff] p-[20rpx] flex rounded-[16rpx]" :class="{'mb-[20rpx]':index<list.length-1,'mb-[30rpx]':index==list.length-1}">
-						<view class="w-[240rpx] h-[240rpx] rounded-[16rpx]">
-							<u--image  v-if="item.activeGoods.active_goods_status!='active'" width="240rpx" height="240rpx" :src="img(item.goods_cover_thumb_mid ? item.goods_cover_thumb_mid : '')" model="aspectFill" @click="toast(item)">
+					<view class="bg-[#fff] p-[20rpx] flex rounded-[16rpx]" :class="{'mb-[20rpx]':index<list.length-1,'mb-[30rpx]':index==list.length-1}" @click="toLink(item.goodsSku.sku_id)">
+						<view class="w-[190rpx] h-[190rpx] rounded-[16rpx]">
+							<u--image  v-if="item.activeGoods.active_goods_status!='active'" width="190rpx" height="190rpx" :src="img(item.goods_cover_thumb_mid ? item.goods_cover_thumb_mid : '')" model="aspectFill" @click="toast(item)">
 								<template #error>
 									<u-icon name="photo" color="#999" size="50"></u-icon>
 								</template>
 							</u--image>
-							<u--image  v-else width="240rpx" height="240rpx" :src="img(item.goods_cover_thumb_mid ? item.goods_cover_thumb_mid : '')" model="aspectFill" @click="toLink(item.goodsSku.sku_id)">
+							<u--image  v-else width="190rpx" height="190rpx" :src="img(item.goods_cover_thumb_mid ? item.goods_cover_thumb_mid : '')" model="aspectFill">
 								<template #error>
 									<u-icon name="photo" color="#999" size="50"></u-icon>
 								</template>
@@ -101,6 +101,9 @@
                 </view>
             </view>
         </mescroll-body>
+		<view class="flex justify-center items-center justify-center bg-[#fff] rounded-[16rpx] h-[calc(100vh-550rpx)] fixed left-[30rpx] right-[30rpx]" :style="{'top':mescrollTop}" v-if="!discountList.length && !loading">
+		    <mescroll-empty :option="{tip : '暂无活动，请看看其他商品吧！'}"></mescroll-empty>
+		</view>
         <u-loading-page bg-color="rgb(248,248,248)" :loading="loading" loadingText="" fontSize="16" color="#303133"></u-loading-page>
     </view>
 </template>
@@ -114,6 +117,12 @@ import MescrollBody from '@/components/mescroll/mescroll-body/mescroll-body.vue'
 import MescrollEmpty from '@/components/mescroll/mescroll-empty/mescroll-empty.vue'
 import useMescroll from '@/components/mescroll/hooks/useMescroll.js'
 import { onPageScroll, onReachBottom } from '@dcloudio/uni-app'
+
+let menuButtonInfo = {};
+// 如果是小程序，获取右上角胶囊的尺寸信息，避免导航栏右侧内容与胶囊重叠(支付宝小程序非本API，尚未兼容)
+// #ifdef MP-WEIXIN || MP-BAIDU || MP-TOUTIAO || MP-QQ
+menuButtonInfo = uni.getMenuButtonBoundingClientRect();
+// #endif
 
 const { mescrollInit, downCallback, getMescroll } = useMescroll(onPageScroll, onReachBottom)
 const bannerList = ref<Array<Object>>([])
@@ -147,8 +156,11 @@ getActiveDiscountConfigFn()
 const getActiveDiscountListFn = ()=>{
     getActiveDiscountList({limit:4}).then((res:any)=>{
         discountList.value = res.data
+		calculateHeight();
 		if(discountList.value&&discountList.value.length){
 			navClick(res.data[0]);
+		}else{
+			loading.value = false
 		}
         
     })
@@ -187,16 +199,14 @@ const getActiveDiscountGoodsListFn = (mescroll) => {
 		mescroll.endErr(); // 请求失败, 结束加载
 	})
 }
-const toRedirect =(data:{})=>{
+const toRedirect =(data:any)=>{
 	if (Object.keys(data).length) {
-		if (!data.url) return;
+		if (!data.name) return;
 		if (currRoute() == 'app/pages/member/index' && !getToken()) {
 			useLogin().setLoginBack({ url: data.url })
 			return;
 		}
 		diyRedirect(data);
-	} else {
-		redirect(data)
 	}
 }
 
@@ -205,6 +215,15 @@ const toLink = (sku_id : string) => {
 }
 const toast = (item:any)=>{
 	uni.showToast({ title: `活动${item.activeGoods.active_goods_status_name}`, icon: 'none' })
+}
+
+let mescrollTop = ref('')
+const calculateHeight = ()=>{
+	mescrollTop.value = discountList.value.length ? '590' : '520';
+	// #ifdef MP-WEIXIN
+	mescrollTop.value = mescrollTop.value - (menuButtonInfo.height + menuButtonInfo.top) * 2;
+	// #endif
+	mescrollTop.value = mescrollTop.value + 'rpx'
 }
 </script>
 

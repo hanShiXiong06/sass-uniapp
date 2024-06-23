@@ -1,6 +1,7 @@
 <template>
      <view class="bg-[#f8f8f8] min-h-screen" :style="themeColor()">
-          <view class="px-[24rpx] py-[20rpx]">
+		 <mescroll-body ref="mescrollRef" top="90rpx" @init="mescrollInit" @down="downCallback" @up="getShopOrderFn">
+			<view class="px-[24rpx] py-[20rpx]" v-if="info.length">
                <template v-for="(item, index)  in info" :key="index">
                     <view class="bg-white py-[20rpx] px-[24rpx] mb-[20rpx] rounded-[16rpx]">
                          <view class="flex mb-[20rpx]" @click="redirect({ url: '/addon/shop/pages/goods/detail', param: { goods_id: item.goods_id } })">
@@ -26,7 +27,7 @@
                               <u-rate :count="5" v-model="item.scores" active-color="var(--primary-color)" :size="'32rpx'" readonly></u-rate>
                               <text class="ml-[20rpx] text-[26rpx] text-[#888]">{{ item.scores === 1 ? '差评' : item.scores === 2 || item.scores === 3 ? '中评' : '好评' }}</text>
                          </view>
-                         <view class=" text-[28rpx] text-[#888] my-[20rpx] overflow-clip">{{ item.content }}</view>
+                         <view class=" text-[28rpx] text-[#888] my-[20rpx] break-all">{{ item.content }}</view>
                          <template v-if="item.image_mid.length === 1">
                             <u--image class="rounded-[8rpx] overflow-hidden mt-[10rpx]" width="420rpx" height="420rpx" :src="img(item.image_mid[0])" model="aspectFill" @click="imgListPreview(item.images[0])">
                                 <template #error>
@@ -110,16 +111,25 @@
                         </view>
                     </view>
                </template>
-          </view>
-          <u-loading-page bg-color="rgb(248,248,248)" :loading="loading" loadingText="" fontSize="16" color="#303133"></u-loading-page>
+			</view>
+			<view class="h-[100vh] w-[100vw] px-[30rpx] pt-[20rpx] box-border">
+				<view class=" bg-[#fff] rounded-[16rpx] flex items-center justify-center noData" v-if="!info.length && !loading">
+					<mescroll-empty :option="{tip : '暂无评价'}"></mescroll-empty>
+				</view>
+			</view>
+			<u-loading-page bg-color="rgb(248,248,248)" :loading="loading" loadingText="" fontSize="16" color="#303133"></u-loading-page>
+		  </mescroll-body>
      </view>
 </template>
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { getOrderEvaluate } from '@/addon/shop/api/evaluate';
-import { onLoad,onUnload } from '@dcloudio/uni-app';
+import { onLoad,onUnload,onPageScroll,onReachBottom } from '@dcloudio/uni-app';
 import { img,redirect } from '@/utils/common';
+import useMescroll from '@/components/mescroll/hooks/useMescroll.js';
+import MescrollEmpty from '@/components/mescroll/mescroll-empty/mescroll-empty.vue';
 
+const { mescrollInit, downCallback, getMescroll } = useMescroll(onPageScroll, onReachBottom);
 const info = ref<Array<any>>([])
 const loading = ref(false)
 onLoad((option:any) => {
@@ -154,3 +164,9 @@ onUnload(()=>{
     // #endif
 })
 </script>
+<style>
+	.noData{
+		height: calc(100vh - 40rpx - constant(safe-area-inset-bottom));
+		height: calc(100vh - 40rpx - env(safe-area-inset-bottom));
+	 }
+</style>

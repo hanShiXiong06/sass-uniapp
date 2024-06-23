@@ -50,6 +50,20 @@ export function getRefundDetail(orderRefundNo: string) {
 }
 
 /**
+ * 获取退款金额
+ */
+export function getRefundMoney(params: Record<string, any>) {
+    return request.get(`shop/refund/refund_data`,params)
+}
+
+/**
+ * 编辑退款金额
+ */
+export function getRefundMoneyAgain(params: Record<string, any>) {
+    return request.get(`shop/refund/refund_data_by_no`,params)
+}
+
+/**
  * 取消维权
  */
 export function closeRefund(orderRefundNo: string) {

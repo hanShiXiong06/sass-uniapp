@@ -2,7 +2,6 @@ import request from '@/utils/request'
 
 /**
  * 获取个人积分信息
- * @param
  * @returns
  */
 export function getExchangePoint() {
@@ -11,7 +10,6 @@ export function getExchangePoint() {
 
 /**
  * 获取积分商城推荐列表
- * @param
  * @returns
  */
 export function getExchangeComponentsList(params : Record<string, any>) {
@@ -19,7 +17,6 @@ export function getExchangeComponentsList(params : Record<string, any>) {
 }
 /**
  * 获取积分商城列表
- * @param
  * @returns
  */
 export function getExchangeGoodsList(params : Record<string, any>) {

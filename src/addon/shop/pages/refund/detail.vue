@@ -68,7 +68,7 @@
                         <view>{{t('record')}}</view>
                         <view class="flex items-center" @click="redirect({url: '/addon/shop/pages/refund/log', param: { order_refund_no: orderRefundNo }})">
                             <text>{{t('check')}}</text>
-                            <text class="iconfont iconxiangyoujiantou text-xs"></text>
+                            <text class="nc-iconfont nc-icon-youV6xx text-[30rpx] text-[#999]"></text>
                         </view>
                     </view>
                 </view>
@@ -140,11 +140,11 @@
                     </u--form>
                 </view>
                 <view class="mx-[30rpx]">
-                    <u-button class="mt-[20rpx]" type="primary" shape="circle" @click="deliverySave">提交</u-button>
+                    <u-button class="mt-[20rpx]" text="提交" type="primary" shape="circle" @click="deliverySave"></u-button>
                 </view>
             </view>
             <logistics-tracking ref="materialRef"></logistics-tracking>
-            <u-modal :show="cancelRefundshow" :content="t('cancelRefundContent')" :showCancelButton="true" :closeOnClickOverlay="true" @cancel="refundCancel" @confirm="refundConfirm"></u-modal>
+            <u-modal :show="cancelRefundShow" :content="t('cancelRefundContent')" :showCancelButton="true" :closeOnClickOverlay="true" @cancel="refundCancel" @confirm="refundConfirm"></u-modal>
         </view>
 
         <u-loading-page bg-color="rgb(248,248,248)" :loading="loading" loadingText="" fontSize="16" color="#303133"></u-loading-page>
@@ -243,7 +243,7 @@ const deliverySave = ()=>{
 const refundBtnFn = (type:any) => {
     if(type == 'cancel'){
         currRefundOn = detail.value.order_refund_no;
-        cancelRefundshow.value = true;
+        cancelRefundShow.value = true;
     }else if(type == 'edit'){
         redirect({ url: '/addon/shop/pages/refund/edit_apply', param: { order_refund_no : detail.value.order_refund_no } })
     }else if(type == 'logistics'){
@@ -254,20 +254,20 @@ const refundBtnFn = (type:any) => {
 }
 
 // 撤销维权
-let cancelRefundshow = ref(false);
+let cancelRefundShow = ref(false);
 let currRefundOn = "";
 
 const refundConfirm = ()=>{
     closeRefund(currRefundOn).then((res) => {
-        cancelRefundshow.value = false;
+        cancelRefundShow.value = false;
         refundDetailFn(orderRefundNo.value);
     }).catch(() => {
-        cancelRefundshow.value = false;
+        cancelRefundShow.value = false;
     })
 }
 
 const refundCancel = ()=>{
-    cancelRefundshow.value = false;
+    cancelRefundShow.value = false;
 }
 
 </script>

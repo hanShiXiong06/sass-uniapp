@@ -19,7 +19,7 @@
 							</view>
 							<view class="flex box-border mt-[30rpx]" v-for="(subitem, index) in item.order_goods" :key="index">
 								<view class="w-[150rpx] h-[150rpx]">
-									<u--image class="rounded-[10rpx] overflow-hidden" width="150rpx" height="150rpx" :src="img(subitem.goods_image_thumb_small ? subitem.goods_image_thumb_small : '')" model="aspectFill">
+									<u--image class="rounded-[10rpx] overflow-hidden" radius="10rpx" width="150rpx" height="150rpx" :src="img(subitem.goods_image_thumb_small ? subitem.goods_image_thumb_small : '')" model="aspectFill">
 										<template #error>
 											<u-icon name="photo" color="#999" size="50"></u-icon>
 										</template>
@@ -27,14 +27,10 @@
 								</view>
 								<view class="ml-[20rpx] flex flex-1 flex-col justify-between box-border">
 									<view>
-										<text class="text-[28rpx] text-item  leading-[40rpx] text-[#303133]">{{ subitem.goods_name }}  </text>
+										<text class="text-[28rpx] text-item  leading-[40rpx] text-[#303133]">{{ subitem.goods_name }}</text>
 										<view  v-if="subitem.sku_name">
-											<view class="text-[24rpx] truncate mt-[10rpx] text-[#999] leading-[28rpx] max-w-[480rpx]">{{ subitem.sku_name }}  </view>
+											<view class="text-[24rpx] truncate mt-[10rpx] text-[#999] leading-[28rpx] max-w-[480rpx]">{{ subitem.sku_name }}</view>
 										</view>
-                    <view  v-if="subitem.sku_no">
-                      <view class="text-[24rpx] truncate mt-[10rpx] text-[#999] leading-[28rpx] max-w-[480rpx]"> 串号: {{subitem.sku_no}}  </view>
-                    </view>
-
 									</view>
 									<view class="flex justify-between items-center text-[#303133]">
 										<view class="text-right leading-[28rpx] price-font">

@@ -51,9 +51,7 @@
 		show.value = false;
 	}
 	
-	const { setShare, onShareAppMessage, onShareTimeline } = useShare()
-	onShareAppMessage()
-	onShareTimeline()
+	const { setShare } = useShare()
 
 	onLoad((option) => {
 

@@ -4,24 +4,24 @@
 			<view class="h-[88rpx] box-border py-[14rpx] flex items-center justify-between">
 				<view class="flex-1 flex items-center h-[60rpx] bg-[#F6F8F8] rounded-[33rpx] pl-[32rpx] pr-[20rpx]">
 					<u-input class="flex-1" maxlength="50" v-model="goods_name" @confirm="searchTypeFn('total_order_num')" placeholder="请搜索您想要的商品" placeholderClass="text-[#a5a6a6] text-[26rpx]" fontSize="26rpx"  clearable border="none"></u-input>
-					<text class="iconfont iconxiazai17 text-[30rpx] ml-[18rpx] font-bold !text-[#999]" @click="searchTypeFn('total_order_num')"></text>
+					<text class="nc-iconfont nc-icon-sousuoV6xx text-[30rpx] ml-[18rpx] font-bold !text-[#999]" @click="searchTypeFn('total_order_num')"></text>
 				</view>
-				<!-- <view :class="['iconfont text-[44rpx]', listType ? 'iconshangpinliebiao' : 'iconliebiaoxingshi']" @click="listIconBtn"></view> -->
+				<!-- <view :class="['nc-iconfont  text-[44rpx]', listType ? 'nc-icon-yingyongzhongxinV6xx' : 'nc-icon-yingyongliebiaoV6xx']" @click="listIconBtn"></view> -->
 			</view>
 			<view class="flex justify-between tems-center py-[22rpx] px-[20rpx]">
 				<view class=" flex items-center justify-between text-[24rpx] text-[#666] flex-1">
 					<text  :class="{ 'text-[#303133] ': searchType == 'total_order_num' }" @click="searchTypeFn('total_order_num')">综合排序</text>
 					<view class="flex items-center" :class="{ 'text-[#303133]': searchType == 'total_exchange_num' }" @click="searchTypeFn('total_exchange_num')">
 						<text class="mr-[4rpx]">销量</text>
-						<text v-if="(sale_num != 'asc') && ( sale_num != 'desc')" class="text-[16rpx] iconfont iconshangxiajiantouheise"></text>
-						<text v-else-if="sale_num == 'asc'" class="text-[16rpx] iconfont iconjiantoushang font-bold"></text>
-						<text  v-else-if="sale_num == 'desc'" class="text-[16rpx] iconfont iconxialajiantouxiao"></text>
+						<text v-if="(sale_num != 'asc') && ( sale_num != 'desc')" class="text-[30rpx] text-[#666] nc-iconfont nc-icon-shangxiaxuanzeV6xx"></text>
+						<text v-else-if="sale_num == 'asc'" class="text-[18rpx] w-[30rpx] h-[30rpx] flex items-center justify-center text-[#666] nc-iconfont font-bold nc-icon-shangV6xx-1 font-bold"></text>
+						<text  v-else-if="sale_num == 'desc'" class="text-[18rpx] w-[30rpx] h-[30rpx] flex items-center justify-center text-[#666] font-bold nc-iconfont nc-icon-xiaV6xx"></text>
 					</view>
 					<view class="flex items-center" :class="{'text-[#303133]': searchType == 'price' }" @click="searchTypeFn('price')">
 						<text class=" mr-[4rpx]">价格</text>
-						<text v-if="(price != 'asc') && ( price != 'desc')" class="text-[16rpx] iconfont iconshangxiajiantouheise"></text>
-						<text v-else-if="price == 'asc'" class="text-[16rpx] iconfont iconjiantoushang font-bold"></text>
-						<text v-else-if="price == 'desc'" class="text-[16rpx] iconfont iconxialajiantouxiao"></text>
+						<text v-if="(price != 'asc') && ( price != 'desc')" class="text-[30rpx] text-[#666] nc-iconfont nc-icon-shangxiaxuanzeV6xx"></text>
+						<text v-else-if="price == 'asc'" class="text-[18rpx] w-[30rpx] h-[30rpx] flex items-center justify-center font-bold text-[#666] nc-iconfont nc-icon-shangV6xx-1 font-bold"></text>
+						<text v-else-if="price == 'desc'" class="text-[18rpx] w-[30rpx] h-[30rpx] flex items-center justify-center font-bold text-[#666] nc-iconfont nc-icon-xiaV6xx"></text>
 					</view>
 				</view>
 			</view>
@@ -58,27 +58,22 @@
 			</view>
 		</mescroll-body>
 
-		<tabbar addon="shop"/>
+		<tabbar />
 	</view>
 </template>
 
 <script setup lang="ts">
 import { reactive, ref, onMounted } from 'vue'
 import { t } from '@/locale'
-import { redirect, img, getToken } from '@/utils/common';
+import { redirect, img } from '@/utils/common';
 import { getExchangeGoodsList } from '@/addon/shop/api/point';
 import MescrollBody from '@/components/mescroll/mescroll-body/mescroll-body.vue';
 import MescrollEmpty from '@/components/mescroll/mescroll-empty/mescroll-empty.vue';
 import useMescroll from '@/components/mescroll/hooks/useMescroll.js';
-import { onLoad, onPageScroll, onReachBottom } from '@dcloudio/uni-app';
-import { useShare } from '@/hooks/useShare'
+import { onLoad,onShow, onPageScroll, onReachBottom } from '@dcloudio/uni-app';
 
 const { mescrollInit, downCallback, getMescroll } = useMescroll(onPageScroll, onReachBottom);
 
-const { setShare, onShareAppMessage, onShareTimeline } = useShare()
-setShare()
-onShareAppMessage()
-onShareTimeline()
 let goodsList = ref<Array<any>>([]);
 let coupon_id = ref<number | string>('');
 let currGoodsCategory = ref<number | string>('');

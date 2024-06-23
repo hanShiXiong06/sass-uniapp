@@ -35,7 +35,7 @@
           <u-tabbar :fixed="true" :placeholder="true" :safeAreaInsetBottom="true">
                <view class="flex items-center px-[30rpx] py-[10rpx] box-border  justify-between w-[100%]">
                     <view class="flex items-center" @click="selectCheck">
-                         <text class="iconfont text-color text-[34rpx] mr-[12rpx]" :class="{'iconxuanze1 text-[var(--primary-color)]' : is_anonymous === '1' ,'iconcheckbox_nol':is_anonymous !== '1'}"></text>
+                         <text class="iconfont text-color text-[34rpx] mr-[12rpx]" :class="{'iconxuanze1 text-[var(--primary-color)]' : is_anonymous === '1' ,'nc-iconfont nc-icon-yuanquanV6xx':is_anonymous !== '1'}"></text>
                          <text class="font-500 text-[28rpx]" :class="{'text-[var(--primary-color)]' :is_anonymous === '1', 'text-[#676767]':is_anonymous !== '1'}">匿名</text>
                     </view>
                     <button class="!w-[444rpx] !h-[80rpx] text-[32rpx] !m-0 leading-[80rpx] rounded-full text-white bg-[var(--primary-color)] remove-border" @click="submit">提交</button>
@@ -96,9 +96,11 @@ const submit = () => {
           uni.showToast({ title: '请输入你的评价', icon: 'none' })
           return false
      }
-     if (form.value.some(el => el.content.length > 200)) {
-          uni.showToast({ title: '评价内容不能超出200个字', icon: 'none' })
-          return false
+     for (let i = 0; i < form.value.length; i++) {
+          let item = form.value[i];
+          if (item.content.length > 200) {
+               item.content = item.content.substr(0, 200);
+          }
      }
      form.value.forEach(v => v.is_anonymous = is_anonymous.value)
      loading.value = true

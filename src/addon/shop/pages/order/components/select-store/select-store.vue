@@ -26,7 +26,7 @@
 				</view>
 			</scroll-view>
 			<view class="p-[30rpx]">
-				<u-button type="primary" shape="circle" @click="confirm">确认</u-button>
+				<u-button type="primary" text="确认" shape="circle" @click="confirm"></u-button>
 			</view>
 		</view>
     </u-popup>

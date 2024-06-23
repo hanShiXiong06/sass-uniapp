@@ -19,7 +19,7 @@
 							<text class="text-[24rpx] font-500">.{{ parseFloat(item.goodsSku.price).toFixed(2).split('.')[1] }}</text>
 						</view>
 						<view @click.stop="openShareFn(item)" class="text-[22rpx] flex items-center border-[2rpx] border-solid border-[var(--price-text-color)] px-[12rpx] py-[8rpx] rounded-[50rpx] text-[var(--price-text-color)]">
-							<text class="iconfont iconfenxiang1 mr-[4rpx] !text-[28rpx]"></text>
+							<text class="nc-iconfont nc-icon-fenxiangV6xx-1 mr-[4rpx] !text-[28rpx]"></text>
 							<text>赚{{ item.commission }}元</text>
 						</view>
 					</view>
@@ -95,8 +95,9 @@
 	}
 	const openShareFn = (data)=>{
 		posterParam.sku_id = data.goodsSku.sku_id;
-		if (userInfo.value && userInfo.value.member_id)
-			posterParam.member_id = userInfo.value.member_id;
+		if (userInfo.value && userInfo.value.member_id) {
+            posterParam.member_id = userInfo.value.member_id;
+        }
 		copyUrlFn(data);
 		sharePosterRef.value.openShare()
 	}

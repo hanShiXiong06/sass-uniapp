@@ -23,7 +23,7 @@
 				<view class="parcel" style="height: 56vh;" v-if="showList.sub_delivery_type == 'express'">
 					<view class="h-[40vh] flex items-center justify-center" v-if="showList.traces.success == false">
 						<view>
-							<text class="iconfont iconzanwuwuliuxinxi text-[180rpx] text-[#bfbfbf]"></text>
+							<text class="nc-iconfont nc-icon-daishouhuoV6xx text-[180rpx] text-[#bfbfbf]"></text>
 							<view class="text-[28rpx] text-[#bfbfbf] leading-8">暂无物流信息～～</view>
 						</view>
 					</view>
@@ -38,7 +38,7 @@
 				<view class="parcel" style="height: 56vh;" v-else-if="showList.sub_delivery_type == 'none_express'">
 					<view class="h-[40vh] flex items-center justify-center">
 						<view>
-							<text class="iconfont iconzanwuwuliuxinxi text-[180rpx] text-[#bfbfbf]"></text>
+							<text class="nc-iconfont nc-icon-daishouhuoV6xx text-[180rpx] text-[#bfbfbf]"></text>
 							<view class="text-[28rpx] text-[#bfbfbf] leading-8">无需物流～～</view>
 						</view>
 					</view>

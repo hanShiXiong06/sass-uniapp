@@ -29,7 +29,7 @@
 					</view>
 					<view v-if="diyComponent.headStyle == 'style-2'" class="cate">
 						<view class="name">{{ item.title }}</view>
-						<text class="iconfont iconVector !text-[10rpx] text-[var(--primary-color)] transform scale-70 font-700" v-if="index == cateIndex"></text>
+						<text class="nc-iconfont nc-icon-xiaolian-2 !text-[40rpx] text-[var(--primary-color)] transform" v-if="index == cateIndex"></text>
 					</view>
 				</view>
 			</template>
@@ -265,18 +265,18 @@
 					position: relative;
 				}
 				.name{
-					font-size: 32rpx;
-					color: #303133;
+					font-size: 30rpx;
+					color: #888;
 					line-height: 32rpx;
 				}
 				&.active {
 					.name{
-						color: var(--primary-color);
+						color:var(--primary-color);
 						font-weight: bold;
 					}
-					.iconfont{
+					.nc-iconfont{
 						position: absolute;
-						bottom: -20rpx;
+						bottom: -35rpx;
 					}
 				}
 			}

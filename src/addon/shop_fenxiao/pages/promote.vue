@@ -1,14 +1,14 @@
 <template>
 	<view class="min-h-[100vh]" :style="themeColor()">
-		<view class="min-h-[100vh] p-[30rpx] box-border" :style="{ 'background': 'url(' + img('addon/shop_fenxiao/index/promote_bg.png') + ') left top / 100% 100% no-repeat' }" v-if="!loading" >
+		<view class="min-h-[100vh] px-[30rpx] pt-[30rpx] pb-[160rpx] box-border" :style="{ 'background': 'url(' + img('addon/shop_fenxiao/index/promote_bg.png') + ') #ff2d46 left top /100% no-repeat' }" v-if="!loading" >
 			<view class="mt-[230rpx] bg-[#fff] rounded-[30rpx]">
 				<view class="bg-[#fff7f5] flex flex-col justify-center rounded-[30rpx]">
 					<image class="w-[384rpx] h-[74rpx] m-auto -mt-[20rpx]" :src="img('addon/shop_fenxiao/index/my_earnings.png')" mode=""></image>
 					<view class="flex items-center justify-center text-[24rpx] py-[20rpx]">
-						<image class="w-[80rpx] h-[80rpx] mr-[10rpx]" :src="img('addon/shop_fenxiao/index/money.png')" mode=""></image>
+						<image class="w-[80rpx] h-[80rpx]" :src="img('addon/shop_fenxiao/index/money.png')" mode=""></image>
 						<view class="flex items-baseline">
 							<text>累计收益</text>
-							<text class="text-[40rpx]" v-if="fenxiaoInfo.member" >{{moneyFormat(fenxiaoInfo.member.commission_get || 0)}}</text>
+							<text class="text-[40rpx] ml-[10rpx]" v-if="fenxiaoInfo.member" >{{moneyFormat(fenxiaoInfo.member.commission_get || 0)}}</text>
 							<text>元</text>
 						</view>
 					</view>
@@ -27,7 +27,8 @@
 			<view class="mt-[100rpx] bg-[#fff] rounded-[30rpx] flex flex-col px-[30rpx] pb-[50rpx]">
 				<image class="w-[384rpx] h-[74rpx] m-auto -mt-[20rpx] mb-[30rpx]" :src="img('addon/shop_fenxiao/index/activity_rules.png')" mode=""/>
 				<view class="content" v-if="promoteContent">
-					<rich-text :nodes="promoteContent"></rich-text>
+					<u-parse :content="promoteContent" :tagStyle="{img: 'vertical-align: top;',p:'overflow: hidden;word-break:break-word;' }"></u-parse>
+					<!-- <rich-text :nodes="promoteContent"></rich-text> -->
 				</view>
 				<view class="rules-empty" v-else>暂无活动规则</view>
 			</view>

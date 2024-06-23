@@ -15,7 +15,7 @@
 					<view class="text-[#ffffff] text-[24rpx] font-400 leading-[28rpx] mt-[6rpx]" :style="{ color : diyComponent.textColor }">UID：{{ info.member_no }}</view>
 				</view>
 				<view @click="redirect({ url: '/app/pages/setting/index' })">
-					<text class="iconfont iconshezhi1 text-[40rpx] ml-[10rpx]" :style="{ color : diyComponent.textColor }"></text>
+					<text class="nc-iconfont nc-icon-shezhiV6xx1 text-[38rpx] ml-[10rpx]" :style="{ color : diyComponent.textColor }"></text>
 				</view>
 			</view>
 			<view v-else class="flex ml-[32rpx] mr-[52rpx] items-center" @click="toLogin">
@@ -26,25 +26,25 @@
 					</view>
 				</view>
 				<view @click="redirect({ url: '/app/pages/setting/index' })">
-					<text class="iconfont iconshezhi1 text-[40rpx] ml-[10rpx]" :style="{ color : diyComponent.textColor }"></text>
+					<text class="nc-iconfont nc-icon-shezhiV6xx1 text-[38rpx] ml-[10rpx]" :style="{ color : diyComponent.textColor }"></text>
 				</view>
 			</view>
 
 			<view class="flex mt-[30rpx] items-center">
 				<view class="text-center w-[33.333%] flex-shrink-0">
 					<view class="text-[36rpx] leading-[42rpx] h-[50rpx] font-500">
-						<view @click="redirect({ url: info ? '/app/pages/member/balance' : '' })" :style="{ color : diyComponent.textColor }">{{ money }}</view>
+						<view @click="redirect({url: '/app/pages/member/balance'})" :style="{ color : diyComponent.textColor }">{{ money }}</view>
 					</view>
 					<view class="text-[22rpx] leading-[26rpx] h-[31rpx] font-400">
-						<view @click="redirect({ url: info ? '/app/pages/member/balance' : '' })" :style="{ color : diyComponent.textColor }">{{ t('balance') }}</view>
+						<view @click="redirect({url: '/app/pages/member/balance'})" :style="{ color : diyComponent.textColor }">{{ t('balance') }}</view>
 					</view>
 				</view>
 				<view class="text-center w-[33.333%] flex-shrink-0">
 					<view class="text-[36rpx] leading-[42rpx] h-[50rpx] font-500">
-						<view @click="redirect({ url: info ? '/app/pages/member/point' : '' })" :style="{ color : diyComponent.textColor }">{{ parseInt(info?.point) || 0 }}</view>
+						<view @click="redirect({url: '/app/pages/member/point'})" :style="{ color : diyComponent.textColor }">{{ parseInt(info?.point) || 0 }}</view>
 					</view>
 					<view class="text-[22rpx] leading-[26rpx] h-[31rpx] font-400">
-						<view @click="redirect({ url: info ? '/app/pages/member/point' : '' })" :style="{ color : diyComponent.textColor }">{{ t('point') }}</view>
+						<view @click="redirect({url: '/app/pages/member/point'})" :style="{ color : diyComponent.textColor }">{{ t('point') }}</view>
 					</view>
 				</view>
 				<view class="text-center w-[33.333%] flex-shrink-0"  @click="redirect({ url: '/addon/shop/pages/member/my_coupon' })">
@@ -187,18 +187,18 @@
 	menuButtonInfo = uni.getMenuButtonBoundingClientRect();
 	// #endif
 
-// 导航栏内部盒子的样式
-const navbarInnerStyle = computed(() => {
-	let style = '';
-	// 导航栏宽度，如果在小程序下，导航栏宽度为胶囊的左边到屏幕左边的距离
-	// #ifdef MP
-    if (props.global.topStatusBar.isShow == false) {
-        style += 'height:' + menuButtonInfo.height + 'px;';
-        style += 'padding-top:' + menuButtonInfo.top + 'px;';
-    }
-	// #endif
-	return style;
-})
+	// 导航栏内部盒子的样式
+	const navbarInnerStyle = computed(() => {
+		let style = '';
+		// 导航栏宽度，如果在小程序下，导航栏宽度为胶囊的左边到屏幕左边的距离
+		// #ifdef MP
+	    if (props.global.topStatusBar.isShow == false) {
+	        style += 'height:' + menuButtonInfo.height + 'px;';
+	        style += 'padding-top:' + menuButtonInfo.top + 'px;';
+	    }
+		// #endif
+		return style;
+	})
 </script>
 
 <style lang="scss" scoped>

@@ -9,9 +9,8 @@
 							<text class="text-[26rpx] font-400 mr-[8rpx]">更多</text>
 							<text class="iconfont iconxiayibu text-[19rpx]"></text>
 						</view>
-						
 				</view> -->
-				<view class="diy-shop-goods-list relative flex flex-wrap justify-between">
+				<view class="diy-shop-exchange-goods-list relative flex flex-wrap justify-between">
 					
 					<view class="flex flex-col box-border rounded-[12rpx] w-[calc(50%-10rpx)]" :class="{'mt-[20rpx]': index > 1}" :style="itemCss" v-for="(item,index) in goodsList" :key="item.goods_id" @click="toLink(item)">
 						<u--image :width="style2Width" :height="style2Width" :src="img(item.goods_cover_thumb_mid || '')" model="aspectFill">
@@ -128,16 +127,24 @@
 	)
 
 	const getGoodsListFn = () => {
-		let data = {
-			order: diyComponent.value.sortWay,
-			num: diyComponent.value.source == 'all' ? diyComponent.value.num : '',
-			ids: diyComponent.value.source == 'custom' ? diyComponent.value.goods_ids.join(',') : '',
-		}
-		getExchangeComponentsList(data).then((res) => {
-			goodsList.value = res.data;
+        let data = {
+            order: diyComponent.value.sortWay,
+            num: diyComponent.value.source == 'all' ? diyComponent.value.num : '',
+            ids: diyComponent.value.source == 'custom' ? diyComponent.value.goods_ids.join(',') : '',
+        }
+        getExchangeComponentsList(data).then((res) => {
+            goodsList.value = res.data;
             skeleton.loading = false;
-		});
-	}
+            if(diyComponent.value.componentBgUrl) {
+                setTimeout(() => {
+                    const query = uni.createSelectorQuery().in(instance);
+                    query.select('.diy-shop-exchange-goods-list').boundingClientRect((data: any) => {
+                        height.value = data.height;
+                    }).exec();
+                }, 1000)
+            }
+        });
+    }
 
 	const initSkeleton = ()=> {
         if (diyComponent.value.style == 'style-1') {
@@ -182,10 +189,10 @@
             watch(
                 () => diyComponent.value,
                 (newValue, oldValue) => {
-                    if (newValue && newValue.componentName == 'GoodsList') {
+                    if (newValue && newValue.componentName == 'ShopExchangeGoods') {
                         nextTick(() => {
                             const query = uni.createSelectorQuery().in(instance);
-                            query.select('.diy-shop-goods-list').boundingClientRect((data: any) => {
+                            query.select('.diy-shop-exchange-goods-list').boundingClientRect((data: any) => {
                                 height.value = data.height;
                             }).exec();
                         })

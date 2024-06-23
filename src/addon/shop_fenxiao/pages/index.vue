@@ -17,11 +17,12 @@
                             </view>
                         </view>
                         <!-- <view class="flex items-center text-[#fff] text-[24rpx] ml-auto">
-                            <text class="iconfont icon24gl-questionCircle mr-[10rpx]"></text>
+                            <text class="nc-iconfont nc-icon-bangzhuV6xx mr-[10rpx]"></text>
                             <text>推广规则</text>
                         </view> -->
                     </view>
-                    <view class="flex items-center h-[140rpx] box-border bg-[#233158] rounded-t-[20rpx] p-[30rpx]" @click="redirect({ url: '/addon/shop_fenxiao/pages/level' })">
+                    <view class="flex items-center h-[140rpx] box-border rounded-t-[20rpx] p-[30rpx]"
+					:style="{backgroundImage: 'url(' + img('addon/shop_fenxiao/index/head_bg.png') + ') ',backgroundSize: 'cover',backgroundRepeat: 'no-repeat',backgroundPosition: 'cover'}" @click="redirect({ url: '/addon/shop_fenxiao/pages/level' })">
                         <view class="flex flex-col">
                             <view class="flex items-center">
                                 <image class="w-[30rpx] h-[30rpx] mr-[10rpx]" :src="img('addon/shop_fenxiao/info_vip.png')" mode="widthFix"/>
@@ -29,41 +30,40 @@
                             </view>
                             <text class="text-[26rpx] text-[#E8D3B6] mt-[20rpx]">下单、邀请好友均可提升等级</text>
                         </view>
-                        <text class="ml-auto level-wrap w-[140rpx] h-[46rpx] text-center rounded-[54rpx] text-[24rpx] leading-[48rpx] text-[#794200]">做任务</text>
+                        <text class="ml-auto level-wrap w-[140rpx] h-[46rpx] text-center rounded-[54rpx] text-[24rpx] leading-[48rpx] text-[#794200]">去升级</text>
                     </view>
                 </view>
-                
+
                 <view class="commission-bg mx-[24rpx] my-[20rpx] rounded-[16rpx] pb-[35rpx]">
                     <view class="flex justify-between h-[90rpx] px-[24rpx] items-center border-0 border-b-[1rpx] border-[#E0E0E0] border-solid">
                         <text class="text-[28rpx] font-bold">{{ t('billingInformation') }}</text>
                         <view class="text-[#666] text-[26rpx]" @click="cashOutList">
-                            佣金明细
-                            <text class="iconfont iconxiangyoujiantou !text-[24rpx]"></text>
+                            <text>佣金明细</text>
+                            <text class="nc-iconfont nc-icon-youV6xx text-[#666] !text-[26rpx]"></text>
                         </view>
                     </view>
                     <view class="flex mt-[50rpx] justify-around commission-content">
-                        <view class="flex flex-col items-center">
+                        <view class="flex flex-col items-center" @click="toCommission">
                             <text class="text-[22rpx] text-[#666]">{{ t('commissionGet') }}</text>
                             <text class="text-[#303133] text-[28rpx] font-bold mt-[20rpx]">{{ moneyFormat(detail.member.commission_get) }}</text>
                         </view>
-                        <view class="flex flex-col items-center">
+                        <view class="flex flex-col items-center" @click="toCommission">
                             <text class="text-[22rpx] text-[#666]">{{ t('commission') }}</text>
                             <text class="text-[#303133] text-[28rpx] font-bold mt-[20rpx]">{{ moneyFormat(detail.member.commission) }}</text>
                         </view>
-                        <view class="flex flex-col items-center">
+                        <view class="flex flex-col items-center" @click="toCommission">
                             <text class="text-[22rpx] text-[#666]">已提现</text>
-                            <text class="text-[#303133] text-[28rpx] font-bold mt-[20rpx]">{{ moneyFormat(detail.member.commission_get - detail.member.commission) }}</text>
+                            <text class="text-[#303133] text-[28rpx] font-bold mt-[20rpx]">{{ moneyFormat(detail.member.commission_get - detail.member.commission - detail.member.commission_cash_outing) }}</text>
                         </view>
-                        <view class="flex flex-col items-center">
+                        <view class="flex flex-col items-center" @click="toCommission">
                             <text class="text-[22rpx] text-[#666]">{{ t('commissionCashOuting') }}</text>
                             <text class="text-[#303133] text-[28rpx] font-bold mt-[20rpx]">{{ moneyFormat(detail.member.commission_cash_outing) }}</text>
                         </view>
                     </view>
-                    <button
-                        class="mt-[40rpx] mx-auto w-[570rpx] h-[76rpx] leading-[76rpx] level-wrap text-[#985400] rounded-[90rpx] text-[28rpx]"
-                        @click="applyCashOut">{{ t('cashOut') }}</button>
+                    <view
+                        class="text-center mt-[40rpx] mx-auto w-[570rpx] h-[76rpx] leading-[76rpx] level-wrap text-[#985400] rounded-[90rpx] text-[28rpx]" @click="applyCashOut">{{ t('cashOut') }}</view>
                 </view>
-                
+
                 <view class="flex">
                     <view class="flex px-[30rpx] rounded-[16rpx] items-center flex-1 mx-[24rpx] h-[140rpx] team-bg" @click.stop="redirect({ url: '/addon/shop_fenxiao/pages/team' })">
                         <image class="w-[80rpx] h-[80rpx] mr-[20rpx]" :src="img('addon/shop_fenxiao/index/team1.png')" mode="widthFix"/>
@@ -80,7 +80,7 @@
                         </view>
                     </view>
                 </view>
-                
+
                 <view class="commission-bg pb-[35rpx] mx-[24rpx] my-[20rpx] rounded-[16rpx]">
                     <view class="text-[32rpx] h-[90rpx] px-[24rpx] leading-[90rpx] border-0 border-b-[2rpx] border-solid border-[#E0E0E0] text-[28rpx] font-bold">常用功能</view>
                     <view class="flex flex-wrap common-module">
@@ -149,12 +149,12 @@
             </view>
         </view>
         <u-loading-page bg-color="rgb(248,248,248)" :loading="loading" loadingText="" fontSize="16" color="#333"></u-loading-page>
-        <tabbar addon="shop" ref="tabbarRef" />
+        <tabbar addon="shop" />
     </view>
 </template>
 
 <script setup lang="ts">
-import { ref,nextTick } from 'vue';
+import { ref } from 'vue';
 import { onShow } from '@dcloudio/uni-app'
 import { moneyFormat, img, redirect } from '@/utils/common';
 import { t } from '@/locale';
@@ -164,8 +164,6 @@ import useSystemStore from '@/stores/system'
 const systemStore = useSystemStore()
 let detail = ref({ 'member': {}, 'fenxiao_level': {} });
 let loading = ref<boolean>(true);
-
-const tabbarRef = ref(null)
 
 onShow(() => {
     setTimeout(()=>{
@@ -181,9 +179,6 @@ onShow(() => {
             return false;
         }
     },500);
-    nextTick(()=>{
-        tabbarRef.value.setAddon('shop');
-    })
 	getConfigFn();
 	getChildFenxiaoFn();
 	getFenxiaoTeamFn();
@@ -236,6 +231,10 @@ const applyCashOut = () => {
 const cashOutList = () => {
 	redirect({ url: '/app/pages/member/detailed_account', param: { type : 'commission' } })
 }
+// 我的佣金
+const toCommission = () => {
+	redirect({ url: '/app/pages/member/commission'})
+}
 </script>
 
 <style lang="scss" scoped>
@@ -244,7 +243,8 @@ const cashOutList = () => {
 }
 
 .commission-bg {
-	background: linear-gradient(180deg, #FFF9F3 5%, #FFFFFF 25%, #FFFFFF 100%);
+	// background: linear-gradient(180deg, #FFF9F3 5%, #FFFFFF 25%, #FFFFFF 100%);
+	background: #FFFFFF;
 }
 
 .team-bg {

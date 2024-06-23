@@ -18,7 +18,7 @@
 				<fixed-group :data="diy.data" :pullDownRefreshCount="diy.pullDownRefreshCount" />
 
 			</view>
-
+        
 		</view>
 
 		<!-- #ifdef MP-WEIXIN -->
@@ -30,10 +30,15 @@
 </template>
 
 <script setup lang="ts">
-    import {ref} from 'vue';
+    import {ref, computed} from 'vue';
     import {useDiy} from '@/hooks/useDiy'
     import diyGroup from '@/addon/components/diy/group/index.vue'
     import fixedGroup from '@/addon/components/fixed/group/index.vue'
+    import useMemberStore from '@/stores/member'
+
+    // 会员信息
+    const memberStore = useMemberStore()
+    const userInfo = computed(() => memberStore.info)
 
     const diy = useDiy({
         name: 'DIY_SHOP_MEMBER_INDEX'
@@ -47,6 +52,9 @@
     // 监听页面显示
     diy.onShow((data: any) => {
         diyGroupRef.value?.refresh();
+        if (userInfo.value) {
+          useMemberStore().getMemberInfo()
+        }
     });
 
     // 监听下拉刷新事件
@@ -57,4 +65,17 @@
 </script>
 <style lang="scss" scoped>
 	@import '@/styles/diy.scss';
+</style>
+<style lang="scss">
+.diy-template-wrap {
+  /* #ifdef MP */
+  .child-diy-template-wrap {
+    ::v-deep .diy-group {
+      > .draggable-element.top-fixed-diy {
+        display: block !important;
+      }
+    }
+  }
+  /* #endif */
+}
 </style>

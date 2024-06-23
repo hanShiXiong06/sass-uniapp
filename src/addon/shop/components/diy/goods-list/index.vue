@@ -5,15 +5,13 @@
 			<div class="diy-shop-goods-list relative flex flex-wrap justify-between">
 				<block v-if="diyComponent.style == 'style-1'">
 					<view class="bg-white w-full flex p-[20rpx] mx-[20rpx] rounded-[8rpx] overflow-hidden" :class="{ 'mt-[20rpx]': index > -10,'mb-[20rpx]': (index+1) == goodsList.length }" :style="itemCss" v-for="(item,index) in goodsList" :key="item.goods_id" @click="toLink(item)">
-						<u--image class="rounded-[10rpx] overflow-hidden" width="190rpx" height="190rpx" :src="img(item.goods_cover_thumb_mid || '')" model="aspectFill">
+						<u--image radius="10rpx" width="190rpx" height="190rpx" :src="img(item.goods_cover_thumb_mid || '')" model="aspectFill">
 							<template #error>
 								<u-icon name="photo" color="#999" size="50"></u-icon>
 							</template>
 						</u--image>
 						<view class="flex-1 flex flex-col ml-[20rpx] py-[6rpx]">
 							<view class="text-[28rpx] leading-[40rpx] text-[#303133] multi-hidden mb-[10rpx]" :style="{ color : diyComponent.goodsNameStyle.color, fontWeight : diyComponent.goodsNameStyle.fontWeight }">{{item.goods_name}}</view>
-              <view class="w-[416rpx] max-h-[80rpx] text-[20rpx] leading-[40rpx]  truncate"> {{ item.sub_title }}</view>
-              <view class="w-[316rpx] max-h-[80rpx] text-[20rpx] leading-[40rpx]  truncate"> 串号: {{item.goodsSku.sku_no}}</view>
 							<view class="mt-auto flex justify-between items-center items-baseline">
 								<view class="font-bold text-[var(--price-text-color)] price-font flex items-baseline" :style="{ color : diyComponent.priceStyle.mainColor }">
 									<text class="text-[26rpx] font-500">￥</text>
@@ -22,7 +20,7 @@
 									<image class="h-[24rpx] ml-[6rpx]" v-if="priceType(item) == 'member_price'" :src="img('addon/shop/VIP.png')" mode="heightFix" />
 									<image class="h-[24rpx] ml-[6rpx]" v-if="priceType(item) == 'discount_price'" :src="img('addon/shop/discount.png')" mode="heightFix" />
 								</view>
-								<text class="text-[24rpx] text-[#999]" :style="{ color : diyComponent.saleStyle.color }">库存:{{item.goodsSku.stock}}{{item.unit || '件'}}</text>
+								<text class="text-[22rpx] text-[#999]" :style="{ color : diyComponent.saleStyle.color }">已售{{item.sale_num}}{{item.unit || '件'}}</text>
 							</view>
 						</view>
 					</view>
@@ -36,7 +34,6 @@
 						</u--image>
 						<view class="px-[16rpx] flex-1 pt-[16rpx] pb-[20rpx] flex flex-col justify-between">
 							<view class="text-[#303133] leading-[40rpx] text-[28rpx] multi-hidden" :style="{ color : diyComponent.goodsNameStyle.color, fontWeight : diyComponent.goodsNameStyle.fontWeight }">{{item.goods_name}}</view>
-              <view class="w-[316rpx] max-h-[80rpx] text-[20rpx] leading-[40rpx]  truncate"> {{ item.sub_title }}</view>
 							<view class="flex justify-between flex-wrap items-baseline mt-[16rpx]" >
 								<view class="text-[var(--price-text-color)] price-font flex items-baseline" :style="{ color : diyComponent.priceStyle.mainColor }">
 									<text class="text-[26rpx] font-500">￥</text>
@@ -45,23 +42,21 @@
 									<image class="h-[24rpx] ml-[6rpx]" v-if="priceType(item) == 'member_price'" :src="img('addon/shop/VIP.png')" mode="heightFix" />
 									<image class="h-[24rpx] ml-[6rpx]" v-if="priceType(item) == 'discount_price'" :src="img('addon/shop/discount.png')" mode="heightFix" />
 								</view>
-								<text class="text-[24rpx] text-[#999]" :style="{ color : diyComponent.saleStyle.color }">库存:{{item.goodsSku.stock}}{{item.unit || '件'}}</text>
+								<text class="text-[22rpx] text-[#999]" :style="{ color : diyComponent.saleStyle.color }">已售{{item.sale_num}}{{item.unit || '件'}}</text>
 							</view>
 						</view>
 					</view>
 				</block>
 				<block v-if="diyComponent.style == 'style-3'">
 					<scroll-view class="whitespace-nowrap" :scroll-x="true" :style="style3Css">
-						<view class="w-[200rpx] rounded-[10rpx] inline-block bg-[#fff] box-border overflow-hidden" :class="{'mr-[14rpx]' : index != goodsList.length-1}" :style="itemCss" v-for="(item,index) in goodsList" :key="item.goods_id" @click="toLink(item)">
-							<u--image width="200rpx" height="160rpx" :src="img(item.goods_cover_thumb_mid || '')" model="aspectFill">
+						<view class="w-[214rpx] rounded-[10rpx] inline-block bg-[#fff] box-border overflow-hidden" :class="{'mr-[14rpx]' : index != goodsList.length-1}" :style="itemCss" v-for="(item,index) in goodsList" :key="item.goods_id" @click="toLink(item)">
+							<u--image width="214rpx" height="160rpx" :src="img(item.goods_cover_thumb_mid || '')" model="aspectFill">
 								<template #error>
 									<u-icon name="photo" color="#999" size="50"></u-icon>
 								</template>
 							</u--image>
 							<view class="px-[10rpx] pt-[16rpx] pb-[10rpx]">
 								<view class="text-[26rpx] text-[#303133] truncate" :style="{ color : diyComponent.goodsNameStyle.color, fontWeight : diyComponent.goodsNameStyle.fontWeight }">{{item.goods_name}}</view>
-                <view class="w-[316rpx] max-h-[80rpx] text-[20rpx] leading-[40rpx]  truncate"> {{ item.sub_title }}</view>
-                <view class="w-[316rpx] max-h-[80rpx] text-[20rpx] leading-[40rpx]  truncate"> 串号: {{item.goodsSku.sku_no}}</view>
 								<view class="text-[var(--price-text-color)] mt-[10rpx] flex-wrap font-bold price-font flex items-baseline" :style="{ color : diyComponent.priceStyle.mainColor }">
 									<view class="truncate">
 										<text class="text-[26rpx] font-500">￥</text>
@@ -169,7 +164,8 @@
 	const style3Css = computed(() => {
         var style = '';
         style += 'padding:0 20rpx;';
-        if (diyComponent.value.margin && diyComponent.value.margin.both) style += 'width: calc( 100vw - ' + ((diyComponent.value.margin.both * 4) + 40) + 'rpx)'
+        if (diyComponent.value.margin && diyComponent.value.margin.both){style += 'width: calc( 100vw - ' + ((diyComponent.value.margin.both * 4) + 40) + 'rpx);'}
+		else{style += 'box-sizing: border-box;';}
         return style;
     })
 
@@ -181,18 +177,25 @@
 	)
 
 	const getGoodsListFn = () => {
-		let data = {
-			num: (diyComponent.value.source == 'all' || diyComponent.value.source == 'category') ? diyComponent.value.num : '',
-			goods_ids: diyComponent.value.source == 'custom' ? diyComponent.value.goods_ids : '',
-			goods_category: diyComponent.value.source == 'category' ? diyComponent.value.goods_category : '',
+        let data = {
+            num: (diyComponent.value.source == 'all' || diyComponent.value.source == 'category') ? diyComponent.value.num : '',
+            goods_ids: diyComponent.value.source == 'custom' ? diyComponent.value.goods_ids : '',
+            goods_category: diyComponent.value.source == 'category' ? diyComponent.value.goods_category : '',
             order: diyComponent.value.sortWay
-		}
-		getGoodsComponents(data).then((res) => {
-
-			goodsList.value = res.data;
+        }
+        getGoodsComponents(data).then((res) => {
+            goodsList.value = res.data;
             skeleton.loading = false;
-		});
-	}
+            if(diyComponent.value.componentBgUrl) {
+                setTimeout(() => {
+                    const query = uni.createSelectorQuery().in(instance);
+                    query.select('.diy-shop-goods-list').boundingClientRect((data: any) => {
+                        height.value = data.height;
+                    }).exec();
+                }, 1000)
+            }
+        });
+    }
 
 	const initSkeleton = ()=> {
         if (diyComponent.value.style == 'style-1') {
@@ -303,9 +306,9 @@
 	let goodsPrice = (data:any) =>{
 		let price = "0.00";
 		if(data.is_discount){
-			price = data.goodsSku.sale_price // 折扣价
+			price = data.goodsSku.sale_price?data.goodsSku.sale_price:data.goodsSku.price // 折扣价
 		}else if(data.member_discount && getToken()){
-			price = data.goodsSku.member_price // 会员价
+			price = data.goodsSku.member_price?data.goodsSku.member_price:data.goodsSku.price // 会员价
 		}else{
 			price = data.goodsSku.price
 		}

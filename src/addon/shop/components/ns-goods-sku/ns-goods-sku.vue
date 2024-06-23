@@ -1,8 +1,7 @@
 <template>
 	<view @touchmove.prevent.stop>
-		<u-popup class="popup-type" :show="goodsSkuPop" @close="closeFn" mode="bottom">
+		<u-popup class="popup-type" :show="goodsSkuPop" @close="closeFn" mode="bottom" zIndex="500">
 			<view class="p-[32rpx] relative" v-if="goodsDetail.detail" @touchmove.prevent.stop>
-				<view class="absolute right-[37rpx]  iconfont iconguanbi text-[36rpx]" @click="closeFn"></view>
 				<view class="flex mb-[58rpx]">
 
 					<view class="rounded-[8rpx] overflow-hidden">
@@ -21,9 +20,12 @@
 							</view>
 							<view class="text-[24rpx] leading-[32rpx] text-[#303133] mt-[12rpx]">库存{{goodsDetail.detail.stock}}{{ goodsDetail.goods.unit }}</view>
 						</view>
-						<view class="w-[100%] mt-auto"  style="max-height: calc(204rpx - 98rpx); overflow: hidden;"  v-if="goodsDetail.goodsSpec && goodsDetail.goodsSpec.length">
-							<text class="text-[24rpx] leading-[30rpx] text-[#666]">已选规格：{{goodsDetail.detail.sku_spec_format}}</text>
+						<view class="w-[100%] mt-auto"  style="max-height: calc(204rpx - 98rpx); overflow: hidden; box-sizing:border-box"  v-if="goodsDetail.goodsSpec && goodsDetail.goodsSpec.length">
+							<text class="text-[24rpx] leading-[30rpx] text-[#666] flex items-center h-[60rpx] mt-[10rpx]">已选规格：{{goodsDetail.detail.sku_spec_format}}</text>
 						</view>
+<!-- 						<view v-if="goodsDetail.goodsSpec && goodsDetail.goodsSpec.length">
+							<text>已选规格：{{goodsDetail.detail.sku_spec_format}}</text>
+						</view> -->
 					</view>
 				</view>
 				<scroll-view class="h-[500rpx] mb-[30rpx]" scroll-y="true">
@@ -42,13 +44,13 @@
 						<view class="text-[26rpx]">购买数量</view>
 						<u-number-box :min="1" :max="goodsDetail.stock" integer :step="1" input-width="98rpx" v-model="buyNum" input-height="54rpx">
 							<template #minus>
-								<text class="text-[44rpx] iconfont iconjian" :class="{ '!text-[#c8c9cc]': buyNum === 1 }"></text>
+								<text class="text-[44rpx] nc-iconfont nc-icon-jianV6xx" :class="{ '!text-[#c8c9cc]': buyNum === 1 }"></text>
 							</template>
 							<template #input>
 								<text class="number-input text-[#303133] text-center bg-[#f2f2f2] w-[82rpx] fext-[23rpx] mx-[16rpx]">{{ buyNum }}</text>
 							</template>
 							<template #plus>
-								<text class="text-[44rpx] iconfont iconjia" :class="{ '!text-[#c8c9cc]': buyNum === goodsDetail.stock }"></text>
+								<text class="text-[44rpx] nc-iconfont nc-icon-jiahaoV6xx" :class="{ '!text-[#c8c9cc]': buyNum === goodsDetail.stock }"></text>
 							</template>
 						</u-number-box>
 					</view>
@@ -154,6 +156,7 @@
 
 	const change = (data, index)=>{
 		currSpec.value.name[index] = data.name;
+		buyNum.value = 1
 		getSkuId();
 	}
 
@@ -238,16 +241,4 @@
 	})
 </script>
 
-<style lang="scss" scoped>
-.popup-type {
-	:deep(.u-popup__content) {
-		border-top-left-radius: 16rpx;
-		border-top-right-radius: 16rpx;
-		overflow: hidden;
-	}
-}
-// 防止覆盖住图片放大
-.u-popup :deep(.u-transition){
-	z-index: 999 !important;
-}
-</style>
+<style lang="scss" scoped></style>

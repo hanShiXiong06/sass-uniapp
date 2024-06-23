@@ -3,14 +3,12 @@
 		<view class="bg-[#f7f7f7] min-h-[100vh] relative" v-if="Object.keys(goodsDetail).length">
 			<!-- 自定义头部 -->
 			<view class="flex items-center fixed left-0 right-0 z-10 bg-transparent detail-head" :class="{'!bg-[#fff]' :detailHeadBgChange}" :style="navbarInnerStyle">
-				<text class="iconfont iconjiantou3" :style="navbarInnerArrowStyle" @click="goback()"></text>
-				<view class="w-[60rpx] ml-auto h-[60rpx] flex items-center justify-center bg-[rgba(255,255,255,.3)] rounded-full border-[2rpx] border-solid border-transparent" :class="{'border-[#d8d8d8]': detailHeadBgChange}" @click="collectFn">
-					<text class="iconfont" :class="{'text-[#ff0000] iconshoucang_shoucang': isCollect, 'text-[#303133] icona-shoucang-weishoucang' : !isCollect}"></text>
-				</view>
+				<text class="nc-iconfont nc-icon-zuoV6xx" :style="navbarInnerArrowStyle" @click="goback()"></text>
+				<view class="ml-auto !pt-[12rpx] !pb-[8rpx] p-[10rpx] bg-[rgba(255,255,255,.4)] rounded-full border-[2rpx] border-solid border-transparent box-border nc-iconfont nc-icon-fenxiangV6xx font-bold text-[#303133] text-[36rpx]" :class="{'border-[#d8d8d8]': detailHeadBgChange}"  @click="openShareFn"></view>
 			</view>
 
 			<view class="swiper-box">
-				<u-swiper :list="goodsDetail.goods.goods_image" :autoplay="false" height="100vw" @click="swiperClick"></u-swiper>
+				<u-swiper :list="goodsDetail.goods.goods_image" :indicator="true" :indicatorStyle="{'bottom': '50rpx'}" :autoplay="true" height="100vw" @click="swiperClick"></u-swiper>
 			</view>
 			<view v-if="priceType == 'discount_price'" class="-mt-[26rpx] relative flex items-center justify-between !bg-cover box-border pb-[26rpx] h-[136rpx] px-[30rpx]" :style="{ background: 'url(' + img('addon/shop/detail/discount_price_bg.png') + ') no-repeat'}">
 				<view class="flex text-[#fff]">
@@ -44,63 +42,37 @@
 						</text>
 					</view>
 					<view class="font-medium text-[32rpx] multi-hidden leading-[40rpx]">
-           <view class="flex">
-            <!-- hsx - start -->
-             <view class="flex">
-               <up-tag size="mini" :text="goodsDetail.brand_info.brand_name" v-if="goodsDetail.brand_info" type="warning"></up-tag>
-             </view>
-             {{ goodsDetail.goods.goods_name }}
-           </view>
-            <view  class="flex justify-between">
-              <view>
-              <view class=" max-h-[80rpx] text-[20rpx] leading-[40rpx]  truncate"> {{ goodsDetail.goods.sub_title }}</view>
-              <view class=" max-h-[80rpx] text-[20rpx] leading-[40rpx]  truncate" > {{ goodsDetail.goods.sku_no }}</view>
-
-              </view>
-              <!-- hsx - end -->
-              <!-- #ifdef MP || APP-PLUS  -->
-              <view class="flex items-center ">
-                <u-icon  name="cut"  size="28" @click="toCopy" style="display: inline">一键复制</u-icon>
-                <u-icon name="download" @click="downloadBanner" color="#2979ff" size="28" > </u-icon>
-
-              </view>
-
-              <!-- #endif -->
-            </view>
+						{{ goodsDetail.goods.goods_name }}
 					</view>
 					<view class="flex items-start mt-[12rpx] pb-[10rpx]">
 						<view class="flex flex-wrap" v-if="goodsDetail.label_info && goodsDetail.label_info.length">
 							<view v-for="item in goodsDetail.label_info" :key="item.label_id"
 								class="text-[#FA6400] mb-[10rpx] leading-[36rpx] text-[22rpx] h-[40rpx] px-[10rpx] border-[2rpx] border-solid border-[#FA6400] rounded-[4rpx] mr-[15rpx] box-border truncate">
 								{{ item.label_name }}
-
 							</view>
-
 						</view>
 						<view class="text-[26rpx] mt-[6rpx] text-[#666] flex items-baseline ml-auto">
-							<text class="whitespace-nowrap">库存</text>
-							<text class="mx-[2rpx]">{{ goodsDetail.goods.stock }}</text>
+							<text class="whitespace-nowrap">销量</text>
+							<text class="mx-[2rpx]">{{ goodsDetail.goods.sale_num }}</text>
 							<text>{{ goodsDetail.goods.unit }}</text>
 						</view>
 					</view>
 				</view>
 
 				<view class="mt-[20rpx] bg-white mx-[20rpx] rounded-[16rpx] px-[20rpx] py-[16rpx]" v-if="isGoodsPropertyTemp">
-					<view @click="servicesDataShow = !servicesDataShow" v-if="goodsDetail.service && goodsDetail.service.length"
-						class="flex items-center h-[64rpx]">
+					<view @click="servicesDataShow = !servicesDataShow" v-if="goodsDetail.service && goodsDetail.service.length" class="flex items-center h-[64rpx]">
 						<text class="text-[#666] text-[26rpx] leading-[30rpx] font-400 shrink-0">服务</text>
 						<view class="text-[#343434] text-[26rpx] leading-[30rpx] font-400 truncate ml-auto">
 							{{ goodsDetail.service[0].service_name }}
 						</view>
-						<text class="iconfont iconxiangyoujiantou text-[22rpx] text-[#999] ml-[4rpx]"></text>
+						<text class="nc-iconfont nc-icon-youV6xx text-[26rpx] text-[#666]"></text>
 					</view>
-					<view @click="buyFn" v-if="goodsDetail.goodsSpec && goodsDetail.goodsSpec.length"
-						class="flex items-center h-[64rpx]">
-						<text class="text-[#666] text-[26rpx] leading-[30rpx] font-400 shrink-0  mr-[20rpx]">已选</text>
+					<view @click="buyFn" v-if="goodsDetail.goodsSpec && goodsDetail.goodsSpec.length" class="flex items-center h-[64rpx]">
+						<text class="text-[#666] text-[26rpx] leading-[30rpx] font-400 shrink-0 mr-[20rpx]">已选</text>
 						<view class="ml-auto text-right truncate flex-1 text-[#343434] text-[26rpx] leading-[30rpx] font-400">
 							{{ goodsDetail.sku_spec_format }}
 						</view>
-						<text class="iconfont iconxiangyoujiantou text-[22rpx] text-[#999] ml-[4rpx]"></text>
+						<text class="nc-iconfont nc-icon-youV6xx text-[26rpx] text-[#666]"></text>
 					</view>
 					<view class="flex items-center h-[64rpx]" @click="distributionDataOpen"
 						v-if="goodsDetail.goods.goods_type == 'real'&&goodsDetail.delivery_type_list&&goodsDetail.delivery_type_list.length" >
@@ -108,28 +80,28 @@
 						<view class="ml-auto flex items-center text-[#343434] text-[26rpx] leading-[30rpx] font-400">
 							{{goodsDetail.delivery_type_list[selectDeliveryType]}}
 						</view>
-						<text class="iconfont iconxiangyoujiantou text-[22rpx] text-[#999] ml-[4rpx]"></text>
+						<text class="nc-iconfont nc-icon-youV6xx text-[26rpx] text-[#666]"></text>
 					</view>
 					<view @click="couponListShow = true" v-if="couponList.length" class="flex items-center h-[64rpx]">
 						<text class="text-[#666] text-[26rpx] leading-[30rpx] font-400 shrink-0 mr-[20rpx]">领券</text>
 						<view class="ml-auto flex-1 flex-nowrap flex items-center overflow-hidden h-[44rpx] content-between">
 							<block v-for="(item, index) in couponList" :key="index">
-								<text v-if="index < 3" class="text-xs whitespace-nowrap rounded-sm border-[2rpx] px-[6rpx] py-[2rpx] border-solid border-[var(--primary-color)] text-[var(--primary-color)] mt-[4rpx]" :class="{'mr-[8rpx]': index < 2, 'ml-auto': index == 0}">
+								<text v-if="index < 3" class="text-xs whitespace-nowrap rounded-sm border-[2rpx] px-[6rpx] py-[2rpx] border-solid border-[var(--primary-color)] text-[var(--primary-color)] mt-[4rpx]" :class="{'mr-[8rpx]': couponList.length != (index+1) && index < 2, 'ml-auto': index == 0}">
 									{{ item.title }}
 								</text>
 							</block>
 						</view>
-						<text class="iconfont iconxiangyoujiantou text-[22rpx] text-[#999] ml-[4rpx]"></text>
+						<text class="nc-iconfont nc-icon-youV6xx text-[26rpx] text-[#666]"></text>
 					</view>
 
 				</view>
 
-				<view class="mt-[20rpx] bg-white mx-[20rpx] rounded-[16rpx] px-[20rpx]" v-if="evaluate.count">
+				<view class="mt-[20rpx] bg-white mx-[20rpx] rounded-[16rpx] px-[20rpx]">
 					<view class="flex items-center justify-between h-[80rpx]">
 						<text class="text-[28rpx] text-[#303133] font-bold">宝贝评价({{ evaluate.count }})</text>
-						<view v-if="evaluate.count" class="h-[80rpx] leading-[80rpx]" @click="toLink(goodsDetail.goods_id)">
-							<text class="text-[24rpx] text-[#666] mr-[4rpx]">查看全部</text>
-							<text class="iconfont iconxiangyoujiantou text-[22rpx] text-[#999]"></text>
+						<view v-if="evaluate.count" class="h-[80rpx] flex items-center" @click="toLink(goodsDetail.goods_id)">
+							<text class="text-[24rpx] text-[#666]">查看全部</text>
+							<text class="nc-iconfont nc-icon-youV6xx text-[26rpx] text-[#666]"></text>
 						</view>
 						<text v-if="!evaluate.count" class="text-[24rpx] text-[#666]">暂无评价</text>
 					</view>
@@ -150,8 +122,7 @@
 						</view>
 					</view>
 				</view>
-				
-				
+
 				<view class="my-[20rpx] bg-white mx-[20rpx] rounded-[16rpx] px-[20rpx] pb-[20rpx]" v-if="goodsDetail.goods && goodsDetail.goods.attr_format && Object.keys(goodsDetail.goods.attr_format).length">
 					<view class="text-[28rpx] h-[80rpx] leading-[80rpx] font-bold">商品属性</view>
 					<view class="border-[2rpx] border-solid border-[#f1f1f1] border-b-0">
@@ -163,101 +134,32 @@
 						</block>
 						<view v-if="goodsDetail.goods.attr_format.length > 4" class="flex items-center justify-center h-[70rpx] border-0 border-solid border-[#f1f1f1] border-b-[2rpx]" @click="isAttrFormatShow = !isAttrFormatShow">
 							<text class="text-[24rpx] mr-[10rpx]">{{!isAttrFormatShow ? '展开' : '收起'}}</text>
-							<text class="iconfont !text-[22rpx]" :class="{'iconxiangxiajiantou': !isAttrFormatShow, 'iconjiantoushang': isAttrFormatShow}"></text>
+							<text class="nc-iconfont !text-[22rpx]" :class="{'nc-icon-xiaV6xx': !isAttrFormatShow, 'nc-icon-shangV6xx-1': isAttrFormatShow}"></text>
 						</view>
 					</view>
 				</view>
 
 				<view class="my-[20rpx] bg-white mx-[20rpx] rounded-[16rpx] px-[20rpx] pd-[10px]">
-					<view class="text-[32rpx] h-[80rpx] leading-[80rpx] font-bold">商品详情</view>
+					<view class="text-[28rpx] h-[80rpx] leading-[80rpx] font-bold">商品详情</view>
 					<view class="u-content">
 						<u-parse :content="goodsDetail.goods.goods_desc" :tagStyle="{img: 'vertical-align: top;',p:'overflow: hidden;word-break:break-word;' }"></u-parse>
 					</view>
 				</view>
-        <view class="my-[20rpx] bg-white mx-[20rpx] rounded-[16rpx]  pd-[10px]">
-          <view  class="text-[28rpx] h-[80rpx] leading-[80rpx] font-bold px-[20rpx]">同类推荐</view>
-          <mescroll-body ref="mescrollRef" top="20rpx" bottom="20px" @up="getAllAppListFn" style="min-height:auto">
-            <view v-if="articleList.length" :class="['px-[20rpx]', !listType ? 'flex justify-between flex-wrap' : '']">
-              <template v-for="(item, index) in articleList">
-                <template v-if="listType" :key="item.app_id">
-                  <view class="bg-white flex p-[20rpx] rounded-[16rpx] overflow-hidden mt-[20rpx]" :class="{ 'mb-[20rpx]': (index+1) == articleList.length}"
-                        @click="toDetail(item.goods_id)">
-                    <u--image class="rounded-[10rpx] overflow-hidden" width="190rpx" height="190rpx" :src="img(item.goods_cover_thumb_mid ? item.goods_cover_thumb_mid : '')" model="aspectFill">
-                      <template #error>
-                        <u-icon name="photo" color="#999" size="50"></u-icon>
-                      </template>
-                    </u--image>
-                    <view class="flex-1 flex flex-col ml-[20rpx] py-[6rpx]">
-                      <view class="text-[28rpx] text-[#303133] leading-[40rpx]  multi-hidden mb-[10rpx]">{{ item.goods_name }}</view>
-                      <view class="text-[28rpx] text-[#303133] leading-[40rpx]  multi-hidden mb-[10rpx]">{{ item.sub_title }}</view>
 
-                      <view class="mt-auto flex justify-between items-baseline">
-                        <view class="text-[var(--price-text-color)] price-font flex items-baseline">
-                          <text class="text-[26rpx] font-500">￥</text>
-                          <text class="text-[36rpx] font-500">{{ parseFloat(item.goodsSku.price).toFixed(2).split('.')[0] }}</text>
-                          <text class="text-[24rpx] font-500">.{{ parseFloat(item.goodsSku.price).toFixed(2).split('.')[1] }}</text>
-                        </view>
-                        <!--                      <text class="text-[24rpx] text-[#999]">已售{{ item.sale_num }}{{ item.unit }}</text>-->
-                      </view>
-                    </view>
-                  </view>
-                </template>
-                <template v-else>
-                  <view class="w-[324rpx] flex flex-col bg-[#fff] box-border rounded-[12rpx] overflow-hidden mt-[20rpx]" @click="toDetail(item.goods_id)">
-                    <u--image width="334rpx" height="334rpx" :src="img(item.goods_cover_thumb_mid ? item.goods_cover_thumb_mid : '')" model="aspectFill">
-                      <template #error>
-                        <u-icon name="photo" color="#999" size="50"></u-icon>
-                      </template>
-                    </u--image>
-                    <view class="px-[16rpx] flex-1 pt-[16rpx] pb-[20rpx] flex flex-col justify-between">
-                      <view class="text-[#303133] leading-[40rpx] text-[28rpx] multi-hidden">
-                        {{ item.goods_name }}
-                      </view>
-                      <view class="text-[22rpx] text-[#303133] leading-[40rpx]  multi-hidden mb-[10rpx]">{{ item.sub_title }}</view>
-
-                      <view class="flex justify-between items-baseline mt-[16rpx]">
-                        <view class="text-[var(--price-text-color)] price-font flex items-baseline">
-                          <!--										<text class="text-[20rpx]  mr-[4rpx]">￥</text>-->
-                          <!--										<text class="text-[36rpx] font-500">{{ item.goodsSku.price }}</text>-->
-
-                          <text class="text-[26rpx] font-500">￥</text>
-                          <text class="text-[36rpx] font-500">{{ parseFloat(item.goodsSku.price).toFixed(2).split('.')[0] }}</text>
-                          <text class="text-[24rpx] font-500">.{{ parseFloat(item.goodsSku.price).toFixed(2).split('.')[1] }}</text>
-
-                        </view>
-                        <!--                      <text class="text-[24rpx] text-[#999]">已售{{ item.sale_num }}{{ item.unit}}</text>-->
-                      </view>
-                    </view>
-                  </view>
-                </template>
-              </template>
-            </view>
-            <view class="mx-[30rpx] mt-[20rpx] bg-[#fff] rounded-[16rpx] noData flex items-center justify-center" v-if="!articleList.length && loading">
-              <mescroll-empty :option="{tip : '暂无商品'}"></mescroll-empty>
-            </view>
-          </mescroll-body>
-        </view>
-
-        <view class="tab-bar-placeholder"></view>
-				<view class="w-[100%] flex justify-between px-[27rpx] bg-[#fff] box-border fixed left-0 bottom-0 tab-bar z-1">
-					<view class="flex items-center">
+				<view class="tab-bar-placeholder"></view>
+				<view class="w-[100%] flex justify-between px-[27rpx] bg-[#fff] box-border fixed left-0 bottom-0 tab-bar z-1 items-center">
+					<view class="flex items-center ml-[10rpx]">
 						<view class="flex flex-col justify-center items-center mr-[39rpx]" @click="redirect({ url: '/addon/shop/pages/index', mode: 'reLaunch' })">
-							<view class="iconfont iconshouye1 text-[42rpx]"></view>
-							<text class="text-[18rpx] mt-1">首页</text>
+							<view class="nc-iconfont nc-icon-shouyeV6xx text-[36rpx]"></view>
+							<text class="text-[20rpx] mt-[10rpx]">首页</text>
 						</view>
 						<view class="flex flex-col justify-center items-center mr-[39rpx]" @click="openShareFn">
-							<view class="iconfont iconfenxiang3 text-[42rpx]"></view>
-							<text class="text-[18rpx] mt-1">分享</text>
+							<view class="nc-iconfont nc-icon-fenxiangV6xx text-[36rpx]"></view>
+							<text class="text-[20rpx] mt-[10rpx]">分享</text>
 						</view>
-						<view class="flex flex-col justify-center items-center" @click="redirect({ url: '/addon/shop/pages/goods/cart' })">
-							<view class="relative flex items-center">
-								<text class="iconfont icongouwuche3 text-[40rpx]"></text>
-								<view v-if="cartTotalNum"
-									:class="['absolute left-[26rpx] top-0 rounded-[25rpx] h-[25rpx] min-w-[25rpx] text-center leading-[25rpx] bg-[#FF4646] text-[#fff] text-[20rpx] font-500 box-border', cartTotalNum > 9 ? 'px-[10rpx]' : '']">
-									{{ cartTotalNum }}
-								</view>
-							</view>
-							<text class="text-[18rpx] mt-1">购物车</text>
+						<view class="flex flex-col justify-center items-center"  @click="collectFn">
+							<text class="nc-iconfont text-[36rpx]" :class="{'text-[#ff0000] nc-icon-xihuanV6mm': isCollect, 'text-[#303133] nc-icon-guanzhuV6xx' : !isCollect}"></text>
+							<text class="text-[20rpx] mt-[10rpx]">收藏</text>
 						</view>
 					</view>
 					<view class="flex" v-if="goodsDetail.goods.status == 1">
@@ -288,10 +190,9 @@
 					<view class="min-h-[480rpx]" @touchmove.prevent.stop>
 						<view class="flex items-center justify-center py-[34rpx] relative">
 							<text class="text-[32rpx] leading-[36rpx] font-500">商品服务</text>
-							<view class="absolute right-[37rpx]  iconfont iconguanbi text-[36rpx]" @click="servicesDataShow = false"></view>
 						</view>
 						<scroll-view class="h-[520rpx]" scroll-y="true">
-							<view class="pl-[22rpx] pt-[28rpx] pr-[37rpx]">
+							<view class="pl-[22rpx] py-[28rpx] pr-[37rpx]">
 								<view class="flex mb-[28rpx]" v-for="(item, index) in goodsDetail.service">
 									<image class="max-w-[34rpx] max-h-[34rpx] mr-[14rpx]" :src="img(item.image || 'addon/shop/icon_service.png')" mode="aspectFit" />
 									<view class="flex-1">
@@ -301,11 +202,6 @@
 								</view>
 							</view>
 						</scroll-view>
-						<view class="px-[32rpx] pb-[67rpx] pt-[42rpx]">
-							<button
-								class="!w-[100%] !h-[72rpx] text-[26rpx] !bg-[#FF4646]  !m-0  leading-[72rpx] rounded-full text-white"
-								@click="servicesDataShow = false">确定</button>
-						</view>
 					</view>
 				</u-popup>
 			</view>
@@ -315,7 +211,6 @@
 					<view class="min-h-[360rpx]" @touchmove.prevent.stop>
 						<view class="flex items-center justify-center py-[34rpx] relative">
 							<text class="text-[32rpx] leading-[36rpx] font-500">配送方式</text>
-							<view class="absolute right-[37rpx]  iconfont iconguanbi text-[36rpx]" @click="distributionDataShow = false"></view>
 						</view>
 						<scroll-view class="h-[520rpx]" scroll-y="true">
 							<view class="pl-[22rpx] pt-[28rpx] pr-[37rpx]">
@@ -337,16 +232,13 @@
 					<view class="min-h-[480rpx]" @touchmove.prevent.stop>
 						<view class="flex items-center justify-center py-[34rpx] relative">
 							<text class="text-[32rpx] leading-[36rpx] font-500">优惠券</text>
-							<view class="absolute right-[37rpx]  iconfont iconguanbi text-[36rpx]" @click="couponListShow = false">
-							</view>
 						</view>
 						<scroll-view class="h-[520rpx]" scroll-y="true">
 							<view class="px-[20rpx]">
 								<view
 									class="mb-[30rpx] flex items-center border-[2rpx] border-solid border-[rgba(0,0,0,.1)] rounded"
 									v-for="(item, index) in couponList" :key="index">
-									<view
-										class="flex flex-col items-center py-[20rpx] w-[240rpx] border-0 border-r-[2rpx] border-dashed border-[rgba(0,0,0,.1)]">
+									<view class="flex flex-col items-center py-[20rpx] w-[240rpx] border-0 border-r-[2rpx] border-dashed border-[rgba(0,0,0,.1)]">
 										<view class="text-xs price-font">
 											<text class="text-[28rpx]">￥</text>
 											<text class="text-[48rpx]">{{ item.price }}</text>
@@ -362,10 +254,7 @@
 									<text v-if="item.btnType === 'collecting'"
 										class="bg-[var(--primary-color)] rounded-2xl text-[#fff] text-xs mr-[20rpx] py-[8rpx] px-[16rpx]"
 										@click="getCouponFn(item, index)">领取</text>
-									<text v-else
-										class="!bg-[#fff] rounded-2xl text-[#ABABAB] text-xs mr-[20rpx] py-[8rpx] px-[16rpx]">{{
-											item.btnType
-											=== 'collected' ? '已领玩' : '已领取' }}</text>
+									<text v-else class="!bg-[#fff] rounded-2xl text-[#ABABAB] text-xs mr-[20rpx] py-[8rpx] px-[16rpx]">{{ item.btnType === 'collected' ? '已领完' : '已领取' }}</text>
 								</view>
 							</view>
 						</scroll-view>
@@ -394,7 +283,7 @@ import { ref, computed, getCurrentInstance, nextTick } from 'vue';
 import { onLoad, onShow, onUnload } from '@dcloudio/uni-app'
 import { img, redirect,handleOnloadParams, getToken } from '@/utils/common';
 import { t } from '@/locale';
-import { getGoodsDetail, collect, cancelCollect, getEvaluateList ,getGoodsPages } from '@/addon/shop/api/goods';
+import { getGoodsDetail, collect, cancelCollect, getEvaluateList } from '@/addon/shop/api/goods';
 import { getShopCouponList, getCoupon } from '@/addon/shop/api/coupon';
 import nsGoodsSku from '@/addon/shop/components/ns-goods-sku/ns-goods-sku.vue';
 import useCartStore from '@/addon/shop/stores/cart'
@@ -403,11 +292,10 @@ import useMemberStore from '@/stores/member'
 import { useShare }from '@/hooks/useShare'
 import { onPageScroll } from '@dcloudio/uni-app';
 import sharePoster from '@/components/share-poster/share-poster.vue'
-import MescrollEmpty from "@/components/mescroll/mescroll-empty/mescroll-empty.vue";
-import MescrollBody from "@/components/mescroll/mescroll-body/mescroll-body.vue";
 
 // 分享
-const{setShare,onShareAppMessage,onShareTimeline} = useShare()
+const{setShare} = useShare()
+
 
 // 会员信息
 const memberStore = useMemberStore()
@@ -473,9 +361,6 @@ onLoad((option) => {
 				...share
 			}
 		});
-
-        onShareAppMessage()
-        onShareTimeline()
 		// 分享 - end
 		
 		// 折扣信息
@@ -639,32 +524,42 @@ const getEvaluateListFn = () => {
 const toLink = () => {
 	redirect({ url: '/addon/shop/pages/evaluate/list', param: { goods_id: goodsDetail.value.goods_id } })
 }
-// 进行跳转
-const toDetail = (id: string | number) => {
-  redirect({ url: '/addon/shop/pages/goods/detail', param: { goods_id: id }, mode: 'navigateTo' })
-}
 
 //预览图片
-const imgListPreview = (items: any) => {
-
-	if (items.length === 0 ) return false
-	var urlList = []
-  items.map( (item:string) =>{
-    urlList.push(item)
-  })
-
-	uni.previewImage({
-		indicator: "number",
-		loop: true,
-		urls: urlList
-	})
+const imgListPreview = (item:any,index:any) => {
+	if(Array.isArray(item)){
+		if (!item.length) return false
+		var urlList =item;
+		uni.previewImage({
+			indicator: "number",
+			current:index,
+			loop: true,
+			urls: urlList
+		})
+	}else{
+		if (item === '') return false
+		var urlList = []
+		urlList.push(img(item))  //push中的参数为 :src="item.img_url" 中的图片地址
+		uni.previewImage({
+			indicator: "number",
+			loop: true,
+			urls: urlList
+		})
+	}
+	
 }
 
 // 返回上一页
 const goback=()=> {
-	uni.navigateBack({
-		delta: 1
-	});
+	if(getCurrentPages().length > 1){
+		uni.navigateBack({
+			delta: 1
+		});
+	}else{
+		uni.navigateTo({
+			url: '/addon/shop/pages/index'
+		})
+	}
 }
 
 /************ 选择配送方式-start ****************/
@@ -738,14 +633,16 @@ const navbarInnerArrowStyle = computed(() => {
 	style += "padding-right: 10rpx;"
 	style += 'position: absolute;';
 	style += 'left:calc( 100vw - ' + menuButtonInfo.right + 'px);';
-	style += 'font-size: 32rpx;';
-	style += 'font-weight: bold;';
+	style += 'font-size: 26px;';
 	if (platform === 'ios') {
 		// 苹果(iOS)设备
 		style += 'font-weight: 700;';
 	} else if (platform === 'android') {
 	  // 安卓(Android)设备
 	}
+	// #endif
+	// #ifdef H5
+	style += 'font-size: 26px;';
 	// #endif
 	return style;
 })
@@ -768,7 +665,7 @@ onPageScroll((e)=> {
 
 const swiperClick = (index)=>{
 	if(typeof index == 'number')
-		imgListPreview(goodsDetail.value.goods.goods_image)
+		imgListPreview(goodsDetail.value.goods.goods_image,index)
 }
 
 /************* 分享海报-start **************/
@@ -784,8 +681,7 @@ const copyUrlFn = ()=>{
 
 const openShareFn = ()=>{
     posterParam.sku_id = goodsDetail.value.sku_id;
-    if (userInfo.value && userInfo.value.member_id)
-        posterParam.member_id = userInfo.value.member_id;
+    if (userInfo.value && userInfo.value.member_id) posterParam.member_id = userInfo.value.member_id;
 	sharePosterRef.value.openShare()
 }
 /************* 分享海报-end **************/
@@ -798,11 +694,11 @@ let goodsPrice = computed(() =>{
 	let price = "0.00";
 	if(Object.keys(goodsDetail.value).length && Object.keys(goodsDetail.value.goods).length && goodsDetail.value.goods.is_discount){
 		// 折扣价
-		price = goodsDetail.value.sale_price
+		price = goodsDetail.value.sale_price ? goodsDetail.value.sale_price : goodsDetail.value.price;
 		priceType.value = 'discount_price'
 	}else if(Object.keys(goodsDetail.value).length && Object.keys(goodsDetail.value.goods).length && goodsDetail.value.goods.member_discount && getToken()){
 		// 会员价
-		price = goodsDetail.value.member_price
+		price = goodsDetail.value.member_price ? goodsDetail.value.member_price : goodsDetail.value.price;
 		priceType.value = 'member_price'
 	}else{
 		price = goodsDetail.value.price
@@ -817,131 +713,6 @@ onUnload(()=>{
 	uni.closePreviewImage()
 	// #endif
 })
-
-/************** 一键复制-start **********/
-const toCopy = ()=>{
-  // 复制商品名称 及价格
-  uni.setClipboardData({
-    data: goodsDetail.value.goods.goods_name + '|'+ goodsDetail.value.goods.sub_title+ '|' + goodsDetail.value.sale_price+"元",
-    success() {
-      uni.showToast({
-        title: '复制成功',
-        icon: 'none'
-      })
-    }
-  })
-}
-/************** 一键复制-end **********/
-/*
-* downloadBanner
-* 一键下载所有的banner图片
-* */
-
-
-
-// #ifdef MP || APP-PLUS
-// Main function to download all images
-const downloadBanner = () => {
-  const images = goodsDetail.value.goods.goods_image;
-  downloadMultipleImages(images)
-}
-
-// 下载单个图片的函数
-function downloadImage(imageUrl:string) {
-  return new Promise((resolve, reject) => {
-    uni.downloadFile({
-      url: imageUrl,
-      success: (res) => {
-        if (res.errMsg == "downloadFile:ok") {
-          uni.saveImageToPhotosAlbum({
-            filePath: res.tempFilePath,
-            success: () => {
-              uni.showToast({
-                title: '保存成功',
-                icon: 'none'
-              });
-              resolve(res.tempFilePath);  // 成功时解析文件路径
-            },
-            fail: () => {
-              uni.showToast({
-                title: '保存失败，请稍后重试',
-                icon: 'none'
-              });
-              reject('保存图片失败');  // 失败时拒绝
-            }
-          });
-        } else {
-          reject('下载文件失败');  // 下载文件失败时拒绝
-        }
-      },
-      fail: () => {
-        uni.showToast({
-          title: '保存失败，请稍后重试',
-          icon: 'none'
-        });
-        reject('下载过程中出错');  // 请求失败时拒绝
-      }
-    });
-  });
-}
-
-// 下载多个图片的函数
-function downloadMultipleImages(images :Object) {
-  // 创建多个下载任务
-  let downloadTasks = images.map((imageUrl:string) => downloadImage(imageUrl));
-
-  // 使用 Promise.all 等待所有图片下载完成
-  Promise.all(downloadTasks)
-      .then((results) => {
-        console.log('所有图片都已成功下载和保存: ', results);
-        uni.showToast({
-          title: '所有图片保存成功',
-          icon: 'success'
-        });
-      })
-      .catch((error) => {
-        console.error('下载或保存中出现问题: ', error);
-        uni.showToast({
-          title: '下载或保存失败',
-          icon: 'none'
-        });
-      });
-}
-
-
-// #endif
-
-let articleList = ref<Array<any>>([]);
-interface mescrollStructure {
-  num: number,
-  size: number,
-  endSuccess: Function,
-  [propName: string]: any
-}
-
-const getAllAppListFn = (mescroll: mescrollStructure) => {
-  loading.value = false;
-
-  let data: object = {
-    goods_category: goodsDetail.value.goods.goods_category,
-    // page: mescroll.num,
-    // limit: mescroll.size,
-  };
-  getGoodsPages(data).then((res: any) => {
-    let newArr = (res.data.data as Array<Object>);
-    //设置列表数据
-    if (Number(mescroll.num) === 1) {
-      articleList.value = []; //如果是第一页需手动制空列表
-    }
-    articleList.value = articleList.value.concat(newArr);
-    mescroll.endSuccess(newArr.length);
-
-  }).catch(() => {
-
-    mescroll.endErr(); // 请求失败, 结束加载
-  })
-}
-
 </script>
 <style lang="scss" scoped>
 	.remove-border {
@@ -952,14 +723,6 @@ const getAllAppListFn = (mescroll: mescrollStructure) => {
 :deep(.u-cell-group__wrapper) {
 	.u-cell__body {
 		padding: 23rpx 32rpx;
-	}
-}
-
-.popup-type {
-	:deep(.u-popup__content) {
-		border-top-left-radius: 16rpx;
-		border-top-right-radius: 16rpx;
-		overflow: hidden;
 	}
 }
 

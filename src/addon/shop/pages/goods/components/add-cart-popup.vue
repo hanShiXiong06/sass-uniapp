@@ -2,7 +2,6 @@
 	<view @touchmove.prevent.stop>
 		<u-popup :show="goodsSkuPop" @close="closeFn" mode="bottom">
 			<view v-if="Object.keys(goodsDetail).length"  @touchmove.prevent.stop class="rounded-t-[20rpx] overflow-hidden bg-[#fff] p-[32rpx] relative">
-				<view class="absolute right-[37rpx]  iconfont iconguanbi text-[50rpx]" @click="closeFn"></view>
 				<view class="flex mb-[58rpx]">
 					<view class="rounded-[8rpx] overflow-hidden">
 						<u--image width="180rpx" height="180rpx" :src="img(detail.sku_image)" model="aspectFill">
@@ -45,24 +44,24 @@
 							v-model="buyNum" :min="0" :max="detail.stock" integer :step="1" input-width="98rpx"
 							input-height="54rpx">
 							<template #minus>
-								<text class="text-[44rpx] iconfont iconjian" :class="{ '!text-[#c8c9cc]': buyNum === 0 }"></text>
+								<text class="text-[44rpx] nc-iconfont nc-icon-jianV6xx" :class="{ '!text-[#c8c9cc]': buyNum === 0 }"></text>
 							</template>
 							<template #input>
 								<text class="number-input text-[#303133] text-center bg-[#f2f2f2] w-[82rpx] fext-[23rpx] mx-[16rpx]">{{ buyNum }}</text>
 							</template>
 							<template #plus>
-								<text class="text-[44rpx] iconfont iconjia" :class="{ '!text-[#c8c9cc]': buyNum === detail.stock }"></text>
+								<text class="text-[44rpx] nc-iconfont nc-icon-jiahaoV6xx" :class="{ '!text-[#c8c9cc]': buyNum === detail.stock }"></text>
 							</template>
 						</u-number-box>
 						<u-number-box v-else v-model="buyNum" :min="1" :max="detail.stock" integer :step="1" input-width="98rpx" input-height="54rpx">
 							<template #minus>
-								<text class="text-[44rpx] iconfont iconjian" :class="{ '!text-[#c8c9cc]': buyNum === 1 }"></text>
+								<text class="text-[44rpx] nc-iconfont nc-icon-jianV6xx" :class="{ '!text-[#c8c9cc]': buyNum === 1 }"></text>
 							</template>
 							<template #input>
 								<text class="number-input text-[#303133] text-center bg-[#f2f2f2] w-[82rpx] fext-[23rpx] mx-[16rpx]">{{ buyNum }}</text>
 							</template>
 							<template #plus>
-								<text class="text-[44rpx] iconfont iconjia" :class="{ '!text-[#c8c9cc]': buyNum === detail.stock }"></text>
+								<text class="text-[44rpx] nc-iconfont nc-icon-jiahaoV6xx" :class="{ '!text-[#c8c9cc]': buyNum === detail.stock }"></text>
 							</template>
 						</u-number-box>
 
@@ -145,7 +144,6 @@ const goodsDetail = computed(() => {
 			})
 		})
 		getSkuId();
-		
 
 		// 当前详情内容
 		if (data.skuList && Object.keys(data.skuList).length) {
@@ -174,6 +172,7 @@ watch(
 )
 const change = (data, index) => {
 	currSpec.value.name[index] = data.name;
+	buyNum.value = 1
 	// getSkuId();
 }
 

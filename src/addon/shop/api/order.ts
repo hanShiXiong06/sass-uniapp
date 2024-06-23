@@ -23,6 +23,13 @@ export function getShopOrder(params: Record<string, any>) {
 }
 
 /**
+ * 获取订单角标数据
+ */
+export function getShopOrderNum() {
+    return request.get(`shop/order/num`)
+}
+
+/**
  * 获取订单详情
  */
 export function getShopOrderDetail(order_id: any) {

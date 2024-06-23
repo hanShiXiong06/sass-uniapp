@@ -7,7 +7,7 @@
 </template>
 <script setup lang="ts">
 import { onLoad, onShow } from '@dcloudio/uni-app'
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import categoryTemplateTwoOne from '@/addon/shop/pages/goods/components/category-template-two-one.vue';
 import categoryTemplateOneOne from '@/addon/shop/pages/goods/components/category-template-one-one.vue';
 import categoryTemplateTwoTwo from '@/addon/shop/pages/goods/components/category-template-two-two.vue';
@@ -55,24 +55,23 @@ onShow(() => {
 .category .detail .mescroll-body {
 	padding-bottom: calc(100rpx + constant(safe-area-inset-bottom)) !important;
 	padding-bottom: calc(100rpx + env(safe-area-inset-bottom)) !important;
-	
 }
 
 .category .cart .mescroll-body {
 	padding-bottom: calc(200rpx + constant(safe-area-inset-bottom)) !important;
 	padding-bottom: calc(200rpx + env(safe-area-inset-bottom)) !important;
-	
 }
 /*  #endif  */
 .category .labelPopup :deep(.u-transition) {
 	top: 92rpx !important;
 	left: 182rpx !important;
-	z-index: 3 !important;
+	z-index: 8 !important;
 }
 .category .labelPopup.active :deep(.u-transition) {
 	top: 198rpx !important;
 }
-
+</style>
+<style lang="scss" scoped>
 :deep(.mescroll-upwarp) {
 	box-sizing: border-box;
 	padding-left: 182rpx;
