@@ -288,88 +288,88 @@
 			"root": "addon",
 			"pages": [
 				// {{ PAGE_BEGAIN }}
-				// TK_CPS_PAGE_BEGIN
-				// *********************************** CPS联盟 ***********************************
-				{
-					"path": "tk_cps/pages/bwc/act",
-					"style": {
-						"navigationBarTitleText": "同城霸王餐",
-						// #ifdef H5
-						"navigationStyle": "custom"
-						// #endif
-					}
+        // TK_CPS_PAGE_BEGIN
+			// *********************************** CPS联盟 ***********************************
+			{
+				"path": "tk_cps/pages/bwc/act",
+				"style": {
+					"navigationBarTitleText": "同城霸王餐",
+					// #ifdef H5
+					"navigationStyle": "custom"
+					// #endif
+				}
+			},
+			{
+				"path": "tk_cps/pages/bwc/order",
+				"style": {
+					"navigationBarTitleText": "订单列表",
+					// #ifdef H5
+					"navigationStyle": "custom"
+					// #endif
 				},
-				{
-					"path": "tk_cps/pages/bwc/order",
-					"style": {
-						"navigationBarTitleText": "订单列表",
-						// #ifdef H5
-						"navigationStyle": "custom"
-						// #endif
+				"needLogin": true
+
+			},
+			{
+				"path": "tk_cps/pages/member",
+				"style": {
+					"navigationBarTitleText": "个人中心",
+					// #ifndef H5
+					"navigationStyle": "custom",
+					"app-plus": {
+						"titleView": false
+					}
+					// #endif 
+				}
+
+			},
+			{
+				"path": "tk_cps/pages/bwc/orderdetail",
+				"style": {
+					"navigationBarTitleText": "订单详情"
+				},
+				"needLogin": true
+			},
+			{
+				"path": "tk_cps/pages/bwc/detail",
+				"style": {
+					"navigationBarTitleText": "活动报名",
+					"enablePullDownRefresh": true
+				}
+			},
+			{
+				"path": "tk_cps/pages/act",
+				"style": {
+					"navigationBarTitleText": "CPS联盟活动推广"
+				}
+			},
+			{
+				"path": "tk_cps/pages/index",
+				"style": {
+					"navigationBarTitleText": "CPS联盟首页",
+					"enablePullDownRefresh": true
+
+				}
+			},
+			{
+				"path": "tk_cps/pages/diy",
+				"style": {
+					"navigationBarTitleText": "%tk_cps.pages.diy%",
+					"enablePullDownRefresh": true,
+					"usingComponents": {
+						"diy-group": "../../../../addon/components/diy/group/index",
+						"fixed-group": "../../../../addon/components/fixed/group/index"
 					},
-					"needLogin": true
-
-				},
-				{
-					"path": "tk_cps/pages/member",
-					"style": {
-						"navigationBarTitleText": "个人中心",
-						// #ifndef H5
-						"navigationStyle": "custom",
-						"app-plus": {
-							"titleView": false
-						}
-						// #endif
+					// #ifndef H5
+					"navigationStyle": "custom",
+					"app-plus": {
+						"titleView": false
 					}
-
-				},
-				{
-					"path": "tk_cps/pages/bwc/orderdetail",
-					"style": {
-						"navigationBarTitleText": "订单详情"
-					},
-					"needLogin": true
-				},
-				{
-					"path": "tk_cps/pages/bwc/detail",
-					"style": {
-						"navigationBarTitleText": "活动报名",
-						"enablePullDownRefresh": true
-					}
-				},
-				{
-					"path": "tk_cps/pages/act",
-					"style": {
-						"navigationBarTitleText": "CPS联盟活动推广"
-					}
-				},
-				{
-					"path": "tk_cps/pages/index",
-					"style": {
-						"navigationBarTitleText": "CPS联盟首页",
-						"enablePullDownRefresh": true
-
-					}
-				},
-				{
-					"path": "tk_cps/pages/diy",
-					"style": {
-						"navigationBarTitleText": "%tk_cps.pages.diy%",
-						"enablePullDownRefresh": true,
-						"usingComponents": {
-							"diy-group": "../../../../addon/components/diy/group/index",
-							"fixed-group": "../../../../addon/components/fixed/group/index"
-						},
-						// #ifndef H5
-						"navigationStyle": "custom",
-						"app-plus": {
-							"titleView": false
-						}
-						// #endif
-					}
-				},
-				// TK_CPS_PAGE_END
-				// RECHARGE_PAGE_BEGIN
+					// #endif 
+				}
+			},
+			// TK_CPS_PAGE_END
+        // RECHARGE_PAGE_BEGIN
 				{
 					"path": "recharge/pages/recharge",
 					"style": {
@@ -392,7 +392,7 @@
 					"needLogin": true
 				},
 				// RECHARGE_PAGE_END
-				// SHOP_PAGE_BEGIN
+        // SHOP_PAGE_BEGIN
 				// *********************************** 商城 ***********************************
 				{
 					"path": "shop/pages/index",
@@ -400,7 +400,7 @@
 						// #ifndef H5
 						"navigationStyle": "custom",
 						// #endif
-						"navigationBarTitleText": "%shop.pages.index%"
+                        "navigationBarTitleText": "%shop.pages.index%"
 					}
 				},
 				{
@@ -461,7 +461,7 @@
 						// #ifndef H5
 						"navigationStyle": "custom",
 						// #endif
-						"navigationBarTitleText": "%shop.pages.member.index%"
+                        "navigationBarTitleText": "%shop.pages.member.index%"
 					}
 				},
 				{
@@ -572,6 +572,7 @@
 				{
 					"path": "shop/pages/point/detail",
 					"style": {
+						"navigationStyle": "custom",
 						"navigationBarTitleText": "%shop.pages.point.detail%"
 					}
 				},
@@ -588,26 +589,26 @@
 					}
 				},
 				// SHOP_PAGE_END
-				// CMS_PAGE_BEGIN
+        // CMS_PAGE_BEGIN
 				{
-					"path": "cms/pages/list",
-					"style": {
-						"navigationBarTitleText": "%cms.pages.list%"
-					}
-				},
-				{
-					"path": "cms/pages/detail",
-					"style": {
-						"navigationBarTitleText": "%cms.pages.detail%"
-					}
-				},
+                    "path": "cms/pages/list",
+                    "style": {
+                        "navigationBarTitleText": "%cms.pages.list%"
+                    }
+                },
+                {
+                    "path": "cms/pages/detail",
+                    "style": {
+                        "navigationBarTitleText": "%cms.pages.detail%"
+                    }
+                },
 				// CMS_PAGE_END
-				// O2O_PAGE_BEGIN
+        // O2O_PAGE_BEGIN
 				// *********************************** 上门服务 ***********************************
 				{
 					"path": "o2o/pages/index",
 					"style": {
-						// #ifndef H5
+                        // #ifndef H5
 						"navigationStyle": "custom",
 						// #endif
 						"navigationBarTitleText": "%o2o.pages.index%"
@@ -634,7 +635,7 @@
 				{
 					"path": "o2o/pages/member/index",
 					"style": {
-						// #ifndef H5
+                        // #ifndef H5
 						"navigationStyle": "custom",
 						// #endif
 						"navigationBarTitleText": "%o2o.pages.member.index%"
@@ -765,7 +766,7 @@
 					"needLogin": true
 				},
 				// O2O_PAGE_END
-				// SHOP_FENXIAO_PAGE_BEGIN
+        // SHOP_FENXIAO_PAGE_BEGIN
 				// *********************************** 商城分销 ***********************************
 				{
 					"path": "shop_fenxiao/pages/index",
@@ -895,12 +896,12 @@
 					}
 				},
 				// SHOP_FENXIAO_PAGE_END
-				// TOURISM_PAGE_BEGIN
+        // TOURISM_PAGE_BEGIN
 				// *********************************** 旅游 ***********************************
 				{
 					"path": "tourism/pages/index",
 					"style": {
-						// #ifdef H5
+						// #ifndef H5
 						"navigationStyle": "custom",
 						// #endif
 						"navigationBarTitleText": "%tourism.pages.index%"
@@ -909,54 +910,36 @@
 				{
 					"path": "tourism/pages/way/list",
 					"style": {
-						// #ifdef H5
-						"navigationStyle": "custom",
-						// #endif
 						"navigationBarTitleText": "%tourism.pages.way.list%"
 					}
 				},
 				{
 					"path": "tourism/pages/way/detail",
 					"style": {
-						// #ifdef H5
-						"navigationStyle": "custom",
-						// #endif
 						"navigationBarTitleText": "%tourism.pages.way.detail%"
 					}
 				},
 				{
 					"path": "tourism/pages/way/order",
 					"style": {
-						// #ifdef H5
-						"navigationStyle": "custom",
-						// #endif
 						"navigationBarTitleText": "%tourism.pages.way.order%"
 					}
 				},
 				{
 					"path": "tourism/pages/hotel/list",
 					"style": {
-						// #ifdef H5
-						"navigationStyle": "custom",
-						// #endif
 						"navigationBarTitleText": "%tourism.pages.hotel.list%"
 					}
 				},
 				{
 					"path": "tourism/pages/hotel/detail",
 					"style": {
-						// #ifdef H5
-						"navigationStyle": "custom",
-						// #endif
 						"navigationBarTitleText": "%tourism.pages.hotel.detail%"
 					}
 				},
 				{
 					"path": "tourism/pages/hotel/order",
 					"style": {
-						// #ifdef H5
-						"navigationStyle": "custom",
-						// #endif
 						"navigationBarTitleText": "%tourism.pages.hotel.order%"
 					},
 					"needLogin": true
@@ -964,72 +947,48 @@
 				{
 					"path": "tourism/pages/scenic/list",
 					"style": {
-						// #ifdef H5
-						"navigationStyle": "custom",
-						// #endif
 						"navigationBarTitleText": "%tourism.pages.scenic.list%"
 					}
 				},
 				{
 					"path": "tourism/pages/scenic/detail",
 					"style": {
-						// #ifdef H5
-						"navigationStyle": "custom",
-						// #endif
 						"navigationBarTitleText": "%tourism.pages.scenic.detail%"
 					}
 				},
 				{
 					"path": "tourism/pages/scenic/order",
 					"style": {
-						// #ifdef H5
-						"navigationStyle": "custom",
-						// #endif
 						"navigationBarTitleText": "%tourism.pages.scenic.order%"
 					}
 				},
 				{
 					"path": "tourism/pages/member/index",
 					"style": {
-						// #ifdef H5
-						"navigationStyle": "custom",
-						// #endif
 						"navigationBarTitleText": "%tourism.pages.member.index%"
 					}
 				},
 				{
 					"path": "tourism/pages/order/list",
 					"style": {
-						// #ifdef H5
-						"navigationStyle": "custom",
-						// #endif
 						"navigationBarTitleText": "%tourism.pages.order.list%"
 					}
 				},
 				{
 					"path": "tourism/pages/order/detail",
 					"style": {
-						// #ifdef H5
-						"navigationStyle": "custom",
-						// #endif
 						"navigationBarTitleText": "%tourism.pages.order.detail%"
 					}
 				},
 				{
 					"path": "tourism/pages/order/hotel_detail",
 					"style": {
-						// #ifdef H5
-						"navigationStyle": "custom",
-						// #endif
 						"navigationBarTitleText": "%tourism.pages.order.hotel_detail%"
 					}
 				},
 				{
 					"path": "tourism/pages/verify/index",
 					"style": {
-						// #ifdef H5
-						"navigationStyle": "custom",
-						// #endif
 						"navigationBarTitleText": "%tourism.pages.verify.index%"
 					},
 					"needLogin": true
@@ -1037,9 +996,6 @@
 				{
 					"path": "tourism/pages/verify/record",
 					"style": {
-						// #ifdef H5
-						"navigationStyle": "custom",
-						// #endif
 						"navigationBarTitleText": "%tourism.pages.verify.record%"
 					},
 					"needLogin": true
@@ -1047,115 +1003,103 @@
 				{
 					"path": "tourism/pages/verify/detail",
 					"style": {
-						// #ifdef H5
-						"navigationStyle": "custom",
-						// #endif
 						"navigationBarTitleText": "%tourism.pages.verify.detail%"
 					},
 					"needLogin": true
 				},
 				// TOURISM_PAGE_END
-				// DETAIL_FORM_PAGE_BEGIN
-				// *********************************** hello world ***********************************
-				{
-					"path": "detail_form/pages/hello_world/index",
-					"style": {
-						"navigationBarTitleText": "%detail_form.pages.hello_world.index%"
+        // TK_JHKD_PAGE_BEGIN
+			// *********************************** 聚合快递 ***********************************
+			{
+				"path": "tk_jhkd/pages/address/address",
+				"style": {
+					"navigationBarTitleText": "地址列表"
+				},
+				"needLogin": true
+			},
+			{
+				"path": "tk_jhkd/pages/address/address_edit",
+				"style": {
+					"navigationBarTitleText": "快递地址"
+				},
+				"needLogin": true
+			},
+			{
+				"path": "tk_jhkd/pages/address/location_address_edit",
+				"style": {
+					"navigationBarTitleText": "同城地址"
+				},
+				"needLogin": true
+			},
+			{
+				"path": "tk_jhkd/pages/agreement",
+				"style": {
+					"navigationBarTitleText": "协议详情"
+				},
+				"needLogin": true
+			},
+			{
+				"path": "tk_jhkd/pages/help",
+				"style": {
+					"navigationBarTitleText": "帮助中心"
+				},
+				"needLogin": false
+			},
+			{
+				"path": "tk_jhkd/pages/ordersubmit",
+				"style": {
+					"navigationBarTitleText": "快递下单"
+				}
+			},
+			{
+				"path": "tk_jhkd/pages/orderlist",
+				"style": {
+					"navigationBarTitleText": "订单列表"
+				},
+				"needLogin": true
+			},
+			{
+				"path": "tk_jhkd/pages/orderaddlist",
+				"style": {
+					"navigationBarTitleText": "补单列表"
+				},
+				"needLogin": true
+			},
+			{
+				"path": "tk_jhkd/pages/orderdetail",
+				"style": {
+					"navigationBarTitleText": "订单详情"
+				},
+				"needLogin": true
+			}, {
+				"path": "tk_jhkd/pages/index",
+				"style": {
+					"navigationBarTitleText": "首页",
+					// #ifndef H5
+					"navigationStyle": "custom",
+					"app-plus": {
+						"titleView": false
 					}
-				},
-				// DETAIL_FORM_PAGE_END
-				// TK_JHKD_PAGE_BEGIN
-				// *********************************** 聚合快递 ***********************************
-				{
-					"path": "tk_jhkd/pages/address/address",
-					"style": {
-						"navigationBarTitleText": "地址列表"
-					},
-					"needLogin": true
-				},
-				{
-					"path": "tk_jhkd/pages/address/address_edit",
-					"style": {
-						"navigationBarTitleText": "快递地址"
-					},
-					"needLogin": true
-				},
-				{
-					"path": "tk_jhkd/pages/address/location_address_edit",
-					"style": {
-						"navigationBarTitleText": "同城地址"
-					},
-					"needLogin": true
-				},
-				{
-					"path": "tk_jhkd/pages/agreement",
-					"style": {
-						"navigationBarTitleText": "协议详情"
-					},
-					"needLogin": true
-				},
-				{
-					"path": "tk_jhkd/pages/help",
-					"style": {
-						"navigationBarTitleText": "帮助中心"
-					},
-					"needLogin": false
-				},
-				{
-					"path": "tk_jhkd/pages/ordersubmit",
-					"style": {
-						"navigationBarTitleText": "快递下单"
-					}
-				},
-				{
-					"path": "tk_jhkd/pages/orderlist",
-					"style": {
-						"navigationBarTitleText": "订单列表"
-					},
-					"needLogin": true
-				},
-				{
-					"path": "tk_jhkd/pages/orderaddlist",
-					"style": {
-						"navigationBarTitleText": "补单列表"
-					},
-					"needLogin": true
-				},
-				{
-					"path": "tk_jhkd/pages/orderdetail",
-					"style": {
-						"navigationBarTitleText": "订单详情"
-					},
-					"needLogin": true
-				}, {
-					"path": "tk_jhkd/pages/index",
-					"style": {
-						"navigationBarTitleText": "首页",
-						// #ifndef H5
-						"navigationStyle": "custom",
-						"app-plus": {
-							"titleView": false
-						}
-						// #endif
+					// #endif 
 
-					}
+				}
 
-				},
-				{
-					"path": "tk_jhkd/pages/member",
-					"style": {
-						"navigationBarTitleText": "个人中心",
-						// #ifndef H5
-						"navigationStyle": "custom",
-						"app-plus": {
-							"titleView": false
-						}
-						// #endif
+			},
+			{
+				"path": "tk_jhkd/pages/member",
+				"style": {
+					"navigationBarTitleText": "个人中心",
+					// #ifndef H5
+					"navigationStyle": "custom",
+					"app-plus": {
+						"titleView": false
 					}
+					// #endif 
+				}
 
-				},
-				// TK_JHKD_PAGE_END
-				// {{ PAGE_END }}}
+			},
+			// TK_JHKD_PAGE_END
+// {{ PAGE_END }}}
 				{
 					"path": "end"
 				}
@@ -1172,8 +1116,8 @@
 	},
 	"tabBar": {
 		"list": [{
-			"pagePath": "app/pages/index/index"
-		},
+				"pagePath": "app/pages/index/index"
+			},
 			{
 				"pagePath": "app/pages/member/index"
 			}
