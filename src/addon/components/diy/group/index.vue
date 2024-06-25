@@ -91,15 +91,6 @@
             <template v-if="component.componentName == 'FenxiaoGoodsList'">
                 <diy-fenxiao-goods-list :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" />
             </template>
-            <template v-if="component.componentName == 'TourismHotel'">
-                <diy-tourism-hotel :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" />
-            </template>
-            <template v-if="component.componentName == 'TourismTickets'">
-                <diy-tourism-tickets :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" />
-            </template>
-            <template v-if="component.componentName == 'TourismTravel'">
-                <diy-tourism-travel :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" />
-            </template>
             <template v-if="component.componentName == 'Brand'">
                 <diy-brand :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" />
             </template>
@@ -111,6 +102,15 @@
             </template>
             <template v-if="component.componentName == 'Meituan'">
                 <diy-meituan :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" />
+            </template>
+            <template v-if="component.componentName == 'TourismHotel'">
+                <diy-tourism-hotel :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" />
+            </template>
+            <template v-if="component.componentName == 'TourismTickets'">
+                <diy-tourism-tickets :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" />
+            </template>
+            <template v-if="component.componentName == 'TourismTravel'">
+                <diy-tourism-travel :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" />
             </template>
             </view>
         </view>
@@ -135,13 +135,13 @@
    import diyO2oSearch from '@/addon/o2o/components/diy/o2o-search/index.vue';
    import diyO2oTechnician from '@/addon/o2o/components/diy/o2o-technician/index.vue';
    import diyFenxiaoGoodsList from '@/addon/shop_fenxiao/components/diy/fenxiao-goods-list/index.vue';
-   import diyTourismHotel from '@/addon/tourism/components/diy/tourism-hotel/index.vue';
-   import diyTourismTickets from '@/addon/tourism/components/diy/tourism-tickets/index.vue';
-   import diyTourismTravel from '@/addon/tourism/components/diy/tourism-travel/index.vue';
    import diyBrand from '@/addon/tk_jhkd/components/diy/brand/index.vue';
    import diyJhkd from '@/addon/tk_jhkd/components/diy/jhkd/index.vue';
    import diyBwc from '@/addon/tk_cps/components/diy/bwc/index.vue';
    import diyMeituan from '@/addon/tk_cps/components/diy/meituan/index.vue';
+   import diyTourismHotel from '@/addon/tourism/components/diy/tourism-hotel/index.vue';
+   import diyTourismTickets from '@/addon/tourism/components/diy/tourism-tickets/index.vue';
+   import diyTourismTravel from '@/addon/tourism/components/diy/tourism-travel/index.vue';
    import topTabbar from '@/components/top-tabbar/top-tabbar.vue'
    import useDiyStore from '@/app/stores/diy';
    import { ref, onMounted, nextTick, computed, watch } from 'vue';

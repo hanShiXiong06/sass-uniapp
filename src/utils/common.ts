@@ -2,10 +2,11 @@ import { getTabbarPages } from './pages'
 import useDiyStore from '@/app/stores/diy'
 import useMemberStore from '@/stores/member'
 import useSystemStore from '@/stores/system'
-
+//TK 0.4.0框架 CPS联盟文件修改
+import { getCpsInfo } from '../app/api/cps'
 /**
-* 跳转页面
-*/
+ * 跳转页面
+ */
 export const redirect = (redirect : redirectOptions) => {
 	// 装修模式禁止跳转
 	if (useDiyStore().mode == 'decorate') return
@@ -54,15 +55,104 @@ export const redirect = (redirect : redirectOptions) => {
 }
 
 /**
-* 自定义跳转链接
-* @param {Object} link
-*/
+ * 自定义跳转链接
+ * @param {Object} link
+ */
 export const diyRedirect = (link: any) => {
 	const diyStore = useDiyStore();
 	// 装修模式禁止跳转
 	if (diyStore.mode == 'decorate') return;
 
 	if (link == null || Object.keys(link).length == 1) return;
+	//适配小程序插件情况进行拦截跳转
+	if (link.url.indexOf('type=11') !== -1) {
+		function parseQueryString(queryString) {
+			const params = {};
+			const keyValuePairs = queryString.split('&');
+			for (const pair of keyValuePairs) {
+				const [key, value] = pair.split('=');
+				params[key] = decodeURIComponent(value);
+			}
+			return params;
+		}
+		const queryString = link.url.split('?')[1];
+		if (queryString) {
+			const queryParams = parseQueryString(queryString);
+			const type = queryParams['type'];
+			const act_id = queryParams['act_id'];
+			getCpsInfo({
+				type: type,
+				act_id: act_id
+			}).then((res) => {
+				// #ifdef H5
+				window.location.href = res.data.h5
+				// #endif
+				// #ifdef MP-WEIXIN
+				if (res.data.path != '') {
+					uni.navigateTo({
+						url: res.data.path
+					})
+				}
+				// #endif
+			}).catch((error) => {
+				console.error('获取CPS信息失败', error);
+			});
+		} else {
+			console.error('链接中没有查询参数');
+		}
+		return
+	}
+	//适配半屏小程序
+	if (link.url.indexOf('style=embedded') !== -1) {
+		function parseQueryString(queryString) {
+			const params = {};
+			const keyValuePairs = queryString.split('&');
+			for (const pair of keyValuePairs) {
+				const [key, value] = pair.split('=');
+				params[key] = decodeURIComponent(value);
+			}
+			return params;
+		}
+		const queryString = link.url.split('?')[1];
+		if (queryString) {
+			const queryParams = parseQueryString(queryString);
+			const type = queryParams['type'];
+			const act_id = queryParams['act_id'];
+			getCpsInfo({
+				type: type,
+				act_id: act_id
+			}).then((res) => {
+				// #ifdef H5
+				window.location.href = res.data.h5
+				// #endif
+				// #ifdef MP-WEIXIN
+				if (res.data.weapp.appid == '') {
+					uni.redirectTo({
+						url: link.url
+					})
+				} else {
+					uni.openEmbeddedMiniProgram({
+						appId: res.data.weapp.appid,
+						path: res.data.weapp.pagepath,
+						extraData: {},
+						success(res) {
+							console.log('半屏小程序打开');
+						},
+						fail(err) {
+							console.error('打开半屏小程序失败', err);
+						}
+					});
+				}
+
+				// #endif
+			}).catch((error) => {
+				console.error('获取CPS信息失败', error);
+			});
+		} else {
+			console.error('链接中没有查询参数');
+		}
+		return
+	}
 
 	// 外部链接
 	if (link.url && (link.url.indexOf('https') != -1 || link.url.indexOf('http') != -1)) {
@@ -101,8 +191,8 @@ export const diyRedirect = (link: any) => {
 }
 
 /**
-* 获取当前路由
-*/
+ * 获取当前路由
+ */
 export const currRoute = () => {
 	const pages = getCurrentPages()
 	const route = pages[pages.length - 1]
@@ -142,33 +232,33 @@ export const currShareRoute = () => {
 }
 
 /**
-* 获取token
-* @returns
-*/
+ * 获取token
+ * @returns
+ */
 export function getToken() : null | string {
-    return useMemberStore().token
+	return useMemberStore().token
 }
 
 /**
-* 设置token
-* @param token
-* @returns
-*/
+ * 设置token
+ * @param token
+ * @returns
+ */
 export function setToken(token : string) : void {
 	uni.setStorageSync(import.meta.env.VITE_REQUEST_STORAGE_TOKEN_KEY, token)
 }
 
 /**
-* 移除token
-* @returns
-*/
+ * 移除token
+ * @returns
+ */
 export function removeToken() : void {
 	uni.removeStorageSync(import.meta.env.VITE_REQUEST_STORAGE_TOKEN_KEY)
 }
 
 /**
-* 将url 解构为 { path: ***, query: {} }
-*/
+ * 将url 解构为 { path: ***, query: {} }
+ */
 export function urlDeconstruction(url : string) {
 	const query = {}
 	const [path, param] = url.split('?')
@@ -182,27 +272,27 @@ export function urlDeconstruction(url : string) {
 }
 
 /**
-* 判断是否是url
-* @param str
-* @returns
-*/
+ * 判断是否是url
+ * @param str
+ * @returns
+ */
 export function isUrl(str : string) : boolean {
 	return str && (str.indexOf('http://') != -1 || str.indexOf('https://') != -1) || false
 }
 
 /**
-* 图片输出
-* @param path
-* @returns
-*/
+ * 图片输出
+ * @param path
+ * @returns
+ */
 export function img(path : string) : string {
-    // #ifdef H5
+	// #ifdef H5
 	return isUrl(path) ? path : `${import.meta.env.VITE_IMG_DOMAIN || location.origin}/${path}`
-    // #endif
+	// #endif
 
-    // #ifndef H5
-    return isUrl(path) ? path : `${import.meta.env.VITE_IMG_DOMAIN}/${path}`
-    // #endif
+	// #ifndef H5
+	return isUrl(path) ? path : `${import.meta.env.VITE_IMG_DOMAIN}/${path}`
+	// #endif
 }
 
 /**
@@ -213,8 +303,8 @@ export function mobileHide(mobile: string) {
 }
 
 /**
-* 判断是否是微信浏览器
-*/
+ * 判断是否是微信浏览器
+ */
 export function isWeixinBrowser() : boolean {
 	// #ifndef H5
 	return false
@@ -224,8 +314,8 @@ export function isWeixinBrowser() : boolean {
 }
 
 /**
-* 获取应用场景值
-*/
+ * 获取应用场景值
+ */
 export function getAppChannel() : string {
 	// #ifdef APP-PLUS
 	return 'app'
@@ -239,8 +329,8 @@ export function getAppChannel() : string {
 }
 
 /**
-* 金额格式化
-*/
+ * 金额格式化
+ */
 export function moneyFormat(money : string) : string {
 	return isNaN(parseFloat(money)) ? money : parseFloat(money).toFixed(2)
 }
@@ -256,10 +346,10 @@ export function mobileConceal(mobile : string) : string {
  * 获取站点id
  */
 export function getSiteId(siteId : number | string) {
-    // #ifdef H5
-    const match = location.href.match(/\/wap\/(\d*)\//);
+	// #ifdef H5
+	const match = location.href.match(/\/wap\/(\d*)\//);
 	match && (siteId = match[1])
-    // #endif
+	// #endif
 
 	// #ifdef MP-WEIXIN
 	if (uni.getExtConfigSync) {
@@ -268,7 +358,7 @@ export function getSiteId(siteId : number | string) {
 	}
 	// #endif
 
-    return siteId
+	return siteId
 }
 
 /**
@@ -338,8 +428,8 @@ export function copy(value, callback) {
 			// 在隐私协议中没有声明chooseLocation:fail api作用域
 			if(res.errMsg && res.errno) {
 				if(res.errno == 104){
-				    let msg = '用户未授权隐私权限，设置剪贴板数据失败';
-				    uni.showToast({title: msg, icon: 'none'})
+					let msg = '用户未授权隐私权限，设置剪贴板数据失败';
+					uni.showToast({title: msg, icon: 'none'})
 				}else if(res.errno == 112){
 					let msg = '隐私协议中未声明，设置剪贴板数据失败';
 					uni.showToast({title: msg, icon: 'none'})
@@ -384,8 +474,8 @@ export function getLocation(param = {}) {
 	uni.getLocation({
 		type: param.type ?? 'gcj02',
 		success: res => {
-		const systemStore = useSystemStore()
-		systemStore.setLocation(res);
+			const systemStore = useSystemStore()
+			systemStore.setLocation(res);
 			typeof param.success == 'function' && param.success(res);
 		},
 		fail: res => {
@@ -420,19 +510,19 @@ export function locationStorage () {
  * @returns {*} 克隆后的对象或者原值（不是对象）
  */
 export function deepClone(obj: object) {
-    // 对常见的“非”值，直接返回原来值
-    if ([null, undefined, NaN, false].includes(obj)) return obj
-    if (typeof obj !== 'object' && typeof obj !== 'function') {
-        // 原始类型直接返回
-        return obj
-    }
-    const o = isArray(obj) ? [] : {}
-    for (const i in obj) {
-        if (obj.hasOwnProperty(i)) {
-            o[i] = typeof obj[i] === 'object' ? deepClone(obj[i]) : obj[i]
-        }
-    }
-    return o
+	// 对常见的“非”值，直接返回原来值
+	if ([null, undefined, NaN, false].includes(obj)) return obj
+	if (typeof obj !== 'object' && typeof obj !== 'function') {
+		// 原始类型直接返回
+		return obj
+	}
+	const o = isArray(obj) ? [] : {}
+	for (const i in obj) {
+		if (obj.hasOwnProperty(i)) {
+			o[i] = typeof obj[i] === 'object' ? deepClone(obj[i]) : obj[i]
+		}
+	}
+	return o
 }
 
 /**
@@ -442,22 +532,22 @@ export function deepClone(obj: object) {
  * @returns
  */
 export function debounce(fn: (args?: any) => any, delay: number = 300) {
-    let timer: null | number = null
-    return function (...args) {
-        if (timer != null) {
-            clearTimeout(timer)
-            timer = null
-        }
-        timer = setTimeout(() => {
-            fn.call(this, ...args)
-        }, delay);
-    }
+	let timer: null | number = null
+	return function (...args) {
+		if (timer != null) {
+			clearTimeout(timer)
+			timer = null
+		}
+		timer = setTimeout(() => {
+			fn.call(this, ...args)
+		}, delay);
+	}
 }
 
 const isArray = (value: any) => {
-    if (typeof Array.isArray === 'function') {
-        return Array.isArray(value)
-    }
-    return Object.prototype.toString.call(value) === '[object Array]'
+	if (typeof Array.isArray === 'function') {
+		return Array.isArray(value)
+	}
+	return Object.prototype.toString.call(value) === '[object Array]'
 }
 

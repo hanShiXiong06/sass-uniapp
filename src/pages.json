@@ -288,87 +288,14 @@
 			"root": "addon",
 			"pages": [
 				// {{ PAGE_BEGAIN }}
-        // TK_CPS_PAGE_BEGIN
-			// *********************************** CPS联盟 ***********************************
-			{
-				"path": "tk_cps/pages/bwc/act",
-				"style": {
-					"navigationBarTitleText": "同城霸王餐",
-					// #ifdef H5
-					"navigationStyle": "custom"
-					// #endif
-				}
-			},
-			{
-				"path": "tk_cps/pages/bwc/order",
-				"style": {
-					"navigationBarTitleText": "订单列表",
-					// #ifdef H5
-					"navigationStyle": "custom"
-					// #endif
-				},
-				"needLogin": true
-
-			},
-			{
-				"path": "tk_cps/pages/member",
-				"style": {
-					"navigationBarTitleText": "个人中心",
-					// #ifndef H5
-					"navigationStyle": "custom",
-					"app-plus": {
-						"titleView": false
-					}
-					// #endif 
-				}
-
-			},
-			{
-				"path": "tk_cps/pages/bwc/orderdetail",
-				"style": {
-					"navigationBarTitleText": "订单详情"
-				},
-				"needLogin": true
-			},
-			{
-				"path": "tk_cps/pages/bwc/detail",
-				"style": {
-					"navigationBarTitleText": "活动报名",
-					"enablePullDownRefresh": true
-				}
-			},
-			{
-				"path": "tk_cps/pages/act",
-				"style": {
-					"navigationBarTitleText": "CPS联盟活动推广"
-				}
-			},
-			{
-				"path": "tk_cps/pages/index",
-				"style": {
-					"navigationBarTitleText": "CPS联盟首页",
-					"enablePullDownRefresh": true
-
-				}
-			},
-			{
-				"path": "tk_cps/pages/diy",
-				"style": {
-					"navigationBarTitleText": "%tk_cps.pages.diy%",
-					"enablePullDownRefresh": true,
-					"usingComponents": {
-						"diy-group": "../../../../addon/components/diy/group/index",
-						"fixed-group": "../../../../addon/components/fixed/group/index"
-					},
-					// #ifndef H5
-					"navigationStyle": "custom",
-					"app-plus": {
-						"titleView": false
-					}
-					// #endif 
-				}
-			},
-			// TK_CPS_PAGE_END
+        // DAILYSIGNIN_PAGE_BEGIN
+		{
+			"path": "dailySignIn/pages/signIn/index",
+			"style": {
+				"navigationBarTitleText": "%dailySignIn.pages.signIn.index%"
+			}
+		},
+        // DAILYSIGNIN_PAGE_END
         // RECHARGE_PAGE_BEGIN
 				{
 					"path": "recharge/pages/recharge",
@@ -896,6 +823,178 @@
 					}
 				},
 				// SHOP_FENXIAO_PAGE_END
+        // TK_JHKD_PAGE_BEGIN
+			// *********************************** 聚合快递 ***********************************
+			{
+				"path": "tk_jhkd/pages/address/address",
+				"style": {
+					"navigationBarTitleText": "地址列表"
+				},
+				"needLogin": true
+			},
+			{
+				"path": "tk_jhkd/pages/address/address_edit",
+				"style": {
+					"navigationBarTitleText": "快递地址"
+				},
+				"needLogin": true
+			},
+			{
+				"path": "tk_jhkd/pages/address/location_address_edit",
+				"style": {
+					"navigationBarTitleText": "同城地址"
+				},
+				"needLogin": true
+			},
+			{
+				"path": "tk_jhkd/pages/agreement",
+				"style": {
+					"navigationBarTitleText": "协议详情"
+				},
+				"needLogin": true
+			},
+			{
+				"path": "tk_jhkd/pages/help",
+				"style": {
+					"navigationBarTitleText": "帮助中心"
+				},
+				"needLogin": false
+			},
+			{
+				"path": "tk_jhkd/pages/ordersubmit",
+				"style": {
+					"navigationBarTitleText": "快递下单"
+				}
+			},
+			{
+				"path": "tk_jhkd/pages/orderlist",
+				"style": {
+					"navigationBarTitleText": "订单列表"
+				},
+				"needLogin": true
+			},
+			{
+				"path": "tk_jhkd/pages/orderaddlist",
+				"style": {
+					"navigationBarTitleText": "补单列表"
+				},
+				"needLogin": true
+			},
+			{
+				"path": "tk_jhkd/pages/orderdetail",
+				"style": {
+					"navigationBarTitleText": "订单详情"
+				},
+				"needLogin": true
+			}, {
+				"path": "tk_jhkd/pages/index",
+				"style": {
+					"navigationBarTitleText": "首页",
+					// #ifndef H5
+					"navigationStyle": "custom",
+					"app-plus": {
+						"titleView": false
+					}
+					// #endif 
+
+				}
+
+			},
+			{
+				"path": "tk_jhkd/pages/member",
+				"style": {
+					"navigationBarTitleText": "个人中心",
+					// #ifndef H5
+					"navigationStyle": "custom",
+					"app-plus": {
+						"titleView": false
+					}
+					// #endif 
+				}
+
+			},
+			// TK_JHKD_PAGE_END
+        // TK_CPS_PAGE_BEGIN
+			// *********************************** CPS联盟 ***********************************
+			{
+				"path": "tk_cps/pages/bwc/act",
+				"style": {
+					"navigationBarTitleText": "同城霸王餐",
+					// #ifdef H5
+					"navigationStyle": "custom"
+					// #endif
+				}
+			},
+			{
+				"path": "tk_cps/pages/bwc/order",
+				"style": {
+					"navigationBarTitleText": "订单列表",
+					// #ifdef H5
+					"navigationStyle": "custom"
+					// #endif
+				},
+				"needLogin": true
+
+			},
+			{
+				"path": "tk_cps/pages/member",
+				"style": {
+					"navigationBarTitleText": "个人中心",
+					// #ifndef H5
+					"navigationStyle": "custom",
+					"app-plus": {
+						"titleView": false
+					}
+					// #endif 
+				}
+
+			},
+			{
+				"path": "tk_cps/pages/bwc/orderdetail",
+				"style": {
+					"navigationBarTitleText": "订单详情"
+				},
+				"needLogin": true
+			},
+			{
+				"path": "tk_cps/pages/bwc/detail",
+				"style": {
+					"navigationBarTitleText": "活动报名",
+					"enablePullDownRefresh": true
+				}
+			},
+			{
+				"path": "tk_cps/pages/act",
+				"style": {
+					"navigationBarTitleText": "CPS联盟活动推广"
+				}
+			},
+			{
+				"path": "tk_cps/pages/index",
+				"style": {
+					"navigationBarTitleText": "CPS联盟首页",
+					"enablePullDownRefresh": true
+
+				}
+			},
+			{
+				"path": "tk_cps/pages/diy",
+				"style": {
+					"navigationBarTitleText": "%tk_cps.pages.diy%",
+					"enablePullDownRefresh": true,
+					"usingComponents": {
+						"diy-group": "../../../../addon/components/diy/group/index",
+						"fixed-group": "../../../../addon/components/fixed/group/index"
+					},
+					// #ifndef H5
+					"navigationStyle": "custom",
+					"app-plus": {
+						"titleView": false
+					}
+					// #endif 
+				}
+			},
+			// TK_CPS_PAGE_END
         // TOURISM_PAGE_BEGIN
 				// *********************************** 旅游 ***********************************
 				{
@@ -1008,97 +1107,6 @@
 					"needLogin": true
 				},
 				// TOURISM_PAGE_END
-        // TK_JHKD_PAGE_BEGIN
-			// *********************************** 聚合快递 ***********************************
-			{
-				"path": "tk_jhkd/pages/address/address",
-				"style": {
-					"navigationBarTitleText": "地址列表"
-				},
-				"needLogin": true
-			},
-			{
-				"path": "tk_jhkd/pages/address/address_edit",
-				"style": {
-					"navigationBarTitleText": "快递地址"
-				},
-				"needLogin": true
-			},
-			{
-				"path": "tk_jhkd/pages/address/location_address_edit",
-				"style": {
-					"navigationBarTitleText": "同城地址"
-				},
-				"needLogin": true
-			},
-			{
-				"path": "tk_jhkd/pages/agreement",
-				"style": {
-					"navigationBarTitleText": "协议详情"
-				},
-				"needLogin": true
-			},
-			{
-				"path": "tk_jhkd/pages/help",
-				"style": {
-					"navigationBarTitleText": "帮助中心"
-				},
-				"needLogin": false
-			},
-			{
-				"path": "tk_jhkd/pages/ordersubmit",
-				"style": {
-					"navigationBarTitleText": "快递下单"
-				}
-			},
-			{
-				"path": "tk_jhkd/pages/orderlist",
-				"style": {
-					"navigationBarTitleText": "订单列表"
-				},
-				"needLogin": true
-			},
-			{
-				"path": "tk_jhkd/pages/orderaddlist",
-				"style": {
-					"navigationBarTitleText": "补单列表"
-				},
-				"needLogin": true
-			},
-			{
-				"path": "tk_jhkd/pages/orderdetail",
-				"style": {
-					"navigationBarTitleText": "订单详情"
-				},
-				"needLogin": true
-			}, {
-				"path": "tk_jhkd/pages/index",
-				"style": {
-					"navigationBarTitleText": "首页",
-					// #ifndef H5
-					"navigationStyle": "custom",
-					"app-plus": {
-						"titleView": false
-					}
-					// #endif 
-
-				}
-
-			},
-			{
-				"path": "tk_jhkd/pages/member",
-				"style": {
-					"navigationBarTitleText": "个人中心",
-					// #ifndef H5
-					"navigationStyle": "custom",
-					"app-plus": {
-						"titleView": false
-					}
-					// #endif 
-				}
-
-			},
-			// TK_JHKD_PAGE_END
 // {{ PAGE_END }}}
 				{
 					"path": "end"
