@@ -60,112 +60,144 @@
 					</template>
 
 				</view>
-				<view class="labelPopup" :class="{ 'active': config.search.control }">
-					<u-popup :show="labelPopup" mode="top" @close="labelPopup = false">
-						<view class="flex flex-wrap py-[24rpx]" @touchmove.prevent.stop>
-							<!-- <text
-								class="flex-shrink-0 w-[160rpx] ml-[22rpx] mb-[24rpx] text-center h-[48rpx] text-[22rpx] leading-[48rpx] border-[2rpx] border-solid rounded-[24rpx] box-border"
-								:class="{ 'sub-tab-active text-color border-color': initAll.allActive === subActive, 'border-[#E2E2E2]': initAll.allActive != subActive }"
-								 @click="subMenuClick(initAll.allActive,initAll.data)">全部</text> -->
-							<text
-								class="flex-shrink-0 w-[160rpx] ml-[22rpx] mb-[24rpx] text-center h-[48rpx] text-[22rpx] leading-[48rpx] border-[2rpx] border-solid rounded-[24rpx] box-border"
-								:class="{ 'sub-tab-active text-color border-color': index === subActive, 'border-[#E2E2E2]': index != subActive }"
-								v-for="(item, index) in tabsData[tabActive]?.child_list"
-								:key="tabsData[tabActive].category_id" @click="subMenuClick(index, item)">{{ item.category_name }}</text>
-						</view>
-					</u-popup>
-				</view>
-				<view class="flex justify-center flex-wrap pl-[182rpx] pt-[20rpx] pb-[20rpx]"
-					:class="{ '!pt-[218rpx]': config.search.control && tabsData[tabActive]?.child_list && tabsData[tabActive]?.child_list.length, 'pt-[126rpx]': config.search.control && (!tabsData[tabActive].child_list || !tabsData[tabActive].child_list.length), 'pt-[112rpx]': tabsData[tabActive]?.child_list && tabsData[tabActive]?.child_list.length && !config.search.control }">
-					<template v-for="(item, index) in list" :key="item.goods_id">
-						<view
-							class="w-[536rpx] box-border bg-white w-full flex mx-[16rpx] px-[24rpx] py-[20rpx] rounded-[12rpx]"
-							:class="{ 'mt-[16rpx]': index }" @click.stop="toLink(item.goods_id)">
-							<view class="mr-[8rpx]">
-								<u--image width="168rpx" height="168rpx" radius="12rpx" :src="img(item.goods_cover_thumb_mid ? item.goods_cover_thumb_mid : '')" model="aspectFill">
-									<template #error>
-										<u-icon name="photo" color="#999" size="50"></u-icon>
-									</template>
-								</u--image>
-							</view>
-							<view class="flex flex-1 flex-wrap">
-								<view class="w-[316rpx] max-h-[80rpx] text-[28rpx] leading-[40rpx] multi-hidden">
-									{{ item.goods_name }}
-								</view>
-								<view class="w-[316rpx] flex self-end items-end justify-between">
-									<text class="text-[var(--price-text-color)] price-font">
-										<text class="text-[26rpx] font-500">￥</text>
-										<text class="text-[36rpx] font-500">{{ parseFloat(goodsPrice(item)).toFixed(2).split('.')[0] }}</text>
-										<text class="text-[24rpx] font-500">.{{ parseFloat(goodsPrice(item)).toFixed(2).split('.')[1] }}</text>
-										<image class="h-[24rpx] ml-[6rpx]" v-if="priceType(item) == 'member_price'" :src="img('addon/shop/VIP.png')" mode="heightFix" />
-										<image class="h-[24rpx] ml-[6rpx]" v-if="priceType(item) == 'discount_price'" :src="img('addon/shop/discount.png')" mode="heightFix" />
-									</text>
+        <view class="labelPopup" :class="{ 'active': config.search.control }">
+          <u-popup :show="labelPopup" mode="top" @close="labelPopup = false">
+            <view class="flex flex-wrap py-[24rpx]" @touchmove.prevent.stop>
+              <!-- <text
+                class="flex-shrink-0 w-[160rpx] ml-[22rpx] mb-[24rpx] text-center h-[48rpx] text-[22rpx] leading-[48rpx] border-[2rpx] border-solid rounded-[24rpx] box-border"
+                :class="{ 'sub-tab-active text-color border-color': initAll.allActive === subActive, 'border-[#E2E2E2]': initAll.allActive != subActive }"
+                 @click="subMenuClick(initAll.allActive,initAll.data)">全部</text> -->
+              <text
+                  class="flex-shrink-0 w-auto pl-2 pr-2 ml-[22rpx] mb-[24rpx] text-center h-[48rpx] text-[22rpx] leading-[48rpx] border-[2rpx] border-solid rounded-[24rpx] box-border"
+                  :class="{ 'sub-tab-active text-color border-color': index === subActive, 'border-[#E2E2E2]': index != subActive }"
+                  v-for="(item, index) in tabsData[tabActive]?.child_list"
+                  :key="tabsData[tabActive].category_id" @click="subMenuClick(index, item)">{{ item.category_name }}
+              </text>
+            </view>
+          </u-popup>
+        </view>
+        <view class="flex justify-center flex-wrap pl-[182rpx] pt-[20rpx] pb-[20rpx]"
+              :class="{ '!pt-[218rpx]': config.search.control && tabsData[tabActive]?.child_list && tabsData[tabActive]?.child_list.length, 'pt-[126rpx]': config.search.control && (!tabsData[tabActive].child_list || !tabsData[tabActive].child_list.length), 'pt-[112rpx]': tabsData[tabActive]?.child_list && tabsData[tabActive]?.child_list.length && !config.search.control }">
+          <template v-for="(item, index) in list" :key="item.goods_id">
+            <view
+                class="w-[536rpx] box-border bg-white w-full flex mx-[16rpx] px-[24rpx] py-[20rpx] rounded-[12rpx]"
+                :class="{ 'mt-[16rpx]': index }" @click.stop="toLink(item.goods_id)">
+              <view class="overflow-hidden mr-[8rpx] rounded-md position-r">
+                <view class="position-a">
+                  <u--image v-if="item.flag" class="position-a" width="58rpx" height="28rpx"
+                            src="https://vip.123pan.cn/1832133965/tiantai/1717078717e95d5ba5e4287e7131ff27478e746976_ott.png"
+                            model="aspectFill">
+                  </u--image>
+                </view>
+                <view class="position-b">
+                  <u--image  width="168rpx" height="168rpx"
+                             :src="img(item.goods_cover_thumb_mid ? item.goods_cover_thumb_mid : '')" model="aspectFill">
+                    <template #error>
+                      <u-icon name="photo" color="#999" size="50"></u-icon>
+                    </template>
+                  </u--image>
+                </view>
+              </view>
+              <view class="flex flex-1 flex-wrap">
+                <view class="w-[316rpx] max-h-[80rpx] text-[28rpx] leading-[40rpx] multi-hidden">
+                  {{ item.goods_name }}
+                </view>
+                <view class="w-[316rpx] max-h-[80rpx] text-[20rpx] leading-[40rpx]  truncate" v-if="item.sub_title">
+                  {{ item.sub_title }}
+                </view>
+                <view class="w-[316rpx] max-h-[80rpx] text-[20rpx] leading-[40rpx]  truncate"
+                      v-if="item.goodsSku.sku_no"> 串号: {{ item.goodsSku.sku_no }}
+                </view>
 
-									<view
-										v-if="(item.goods_type == 'real' || (item.goods_type == 'virtual' && item.virtual_receive_type != 'verify')) &&
+                <view class="w-[316rpx] flex self-end items-end justify-between">
+                  <text class="text-[var(--price-text-color)] price-font">
+                    <text class="text-[26rpx] font-500">￥</text>
+                    <text class="text-[36rpx] font-500">{{
+                        parseFloat(goodsPrice(item)).toFixed(2).split('.')[0]
+                      }}
+                    </text>
+                    <text class="text-[24rpx] font-500">.{{
+                        parseFloat(goodsPrice(item)).toFixed(2).split('.')[1]
+                      }}
+                    </text>
+                    <image class="h-[24rpx] ml-[6rpx]" v-if="priceType(item) == 'member_price'"
+                           :src="img('addon/shop/VIP.png')" mode="heightFix"/>
+                    <image class="h-[24rpx] ml-[6rpx]" v-if="priceType(item) == 'discount_price'"
+                           :src="img('addon/shop/discount.png')" mode="heightFix"/>
+                  </text>
+                  <view
+                      v-if="(item.goods_type == 'real' || (item.goods_type == 'virtual' && item.virtual_receive_type != 'verify')) &&
 										item.goodsSku.sku_spec_format === '' && cartList['goods_' + item.goods_id] && cartList['goods_' + item.goods_id]['sku_' + item.goodsSku.sku_id] && config.cart.control && config.cart.event === 'cart'"
-										
-										class="flex items-center">
-										<text class="text-[44rpx] text-color nc-iconfont nc-icon-jianshaoV6xx" @click.stop="reduceCart(cartList['goods_' + item.goods_id]['sku_' + item.goodsSku.sku_id])"></text>
-										<text class="text-[#333] text-[24rpx] mx-[16rpx]">{{ cartList['goods_' + item.goods_id]['sku_' + item.goodsSku.sku_id].num }}</text>
-										<text class="text-[44rpx] text-color iconfont iconjiahao2fill" :id="'itemCart' + index" @click.stop="addCartBtn(item,cartList['goods_' + item.goods_id]['sku_' + item.goodsSku.sku_id], 'itemCart' + index)"></text>
-									</view>
-									<template v-else>
-										<view v-if="config.cart.control && config.cart.style === 'style-1'" class="h-[44rpx] relative  pl-[20rpx]">
-											<view :id="'itemCart' + index"
-												class="text-[#fff] bg-color h-[44rpx] text-[24rpx] px-[10px] leading-[44rpx] rounded-[22rpx]"
-												@click.stop="itemCart(item, 'itemCart' + index)">
-												{{ config.cart.text }}
-											</view>
-											<view
-												v-if="cartList['goods_' + item.goods_id] && cartList['goods_' + item.goods_id].totalNum"
-												:class="['absolute right-[-16rpx] top-[-16rpx] rounded-[30rpx] h-[30rpx] min-w-[30rpx] text-center leading-[30rpx] bg-[#FF4646] text-[#fff] text-[20rpx] font-500 box-border box-border border-[2rpx] border-solid border-[#fff]', cartList['goods_' + item.goods_id].totalNum > 9 ? 'px-[10rpx]' : '']">
-												{{ cartList['goods_' + item.goods_id].totalNum }}
-											</view>
-										</view>
-										<view v-if="config.cart.control && config.cart.style === 'style-2'" class="w-[44rpx] h-[44rpx] relative">
-											<text :id="'itemCart' + index"
-												class="text-color nc-iconfont nc-icon-tianjiaV6xx text-[44rpx]"
-												@click.stop="itemCart(item, 'itemCart' + index)"></text>
-											<view
-												v-if="cartList['goods_' + item.goods_id] && cartList['goods_' + item.goods_id].totalNum"
-												:class="['absolute right-[-16rpx] top-[-16rpx] rounded-[30rpx] h-[30rpx] min-w-[30rpx] text-center leading-[30rpx] bg-[#FF4646] text-[#fff] text-[20rpx] font-500 box-border box-border border-[2rpx] border-solid border-[#fff]', cartList['goods_' + item.goods_id].totalNum > 9 ? 'px-[10rpx]' : '']">
-												{{ cartList['goods_' + item.goods_id].totalNum }}
-											</view>
-										</view>
-										<view v-if="config.cart.control && config.cart.style === 'style-3'" class="w-[44rpx] h-[44rpx] relative">
-											<text :id="'itemCart' + index"
-												class="text-color nc-iconfont nc-icon-gouwucheV6xx-2 !text-[44rpx]"
-												@click.stop="itemCart(item, 'itemCart' + index)"></text>
-											<view
-												v-if="cartList['goods_' + item.goods_id] && cartList['goods_' + item.goods_id].totalNum"
-												:class="['absolute right-[-16rpx] top-[-16rpx] rounded-[30rpx] h-[30rpx] min-w-[30rpx] text-center leading-[30rpx] bg-[#FF4646] text-[#fff] text-[20rpx] font-500 box-border box-border border-[2rpx] border-solid border-[#fff]', cartList['goods_' + item.goods_id].totalNum > 9 ? 'px-[10rpx]' : '']">
-												{{ cartList['goods_' + item.goods_id].totalNum }}
-											</view>
-										</view>
-										<view v-if="config.cart.control && config.cart.style === 'style-4'" class="w-[44rpx] h-[44rpx] relative">
-											<view :id="'itemCart' + index"
-												class=" flex items-center justify-center text-[#fff] bg-color h-[44rpx] w-[44rpx] rounded-[22rpx] text-center"
-												@click.stop="itemCart(item, 'itemCart' + index)">
-												<text class="nc-iconfont nc-icon-gouwucheV6xx-2 !text-[26rpx]"></text>
-											</view>
-											<view
-												v-if="cartList['goods_' + item.goods_id] && cartList['goods_' + item.goods_id].totalNum"
-												:class="['absolute right-[-16rpx] top-[-16rpx] rounded-[30rpx] h-[30rpx] min-w-[30rpx] text-center leading-[30rpx] bg-[#FF4646] text-[#fff] text-[20rpx] font-500 box-border border-[2rpx] border-solid border-[#fff]', cartList['goods_' + item.goods_id].totalNum > 9 ? 'px-[10rpx]' : '']">
-												{{ cartList['goods_' + item.goods_id].totalNum }}
-											</view>
-										</view>
-									</template>
-								</view>
-							</view>
-						</view>
+                      class="flex items-center">
+                    <text class="text-[44rpx] text-color iconfont iconjianhao"
+                          @click.stop="reduceCart(cartList['goods_' + item.goods_id]['sku_' + item.goodsSku.sku_id])"></text>
+                    <text class="text-[#333] text-[24rpx] mx-[16rpx]">
+                      {{ cartList['goods_' + item.goods_id]['sku_' + item.goodsSku.sku_id].num }}
+                    </text>
+                    <text class="text-[44rpx] text-color iconfont iconjiahao2fill"
+                          @click.stop="addCartBtn(cartList['goods_' + item.goods_id]['sku_' + item.goodsSku.sku_id])"></text>
+                  </view>
+                  <template v-else>
+                    <view v-if="config.cart.control && config.cart.style === 'style-1'" class="h-[44rpx] relative">
+                      <view :id="'itemCart' + index"
+                            class="text-[#fff] bg-color h-[44rpx] text-[24rpx] px-[10px] leading-[44rpx] rounded-[22rpx]"
+                            @click.stop="itemCart(item, 'itemCart' + index)">
+                        {{ config.cart.text }}
+                      </view>
+                      <view
+                          v-if="cartList['goods_' + item.goods_id] && cartList['goods_' + item.goods_id].totalNum"
+                          :class="['absolute right-[-16rpx] top-[-16rpx] rounded-[30rpx] h-[30rpx] min-w-[30rpx] text-center leading-[30rpx] bg-[#FF4646] text-[#fff] text-[20rpx] font-500 box-border box-border border-[2rpx] border-solid border-[#fff]', cartList['goods_' + item.goods_id].totalNum > 9 ? 'px-[10rpx]' : '']">
+                        {{ cartList['goods_' + item.goods_id].totalNum }}
+                      </view>
+                    </view>
+                    <view v-if="config.cart.control && config.cart.style === 'style-2'"
+                          class="w-[44rpx] h-[44rpx] relative">
+                      <text :id="'itemCart' + index"
+                            class="text-color iconfont iconjiahao1 text-[44rpx]"
+                            @click.stop="itemCart(item, 'itemCart' + index)"></text>
+                      <view
+                          v-if="cartList['goods_' + item.goods_id] && cartList['goods_' + item.goods_id].totalNum"
+                          :class="['absolute right-[-16rpx] top-[-16rpx] rounded-[30rpx] h-[30rpx] min-w-[30rpx] text-center leading-[30rpx] bg-[#FF4646] text-[#fff] text-[20rpx] font-500 box-border box-border border-[2rpx] border-solid border-[#fff]', cartList['goods_' + item.goods_id].totalNum > 9 ? 'px-[10rpx]' : '']">
+                        {{ cartList['goods_' + item.goods_id].totalNum }}
+                      </view>
+                    </view>
+                    <view v-if="config.cart.control && config.cart.style === 'style-3'"
+                          class="w-[44rpx] h-[44rpx] relative">
+                      <text :id="'itemCart' + index"
+                            class="text-color iconfont icongouwuche !text-[44rpx]"
+                            @click.stop="itemCart(item, 'itemCart' + index)"></text>
+                      <view
+                          v-if="cartList['goods_' + item.goods_id] && cartList['goods_' + item.goods_id].totalNum"
+                          :class="['absolute right-[-16rpx] top-[-16rpx] rounded-[30rpx] h-[30rpx] min-w-[30rpx] text-center leading-[30rpx] bg-[#FF4646] text-[#fff] text-[20rpx] font-500 box-border box-border border-[2rpx] border-solid border-[#fff]', cartList['goods_' + item.goods_id].totalNum > 9 ? 'px-[10rpx]' : '']">
+                        {{ cartList['goods_' + item.goods_id].totalNum }}
+                      </view>
+                    </view>
+                    <view v-if="config.cart.control && config.cart.style === 'style-4'"
+                          class="w-[44rpx] h-[44rpx] relative">
+                      <view :id="'itemCart' + index"
+                            class=" flex items-center justify-center text-[#fff] bg-color h-[44rpx] w-[44rpx] rounded-[22rpx] text-center"
+                            @click.stop="itemCart(item, 'itemCart' + index)">
+                        <text class="iconfont icongouwuche !text-[26rpx]"></text>
+                      </view>
+                      <view
+                          v-if="cartList['goods_' + item.goods_id] && cartList['goods_' + item.goods_id].totalNum"
+                          :class="['absolute right-[-16rpx] top-[-16rpx] rounded-[30rpx] h-[30rpx] min-w-[30rpx] text-center leading-[30rpx] bg-[#FF4646] text-[#fff] text-[20rpx] font-500 box-border border-[2rpx] border-solid border-[#fff]', cartList['goods_' + item.goods_id].totalNum > 9 ? 'px-[10rpx]' : '']">
+                        {{ cartList['goods_' + item.goods_id].totalNum }}
+                      </view>
+                    </view>
+                  </template>
+                </view>
+              </view>
+            </view>
 
-					</template>
-					<view class="w-[536rpx] bg-[#fff] mx-[16rpx] rounded-[12rpx] flex items-center justify-center" :class="{'noData1':config.search.control,'noData2':!(config.search.control),'child':tabsData[tabActive]?.child_list && tabsData[tabActive]?.child_list.length,'noChild':!tabsData[tabActive]?.child_list || !tabsData[tabActive]?.child_list.length}" v-if="!list.length && !loading && listLoading">
-						<mescroll-empty :option="{tip : '暂无商品'}"></mescroll-empty>
-					</view>
-				</view>
-				<add-cart-popup ref="cartRef" />
+          </template>
+          <view class="w-[536rpx] bg-[#fff] mx-[16rpx] rounded-[12rpx] flex items-center justify-center"
+                :class="{'noData1':config.search.control,'noData2':!(config.search.control),'child':tabsData[tabActive]?.child_list && tabsData[tabActive]?.child_list.length,'noChild':!tabsData[tabActive]?.child_list || !tabsData[tabActive]?.child_list.length}"
+                v-if="!list.length && !loading && listLoading">
+            <mescroll-empty :option="{tip : '暂无商品'}"></mescroll-empty>
+          </view>
+        </view>
+        <add-cart-popup ref="cartRef" />
 			</mescroll-body>
 			<!--  #ifdef  H5 -->
 			<view v-if="config.cart.control && config.cart.event === 'cart'" class="bg-[#fff] z-10 flex justify-between items-center fixed left-0 right-0 bottom-[50px] box-solid px-[24rpx] py-[17rpx] mb-ios">
@@ -800,5 +832,23 @@ let goodsPrice = (data:any) => {
 		height: calc(100vh - 40rpx - 100rpx - env(safe-area-inset-bottom));
 	}
 }
+
 /*  #endif  */
+.position-r {
+  position: relative;
+}
+
+.position-a {
+  position: absolute;
+  left: 0px;
+  top: 0;
+  z-index: 2;
+}
+.position-b{
+  position: relative;
+  left: 0px;
+  top: 0;
+  z-index: 1;
+}
+
 </style>

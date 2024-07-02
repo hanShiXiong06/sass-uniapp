@@ -76,6 +76,11 @@
                                     <view class="truncate text-[#303133] text-[28rpx] leading-[32rpx] font-400">
                                         {{ item.goods.goods_name }}
                                     </view>
+
+                                  <view v-if="item.sku_no" class="truncate text-[#303133] text-[22rpx] leading-[32rpx] font-400">
+                                    串号:{{ item.sku_no }}
+                                  </view>
+
                                     <view v-if="item.sku_name" class="mt-[14rpx] flex">
                                         <text class="truncate bg-[#F2F2F2] px-[18rpx] py-[2rpx] rounded-[20rpx] text-[22rpx] text-[#666] leading-[28rpx] ">{{ item.sku_name }}</text>
                                     </view>

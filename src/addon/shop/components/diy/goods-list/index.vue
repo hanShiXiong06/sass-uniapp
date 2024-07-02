@@ -10,19 +10,21 @@
 								<u-icon name="photo" color="#999" size="50"></u-icon>
 							</template>
 						</u--image>
-						<view class="flex-1 flex flex-col ml-[20rpx] py-[6rpx]">
-							<view class="text-[28rpx] leading-[40rpx] text-[#303133] multi-hidden mb-[10rpx]" :style="{ color : diyComponent.goodsNameStyle.color, fontWeight : diyComponent.goodsNameStyle.fontWeight }">{{item.goods_name}}</view>
-							<view class="mt-auto flex justify-between items-center items-baseline">
-								<view class="font-bold text-[var(--price-text-color)] price-font flex items-baseline" :style="{ color : diyComponent.priceStyle.mainColor }">
-									<text class="text-[26rpx] font-500">￥</text>
-									<text class="text-[36rpx] font-500">{{ parseFloat(goodsPrice(item)).toFixed(2).split('.')[0] }}</text>
-									<text class="text-[24rpx] font-500">.{{ parseFloat(goodsPrice(item)).toFixed(2).split('.')[1] }}</text>
-									<image class="h-[24rpx] ml-[6rpx]" v-if="priceType(item) == 'member_price'" :src="img('addon/shop/VIP.png')" mode="heightFix" />
-									<image class="h-[24rpx] ml-[6rpx]" v-if="priceType(item) == 'discount_price'" :src="img('addon/shop/discount.png')" mode="heightFix" />
-								</view>
-								<text class="text-[22rpx] text-[#999]" :style="{ color : diyComponent.saleStyle.color }">已售{{item.sale_num}}{{item.unit || '件'}}</text>
-							</view>
-						</view>
+            <view class="flex-1 flex flex-col ml-[20rpx] py-[6rpx]">
+              <view class="text-[28rpx] leading-[40rpx] text-[#303133] multi-hidden mb-[10rpx]" :style="{ color : diyComponent.goodsNameStyle.color, fontWeight : diyComponent.goodsNameStyle.fontWeight }">{{item.goods_name}}</view>
+              <view class="w-[416rpx] max-h-[80rpx] text-[20rpx] leading-[40rpx]  truncate"> {{ item.sub_title }}</view>
+              <view v-if="item.goodsSku.sku_no" class="w-[316rpx] max-h-[80rpx] text-[20rpx] leading-[40rpx]  truncate"> 串号: {{item.goodsSku.sku_no}}</view>
+              <view class="mt-auto flex justify-between items-center items-baseline">
+                <view class="font-bold text-[var(--price-text-color)] price-font flex items-baseline" :style="{ color : diyComponent.priceStyle.mainColor }">
+                  <text class="text-[26rpx] font-500">￥</text>
+                  <text class="text-[36rpx] font-500">{{ parseFloat(goodsPrice(item)).toFixed(2).split('.')[0] }}</text>
+                  <text class="text-[24rpx] font-500">.{{ parseFloat(goodsPrice(item)).toFixed(2).split('.')[1] }}</text>
+                  <image class="h-[24rpx] ml-[6rpx]" v-if="priceType(item) == 'member_price'" :src="img('addon/shop/VIP.png')" mode="heightFix" />
+                  <image class="h-[24rpx] ml-[6rpx]" v-if="priceType(item) == 'discount_price'" :src="img('addon/shop/discount.png')" mode="heightFix" />
+                </view>
+                <text class="text-[24rpx] text-[#999]" :style="{ color : diyComponent.saleStyle.color }">库存:{{item.goodsSku.stock}}{{item.unit || '件'}}</text>
+              </view>
+            </view>
 					</view>
 				</block>
 				<block v-if="diyComponent.style == 'style-2'">
@@ -32,20 +34,21 @@
 								<u-icon name="photo" color="#999" size="50"></u-icon>
 							</template>
 						</u--image>
-						<view class="px-[16rpx] flex-1 pt-[16rpx] pb-[20rpx] flex flex-col justify-between">
-							<view class="text-[#303133] leading-[40rpx] text-[28rpx] multi-hidden" :style="{ color : diyComponent.goodsNameStyle.color, fontWeight : diyComponent.goodsNameStyle.fontWeight }">{{item.goods_name}}</view>
-							<view class="flex justify-between flex-wrap items-baseline mt-[16rpx]" >
-								<view class="text-[var(--price-text-color)] price-font flex items-baseline" :style="{ color : diyComponent.priceStyle.mainColor }">
-									<text class="text-[26rpx] font-500">￥</text>
-									<text class="text-[36rpx] font-500">{{ parseFloat(goodsPrice(item)).toFixed(2).split('.')[0] }}</text>
-									<text class="text-[24rpx] font-500">.{{ parseFloat(goodsPrice(item)).toFixed(2).split('.')[1] }}</text>
-									<image class="h-[24rpx] ml-[6rpx]" v-if="priceType(item) == 'member_price'" :src="img('addon/shop/VIP.png')" mode="heightFix" />
-									<image class="h-[24rpx] ml-[6rpx]" v-if="priceType(item) == 'discount_price'" :src="img('addon/shop/discount.png')" mode="heightFix" />
-								</view>
-								<text class="text-[22rpx] text-[#999]" :style="{ color : diyComponent.saleStyle.color }">已售{{item.sale_num}}{{item.unit || '件'}}</text>
-							</view>
-						</view>
-					</view>
+            <view class="px-[16rpx] flex-1 pt-[16rpx] pb-[20rpx] flex flex-col justify-between">
+              <view class="text-[#303133] leading-[40rpx] text-[28rpx] multi-hidden" :style="{ color : diyComponent.goodsNameStyle.color, fontWeight : diyComponent.goodsNameStyle.fontWeight }">{{item.goods_name}}</view>
+              <view class="w-[316rpx] max-h-[80rpx] text-[20rpx] leading-[40rpx]  truncate"> {{ item.sub_title }}</view>
+              <view class="flex justify-between flex-wrap items-baseline mt-[16rpx]" >
+                <view class="text-[var(--price-text-color)] price-font flex items-baseline" :style="{ color : diyComponent.priceStyle.mainColor }">
+                  <text class="text-[26rpx] font-500">￥</text>
+                  <text class="text-[36rpx] font-500">{{ parseFloat(goodsPrice(item)).toFixed(2).split('.')[0] }}</text>
+                  <text class="text-[24rpx] font-500">.{{ parseFloat(goodsPrice(item)).toFixed(2).split('.')[1] }}</text>
+                  <image class="h-[24rpx] ml-[6rpx]" v-if="priceType(item) == 'member_price'" :src="img('addon/shop/VIP.png')" mode="heightFix" />
+                  <image class="h-[24rpx] ml-[6rpx]" v-if="priceType(item) == 'discount_price'" :src="img('addon/shop/discount.png')" mode="heightFix" />
+                </view>
+                <text class="text-[24rpx] text-[#999]" :style="{ color : diyComponent.saleStyle.color }">库存:{{item.goodsSku.stock}}{{item.unit || '件'}}</text>
+              </view>
+            </view>
+          </view>
 				</block>
 				<block v-if="diyComponent.style == 'style-3'">
 					<scroll-view class="whitespace-nowrap" :scroll-x="true" :style="style3Css">
@@ -55,18 +58,20 @@
 									<u-icon name="photo" color="#999" size="50"></u-icon>
 								</template>
 							</u--image>
-							<view class="px-[10rpx] pt-[16rpx] pb-[10rpx]">
-								<view class="text-[26rpx] text-[#303133] truncate" :style="{ color : diyComponent.goodsNameStyle.color, fontWeight : diyComponent.goodsNameStyle.fontWeight }">{{item.goods_name}}</view>
-								<view class="text-[var(--price-text-color)] mt-[10rpx] flex-wrap font-bold price-font flex items-baseline" :style="{ color : diyComponent.priceStyle.mainColor }">
-									<view class="truncate">
-										<text class="text-[26rpx] font-500">￥</text>
-										<text class="text-[36rpx] font-500">{{ parseFloat(goodsPrice(item)).toFixed(2).split('.')[0] }}</text>
-										<text class="text-[24rpx] font-500">.{{ parseFloat(goodsPrice(item)).toFixed(2).split('.')[1] }}</text>
-									</view>
-									<image class="h-[24rpx] ml-[6rpx]" v-if="priceType(item) == 'member_price'" :src="img('addon/shop/VIP.png')" mode="heightFix" />
-									<image class="h-[24rpx] ml-[6rpx]" v-if="priceType(item) == 'discount_price'" :src="img('addon/shop/discount.png')" mode="heightFix" />
-								</view>
-							</view>
+              <view class="px-[10rpx] pt-[16rpx] pb-[10rpx]">
+                <view class="text-[26rpx] text-[#303133] truncate" :style="{ color : diyComponent.goodsNameStyle.color, fontWeight : diyComponent.goodsNameStyle.fontWeight }">{{item.goods_name}}</view>
+                <view class="w-[316rpx] max-h-[80rpx] text-[20rpx] leading-[40rpx]  truncate"> {{ item.sub_title }}</view>
+                <view v-if="item.goodsSku.sku_no" class="w-[316rpx] max-h-[80rpx] text-[20rpx] leading-[40rpx]  truncate"> 串号: {{item.goodsSku.sku_no}}</view>
+                <view class="text-[var(--price-text-color)] mt-[10rpx] flex-wrap font-bold price-font flex items-baseline" :style="{ color : diyComponent.priceStyle.mainColor }">
+                  <view class="truncate">
+                    <text class="text-[26rpx] font-500">￥</text>
+                    <text class="text-[36rpx] font-500">{{ parseFloat(goodsPrice(item)).toFixed(2).split('.')[0] }}</text>
+                    <text class="text-[24rpx] font-500">.{{ parseFloat(goodsPrice(item)).toFixed(2).split('.')[1] }}</text>
+                  </view>
+                  <image class="h-[24rpx] ml-[6rpx]" v-if="priceType(item) == 'member_price'" :src="img('addon/shop/VIP.png')" mode="heightFix" />
+                  <image class="h-[24rpx] ml-[6rpx]" v-if="priceType(item) == 'discount_price'" :src="img('addon/shop/discount.png')" mode="heightFix" />
+                </view>
+              </view>
 						</view>
 					</scroll-view>
 				</block>

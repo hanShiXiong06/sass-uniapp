@@ -365,7 +365,7 @@
 
 	.b-tabbar-back {
 		background: rgba(245, 250, 245, 0.9);
-		ox-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5), 2px 2px 4px rgba(0, 0, 0, 0.5);
+		bbbox-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5), 2px 2px 4px rgba(0, 0, 0, 0.5);
 		border-radius: 12rpx;
 	}
 </style>
