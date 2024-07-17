@@ -28,6 +28,8 @@
 								<view class="ml-[20rpx] flex flex-1 flex-col justify-between box-border">
 									<view>
 										<text class="text-[28rpx] text-item  leading-[40rpx] text-[#303133]">{{ subitem.goods_name }}</text>
+                    <text v-if="subitem.sku_no" class="text-[24rpx] truncate mt-[10rpx] text-[#999] leading-[28rpx] max-w-[480rpx]">商品id:{{ subitem.sku_no }}</text>
+
 										<view  v-if="subitem.sku_name">
 											<view class="text-[24rpx] truncate mt-[10rpx] text-[#999] leading-[28rpx] max-w-[480rpx]">{{ subitem.sku_name }}</view>
 										</view>

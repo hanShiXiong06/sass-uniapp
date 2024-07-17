@@ -333,17 +333,32 @@ const getListFn = (mescroll: mescrollStructure) => {
 		end_price: '', // 价格结束区间
 		order: 'price', // 排序方式（综合：空，销量：sale_num，价格：price）
 		sort: 'desc' // 升序：asc，降序：desc
-	}).then((res: any) => {
-		let newArr = res.data.data
-		//设置列表数据
-		if (mescroll.num == 1) {
-			list.value = []; //如果是第一页需手动制空列表
-		}
-		list.value = list.value.concat(newArr);
-		loading.value = false;
-		mescroll.endSuccess(newArr.length);
-		if (!list.value.length) listLoading.value = true
-	}).catch(() => {
+  }).then((res: acceptingDataStructure) => {
+    let newArr = res.data.data
+    // 获取 newArr中的数据 将里面的create_item 和当前日期进行比对 一单是一天则 在newArr 添加一个flag 字段 为true 否为false
+// 获取当前日期
+    const currentDate = new Date();
+
+    // 遍历 newArr，添加 flag 字段
+    newArr = newArr.map(item => {
+      const createDate = new Date(item.create_time);
+      // 判断 create_item 和当前日期是否是同一天
+      const isSameDay =      (+currentDate)- (+createDate) < 1000*60*60*30
+      return {
+        ...item,
+        flag: isSameDay
+      };
+    });
+    //设置列表数据
+    if (mescroll.num == 1) {
+      list.value = []; //如果是第一页需手动制空列表
+    }
+    list.value = list.value.concat(newArr);
+    loading.value = false;
+
+    mescroll.endSuccess(newArr.length);
+    if (!list.value.length) listLoading.value = true
+  }).catch(() => {
 		loading.value = false;
 		listLoading.value = true
 		mescroll.endErr(); // 请求失败, 结束加载

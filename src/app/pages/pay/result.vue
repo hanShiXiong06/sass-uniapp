@@ -2,8 +2,12 @@
     <view :style="themeColor()">
         <view class="w-screen h-screen flex flex-col items-center" v-if="payInfo">
             <view class="flex-1 flex flex-col items-center w-full pt-[100rpx]">
-                <text class="iconfont text-2xl" :class="payInfo.status==2 ? 'text-primary iconduigou' : 'iconzhifushibai text-red'"></text>
-                <view class=" text-sm">{{ payInfo.status == 2 ? t('pay.paySuccess') : t('pay.payFail') }}</view>
+                <text class="iconfont text-2xl" :class="payInfo.status==2  ? 'text-primary iconduigou' :  payInfo.status == 3 ? 'iconduigou text-green' : 'iconzhifushibai text-red'"></text>
+                <view class=" text-sm" >{{ payInfo.status == 2 ?  t('pay.paySuccess') :   payInfo.status == 3 ? '待审核' :  t('pay.payFail') }} </view>
+                <view class=" text-sm" v-if="payInfo.status == 3">请在15分钟内 扫描二维码 联系客服并付款</view>
+              <view class="text-center flex justify-center" >
+                <up-image :show-loading="true" :src="kefu_url" width="64px" height="64px" ></up-image>
+              </view>
                 <view class="text-xl font-bold pt-[30rpx]">
                     <text class="text-base">{{ t('currency') }}</text>
                     <text>{{ moneyFormat(payInfo.money) }}</text>
@@ -40,6 +44,8 @@
         tradeId = data.trade_id
         getPayInfo()
     })
+    // 获取客服 的 二维码地址 从 payInfo中
+    const kefu_url = ref('')
 
     /**
      * 获取支付信息
@@ -60,6 +66,14 @@
                 uni.setNavigationBarTitle({
                     title: payInfo.value.status == 2 ? t('pay.paySuccess') : t('pay.payFail')
                 })
+              res.data.pay_type_list.some((item) => {
+                if (item.name === '线下支付') {
+                  kefu_url.value = item.config.collection_desc
+                  return true
+                }
+                return false
+              })
+
             }
         }).catch(() => {
 
@@ -71,6 +85,7 @@
         if (payReturn) redirect({ url: payReturn, mode: 'reLaunch' })
         else redirect({ url: getFirstPage(), param: { code: payInfo.value?.out_trade_no }, mode: 'reLaunch' })
     }
+
 </script>
 
 <style lang="scss" scoped></style>

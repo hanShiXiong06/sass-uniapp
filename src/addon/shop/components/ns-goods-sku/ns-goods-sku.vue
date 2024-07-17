@@ -19,6 +19,7 @@
 								<text class="text-[32rpx] mr-[6rpx] price-font">.{{ parseFloat(goodsPrice).toFixed(2).split('.')[1] }}</text>
 							</view>
 							<view class="text-[24rpx] leading-[32rpx] text-[#303133] mt-[12rpx]">库存{{goodsDetail.detail.stock}}{{ goodsDetail.goods.unit }}</view>
+              <view v-if="goodsDetail.detail.sku_no"> 串号: {{goodsDetail.detail.sku_no}} </view>
 						</view>
 						<view class="w-[100%] mt-auto"  style="max-height: calc(204rpx - 98rpx); overflow: hidden; box-sizing:border-box"  v-if="goodsDetail.goodsSpec && goodsDetail.goodsSpec.length">
 							<text class="text-[24rpx] leading-[30rpx] text-[#666] flex items-center h-[60rpx] mt-[10rpx]">已选规格：{{goodsDetail.detail.sku_spec_format}}</text>

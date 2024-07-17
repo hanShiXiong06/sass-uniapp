@@ -70,6 +70,9 @@
                         <view class="ml-[20rpx] flex flex-1 flex-col justify-between">
                             <view>
                                 <text class="text-[28rpx] text-item leading-[40rpx]">{{ goodsItem.goods_name }}</text>
+                              <view v-if="goodsItem.sku_no">
+                                <view class="text-[24rpx] mt-[10rpx] text-[#999] truncate max-w-[450rpx] leading-[28rpx]">产品编号: {{ goodsItem.sku_no }}</view>
+                              </view>
                                 <view v-if="goodsItem.sku_name">
                                     <view class="text-[24rpx] mt-[10rpx] text-[#999] truncate max-w-[450rpx] leading-[28rpx]">{{ goodsItem.sku_name }}</view>
                                 </view>

@@ -52,7 +52,7 @@
             <view  class="flex justify-between">
               <view>
                 <view class=" max-h-[80rpx] text-[20rpx] leading-[40rpx]  truncate"> {{ goodsDetail.goods.sub_title }}</view>
-                <view class=" max-h-[80rpx] text-[20rpx] leading-[40rpx]  truncate" > {{ goodsDetail.goods.sku_no }}</view>
+                <view class=" max-h-[80rpx] text-[20rpx] leading-[40rpx]  truncate" > {{ goodsDetail.sku_no }}</view>
 
               </view>
               <!-- hsx - end -->
@@ -202,7 +202,7 @@
                   </view>
                 </template>
                 <template v-else>
-                  <view class="w-[324rpx] flex flex-col bg-[#fff] box-border rounded-[12rpx] overflow-hidden mt-[20rpx]" @click="toDetail(item.goods_id)">
+                  <view class="w-[324rpx] flex flex-col bg-[#fff] box-border rounded-[12rpx] overflow-hidden mt-[20rpx]" @click="toDetail(item)">
                     <u--image width="334rpx" height="334rpx" :src="img(item.goods_cover_thumb_mid ? item.goods_cover_thumb_mid : '')" model="aspectFill">
                       <template #error>
                         <u-icon name="photo" color="#999" size="50"></u-icon>
@@ -212,7 +212,7 @@
                       <view class="text-[#303133] leading-[40rpx] text-[28rpx] multi-hidden">
                         {{ item.goods_name }}
                       </view>
-                      <view class="text-[22rpx] text-[#303133] leading-[40rpx]  multi-hidden mb-[10rpx]">{{ item.sub_title }}</view>
+                      <view class="text-[22rpx] text-[#303133] leading-[40rpx]  multi-hidden mb-[10rpx]">{{ item.sub_title }}  </view>
 
                       <view class="flex justify-between items-baseline mt-[16rpx]">
                         <view class="text-[var(--price-text-color)] price-font flex items-baseline">
@@ -817,8 +817,9 @@ onUnload(()=>{
 /************** 一键复制-start **********/
 const toCopy = ()=>{
   // 复制商品名称 及价格
+  let sku_no = goodsDetail.value.sku_no? goodsDetail.value.sku_no+'|':''
   uni.setClipboardData({
-    data: goodsDetail.value.goods.goods_name + '|'+ goodsDetail.value.goods.sub_title+ '|' + goodsDetail.value.sale_price+"元",
+    data: goodsDetail.value.goods.goods_name + '|'+ goodsDetail.value.goods.sub_title+ '|'+ sku_no  + goodsDetail.value.sale_price+"元",
     success() {
       uni.showToast({
         title: '复制成功',
@@ -936,6 +937,10 @@ const getAllAppListFn = (mescroll: mescrollStructure) => {
 
     mescroll.endErr(); // 请求失败, 结束加载
   })
+}
+
+const toDetail = (data) => {
+  redirect({ url: '/addon/shop/pages/goods/detail', param: { goods_id: data.goods_id } })
 }
 </script>
 <style lang="scss" scoped>

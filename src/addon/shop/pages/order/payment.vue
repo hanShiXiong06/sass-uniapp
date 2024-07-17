@@ -63,6 +63,7 @@
                     <p class="text-[26rpx] text-gray-subtitle">商家尚未配置配送方式</p>
                 </view>
 
+
                 <view class="mb-[20rpx] p-[30rpx] rounded-[16rpx] bg-white">
                     <view class="mb-[30rpx]">
                         <view class="flex" v-for="(item, key, index) in orderData.goods_data" :key="index" :class="{'pb-[40rpx]': (index + 1) != Object.keys(orderData.goods_data).length}">
@@ -198,6 +199,8 @@ import selectStore from './components/select-store/select-store'
 import addressList from './components/address-list/address-list'
 import invoice from './components/invoice/invoice'
 import { useSubscribeMessage } from '@/hooks/useSubscribeMessage'
+
+
 const createData = ref({
     order_key: '',
     member_remark: '',
@@ -217,7 +220,10 @@ const invoiceRef = ref()
 const createLoading = ref(false)
 const activeIndex = ref(0)//配送方式激活
 const delivery_type_list = ref([])
+
 uni.getStorageSync('orderCreateData') && Object.assign(createData.value, uni.getStorageSync('orderCreateData'))
+
+
 
 // 选择地址之后跳转回来
 const selectAddress = uni.getStorageSync('selectAddressCallback')
@@ -365,6 +371,10 @@ const confirmAddress = (data:object) => {
 	createData.value.delivery.take_address_id = data.address_id
 	calculate();
 }
+
+
+
+
 </script>
 
 <style lang="scss" scoped>
