@@ -39,7 +39,7 @@ export const useShare = () => {
 
 	}
 
-	const setShare = (options : any = {}) => {
+	const setShare = async (options : any = {}) => {
 		if(currRoute() == '') return;
 
 		let queryStr = getQuery();
@@ -78,7 +78,7 @@ export const useShare = () => {
 			// #endif
 
 		} else {
-			getShareInfo({
+			await getShareInfo({
 				route: '/' + currRoute(),
 				params: JSON.stringify(currShareRoute().params)
 			}).then((res: any) => {
@@ -107,7 +107,7 @@ export const useShare = () => {
 
 			})
 		}
-		uni.setStorageSync('weappOptions', weappOptions)
+		await uni.setStorageSync('weappOptions', weappOptions)
 	}
 
 	// 小程序分享，分享给好友

@@ -52,7 +52,7 @@
             <view  class="flex justify-between">
               <view>
                 <view class=" max-h-[80rpx] text-[20rpx] leading-[40rpx]  truncate"> {{ goodsDetail.goods.sub_title }}</view>
-                <view class=" max-h-[80rpx] text-[20rpx] leading-[40rpx]  truncate" > {{ goodsDetail.sku_no }}</view>
+                <view class=" max-h-[80rpx] text-[20rpx] leading-[40rpx]  truncate" v-if="goodsDetail.sku_no" > sn: {{ goodsDetail.sku_no }}</view>
 
               </view>
               <!-- hsx - end -->
@@ -76,9 +76,14 @@
 
             </view>
             <view class="text-[26rpx] mt-[6rpx] text-[#666] flex items-baseline ml-auto">
+              <text class="whitespace-nowrap">销量:</text>
+              <text class="mx-[2rpx]">{{ goodsDetail.goods.sale_num }}</text>
+              <text>{{ goodsDetail.goods.unit }}</text>
+              |
               <text class="whitespace-nowrap">库存</text>
               <text class="mx-[2rpx]">{{ goodsDetail.goods.stock }}</text>
               <text>{{ goodsDetail.goods.unit }}</text>
+
             </view>
           </view>
         </view>
@@ -224,7 +229,7 @@
                           <text class="text-[24rpx] font-500">.{{ parseFloat(item.goodsSku.price).toFixed(2).split('.')[1] }}</text>
 
                         </view>
-                        <!--                      <text class="text-[24rpx] text-[#999]">已售{{ item.sale_num }}{{ item.unit}}</text>-->
+                                              <text class="text-[24rpx] text-[#999]">已售{{ item.sale_num }}{{ item.unit}}</text>
                       </view>
                     </view>
                   </view>

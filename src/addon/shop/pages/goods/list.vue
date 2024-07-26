@@ -88,10 +88,12 @@
                 <view class="mt-auto flex justify-between items-baseline">
                   <view class="text-[var(--price-text-color)] price-font flex items-baseline">
                     <text class="text-[26rpx] font-500">￥</text>
-                    <text class="text-[36rpx] font-500">{{ parseFloat(item.goodsSku.price).toFixed(2).split('.')[0] }}</text>
+                    <text class="text-[36rpx] font-500">{{   parseFloat(goodsPrice(item)).toFixed(2).split('.')[0] }}</text>
+<!--                    <text class="text-[36rpx] font-500">{{ goodsPrice(item) }}</text>-->
+
                     <text class="text-[24rpx] font-500">.{{ parseFloat(item.goodsSku.price).toFixed(2).split('.')[1] }}</text>
                   </view>
-                  <text class="text-[24rpx] text-[#999]">已售{{ item.sale_num }}{{ item.unit }}</text>
+                  <text class="text-[24rpx] text-[#999]">已售:{{ item.sale_num }}{{ item.unit }}</text>|<text class="text-[24rpx] text-[#999]">库存:{{ item.goodsSku.stock }}{{ item.unit }}</text>
                 </view>
               </view>
             </view>
@@ -138,7 +140,7 @@
 <script setup lang="ts">
 import { reactive, ref, onMounted } from 'vue'
 import { t } from '@/locale'
-import { redirect, img } from '@/utils/common';
+import { redirect, img , getToken } from '@/utils/common';
 import { getGoodsCategoryTree, getGoodsPages } from '@/addon/shop/api/goods';
 import MescrollBody from '@/components/mescroll/mescroll-body/mescroll-body.vue';
 import MescrollEmpty from '@/components/mescroll/mescroll-empty/mescroll-empty.vue';
@@ -284,6 +286,19 @@ onMounted(() => {
   }, 500)
 });
 
+// 商品价格
+let goodsPrice = (data:any) => {
+  console.log( data )
+  let price = "0.00";
+  if (data.is_discount) {
+    price = data.goodsSku.sale_price ? data.goodsSku.sale_price : data.goodsSku.price // 折扣价
+  } else if (data.member_discount && getToken()) {
+    price = data.goodsSku.member_price ? data.goodsSku.member_price : data.goodsSku.price // 会员价
+  } else {
+    price = data.goodsSku.price
+  }
+  return price;
+}
 
 </script>
 

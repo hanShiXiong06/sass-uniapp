@@ -22,7 +22,9 @@
                   <image class="h-[24rpx] ml-[6rpx]" v-if="priceType(item) == 'member_price'" :src="img('addon/shop/VIP.png')" mode="heightFix" />
                   <image class="h-[24rpx] ml-[6rpx]" v-if="priceType(item) == 'discount_price'" :src="img('addon/shop/discount.png')" mode="heightFix" />
                 </view>
-                <text class="text-[24rpx] text-[#999]" :style="{ color : diyComponent.saleStyle.color }">库存:{{item.goodsSku.stock}}{{item.unit || '件'}}</text>
+                <text class="text-[24rpx] text-[#999]" :style="{ color : diyComponent.saleStyle.color }" v-if="item.goodsSku.sale_num > 10" >销量:{{item.goodsSku.sale_num}}{{item.unit || '件'}}</text>
+
+                <text class="text-[24rpx] text-[#999]" :style="{ color : diyComponent.saleStyle.color }" v-if="item.goodsSku.stock<10 " >库存:{{item.goodsSku.stock}}{{item.unit || '件'}}</text>
               </view>
             </view>
 					</view>
@@ -45,7 +47,9 @@
                   <image class="h-[24rpx] ml-[6rpx]" v-if="priceType(item) == 'member_price'" :src="img('addon/shop/VIP.png')" mode="heightFix" />
                   <image class="h-[24rpx] ml-[6rpx]" v-if="priceType(item) == 'discount_price'" :src="img('addon/shop/discount.png')" mode="heightFix" />
                 </view>
-                <text class="text-[24rpx] text-[#999]" :style="{ color : diyComponent.saleStyle.color }">库存:{{item.goodsSku.stock}}{{item.unit || '件'}}</text>
+                <text class="text-[24rpx] text-[#999]" :style="{ color : diyComponent.saleStyle.color }" v-if="item.goodsSku.sale_num > 10" >销量:{{item.goodsSku.sale_num}}{{item.unit || '件'}}</text>
+
+                <text class="text-[24rpx] text-[#999]" :style="{ color : diyComponent.saleStyle.color }" v-if="item.goodsSku.stock<10 " >库存:{{item.goodsSku.stock}}{{item.unit || '件'}}</text>
               </view>
             </view>
           </view>
