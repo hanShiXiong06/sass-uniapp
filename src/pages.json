@@ -1,0 +1,1830 @@
+{
+	"pages": [ // pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "app/pages/index/index",
+			"style": {
+				// #ifndef H5
+				"navigationStyle": "custom",
+				// #endif
+				"navigationBarTitleText": "%pages.index.index%",
+				"usingComponents": {
+					"diy-group": "../../../../addon/components/diy/group/index",
+					"fixed-group": "../../../../addon/components/fixed/group/index"
+				},
+				"componentPlaceholder": {
+					"diy-group": "view",
+					"fixed-group": "view"
+				}
+			}
+		},
+		{
+			"path": "app/pages/auth/index",
+			"style": {
+				// #ifndef H5
+				"navigationStyle": "custom",
+				// #endif
+				"navigationBarTitleText": "%pages.auth.index%"
+			}
+		},
+		{
+			"path": "app/pages/auth/agreement",
+			"style": {
+				"navigationBarTitleText": "%pages.auth.agreement%"
+			}
+		},
+		{
+			"path": "app/pages/auth/bind",
+			"style": {
+				// #ifndef H5
+				"navigationStyle": "custom",
+				// #endif
+				"navigationBarTitleText": "%pages.auth.bind%"
+			}
+		},
+		{
+			"path": "app/pages/auth/login",
+			"style": {
+				// #ifndef H5
+				"navigationStyle": "custom",
+				// #endif
+				"navigationBarTitleText": "%pages.auth.login%"
+			}
+		},
+		{
+			"path": "app/pages/auth/register",
+			"style": {
+				// #ifndef H5
+				"navigationStyle": "custom",
+				// #endif
+				"navigationBarTitleText": "%pages.auth.register%"
+			}
+		},
+		{
+			"path": "app/pages/auth/resetpwd",
+			"style": {
+				// #ifndef H5
+				"navigationStyle": "custom",
+				// #endif
+				"navigationBarTitleText": "%pages.auth.resetpwd%"
+			}
+		},
+		{
+			"path": "app/pages/index/diy",
+			"style": {
+				// #ifndef H5
+				"navigationStyle": "custom",
+				// #endif
+				"navigationBarTitleText": "%pages.index.diy%",
+				"usingComponents": {
+					"diy-group": "../../../../addon/components/diy/group/index",
+					"fixed-group": "../../../../addon/components/fixed/group/index"
+				},
+				"componentPlaceholder": {
+					"diy-group": "view",
+					"fixed-group": "view"
+				}
+			}
+		},
+		{
+			"path": "app/pages/index/close",
+			"style": {
+				"navigationBarTitleText": "%pages.index.close%"
+			}
+		},
+		{
+			"path": "app/pages/index/nosite",
+			"style": {
+				"navigationBarTitleText": "%pages.index.nosite%"
+			}
+		},
+		{
+			"path": "app/pages/member/apply_cash_out",
+			"style": {
+				"navigationBarTitleText": "%pages.member.apply_cash_out%"
+			},
+			"needLogin": true
+		},
+		{
+			"path": "app/pages/member/commission",
+			"style": {
+				// #ifndef H5
+				"navigationStyle": "custom",
+				// #endif
+				"navigationBarTitleText": "%pages.member.commission%"
+			},
+			"needLogin": true
+		},
+		{
+			"path": "app/pages/member/balance",
+			"style": {
+				// #ifndef H5
+				"navigationStyle": "custom",
+				// #endif
+				"navigationBarTitleText": "%pages.member.balance%"
+			},
+			"needLogin": true
+		},
+		{
+			"path": "app/pages/member/level",
+			"style": {
+				// #ifndef H5
+				"navigationStyle": "custom",
+				// #endif
+				"navigationBarTitleText": "%pages.member.level%"
+			},
+			"needLogin": true
+		},
+		{
+			"path": "app/pages/member/detailed_account",
+			"style": {
+				"navigationBarTitleText": "%pages.member.detailed_account%"
+			}
+		},
+		{
+			"path": "app/pages/member/cash_out",
+			"style": {
+				"navigationBarTitleText": "%pages.member.cash_out%"
+			}
+		},
+		{
+			"path": "app/pages/member/cash_out_detail",
+			"style": {
+				"navigationBarTitleText": "%pages.member.cash_out_detail%"
+			}
+		},
+		{
+			"path": "app/pages/member/index",
+			"style": {
+				// #ifndef H5
+				"navigationStyle": "custom",
+				// #endif
+				"navigationBarTitleText": "%pages.member.index%",
+				"usingComponents": {
+					"diy-group": "../../../../addon/components/diy/group/index",
+					"fixed-group": "../../../../addon/components/fixed/group/index"
+				},
+				"componentPlaceholder": {
+					"diy-group": "view",
+					"fixed-group": "view"
+				}
+			}
+		},
+		{
+			"path": "app/pages/member/personal",
+			"style": {
+				"navigationBarTitleText": "%pages.member.personal%"
+			},
+			"needLogin": true
+		},
+		{
+			"path": "app/pages/member/point",
+			"style": {
+				// #ifndef H5
+				"navigationStyle": "custom",
+				// #endif
+				"navigationBarTitleText": "%pages.member.point%"
+			},
+			"needLogin": true
+		},
+		{
+			"path": "app/pages/member/point_detail",
+			"style": {
+				"navigationBarTitleText": "%pages.member.point_detail%"
+			},
+			"needLogin": true
+		},
+		{
+			"path": "app/pages/member/account",
+			"style": {
+				"navigationBarTitleText": "%pages.member.account%"
+			},
+			"needLogin": true
+		},
+		{
+			"path": "app/pages/member/account_edit",
+			"style": {
+				"navigationBarTitleText": "%pages.member.account_edit%"
+			},
+			"needLogin": true
+		},
+		{
+			"path": "app/pages/member/address",
+			"style": {
+				"navigationBarTitleText": "%pages.member.address%"
+			},
+			"needLogin": true
+		},
+		{
+			"path": "app/pages/member/address_edit",
+			"style": {
+				"navigationBarTitleText": "%pages.member.address_edit%"
+			},
+			"needLogin": true
+		},
+		{
+			"path": "app/pages/member/sign_in",
+			"style": {
+				// #ifndef H5
+				"navigationStyle": "custom",
+				// #endif
+				"navigationBarTitleText": "%pages.member.sign_in%"
+			},
+			"needLogin": true
+		},
+		{
+			"path": "app/pages/member/contact",
+			"style": {
+				"navigationBarTitleText": "%pages.member.contact%"
+			}
+		},
+		{
+			"path": "app/pages/pay/browser",
+			"style": {
+				"navigationBarTitleText": "%pages.pay.browser%"
+			}
+		},
+		{
+			"path": "app/pages/pay/result",
+			"style": {
+				// #ifndef H5
+				"navigationStyle": "custom",
+				// #endif
+				"navigationBarTitleText": "%pages.pay.result%"
+			}
+		},
+		{
+			"path": "app/pages/setting/index",
+			"style": {
+				"navigationBarTitleText": "%pages.setting.index%"
+			},
+			"needLogin": true
+		},
+		{
+			"path": "app/pages/webview/index",
+			"style": {
+				"navigationBarTitleText": "%pages.webview.index%"
+			}
+		},
+		{
+			"path": "app/pages/index/develop",
+			"style": {
+				"navigationBarTitleText": "%pages.index.develop%"
+			}
+		},
+		{
+			"path": "app/pages/verify/index",
+			"style": {
+				"navigationBarTitleText": "%pages.verify.index%"
+			},
+			"needLogin": true
+		},
+		{
+			"path": "app/pages/verify/verify",
+			"style": {
+				"navigationBarTitleText": "%pages.verify.verify%"
+			},
+			"needLogin": true
+		},
+		{
+			"path": "app/pages/verify/detail",
+			"style": {
+				"navigationBarTitleText": "%pages.verify.detail%"
+			},
+			"needLogin": true
+		},
+		{
+			"path": "app/pages/verify/record",
+			"style": {
+				"navigationBarTitleText": "%pages.verify.record%"
+			},
+			"needLogin": true
+		},
+		{
+			"path": "app/pages/weapp/order_shipping",
+			"style": {
+				"navigationBarTitleText": "%pages.weapp.order_shipping%"
+			}
+		}
+	],
+	"subPackages": [
+		{
+			"root": "addon",
+			"pages": [
+				// {{ PAGE_BEGAIN }}
+				// TOURISM_PAGE_BEGIN
+				// *********************************** 旅游 ***********************************
+				{
+					"path": "tourism/pages/index",
+					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "%tourism.pages.index%"
+					}
+				},
+				{
+					"path": "tourism/pages/way/list",
+					"style": {
+						"navigationBarTitleText": "%tourism.pages.way.list%"
+					}
+				},
+				{
+					"path": "tourism/pages/way/detail",
+					"style": {
+						"navigationBarTitleText": "%tourism.pages.way.detail%"
+					}
+				},
+				{
+					"path": "tourism/pages/way/order",
+					"style": {
+						"navigationBarTitleText": "%tourism.pages.way.order%"
+					}
+				},
+				{
+					"path": "tourism/pages/hotel/list",
+					"style": {
+						"navigationBarTitleText": "%tourism.pages.hotel.list%"
+					}
+				},
+				{
+					"path": "tourism/pages/hotel/detail",
+					"style": {
+						"navigationBarTitleText": "%tourism.pages.hotel.detail%"
+					}
+				},
+				{
+					"path": "tourism/pages/hotel/order",
+					"style": {
+						"navigationBarTitleText": "%tourism.pages.hotel.order%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "tourism/pages/scenic/list",
+					"style": {
+						"navigationBarTitleText": "%tourism.pages.scenic.list%"
+					}
+				},
+				{
+					"path": "tourism/pages/scenic/detail",
+					"style": {
+						"navigationBarTitleText": "%tourism.pages.scenic.detail%"
+					}
+				},
+				{
+					"path": "tourism/pages/scenic/order",
+					"style": {
+						"navigationBarTitleText": "%tourism.pages.scenic.order%"
+					}
+				},
+				{
+					"path": "tourism/pages/member/index",
+					"style": {
+						"navigationBarTitleText": "%tourism.pages.member.index%"
+					}
+				},
+				{
+					"path": "tourism/pages/order/list",
+					"style": {
+						"navigationBarTitleText": "%tourism.pages.order.list%"
+					}
+				},
+				{
+					"path": "tourism/pages/order/detail",
+					"style": {
+						"navigationBarTitleText": "%tourism.pages.order.detail%"
+					}
+				},
+				{
+					"path": "tourism/pages/order/hotel_detail",
+					"style": {
+						"navigationBarTitleText": "%tourism.pages.order.hotel_detail%"
+					}
+				},
+				{
+					"path": "tourism/pages/verify/index",
+					"style": {
+						"navigationBarTitleText": "%tourism.pages.verify.index%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "tourism/pages/verify/record",
+					"style": {
+						"navigationBarTitleText": "%tourism.pages.verify.record%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "tourism/pages/verify/detail",
+					"style": {
+						"navigationBarTitleText": "%tourism.pages.verify.detail%"
+					},
+					"needLogin": true
+				},
+				// TOURISM_PAGE_END
+				// VIPCARD_PAGE_BEGIN
+				// *********************************** 卡项 ***********************************
+				{
+					"path": "vipcard/pages/index",
+					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "%vipcard.pages.index%"
+					}
+				},
+				{
+					"path": "vipcard/pages/card/list",
+					"style": {
+						"navigationBarTitleText": "%vipcard.pages.card.list%"
+					}
+				},
+				{
+					"path": "vipcard/pages/card/detail",
+					"style": {
+						"navigationBarTitleText": "%vipcard.pages.card.detail%"
+					}
+				},
+				{
+					"path": "vipcard/pages/service/list",
+					"style": {
+						"navigationBarTitleText": "%vipcard.pages.service.list%"
+					}
+				},
+				{
+					"path": "vipcard/pages/service/detail",
+					"style": {
+						"navigationBarTitleText": "%vipcard.pages.service.detail%"
+					}
+				},
+				{
+					"path": "vipcard/pages/service/reserve_detail",
+					"style": {
+						"navigationBarTitleText": "%vipcard.pages.service.reserve_detail%"
+					}
+				},
+				{
+					"path": "vipcard/pages/order/my_reserved",
+					"style": {
+						"navigationBarTitleText": "%vipcard.pages.order.my_reserved%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "vipcard/pages/order/my_reserved_detail",
+					"style": {
+						"navigationBarTitleText": "%vipcard.pages.order.my_reserved_detail%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "vipcard/pages/order/my_card",
+					"style": {
+						"navigationBarTitleText": "%vipcard.pages.order.my_card%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "vipcard/pages/order/card_record",
+					"style": {
+						"navigationBarTitleText": "%vipcard.pages.order.card_record%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "vipcard/pages/order/my_card_detail",
+					"style": {
+						"navigationBarTitleText": "%vipcard.pages.order.my_card_detail%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "vipcard/pages/order/payment",
+					"style": {
+						"navigationBarTitleText": "%vipcard.pages.order.payment%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "vipcard/pages/order/list",
+					"style": {
+						"navigationBarTitleText": "%vipcard.pages.order.list%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "vipcard/pages/order/detail",
+					"style": {
+						"navigationBarTitleText": "%vipcard.pages.order.detail%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "vipcard/pages/verify/index",
+					"style": {
+						"navigationBarTitleText": "%vipcard.pages.verify.index%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "vipcard/pages/verify/record",
+					"style": {
+						"navigationBarTitleText": "%vipcard.pages.verify.record%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "vipcard/pages/verify/detail",
+					"style": {
+						"navigationBarTitleText": "%vipcard.pages.verify.detail%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "vipcard/pages/reserve/result",
+					"style": {
+						"navigationBarTitleText": "%vipcard.pages.reserve.result%"
+					},
+					"needLogin": true
+				},
+				// VIPCARD_PAGE_END
+				// PHONE_SHOP_PAGE_BEGIN
+				// *********************************** 二手商城 ***********************************
+				{
+					"path": "phone_shop/pages/index",
+					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "%shop.pages.index%"
+					}
+				},
+				{
+					"path": "phone_shop/pages/coupon/list",
+					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "%shop.pages.coupon.list%"
+					}
+				},
+				{
+					"path": "phone_shop/pages/coupon/detail",
+					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "%shop.pages.coupon.detail%"
+					}
+				},
+				{
+					"path": "phone_shop/pages/discount/list",
+					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "%shop.pages.discount.list%"
+					}
+				},
+				{
+					"path": "phone_shop/pages/evaluate/list",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.evaluate.list%"
+					}
+				},
+				{
+					"path": "phone_shop/pages/evaluate/order_evaluate",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.evaluate.order_evaluate%"
+					}
+				},
+				{
+					"path": "phone_shop/pages/evaluate/order_evaluate_view",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.evaluate.order_evaluate_view%"
+					}
+				},
+				{
+					"path": "phone_shop/pages/member/my_coupon",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.member.my_coupon%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "phone_shop/pages/member/index",
+					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "%shop.pages.member.index%"
+					}
+				},
+				{
+					"path": "phone_shop/pages/goods/search",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.goods.search%"
+					}
+				},
+				{
+					"path": "phone_shop/pages/goods/list",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.goods.list%"
+					}
+				},
+				{
+					"path": "phone_shop/pages/goods/detail",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.goods.detail%",
+						"navigationStyle": "custom"
+					}
+				},
+				{
+					"path": "phone_shop/pages/goods/cart",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.goods.cart%"
+					}
+				},
+				{
+					"path": "phone_shop/pages/goods/category",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.goods.category%"
+					}
+				},
+				{
+					"path": "phone_shop/pages/order/detail",
+					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "%shop.pages.order.detail%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "phone_shop/pages/order/list",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.order.list%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "phone_shop/pages/order/payment",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.order.payment%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "phone_shop/pages/refund/apply",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.refund.apply%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "phone_shop/pages/refund/edit_apply",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.refund.edit_apply%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "phone_shop/pages/refund/list",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.refund.list%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "phone_shop/pages/refund/detail",
+					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "%shop.pages.refund.detail%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "phone_shop/pages/refund/log",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.refund.log%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "phone_shop/pages/point/index",
+					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "%shop.pages.point.index%"
+					}
+				},
+				{
+					"path": "phone_shop/pages/point/list",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.point.list%"
+					}
+				},
+				{
+					"path": "phone_shop/pages/point/detail",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTitleText": "%shop.pages.point.detail%"
+					}
+				},
+				{
+					"path": "phone_shop/pages/point/payment",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.point.payment%"
+					}
+				},
+				{
+					"path": "phone_shop/pages/point/order_list",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.point.order_list%"
+					}
+				},
+				{
+					"path": "phone_shop/pages/goods/operation",
+					"style": {
+						"navigationBarTitleText": "操作台"
+					}
+				},
+				// PHONE_SHOP_PAGE_END
+				// GOODS_EXPORT_PAGE_BEGIN
+				// *********************************** hello world ***********************************
+				{
+					"path": "goods_export/pages/hello_world/index",
+					"style": {
+						"navigationBarTitleText": "%goods_export.pages.hello_world.index%"
+					}
+				},
+				// GOODS_EXPORT_PAGE_END
+				// PHONE_SHOP_PRICE_PAGE_BEGIN
+				// *********************************** hello world ***********************************
+				{
+					"path": "phone_shop_price/pages/index",
+					"style": {
+						"navigationBarTitleText": "二手机回收报价单"
+					}
+				},
+				{
+					"path": "phone_shop_price/pages/order",
+					"style": {
+						"navigationBarTitleText": "去下单"
+					}
+				},
+				{
+					"path": "phone_shop_price/pages/order/list",
+					"style": {
+						"navigationBarTitleText": "我的订单"
+					}
+				},
+				// PHONE_SHOP_PRICE_PAGE_END
+				// TK_VIP_PAGE_BEGIN
+				// *********************************** 付费会员权益 ***********************************
+				{
+					"path": "tk_vip/pages/index",
+					"style": {
+						"navigationBarTitleText": "付费会员"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "tk_vip/pages/list",
+					"style": {
+						"navigationBarTitleText": "购买记录"
+					},
+					"needLogin": true
+				},
+				// TK_VIP_PAGE_END
+				// HSX_PHONE_QUERY_PAGE_BEGIN
+				// *********************************** hello world ***********************************
+				{
+					"path": "hsx_phone_query/pages/index",
+					"style": {
+						"navigationBarTitleText": "查询界面"
+					}
+				},
+				{
+					"path": "hsx_phone_query/pages/detail",
+					"style": {
+						"navigationBarTitleText": "查询详情"
+					}
+				},
+				// HSX_PHONE_QUERY_PAGE_END
+				// RECHARGE_PAGE_BEGIN
+				{
+					"path": "recharge/pages/recharge",
+					"style": {
+						"navigationBarTitleText": "%recharge.pages.recharge%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "recharge/pages/recharge_record",
+					"style": {
+						"navigationBarTitleText": "%recharge.pages.recharge_record%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "recharge/pages/recharge_record_detail",
+					"style": {
+						"navigationBarTitleText": "%recharge.pages.recharge_record_detail%"
+					},
+					"needLogin": true
+				},
+				// RECHARGE_PAGE_END
+				// CMS_PAGE_BEGIN
+				{
+					"path": "cms/pages/list",
+					"style": {
+						"navigationBarTitleText": "%cms.pages.list%"
+					}
+				},
+				{
+					"path": "cms/pages/detail",
+					"style": {
+						"navigationBarTitleText": "%cms.pages.detail%"
+					}
+				},
+				// CMS_PAGE_END
+				// SHOP_PAGE_BEGIN
+				// *********************************** 商城 ***********************************
+				{
+					"path": "shop/pages/index",
+					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "%shop.pages.index%"
+					}
+				},
+				{
+					"path": "shop/pages/coupon/list",
+					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "%shop.pages.coupon.list%"
+					}
+				},
+				{
+					"path": "shop/pages/coupon/detail",
+					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "%shop.pages.coupon.detail%"
+					}
+				},
+				{
+					"path": "shop/pages/discount/list",
+					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "%shop.pages.discount.list%"
+					}
+				},
+				{
+					"path": "shop/pages/evaluate/list",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.evaluate.list%"
+					}
+				},
+				{
+					"path": "shop/pages/evaluate/order_evaluate",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.evaluate.order_evaluate%"
+					}
+				},
+				{
+					"path": "shop/pages/evaluate/order_evaluate_view",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.evaluate.order_evaluate_view%"
+					}
+				},
+				{
+					"path": "shop/pages/member/my_coupon",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.member.my_coupon%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "shop/pages/member/index",
+					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "%shop.pages.member.index%"
+					}
+				},
+				{
+					"path": "shop/pages/goods/search",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.goods.search%"
+					}
+				},
+				{
+					"path": "shop/pages/goods/list",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.goods.list%"
+					}
+				},
+				{
+					"path": "shop/pages/goods/rank",
+					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "%shop.pages.goods.rank%"
+					}
+				},
+				{
+					"path": "shop/pages/newcomer/list",
+					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "%shop.pages.newcomer.list%"
+					}
+				},
+				{
+					"path": "shop/pages/goods/detail",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.goods.detail%",
+						"navigationStyle": "custom"
+					}
+				},
+				{
+					"path": "shop/pages/goods/cart",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.goods.cart%"
+					}
+				},
+				{
+					"path": "shop/pages/goods/category",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.goods.category%"
+					}
+				},
+				{
+					"path": "shop/pages/order/detail",
+					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "%shop.pages.order.detail%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "shop/pages/order/list",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.order.list%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "shop/pages/order/payment",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.order.payment%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "shop/pages/refund/apply",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.refund.apply%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "shop/pages/refund/edit_apply",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.refund.edit_apply%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "shop/pages/refund/list",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.refund.list%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "shop/pages/refund/detail",
+					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "%shop.pages.refund.detail%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "shop/pages/refund/log",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.refund.log%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "shop/pages/point/index",
+					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "%shop.pages.point.index%"
+					}
+				},
+				{
+					"path": "shop/pages/point/list",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.point.list%"
+					}
+				},
+				{
+					"path": "shop/pages/point/detail",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTitleText": "%shop.pages.point.detail%"
+					}
+				},
+				{
+					"path": "shop/pages/point/payment",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.point.payment%"
+					}
+				},
+				{
+					"path": "shop/pages/point/order_list",
+					"style": {
+						"navigationBarTitleText": "%shop.pages.point.order_list%"
+					}
+				},
+				// SHOP_PAGE_END
+				// TK_JHKD_PAGE_BEGIN
+				// *********************************** 聚合快递 ***********************************
+				{
+					"path": "tk_jhkd/pages/address/address",
+					"style": {
+						"navigationBarTitleText": "地址列表"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "tk_jhkd/pages/address/address_edit",
+					"style": {
+						"navigationBarTitleText": "快递地址"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "tk_jhkd/pages/address/location_address_edit",
+					"style": {
+						"navigationBarTitleText": "同城地址"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "tk_jhkd/pages/agreement",
+					"style": {
+						"navigationBarTitleText": "协议详情"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "tk_jhkd/pages/help",
+					"style": {
+						"navigationBarTitleText": "帮助中心"
+					},
+					"needLogin": false
+				},
+				{
+					"path": "tk_jhkd/pages/ordersubmit",
+					"style": {
+						"navigationBarTitleText": "快递下单"
+					}
+				},
+				{
+					"path": "tk_jhkd/pages/orderlist",
+					"style": {
+						"navigationBarTitleText": "订单列表"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "tk_jhkd/pages/orderaddlist",
+					"style": {
+						"navigationBarTitleText": "补单列表"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "tk_jhkd/pages/orderdetail",
+					"style": {
+						"navigationBarTitleText": "订单详情"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "tk_jhkd/pages/index",
+					"style": {
+						"navigationBarTitleText": "首页",
+						// #ifndef H5
+						"navigationStyle": "custom",
+						"app-plus": {
+							"titleView": false
+						}
+						// #endif 
+					}
+				},
+				{
+					"path": "tk_jhkd/pages/member",
+					"style": {
+						"navigationBarTitleText": "个人中心",
+						// #ifndef H5
+						"navigationStyle": "custom",
+						"app-plus": {
+							"titleView": false
+						}
+						// #endif 
+					}
+				},
+				{
+					"path": "tk_jhkd/pages/fenxiao/index",
+					"style": {
+						"navigationBarTitleText": "分销中心"
+					},
+					"needLogin": true
+				},
+				// TK_JHKD_PAGE_END
+				// SHOP_FENXIAO_PAGE_BEGIN
+				// *********************************** 商城分销 ***********************************
+				{
+					"path": "shop_fenxiao/pages/index",
+					"style": {
+						"navigationBarTitleText": "%shop_fenxiao.pages.index%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "shop_fenxiao/pages/zone",
+					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "%shop_fenxiao.pages.zone%"
+					}
+				},
+				{
+					"path": "shop_fenxiao/pages/level",
+					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "%shop_fenxiao.pages.level%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "shop_fenxiao/pages/child_fenxiao",
+					"style": {
+						"navigationBarTitleText": "%shop_fenxiao.pages.child_fenxiao%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "shop_fenxiao/pages/goods",
+					"style": {
+						"navigationBarTitleText": "%shop_fenxiao.pages.goods%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "shop_fenxiao/pages/team",
+					"style": {
+						"navigationBarTitleText": "%shop_fenxiao.pages.team%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "shop_fenxiao/pages/agent_list",
+					"style": {
+						"navigationBarTitleText": "%shop_fenxiao.pages.agent_list%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "shop_fenxiao/pages/team_dividend",
+					"style": {
+						"navigationBarTitleText": "%shop_fenxiao.pages.team_dividend%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "shop_fenxiao/pages/order",
+					"style": {
+						"navigationBarTitleText": "%shop_fenxiao.pages.order%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "shop_fenxiao/pages/apply",
+					"style": {
+						"navigationBarTitleText": "%shop_fenxiao.pages.apply%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "shop_fenxiao/pages/task_rewards",
+					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "%shop_fenxiao.pages.task_rewards%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "shop_fenxiao/pages/task_detail",
+					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "%shop_fenxiao.pages.task_detail%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "shop_fenxiao/pages/task_rewards_detail",
+					"style": {
+						"navigationBarTitleText": "%shop_fenxiao.pages.task_rewards_detail%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "shop_fenxiao/pages/sale",
+					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "%shop_fenxiao.pages.sale%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "shop_fenxiao/pages/sale_detail",
+					"style": {
+						"navigationBarTitleText": "%shop_fenxiao.pages.sale_detail%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "shop_fenxiao/pages/sale_ranking",
+					"style": {
+						"navigationBarTitleText": "%shop_fenxiao.pages.sale_ranking%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "shop_fenxiao/pages/promote",
+					"style": {
+						"navigationBarTitleText": "%shop_fenxiao.pages.promote%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "shop_fenxiao/pages/promote_code",
+					"style": {
+						"navigationBarTitleText": "%shop_fenxiao.pages.promote_code%"
+					}
+				},
+				// SHOP_FENXIAO_PAGE_END
+				// O2O_PAGE_BEGIN
+				// *********************************** 上门服务 ***********************************
+				{
+					"path": "o2o/pages/index",
+					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "%o2o.pages.index%"
+					}
+				},
+				{
+					"path": "o2o/pages/goods/list",
+					"style": {
+						"navigationBarTitleText": "%o2o.pages.goods.list%"
+					}
+				},
+				{
+					"path": "o2o/pages/goods/detail",
+					"style": {
+						"navigationBarTitleText": "%o2o.pages.goods.detail%"
+					}
+				},
+				{
+					"path": "o2o/pages/goods/category",
+					"style": {
+						"navigationBarTitleText": "%o2o.pages.goods.category%"
+					}
+				},
+				{
+					"path": "o2o/pages/member/index",
+					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "%o2o.pages.member.index%"
+					}
+				},
+				{
+					"path": "o2o/pages/technician/list",
+					"style": {
+						"navigationBarTitleText": "%o2o.pages.technician.list%"
+					}
+				},
+				{
+					"path": "o2o/pages/technician/detail",
+					"style": {
+						"navigationBarTitleText": "%o2o.pages.technician.detail%"
+					}
+				},
+				{
+					"path": "o2o/pages/order/payment",
+					"style": {
+						"navigationBarTitleText": "%o2o.pages.order.payment%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "o2o/pages/order/list",
+					"style": {
+						"navigationBarTitleText": "%o2o.pages.order.list%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "o2o/pages/order/detail",
+					"style": {
+						"navigationBarTitleText": "%o2o.pages.order.detail%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "o2o/pages/refund/apply",
+					"style": {
+						"navigationBarTitleText": "%o2o.pages.refund.apply%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "o2o/pages/refund/detail",
+					"style": {
+						"navigationBarTitleText": "%o2o.pages.refund.detail%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "o2o/pages/refund/list",
+					"style": {
+						"navigationBarTitleText": "%o2o.pages.refund.list%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "o2o/pages/refund/log",
+					"style": {
+						"navigationBarTitleText": "%o2o.pages.refund.log%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "o2o/pages/address/index",
+					"style": {
+						"navigationBarTitleText": "%o2o.pages.address.index%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "o2o/pages/address/edit",
+					"style": {
+						"navigationBarTitleText": "%o2o.pages.address.edit%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "o2o/pages/address/address_edit",
+					"style": {
+						"navigationBarTitleText": "%o2o.pages.address.address_edit%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "o2o/pages/master/task/list",
+					"style": {
+						"navigationBarTitleText": "%o2o.pages.master.task.list%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "o2o/pages/master/task/detail",
+					"style": {
+						"navigationBarTitleText": "%o2o.pages.master.task.detail%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "o2o/pages/master/task/add",
+					"style": {
+						"navigationBarTitleText": "%o2o.pages.master.task.add%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "o2o/pages/master/task/show",
+					"style": {
+						"navigationBarTitleText": "%o2o.pages.master.task.show%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "o2o/pages/master/task/refund",
+					"style": {
+						"navigationBarTitleText": "%o2o.pages.master.task.refund%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "o2o/pages/master/statistics/index",
+					"style": {
+						"navigationBarTitleText": "%o2o.pages.master.statistics.index%"
+					},
+					"needLogin": true
+				},
+				// O2O_PAGE_END
+				// TK_CPS_PAGE_BEGIN
+				// *********************************** CPS联盟 ***********************************
+				{
+					"path": "tk_cps/pages/bwc/act",
+					"style": {
+						"navigationBarTitleText": "同城霸王餐"
+					}
+				},
+				{
+					"path": "tk_cps/pages/bwc/order",
+					"style": {
+						"navigationBarTitleText": "订单列表"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "tk_cps/pages/member",
+					"style": {
+						"navigationBarTitleText": "个人中心",
+						// #ifndef H5
+						"navigationStyle": "custom",
+						"app-plus": {
+							"titleView": false
+						}
+						// #endif 
+					}
+				},
+				{
+					"path": "tk_cps/pages/bwc/orderdetail",
+					"style": {
+						"navigationBarTitleText": "订单详情"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "tk_cps/pages/bwc/detail",
+					"style": {
+						"navigationBarTitleText": "活动报名",
+						"enablePullDownRefresh": true
+					}
+				},
+				{
+					"path": "tk_cps/pages/act",
+					"style": {
+						"navigationBarTitleText": "CPS联盟活动推广"
+					}
+				},
+				{
+					"path": "tk_cps/pages/index",
+					"style": {
+						"navigationBarTitleText": "CPS联盟首页",
+						"enablePullDownRefresh": true
+					}
+				},
+				{
+					"path": "tk_cps/pages/diy",
+					"style": {
+						"navigationBarTitleText": "%tk_cps.pages.diy%",
+						"enablePullDownRefresh": true,
+						"usingComponents": {
+							"diy-group": "../../../../addon/components/diy/group/index",
+							"fixed-group": "../../../../addon/components/fixed/group/index"
+						},
+						// #ifndef H5
+						"navigationStyle": "custom",
+						"app-plus": {
+							"titleView": false
+						}
+						// #endif 
+					}
+				},
+				{
+					"path": "tk_cps/pages/fenxiao/index",
+					"style": {
+						"navigationBarTitleText": "分销中心"
+					},
+					"needLogin": true
+				},
+				// TK_CPS_PAGE_END
+				// SEAFOX_PAY_PAGE_BEGIN
+				// *********************************** hello world ***********************************
+				{
+					"path": "seafox_pay/pages/hello_world/index",
+					"style": {
+						"navigationBarTitleText": "%seafox_pay.pages.hello_world.index%"
+					}
+				},
+				// *********************************** pay ***********************************
+				{
+					"path": "seafox_pay/pages/pay/index",
+					"style": {
+						"navigationBarTitleText": "%seafox_pay.pages.pay.index%"
+					}
+				},
+				// *********************************** maidan ***********************************
+				{
+					"path": "seafox_pay/pages/maidan/index",
+					"style": {
+						"navigationBarTitleText": "%seafox_pay.pages.maidan.index%"
+					}
+				},
+				// SEAFOX_PAY_PAGE_END
+				// TT_NIUCLOUD_PAGE_BEGIN
+				// *********************************** hello world ***********************************
+				{
+					"path": "tt_niucloud/pages/hello_world/index",
+					"style": {
+						"navigationBarTitleText": "%tt_niucloud.pages.hello_world.index%"
+					}
+				},
+				{
+					"path": "tt_niucloud/pages/team/index",
+					"style": {
+						"navigationBarTitleText": "%tt_niucloud.pages.team.index%"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "tt_niucloud/pages/auth/bind-wx",
+					"style": {
+						"navigationBarTitleText": "%tt_niucloud.pages.auth.bind-wx%"
+					},
+					"needLogin": true
+				},
+				// TT_NIUCLOUD_PAGE_END
+				// FAST_PAY_PAGE_BEGIN
+				// *********************************** 快捷支付 ***********************************
+				{
+					"path": "fast_pay/pages/pay/index",
+					"style": {
+						"navigationBarTitleText": "收银台"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "fast_pay/pages/pay/result",
+					"style": {
+						"navigationBarTitleText": "支付结果"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "fast_pay/pages/pay/list",
+					"style": {
+						"navigationBarTitleText": "支付记录"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "fast_pay/pages/pay/pay",
+					"style": {
+						"navigationBarTitleText": "商户收款"
+					}
+				},
+				{
+					"path": "fast_pay/pages/partner/index",
+					"style": {
+						"navigationBarTitleText": "收银台"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "fast_pay/pages/partner/result",
+					"style": {
+						"navigationBarTitleText": "支付结果"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "fast_pay/pages/partner/list",
+					"style": {
+						"navigationBarTitleText": "支付记录"
+					},
+					"needLogin": true
+				},
+				{
+					"path": "fast_pay/pages/partner/pay",
+					"style": {
+						"navigationBarTitleText": "商户收款"
+					}
+				},
+				// FAST_PAY_PAGE_END
+				// SHOP_GIFTCARD_PAGE_BEGIN
+				// *********************************** 礼品卡 ***********************************
+				{
+					"path": "shop_giftcard/pages/index",
+					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "%shop_giftcard.pages.index%"
+					}
+				},
+				{
+					"path": "shop_giftcard/pages/list",
+					"style": {
+						"navigationBarTitleText": "%shop_giftcard.pages.list%"
+					}
+				},
+				{
+					"path": "shop_giftcard/pages/detail",
+					"style": {
+						"navigationBarTitleText": "%shop_giftcard.pages.detail%"
+					}
+				},
+				{
+					"path": "shop_giftcard/pages/order_list",
+					"style": {
+						"navigationBarTitleText": "%shop_giftcard.pages.order_list%",
+						"needLogin": true
+					}
+				},
+				{
+					"path": "shop_giftcard/pages/order_detail",
+					"style": {
+						"navigationBarTitleText": "%shop_giftcard.pages.order_detail%",
+						"needLogin": true
+					}
+				},
+				{
+					"path": "shop_giftcard/pages/member",
+					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "%shop_giftcard.pages.member%"
+					}
+				},
+				{
+					"path": "shop_giftcard/pages/my_card_list",
+					"style": {
+						"navigationBarTitleText": "%shop_giftcard.pages.my_card_list%",
+						"needLogin": true
+					}
+				},
+				{
+					"path": "shop_giftcard/pages/card_bag",
+					"style": {
+						"navigationBarTitleText": "%shop_giftcard.pages.card_bag%",
+						"needLogin": true
+					}
+				},
+				{
+					"path": "shop_giftcard/pages/activate",
+					"style": {
+						// #ifndef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "%shop_giftcard.pages.activate%"
+					}
+				},
+				{
+					"path": "shop_giftcard/pages/receive_list",
+					"style": {
+						"navigationBarTitleText": "%shop_giftcard.pages.receive_list%",
+						"needLogin": true
+					}
+				},
+				{
+					"path": "shop_giftcard/pages/give_list",
+					"style": {
+						"navigationBarTitleText": "%shop_giftcard.pages.give_list%",
+						"needLogin": true
+					}
+				},
+				{
+					"path": "shop_giftcard/pages/give_detail",
+					"style": {
+						"navigationBarTitleText": "%shop_giftcard.pages.give_detail%",
+						"needLogin": true
+					}
+				},
+				{
+					"path": "shop_giftcard/pages/give",
+					"style": {
+						"navigationBarTitleText": "%shop_giftcard.pages.give%",
+						"needLogin": true
+					}
+				},
+				{
+					"path": "shop_giftcard/pages/receive_info",
+					"style": {
+						"navigationBarTitleText": "%shop_giftcard.pages.receive_info%",
+						"needLogin": true
+					}
+				},
+				{
+					"path": "shop_giftcard/pages/use_card",
+					"style": {
+						"navigationBarTitleText": "%shop_giftcard.pages.use_card%",
+						"needLogin": true
+					}
+				},
+				{
+					"path": "shop_giftcard/pages/use_goods_select",
+					"style": {
+						"navigationBarTitleText": "%shop_giftcard.pages.use_goods_select%",
+						"needLogin": true
+					}
+				},
+				{
+					"path": "shop_giftcard/pages/payment",
+					"style": {
+						"navigationBarTitleText": "%shop_giftcard.pages.payment%",
+						"needLogin": true
+					}
+				},
+				// SHOP_GIFTCARD_PAGE_END
+				// HSX_YINSHENG_PAY_PAGE_BEGIN
+				// *********************************** hello world ***********************************
+				{
+					"path": "hsx_yinsheng_pay/pages/hello_world/index",
+					"style": {
+						"navigationBarTitleText": "%hsx_yinsheng_pay.pages.hello_world.index%"
+					}
+				},
+				// HSX_YINSHENG_PAY_PAGE_END
+				// {{ PAGE_END }}}
+				{
+					"path": "end"
+				}
+			]
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "",
+		"navigationBarBackgroundColor": "#ffffff",
+		"backgroundColor": "#F6F6F6",
+		"backgroundColorTop": "#F6F6F6",
+		"backgroundColorBottom": "#F6F6F6"
+	},
+	"tabBar": {
+		"list": [
+			{
+				"pagePath": "app/pages/index/index"
+			},
+			{
+				"pagePath": "app/pages/member/index"
+			}
+		]
+	},
+	"uniIdRouter": {},
+	"easycom": {
+		"custom": {
+			"diy-group": "@/addon/components/diy/group/index.vue",
+			"fixed-group": "@/addon/components/fixed/group/index.vue",
+			"^u-(.*)": "uview-plus/components/u-$1/u-$1.vue",
+			"^up-(.*)": "uview-plus/components/u-$1/u-$1.vue",
+			"^u-([^-].*)": "uview-plus/components/u-$1/u-$1.vue",
+			"diy-(\W.*)": "@/app/components/diy/$1/index.vue",
+			"fixed-(\W.*)": "@/app/components/fixed/$1/index.vue"
+		}
+	}
+}
