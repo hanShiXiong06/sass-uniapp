@@ -114,7 +114,7 @@ import { getEvaluateConfig } from '@/addon/shop/api/shop';
 import MescrollBody from '@/components/mescroll/mescroll-body/mescroll-body.vue';
 import MescrollEmpty from '@/components/mescroll/mescroll-empty/mescroll-empty.vue';
 import useMescroll from '@/components/mescroll/hooks/useMescroll.js';
-import { onLoad, onPageScroll, onReachBottom } from '@dcloudio/uni-app';
+import { onLoad, onPageScroll, onReachBottom, onShow } from '@dcloudio/uni-app';
 import useConfigStore from "@/stores/config";
 
 const { mescrollInit, downCallback, getMescroll } = useMescroll(onPageScroll, onReachBottom);
@@ -140,6 +140,14 @@ onLoad((option: any) => {
 	})
 	// #endif
 });
+	
+
+onShow(() => {
+	nextTick(()=>{
+		// 评价完成之后，会返回到订单列表，需要请求最新数据
+		if(getMescroll()){ getMescroll().resetUpScroll();}
+	})
+})
 
 const evaluateEvent = () => {
 	getEvaluateConfig().then((data: any) => {

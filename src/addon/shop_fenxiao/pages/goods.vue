@@ -29,7 +29,7 @@
 			</view>
 			<mescroll-empty :option="{'icon': img('static/resource/images/empty.png')}" v-if="!list.length && !tableLoading"></mescroll-empty>
 		</mescroll-body>
-		<share-poster ref="sharePosterRef" posterType="fenxiao_goods" :posterParam="posterParam" :copyUrlParam="copyUrlParam" :copyUrl="copyUrl" />
+		<share-poster ref="sharePosterRef" posterType="fenxiao_goods" :posterParam="posterParam" :copyUrlParam="copyUrlParam" :copyUrl="copyUrl" @close="closeSharePoster" />
 
 		<!-- #ifdef MP-WEIXIN -->
 		<!-- 小程序隐私协议 -->
@@ -49,9 +49,10 @@
 	import { getFenxiaoGoodsList } from '@/addon/shop_fenxiao/api/fenxiao';
 	import useMemberStore from '@/stores/member'
     import sharePoster from '@/components/share-poster/share-poster.vue'
+	import { useShare }from '@/hooks/useShare'
 
     const { mescrollInit, downCallback, getMescroll } = useMescroll(onPageScroll, onReachBottom);
-	
+
 	// 会员信息
 	const memberStore = useMemberStore()
 	const userInfo = computed(() => memberStore.info)
@@ -60,6 +61,8 @@
 	const tableLoading = ref<boolean>(true);
 
 	const wxPrivacyPopupRef:any = ref(null)
+	const shareType = ref('page') // page：分享页面，goods：分享商品
+    const{ setShare } = useShare()
 
 	onLoad(()=>{
 		// #ifdef MP
@@ -84,6 +87,8 @@
 			list.value = list.value.concat(newArr);
 			tableLoading.value = false;
 			mescroll.endSuccess(newArr.length);
+
+			setCurrentShare();
 		}).catch(() => {
 			tableLoading.value = false;
 			mescroll.endErr(); // 请求失败, 结束加载
@@ -93,18 +98,35 @@
     const toLink = (data: any) => {
         redirect({ url: '/addon/shop/pages/goods/detail', param: { goods_id: data.goods_id } })
     }
-	
+
 	/************* 分享海报-start **************/
 	const sharePosterRef: any = ref(null);
 	const copyUrlParam = ref('');
 	const copyUrl = ref('');
 	let posterParam: any = {};
 	// 分享海报链接
-	const copyUrlFn = (data: any)=>{
+	const copyUrlFn = (data: any)=> {
 		copyUrl.value = '/addon/shop/pages/goods/detail';
 		copyUrlParam.value = '?goods_id=' + data.goods_id;
-		if (userInfo.value && userInfo.value.member_id) copyUrlParam.value += '&mid=' + userInfo.value.member_id;
+
+		let path = '/addon/shop/pages/goods/detail?goods_id=' + data.goods_id;
+		if (userInfo.value && userInfo.value.member_id) {
+			copyUrlParam.value += '&mid=' + userInfo.value.member_id;
+			path += '&mid=' + userInfo.value.member_id;
+		}
+
+		let share = {
+			title: data.goods_name,
+			path
+		}
+
+		setShare({
+			weapp: {
+				...share
+			}
+		});
 	}
+
 	const openShareFn = (data: any)=>{
 		posterParam.sku_id = data.goodsSku.sku_id;
 		if (userInfo.value && userInfo.value.member_id) {
@@ -112,6 +134,34 @@
         }
 		copyUrlFn(data);
 		sharePosterRef.value.openShare()
+        shareType.value = 'goods'
+	}
+
+	const closeSharePoster = () => {
+		shareType.value = 'page'
+		setCurrentShare();
+	}
+
+	const setCurrentShare = ()=>{
+		copyUrl.value = '/addon/shop_fenxiao/pages/goods';
+		copyUrlParam.value = '';
+
+		let path = '/addon/shop_fenxiao/pages/goods';
+		if (userInfo.value && userInfo.value.member_id) {
+			copyUrlParam.value += '?mid=' + userInfo.value.member_id;
+			path += '?mid=' + userInfo.value.member_id;
+		}
+
+		let share = {
+			title: '分销商品',
+			path
+		}
+
+		setShare({
+			weapp: {
+				...share
+			}
+		});
 	}
 	/************* 分享海报-end **************/
 </script>

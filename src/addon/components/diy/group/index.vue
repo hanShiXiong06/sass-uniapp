@@ -52,6 +52,48 @@
             <template v-if="component.componentName == 'Text'">
                 <diy-text :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.Text" />
             </template>
+            <template v-if="component.componentName == 'Article'">
+                <diy-article :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.Article" />
+            </template>
+            <template v-if="component.componentName == 'O2oGoodsList'">
+                <diy-o2o-goods-list :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.O2oGoodsList" />
+            </template>
+            <template v-if="component.componentName == 'O2oMemberInfo'">
+                <diy-o2o-member-info :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.O2oMemberInfo" />
+            </template>
+            <template v-if="component.componentName == 'O2oSearch'">
+                <diy-o2o-search :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.O2oSearch" />
+            </template>
+            <template v-if="component.componentName == 'O2oTechnician'">
+                <diy-o2o-technician :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.O2oTechnician" />
+            </template>
+            <template v-if="component.componentName == 'Bwc'">
+                <diy-bwc :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.Bwc" />
+            </template>
+            <template v-if="component.componentName == 'Meituan'">
+                <diy-meituan :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.Meituan" />
+            </template>
+            <template v-if="component.componentName == 'ParentMember'">
+                <diy-parent-member :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.ParentMember" />
+            </template>
+            <template v-if="component.componentName == 'Poster'">
+                <diy-poster :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.Poster" />
+            </template>
+            <template v-if="component.componentName == 'TtnGraphicNav'">
+                <diy-ttn-graphic-nav :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.TtnGraphicNav" />
+            </template>
+            <template v-if="component.componentName == 'TkVipLevel'">
+                <diy-tk-vip-level :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.TkVipLevel" />
+            </template>
+            <template v-if="component.componentName == 'TkVipManage'">
+                <diy-tk-vip-manage :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.TkVipManage" />
+            </template>
+            <template v-if="component.componentName == 'TkVipReal'">
+                <diy-tk-vip-real :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.TkVipReal" />
+            </template>
+            <template v-if="component.componentName == 'GiftcardList'">
+                <diy-giftcard-list :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.GiftcardList" />
+            </template>
             <template v-if="component.componentName == 'VipcardCard'">
                 <diy-vipcard-card :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.VipcardCard" />
             </template>
@@ -60,36 +102,6 @@
             </template>
             <template v-if="component.componentName == 'VipcardStore'">
                 <diy-vipcard-store :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.VipcardStore" />
-            </template>
-            <template v-if="component.componentName == 'PhoneGoodsCoupon'">
-                <diy-phone-goods-coupon :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.PhoneGoodsCoupon" />
-            </template>
-            <template v-if="component.componentName == 'PhoneGoodsList'">
-                <diy-phone-goods-list :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.PhoneGoodsList" />
-            </template>
-            <template v-if="component.componentName == 'PhoneManyGoodsList'">
-                <diy-phone-many-goods-list :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.PhoneManyGoodsList" />
-            </template>
-            <template v-if="component.componentName == 'PhoneShopExchangeGoods'">
-                <diy-phone-shop-exchange-goods :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.PhoneShopExchangeGoods" />
-            </template>
-            <template v-if="component.componentName == 'PhoneShopExchangeInfo'">
-                <diy-phone-shop-exchange-info :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.PhoneShopExchangeInfo" />
-            </template>
-            <template v-if="component.componentName == 'PhoneShopMemberInfo'">
-                <diy-phone-shop-member-info :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.PhoneShopMemberInfo" />
-            </template>
-            <template v-if="component.componentName == 'PhoneShopOrderInfo'">
-                <diy-phone-shop-order-info :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.PhoneShopOrderInfo" />
-            </template>
-            <template v-if="component.componentName == 'PhoneShopSearch'">
-                <diy-phone-shop-search :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.PhoneShopSearch" />
-            </template>
-            <template v-if="component.componentName == 'TkVipLevel'">
-                <diy-tk-vip-level :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.TkVipLevel" />
-            </template>
-            <template v-if="component.componentName == 'Article'">
-                <diy-article :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.Article" />
             </template>
             <template v-if="component.componentName == 'GoodsCoupon'">
                 <diy-goods-coupon :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.GoodsCoupon" />
@@ -136,44 +148,29 @@
             <template v-if="component.componentName == 'FenxiaoGoodsList'">
                 <diy-fenxiao-goods-list :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.FenxiaoGoodsList" />
             </template>
-            <template v-if="component.componentName == 'O2oGoodsList'">
-                <diy-o2o-goods-list :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.O2oGoodsList" />
+            <template v-if="component.componentName == 'PhoneGoodsCoupon'">
+                <diy-phone-goods-coupon :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.PhoneGoodsCoupon" />
             </template>
-            <template v-if="component.componentName == 'O2oMemberInfo'">
-                <diy-o2o-member-info :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.O2oMemberInfo" />
+            <template v-if="component.componentName == 'PhoneGoodsList'">
+                <diy-phone-goods-list :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.PhoneGoodsList" />
             </template>
-            <template v-if="component.componentName == 'O2oSearch'">
-                <diy-o2o-search :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.O2oSearch" />
+            <template v-if="component.componentName == 'PhoneManyGoodsList'">
+                <diy-phone-many-goods-list :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.PhoneManyGoodsList" />
             </template>
-            <template v-if="component.componentName == 'O2oTechnician'">
-                <diy-o2o-technician :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.O2oTechnician" />
+            <template v-if="component.componentName == 'PhoneShopExchangeGoods'">
+                <diy-phone-shop-exchange-goods :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.PhoneShopExchangeGoods" />
             </template>
-            <template v-if="component.componentName == 'Bwc'">
-                <diy-bwc :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.Bwc" />
+            <template v-if="component.componentName == 'PhoneShopExchangeInfo'">
+                <diy-phone-shop-exchange-info :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.PhoneShopExchangeInfo" />
             </template>
-            <template v-if="component.componentName == 'Meituan'">
-                <diy-meituan :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.Meituan" />
+            <template v-if="component.componentName == 'PhoneShopMemberInfo'">
+                <diy-phone-shop-member-info :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.PhoneShopMemberInfo" />
             </template>
-            <template v-if="component.componentName == 'ParentMember'">
-                <diy-parent-member :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.ParentMember" />
+            <template v-if="component.componentName == 'PhoneShopOrderInfo'">
+                <diy-phone-shop-order-info :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.PhoneShopOrderInfo" />
             </template>
-            <template v-if="component.componentName == 'Poster'">
-                <diy-poster :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.Poster" />
-            </template>
-            <template v-if="component.componentName == 'TtnGraphicNav'">
-                <diy-ttn-graphic-nav :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.TtnGraphicNav" />
-            </template>
-            <template v-if="component.componentName == 'GiftcardList'">
-                <diy-giftcard-list :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.GiftcardList" />
-            </template>
-            <template v-if="component.componentName == 'TourismHotel'">
-                <diy-tourism-hotel :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.TourismHotel" />
-            </template>
-            <template v-if="component.componentName == 'TourismTickets'">
-                <diy-tourism-tickets :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.TourismTickets" />
-            </template>
-            <template v-if="component.componentName == 'TourismTravel'">
-                <diy-tourism-travel :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.TourismTravel" />
+            <template v-if="component.componentName == 'PhoneShopSearch'">
+                <diy-phone-shop-search :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.PhoneShopSearch" />
             </template>
             </view>
         </view>
@@ -184,19 +181,23 @@
     </view>
 </template>
 <script lang="ts" setup>
+   import diyArticle from '@/addon/cms/components/diy/article/index.vue';
+   import diyO2oGoodsList from '@/addon/o2o/components/diy/o2o-goods-list/index.vue';
+   import diyO2oMemberInfo from '@/addon/o2o/components/diy/o2o-member-info/index.vue';
+   import diyO2oSearch from '@/addon/o2o/components/diy/o2o-search/index.vue';
+   import diyO2oTechnician from '@/addon/o2o/components/diy/o2o-technician/index.vue';
+   import diyBwc from '@/addon/tk_cps/components/diy/bwc/index.vue';
+   import diyMeituan from '@/addon/tk_cps/components/diy/meituan/index.vue';
+   import diyParentMember from '@/addon/tt_niucloud/components/diy/parent-member/index.vue';
+   import diyPoster from '@/addon/tt_niucloud/components/diy/poster/index.vue';
+   import diyTtnGraphicNav from '@/addon/tt_niucloud/components/diy/ttn-graphic-nav/index.vue';
+   import diyTkVipLevel from '@/addon/tk_vip/components/diy/tk-vip-level/index.vue';
+   import diyTkVipManage from '@/addon/tk_vip/components/diy/tk-vip-manage/index.vue';
+   import diyTkVipReal from '@/addon/tk_vip/components/diy/tk-vip-real/index.vue';
+   import diyGiftcardList from '@/addon/shop_giftcard/components/diy/giftcard-list/index.vue';
    import diyVipcardCard from '@/addon/vipcard/components/diy/vipcard-card/index.vue';
    import diyVipcardReserve from '@/addon/vipcard/components/diy/vipcard-reserve/index.vue';
    import diyVipcardStore from '@/addon/vipcard/components/diy/vipcard-store/index.vue';
-   import diyPhoneGoodsCoupon from '@/addon/phone_shop/components/diy/phone-goods-coupon/index.vue';
-   import diyPhoneGoodsList from '@/addon/phone_shop/components/diy/phone-goods-list/index.vue';
-   import diyPhoneManyGoodsList from '@/addon/phone_shop/components/diy/phone-many-goods-list/index.vue';
-   import diyPhoneShopExchangeGoods from '@/addon/phone_shop/components/diy/phone-shop-exchange-goods/index.vue';
-   import diyPhoneShopExchangeInfo from '@/addon/phone_shop/components/diy/phone-shop-exchange-info/index.vue';
-   import diyPhoneShopMemberInfo from '@/addon/phone_shop/components/diy/phone-shop-member-info/index.vue';
-   import diyPhoneShopOrderInfo from '@/addon/phone_shop/components/diy/phone-shop-order-info/index.vue';
-   import diyPhoneShopSearch from '@/addon/phone_shop/components/diy/phone-shop-search/index.vue';
-   import diyTkVipLevel from '@/addon/tk_vip/components/diy/tk-vip-level/index.vue';
-   import diyArticle from '@/addon/cms/components/diy/article/index.vue';
    import diyGoodsCoupon from '@/addon/shop/components/diy/goods-coupon/index.vue';
    import diyGoodsList from '@/addon/shop/components/diy/goods-list/index.vue';
    import diyManyGoodsList from '@/addon/shop/components/diy/many-goods-list/index.vue';
@@ -212,19 +213,14 @@
    import diyBrand from '@/addon/tk_jhkd/components/diy/brand/index.vue';
    import diyJhkd from '@/addon/tk_jhkd/components/diy/jhkd/index.vue';
    import diyFenxiaoGoodsList from '@/addon/shop_fenxiao/components/diy/fenxiao-goods-list/index.vue';
-   import diyO2oGoodsList from '@/addon/o2o/components/diy/o2o-goods-list/index.vue';
-   import diyO2oMemberInfo from '@/addon/o2o/components/diy/o2o-member-info/index.vue';
-   import diyO2oSearch from '@/addon/o2o/components/diy/o2o-search/index.vue';
-   import diyO2oTechnician from '@/addon/o2o/components/diy/o2o-technician/index.vue';
-   import diyBwc from '@/addon/tk_cps/components/diy/bwc/index.vue';
-   import diyMeituan from '@/addon/tk_cps/components/diy/meituan/index.vue';
-   import diyParentMember from '@/addon/tt_niucloud/components/diy/parent-member/index.vue';
-   import diyPoster from '@/addon/tt_niucloud/components/diy/poster/index.vue';
-   import diyTtnGraphicNav from '@/addon/tt_niucloud/components/diy/ttn-graphic-nav/index.vue';
-   import diyGiftcardList from '@/addon/shop_giftcard/components/diy/giftcard-list/index.vue';
-   import diyTourismHotel from '@/addon/tourism/components/diy/tourism-hotel/index.vue';
-   import diyTourismTickets from '@/addon/tourism/components/diy/tourism-tickets/index.vue';
-   import diyTourismTravel from '@/addon/tourism/components/diy/tourism-travel/index.vue';
+   import diyPhoneGoodsCoupon from '@/addon/phone_shop/components/diy/phone-goods-coupon/index.vue';
+   import diyPhoneGoodsList from '@/addon/phone_shop/components/diy/phone-goods-list/index.vue';
+   import diyPhoneManyGoodsList from '@/addon/phone_shop/components/diy/phone-many-goods-list/index.vue';
+   import diyPhoneShopExchangeGoods from '@/addon/phone_shop/components/diy/phone-shop-exchange-goods/index.vue';
+   import diyPhoneShopExchangeInfo from '@/addon/phone_shop/components/diy/phone-shop-exchange-info/index.vue';
+   import diyPhoneShopMemberInfo from '@/addon/phone_shop/components/diy/phone-shop-member-info/index.vue';
+   import diyPhoneShopOrderInfo from '@/addon/phone_shop/components/diy/phone-shop-order-info/index.vue';
+   import diyPhoneShopSearch from '@/addon/phone_shop/components/diy/phone-shop-search/index.vue';
    import topTabbar from '@/components/top-tabbar/top-tabbar.vue'
    import useDiyStore from '@/app/stores/diy';
    import { useDiyGroup } from './useDiyGroup';

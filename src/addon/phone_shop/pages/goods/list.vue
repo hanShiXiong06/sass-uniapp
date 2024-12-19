@@ -1,82 +1,77 @@
 <template>
 	<view class="bg-gray-100 min-h-[100vh]" :style="themeColor()">
 		<view class="fixed left-0 right-0 top-0 product-warp bg-[#fff] px-[30rpx]">
+			<!-- 搜索框 -->
 			<view class="py-[14rpx] flex items-center justify-between">
 				<view class="flex-1 flex items-center h-[64rpx] bg-[#F6F8F8] rounded-[33rpx] px-[32rpx] mr-[30rpx]">
-					<u-input class="flex-1" maxlength="50" v-model="goods_name" @confirm="searchTypeFn('all')"
+					<u-input class="flex-1" maxlength="50" v-model="goods_name" @confirm="searchGoods"
 						placeholder="请搜索您想要的商品(串号搜索前加#)" placeholderClass="text-[#a5a6a6] text-[26rpx]" fontSize="26rpx"
 						clearable border="none"></u-input>
 					<text class="nc-iconfont nc-icon-sousuo-duanV6xx1 text-[32rpx] ml-[18rpx] !text-[#999]"
-						@click="searchTypeFn('all')"></text>
+						@click="searchGoods"></text>
 				</view>
 				<view
 					:class="['nc-iconfont text-[34rpx] text-[#666]', listType ? 'nc-icon-erweimaV6xx' : 'nc-icon-yingyongliebiaoV6xx']"
 					@click="listIconBtn"></view>
 			</view>
-			<view class="flex justify-between tems-center py-[22rpx] px-[20rpx]">
-				<view class=" flex items-center justify-between text-[24rpx] text-[#666] flex-1">
-					<!-- <text :class="{ 'text-[#303133] ': searchType == 'all' }" @click="searchTypeFn('day')">今日上新</text> -->
-					<view class="flex items-center"
-						:class="{ 'text-[#303133]': searchType == 'sale_num', 'active': create_time }"
-						@click="searchTypeFn('day')">
-						<text class="mr-[4rpx]">今日上新</text>
-						<text v-if="create_time"
-							class="text-[18rpx]  nc-iconfont nc-icon-shanchu-yuangaizhiV6xx"></text>
-						<!-- <text v-else class="text-[18rpx] text-[#666] nc-iconfont nc-icon-a-xiangxiaV6xx1"></text> -->
-					</view>
-					<view class="flex items-center" :class="{ 'text-[#303133]': searchType == 'price' }"
-						@click="searchTypeFn('price')">
-						<text class=" mr-[4rpx]">价格</text>
 
+			<!-- 筛选条件 -->
+			<view class="flex justify-between items-center py-[22rpx] px-[20rpx]">
+				<view class="flex items-center justify-between text-[24rpx] text-[#666] flex-1">
+
+					<view class="flex items-center" :class="{ 'text-[#303133]': activeFilter === 'price' }"
+						@click="showFilter('price')">
+						<text class="mr-[4rpx]">价格</text>
+						<text v-if="hasPriceFilter" class="text-[18rpx] text-primary">●</text>
 					</view>
-					<view class="flex items-center" :class="{ 'text-[#303133]': searchType == 'label' }"
-						@click="searchTypeFn('label')">
-						<text class="mr-[2rpx]">筛选</text>
-						<text class="nc-iconfont color-[#666] nc-icon-shaixuanV6xx text-[28rpx]"></text>
+					<view class="flex items-center" :class="{ 'text-[#303133]': activeFilter === 'category' }"
+						@click="showFilter('category')">
+						<text class="mr-[4rpx]">分类</text>
+						<text v-if="selectedCategory" class="text-[18rpx] text-primary">●</text>
+					</view>
+					<view class="flex items-center" :class="{ 'text-[#303133]': activeFilter === 'brand' }"
+						@click="showFilter('brand')">
+						<text class="mr-[4rpx]">品牌</text>
+						<text v-if="selectedBrand" class="text-[18rpx] text-primary">●</text>
+					</view>
+					<view class="flex items-center" :class="{ 'text-[#303133]': activeFilter === 'label' }"
+						@click="showFilter('label')">
+						<text class="mr-[2rpx]">标签</text>
+						<text v-if="selectedLabels.length" class="text-[18rpx] text-primary">●</text>
 					</view>
 				</view>
 			</view>
 		</view>
-		<u-popup :show="pricePopup" mode="top" @close="pricePopup = false">
-			<view @touchmove.prevent.stop>
 
-				<!--        价格区间筛选 -->
-				<view class="flex justify-center flex-wrap  pb-[20rpx]">
-
-					<view class="flex flex-wrap pl-[30rpx] pt-[30rpx] mr-3">
-
-						<u-input placeholder="最低价格" border="surround" class="mr-3"
-							prefixIconStyle="font-size: 22px;color: #909399" v-model="price_between.start_price">
-						</u-input>
-						-
-						<u-input placeholder="最高价格" border="surround" class="ml-3" v-model="price_between.end_price" />
-						<!-- <view @click='price_order_change'>
-							<text v-if="price == 'asc'"
-								class="text-[18rpx] text-[#666] nc-iconfont nc-icon-a-xiangshangV6xx1"></text>
-							<text v-else class="text-[18rpx] text-[#666] nc-iconfont nc-icon-a-xiangxiaV6xx1"></text>
-						</view> -->
+		<!-- 价格筛选弹窗 -->
+		<u-popup :show="pricePopup" mode="top" @close="closeFilter">
+			<view class="filter-content">
+				<view class="price-range flex items-center justify-center py-[30rpx]">
+					<u-input v-model="price_between.start_price" placeholder="最低价" class="w-[200rpx]" />
+					<text class="mx-[20rpx]">-</text>
+					<u-input v-model="price_between.end_price" placeholder="最高价" class="w-[200rpx]" />
+				</view>
+				<view class="price-sort flex justify-center py-[20rpx]">
+					<view class="sort-btn" :class="{ 'active': priceSort === 'asc' }" @click="setPriceSort('asc')">从低到高
 					</view>
-
-					<view class="flex flex-wrap justify-end pl-[30rpx] p-[30rpx] ">
-						<div class="flex ">
-							<u-button type="success" :plain="true" class="mr-3 " text="重置"
-								@click="resetQuery"></u-button>
-							<u-button type="primary" @click="searchTypeFn" text="搜索"></u-button>
-						</div>
-
-
-					</view>
+					<view class="sort-btn ml-[20rpx]" :class="{ 'active': priceSort === 'desc' }"
+						@click="setPriceSort('desc')">从高到低</view>
+				</view>
+				<view class="filter-footer flex justify-end py-[20rpx] px-[30rpx]">
+					<u-button type="success" :plain="true" class="mr-[20rpx]" text="重置" @click="resetPriceFilter" />
+					<u-button type="primary" text="确定" @click="confirmPriceFilter" />
 				</view>
 			</view>
 		</u-popup>
-		<u-popup :show="labelPopup" mode="top" @close="labelPopup = false">
+
+		<!-- 分类筛选弹窗 -->
+		<u-popup :show="labelPopup && activeFilter === 'category'" mode="top" @close="closeFilter">
 			<view @touchmove.prevent.stop>
-				<!-- <view class="text-sm font-bold px-[30rpx] mt-3">全部分类</view> -->
-				<view class="  tabs-box z-2 fixed left-0 bg-[#fff] bottom-[50px] top-20 pl-[10rpx] pt-[30rpx]">
-					<scroll-view :scroll-y="true" class="scroll-height bg-[#ddd] ">
+				<view class="tabs-box z-2 fixed left-0 bg-[#fff] bottom-[50px] top-20 pl-[10rpx] pt-[30rpx]">
+					<scroll-view :scroll-y="true" class="scroll-height bg-[#ddd]">
 						<view class="bg-[#F4F6F8]">
 							<view class="tab-item truncate"
-								:class="{ 'tab-item-active': currGoodsCategory == index, 'rounded-br-[12rpx]': currGoodsCategory - 1 === index, 'rounded-tr-[12rpx]': currGoodsCategory + 1 === index }"
+								:class="{ 'tab-item-active': (currGoodsCategory !== '' && currGoodsCategory == index) || selectedCategory === item.category_id }"
 								v-for="(item, index) in categoryList" :key="item.category_id"
 								@click="loadCategory(item.category_id)">
 								<view class="text-box px-[16rpx] truncate">
@@ -87,16 +82,15 @@
 					</scroll-view>
 				</view>
 
-				<!--        价格区间筛选 -->
+				<!-- 子分类列表 -->
 				<view class="flex justify-center flex-wrap pl-[200rpx] pb-[20rpx]">
 					<scroll-view class="h-[70vh]" :scroll-y="true">
 						<view
-							class="bg-[#fff] grid grid-cols-3 gap-x-[50rpx] gap-y-[32rpx] py-[33rpx] px-[23rpx]  rounded-[16rpx]">
+							class="bg-[#fff] grid grid-cols-3 gap-x-[50rpx] gap-y-[32rpx] py-[33rpx] px-[23rpx] rounded-[16rpx]">
 							<template v-for="(item, index) in categoryList[currGoodsCategory]?.child_list"
 								:key="item.category_id">
-
-								<view class="text-center flex flex-col items-center pt-[8rpx] rounded "
-									:class="{ 'bg-[#f4f6f8]': goods_category == item.category_id }"
+								<view class="text-center flex flex-col items-center pt-[8rpx] rounded"
+									:class="{ 'bg-[#f4f6f8]': goods_category === item.category_id }"
 									@click="loadTreeCategory(item.category_id)">
 									<u--image radius="12rpx" width="60rpx" height="60rpx"
 										:src="img(item.image ? item.image : '')" model="aspectFill">
@@ -107,32 +101,65 @@
 											</image>
 										</template>
 									</u--image>
-									<view class="text-[24rpx] text-center mt-[12rpx] leading-[34rpx]">{{
-										item.category_name
-									}}
+									<view class="text-[24rpx] text-center mt-[12rpx] leading-[34rpx]">
+										{{ item.category_name }}
 									</view>
 								</view>
 							</template>
 						</view>
 					</scroll-view>
+				</view>
 
-					<view class="flex flex-wrap justify-end pl-[30rpx] p-[30rpx] ">
-						<div class="flex ">
-							<u-button type="success" :plain="true" class="mr-3 " text="重置"
-								@click="resetQuery"></u-button>
-							<u-button type="primary" @click="searchTypeFn" text="搜索"></u-button>
-						</div>
-
-
-					</view>
+				<!-- 确认和重置按钮 -->
+				<view class="flex flex-wrap justify-end pl-[30rpx] p-[30rpx]">
+					<div class="flex">
+						<u-button type="success" :plain="true" class="mr-3" text="重置" @click="resetCategory"></u-button>
+						<u-button type="primary" @click="confirmCategory" text="确定"></u-button>
+					</div>
 				</view>
 			</view>
 		</u-popup>
 
+		<!-- 品牌筛选弹窗 -->
+		<u-popup :show="brandPopup" mode="top" @close="closeFilter">
+			<view class="filter-content">
+				<scroll-view scroll-y class="brand-list" style="max-height: 60vh;">
+					<view class="grid grid-cols-3 gap-4 p-[30rpx]">
+						<view v-for="item in brandList" :key="item.brand_id"
+							class="brand-item text-center py-[20rpx] px-[30rpx] rounded"
+							:class="{ 'active': selectedBrand === item.brand_id }" @click="selectBrand(item)">
+							{{ item.brand_name }}
+						</view>
+					</view>
+				</scroll-view>
+				<view class="filter-footer flex justify-end py-[20rpx] px-[30rpx]">
+					<u-button type="success" :plain="true" class="mr-[20rpx]" text="重置" @click="resetBrandFilter" />
+					<u-button type="primary" text="确定" @click="confirmBrandFilter" />
+				</view>
+			</view>
+		</u-popup>
 
-		<mescroll-body ref="mescrollRef" top="160rpx" bottom="50px" @init="mescrollInit" :down="{ use: false }"
-			@up="getAllAppListFn">
+		<!-- 标签筛选弹窗 -->
+		<u-popup :show="labelPopup && activeFilter === 'label'" mode="top" @close="closeFilter">
+			<view class="filter-content">
+				<scroll-view scroll-y class="label-list" style="max-height: 60vh;">
+					<view class="grid grid-cols-3 gap-4 p-[30rpx]">
+						<view v-for="item in labelList" :key="item.label_id"
+							class="label-item text-center py-[20rpx] px-[30rpx] rounded"
+							:class="{ 'active': selectedLabels.includes(item.label_id) }" @click="toggleLabel(item)">
+							{{ item.label_name }}
+						</view>
+					</view>
+				</scroll-view>
+				<view class="filter-footer flex justify-end py-[20rpx] px-[30rpx]">
+					<u-button type="success" :plain="true" class="mr-[20rpx]" text="重置" @click="resetLabelFilter" />
+					<u-button type="primary" text="确定" @click="confirmLabelFilter" />
+				</view>
+			</view>
+		</u-popup>
 
+		<!-- 商品列表 -->
+		<mescroll-body ref="mescrollRef" top="160rpx" bottom="50px" @init="mescrollInit" @up="getAllAppListFn">
 			<view v-if="articleList.length"
 				:class="['sidebar-marign', !listType ? 'flex justify-between flex-wrap' : '']">
 				<template v-for="(item, index) in articleList">
@@ -150,24 +177,22 @@
 								</template>
 							</u--image>
 							<view class="flex-1 flex flex-col ml-[20rpx] py-[6rpx]">
-								<view class="text-[28rpx] text-[#303133] leading-[40rpx]  multi-hidden mb-[10rpx]">
-									{{
-										item.goods_name }}</view>
-								<view class="text-[16rpx] text-[#303133] leading-[40rpx]  multi-hidden mb-[10rpx]"
+								<view class="text-[28rpx] text-[#303133] leading-[40rpx] multi-hidden mb-[10rpx]">
+									{{ item.goods_name }}
+								</view>
+								<view class="text-[16rpx] text-[#303133] leading-[40rpx] multi-hidden mb-[10rpx]"
 									v-if="item.sub_title">
 									{{ item.sub_title }}
 								</view>
-								<view class="text-[16rpx] text-[#303133] leading-[40rpx]  multi-hidden mb-[10rpx]"
-									v-if="item.goodsSku.sku_no"> sn:
-									{{
-										item.goodsSku.sku_no }}
+								<view class="text-[16rpx] text-[#303133] leading-[40rpx] multi-hidden mb-[10rpx]"
+									v-if="item.goodsSku.sku_no">
+									sn: {{ item.goodsSku.sku_no }}
 								</view>
 								<view class="mt-auto flex justify-between items-baseline">
 									<view class="text-[var(--price-text-color)] price-font flex items-baseline">
 										<text class="text-[26rpx] font-500">￥</text>
-										<text class="text-[36rpx] font-500">{{
-											goodsPrice(item).toFixed(2).split('.')[0]
-										}}</text>
+										<text class="text-[36rpx] font-500">{{ goodsPrice(item).toFixed(2).split('.')[0]
+											}}</text>
 										<text class="text-[24rpx] font-500">.{{
 											goodsPrice(item).toFixed(2).split('.')[1] }}</text>
 										<image class="h-[24rpx] w-[72rpx] ml-[6rpx]"
@@ -177,16 +202,12 @@
 											v-if="priceType(item) == 'discount_price'"
 											:src="img('addon/phone_shop/discount.png')" mode="heightFix" />
 									</view>
-									<text class="text-[22rpx] text-[#999]">库存:{{ item.goodsSku.stock }}{{ item.unit
-										}} |
-										已售:{{
-											item.sale_num }}{{ item.unit
-										}}</text>
-
+									<text class="text-[22rpx] text-[#999]">
+										库存:{{ item.goodsSku.stock }}{{ item.unit }} | 已售:{{ item.sale_num }}{{ item.unit
+										}}
+									</text>
 									<text @click.stop="onGoodsShare(item.goods_id)"
 										class="nc-iconfont nc-icon-fenxiangV6xx"></text>
-									<!-- #ifdef MP || APP-PLUS  -->
-									<!-- #endif -->
 								</view>
 							</view>
 						</view>
@@ -213,13 +234,9 @@
 								</view>
 								<view class="flex justify-between flex-wrap items-baseline mt-[16rpx]">
 									<view class="text-[var(--price-text-color)] price-font flex items-baseline">
-										<!--										<text class="text-[20rpx]  mr-[4rpx]">￥</text>-->
-										<!--										<text class="text-[36rpx] font-500">{{ item.goodsSku.price }}</text>-->
-
 										<text class="text-[26rpx] font-500">￥</text>
-										<text class="text-[36rpx] font-500">{{
-											goodsPrice(item).toFixed(2).split('.')[0]
-										}}</text>
+										<text class="text-[36rpx] font-500">{{ goodsPrice(item).toFixed(2).split('.')[0]
+											}}</text>
 										<text class="text-[24rpx] font-500">.{{
 											goodsPrice(item).toFixed(2).split('.')[1] }}</text>
 										<image class="h-[24rpx] ml-[6rpx]" v-if="priceType(item) == 'member_price'"
@@ -227,8 +244,9 @@
 										<image class="h-[24rpx] ml-[6rpx]" v-if="priceType(item) == 'discount_price'"
 											:src="img('addon/phone_shop/discount.png')" mode="heightFix" />
 									</view>
-									<text class="text-[22rpx] text-[#999]"> 库存{{ item.goodsSku.stock }}{{ item.unit
-										}} </text>
+									<text class="text-[22rpx] text-[#999]">
+										库存{{ item.goodsSku.stock }}{{ item.unit }}
+									</text>
 								</view>
 							</view>
 						</view>
@@ -240,6 +258,7 @@
 				<mescroll-empty :option="{ tip: '暂无商品' }"></mescroll-empty>
 			</view>
 		</mescroll-body>
+
 		<!-- 小程序隐私协议 -->
 		<wx-privacy-popup ref="wxPrivacyPopupRef"></wx-privacy-popup>
 
@@ -248,10 +267,10 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, ref, onMounted, computed } from 'vue'
 import { t } from '@/locale'
 import { redirect, img, getToken, deepClone } from '@/utils/common';
-import { getGoodsDetail, getGoodsCategoryTree, getGoodsPages } from '@/addon/phone_shop/api/goods';
+import { getGoodsDetail, getGoodsCategoryTree, getGoodsPages, getBrandList, getLabelList } from '@/addon/phone_shop/api/goods';
 import MescrollBody from '@/components/mescroll/mescroll-body/mescroll-body.vue';
 import MescrollEmpty from '@/components/mescroll/mescroll-empty/mescroll-empty.vue';
 import useMescroll from '@/components/mescroll/hooks/useMescroll.js';
@@ -269,6 +288,8 @@ const loading = ref<boolean>(false);
 const labelPopup = ref(false);
 const pricePopup = ref(false);
 const goods_name = ref("");
+const brandList = ref<Array<any>>([]);
+const labelList = ref<Array<any>>([]);
 const price = ref("");
 const sale_num = ref("");
 const create_time = ref("");
@@ -282,14 +303,62 @@ let price_between = ref({
 //列表类型
 const listType = ref(true)
 onLoad(async (option) => {
-	goods_category.value = option.curr_goods_category || ''
-	goods_name.value = option.goods_name || ''
-	coupon_id.value = option.coupon_id || ''
-	if (option.create_time) {
-		create_time.value = new Date().getTime()
+	// 获取分类列表
+	const [categoryRes, brandRes, labelRes] = await Promise.all([
+		getGoodsCategoryTree(),
+		getBrandList(),
+		getLabelList()
+	])
+
+	// 设置分类、品牌、标签数据
+	categoryList.value = categoryRes.data;
+	brandList.value = brandRes.data;
+	labelList.value = labelRes.data;
+
+	// 设置基本参数
+	goods_name.value = option?.goods_name || '';
+	coupon_id.value = option?.coupon_id || '';
+	if (option?.create_time) {
+		create_time.value = new Date().getTime();
 	}
 
+	// 处理分类选择
+	if (option?.goods_category) {
+		// 如果URL中有分类参数，查找对应的分类
+		const parentCategory = categoryList.value.find((item: any) => {
+			// 检查是否是父分类
+			if (item.category_id == option.goods_category) {
+				return true;
+			}
+			// 检查是否是子分类
+			return item.child_list?.some((child: any) => child.category_id == option.goods_category);
+		});
 
+		if (parentCategory) {
+			// 找到父分类的索引
+			const index = categoryList.value.findIndex((item: any) => item.category_id === parentCategory.category_id);
+			currGoodsCategory.value = index;
+
+			// 如果选中的是子分类
+			if (parentCategory.category_id != option.goods_category) {
+				goods_category.value = option.goods_category;
+				selectedCategory.value = option.goods_category;
+			} else {
+				// 如果选中的是父分类，直接使用父分类ID
+				goods_category.value = parentCategory.category_id;
+				selectedCategory.value = parentCategory.category_id;
+			}
+		}
+	} else if (categoryList.value.length > 0) {
+		// 默认选中第一个分类
+		const firstCategory = categoryList.value[0];
+		currGoodsCategory.value = 0;
+		goods_category.value = firstCategory.category_id;
+		selectedCategory.value = firstCategory.category_id;
+	}
+
+	// 加载商品列表
+	reloadList();
 })
 
 interface mescrollStructure {
@@ -331,7 +400,7 @@ const onGoodsShare = (id: number) => {
 					data: goodsDetail.value.goods.goods_name + ' ' + goodsDetail.value.goods.sub_title + ' ' + sku_no + goodsDetail.value.goods.price,
 					success() {
 						uni.showToast({
-							title: '图片下载及复制文案成功',
+							title: '图片下载及复制文案成',
 							icon: 'none'
 						})
 					}
@@ -379,7 +448,7 @@ const onGoodsShare = (id: number) => {
 // 	downloadMultipleImages(images)
 // }
 
-// 下载单个图片的函数
+// 下载单个片的函数
 function downloadImage(imageUrl: string) {
 	return new Promise((resolve, reject) => {
 		uni.downloadFile({
@@ -440,59 +509,53 @@ function downloadMultipleImages(images: Object) {
 
 // #endif
 
-const getAllAppListFn = (mescroll: mescrollStructure) => {
+const getAllAppListFn = async (mescroll: mescrollStructure) => {
 	loading.value = false;
-	let data: object = {
+	const data = {
 		goods_category: goods_category.value,
 		page: mescroll.num || 15,
 		limit: mescroll.size,
 		keyword: goods_name.value,
 		coupon_id: coupon_id.value,
-		order: searchType.value === 'all' ? '' : searchType.value,
-		sort: searchType.value == 'price' ? price.value : sale_num.value,
+		order: priceSort.value ? 'price' : '',
+		sort: priceSort.value,
 		start_price: price_between.value.start_price,
 		end_price: price_between.value.end_price,
-		create_time: create_time.value
+		brand_id: selectedBrand.value,
+		label_ids: selectedLabels.value.join(',')
 	};
-	getGoodsPages(data).then((res: any) => {
-		let newArr = (res.data.data as Array<Object>);
-		//设置列表数据
-		// if (Number(mescroll.num) === 1) {
-		// 	articleList.value = []; //如果是第一页需手动制空列表
-		// }
 
-
+	try {
+		const res = await getGoodsPages(data);
+		const newArr = res.data.data;
 		articleList.value = articleList.value.concat(newArr);
 		mescroll.endSuccess(newArr.length);
 		loading.value = true;
-	}).catch(() => {
+	} catch (err) {
 		loading.value = true;
-		mescroll.endErr(); // 请求失败, 结束加载
-	})
+		mescroll.endErr();
+	}
 }
 
 
 const loadCategory = (id: string) => {
-	goods_category.value = id;
-	articleList.value = [];
-	// getMescroll().resetUpScroll();
-	// labelPopup.value = false;
-	// 返回id在数组中的下标
-	const index = categoryList.value.findIndex((item: any) => item.category_id == id);
-	// 赋值给currGoodsCategory
-	currGoodsCategory.value = index
-
-}
-const loadTreeCategory = (id: string) => {
-
-
-	if (goods_category.value == id) {
-		goods_category.value = categoryList.value[currGoodsCategory.value - 1].category_id || ''
-	} else {
+	const category = categoryList.value.find((item: any) => item.category_id === id);
+	if (category) {
+		const index = categoryList.value.findIndex((item: any) => item.category_id === id);
+		currGoodsCategory.value = index;
+		// 直接使用一级分类ID
 		goods_category.value = id;
+		selectedCategory.value = id;
+		// 重新加载商品列表
+		reloadList();
 	}
+}
 
-	articleList.value = [];
+const loadTreeCategory = (id: string) => {
+	goods_category.value = id;
+	selectedCategory.value = id;
+	// 重新加载商品列表
+	reloadList();
 }
 
 
@@ -500,14 +563,14 @@ const goods_category = ref('');
 // 搜索
 
 const searchTypeFn = async (type) => {
-	console.log(type);
-
 	if (categoryList.value.length == 0) {
 		await getGoodsCategoryTree().then((res: any) => {
-			const initData = { category_name: "全部", category_id: '' };
-			categoryList.value.push(initData);
-			categoryList.value = categoryList.value.concat(res.data);
-			// loadCategory(categoryList.value[0].category_id)
+			categoryList.value = res.data;
+			if (categoryList.value.length > 0) {
+				currGoodsCategory.value = 0;
+				goods_category.value = categoryList.value[0].category_id;
+				selectedCategory.value = categoryList.value[0].category_id;
+			}
 		});
 	}
 	searchType.value = type;
@@ -620,6 +683,158 @@ const goodsPrice = (data: any) => {
 	}
 	return parseFloat(price);
 }
+
+// 筛选相关状态
+const activeFilter = ref('')
+const categoryPopup = ref(false)
+const brandPopup = ref(false)
+
+const selectedCategory = ref('')
+const selectedBrand = ref('')
+const selectedLabels = ref([])
+const priceSort = ref('')
+
+// 计算属性
+const hasPriceFilter = computed(() => {
+	return price_between.start_price || price_between.end_price || priceSort.value
+})
+
+// 显示筛选面板
+const showFilter = (type: string) => {
+	// 先关闭所有弹窗
+	pricePopup.value = false;
+	labelPopup.value = false;
+	brandPopup.value = false;
+
+	// 设置当前激活的筛选类型
+	activeFilter.value = type;
+
+	// 根据类型打开对应弹窗
+	switch (type) {
+		case 'price':
+			pricePopup.value = true;
+			break;
+		case 'category':
+			labelPopup.value = true;
+			break;
+		case 'brand':
+			brandPopup.value = true;
+			break;
+		case 'label':
+			labelPopup.value = true;
+			break;
+	}
+}
+
+// 关闭筛选面板
+const closeFilter = () => {
+	// 关闭所有弹窗
+	pricePopup.value = false;
+	labelPopup.value = false;
+	brandPopup.value = false;
+	// 清除激活状态
+	activeFilter.value = '';
+}
+
+// 设置价格排序
+const setPriceSort = (sort: string) => {
+	priceSort.value = sort
+}
+
+// 选择分类
+const selectCategory = (category: any) => {
+	selectedCategory.value = category.category_id
+}
+
+// 重置价格筛选
+const resetPriceFilter = () => {
+	price_between.start_price = ''
+	price_between.end_price = ''
+	priceSort.value = ''
+}
+
+// 重置分类筛选
+const resetCategoryFilter = () => {
+	selectedCategory.value = ''
+}
+
+// 确认价格筛选
+const confirmPriceFilter = () => {
+	closeFilter()
+	reloadList()
+}
+
+// 确认分类筛选
+const confirmCategoryFilter = () => {
+	closeFilter()
+	reloadList()
+}
+
+// 搜索商品
+const searchGoods = () => {
+	reloadList()
+}
+
+
+// 重新加载列表
+const reloadList = () => {
+	articleList.value = []
+	getMescroll().resetUpScroll()
+}
+
+// 重置分类
+const resetCategory = () => {
+	// 清除所有分类相关数据
+	currGoodsCategory.value = '';
+	goods_category.value = '';
+	selectedCategory.value = '';
+	// 重新加载列表
+	reloadList();
+	// 关闭弹窗
+	labelPopup.value = false;
+}
+
+// 确认分类选择
+const confirmCategory = () => {
+	labelPopup.value = false;
+	reloadList();
+}
+
+// 选择品牌
+const selectBrand = (brand: any) => {
+	selectedBrand.value = brand.brand_id
+}
+
+// 重置品牌筛选
+const resetBrandFilter = () => {
+	selectedBrand.value = ''
+}
+
+// 确认品牌筛选
+const confirmBrandFilter = () => {
+	brandPopup.value = false;
+	reloadList();
+}
+
+// 切换标签
+const toggleLabel = (label: any) => {
+	if (selectedLabels.value.includes(label.label_id)) {
+		selectedLabels.value = selectedLabels.value.filter(item => item !== label.label_id)
+	} else {
+		selectedLabels.value.push(label.label_id)
+	}
+}
+
+// 重置标签筛选
+const resetLabelFilter = () => {
+	selectedLabels.value = []
+}
+
+// 确认标签筛选
+const confirmLabelFilter = () => {
+	labelPopup.value = false;
+	reloadList();
+}
 </script>
 
 <style lang="scss" scoped>
@@ -718,5 +933,42 @@ const goodsPrice = (data: any) => {
 
 .active {
 	color: #f00
+}
+
+.filter-content {
+	background: #fff;
+	padding: 20rpx;
+}
+
+.sort-btn {
+	padding: 10rpx 30rpx;
+	border: 1px solid #ddd;
+	border-radius: 30rpx;
+	font-size: 24rpx;
+	color: #666;
+
+	&.active {
+		color: var(--primary-color);
+		border-color: var(--primary-color);
+		background: var(--primary-color-light);
+	}
+}
+
+.category-item {
+	font-size: 28rpx;
+	color: #333;
+
+	&.active {
+		color: var(--primary-color);
+		background: var(--primary-color-light);
+	}
+}
+
+.filter-footer {
+	border-top: 1px solid #eee;
+}
+
+.text-primary {
+	color: var(--primary-color);
 }
 </style>

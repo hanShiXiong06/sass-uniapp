@@ -31,9 +31,6 @@
 	import { useShare } from '@/hooks/useShare'
 	import { copy } from '@/utils/common'
 	const { setShare, onShareAppMessage, onShareTimeline } = useShare()
-	setShare()
-	onShareAppMessage()
-	onShareTimeline()
 	import { timeChange, authLogin, getLocationData } from "@/addon/tk_cps/utils/ts/common";
 	authLogin()
 	const valueData = ref()
@@ -50,11 +47,12 @@
 		// #endif
 	}
 	onShow(() => {
-		// #ifdef MP-WEIXIN
-
-		// #endif
+		setShare()
+		onShareAppMessage()
+		onShareTimeline()
 	})
 	onLoad((options) => {
+		authLogin()
 		getCpsInfo({
 			type: options.type,
 			act_id: options.act_id

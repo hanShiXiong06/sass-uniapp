@@ -119,27 +119,7 @@
 				</view>
 			</view>
 
-			<view v-if="currLevelInfo.gifts_arr && currLevelInfo.gifts_arr.length"
-				class="flex-1 rounded-t-[40rpx] px-[30rpx]  pt-[var(--pad-top-m)] mt-[-36rpx]  relative tab-bar"
-				:style="{ background: `linear-gradient( 180deg, ${currLevelInfo.level_style.gift} 0%, #FFFFFF 20%)` }">
-				<!-- 升级礼包 -->
-				<view class="mb-8">
-					<view class="pb-[30rpx] flex items-center">
-						<text class="text-[30rpx] text-[#333] font-500 leading-[44rpx]">升级礼包</text>
-					</view>
-					<view class="flex flex-wrap">
-						<view v-for="(item, index) in currLevelInfo.gifts_arr" :key="index" class="mb-[20rpx]"
-							:class="{ 'mr-[21rpx]': (index + 1) % 3 != 0 }">
-							<view class="relative box-border mb-[16rpx] w-[216rpx] h-[180rpx] !bg-contain"
-								:style="{ background: 'url(' + img(item.background) + ') no-repeat' }"></view>
-							<view
-								class="text-center font-500 text-[#333] text-[28rpx] truncate leading-[40rpx] max-w-[216rpx]">
-								{{ item.text }}
-							</view>
-						</view>
-					</view>
-				</view>
-			</view>
+
 			<!-- 购买sku展示 -->
 
 			<view v-if="vipSku && vipSku.length > 0 && payStatus"
@@ -147,6 +127,13 @@
 				:style="{ background: `linear-gradient( 180deg, ${currLevelInfo.level_style.gift} 0%, #FFFFFF 20%)` }">
 				<view class="pb-[20rpx] flex items-center">
 					<text class="text-[30rpx] text-[#333] font-500 leading-[44rpx]">个性套餐</text>
+				</view>
+				<view @click="redirect({url:'/addon/tk_vip/pages/real'})"
+					v-if="realConfig&&currLevelInfo&&checkInfo&&currLevelInfo.level_benefits.tk_vip_fee.is_real == 1 && realConfig.open_real == 1&&checkInfo.type!='success'"
+					class="rounded-[12rpx] text-white text-center p-2"
+					:style="{ backgroundColor: currLevelInfo.level_style.bg_color }">
+					<view v-if="realInfo&&realInfo.status!=1">需实名认证，点击查看</view>
+					<view v-else>当前等级需实名认证 点击认证</view>
 				</view>
 				<view class="grid grid-cols-3 p-2 md:grid-cols-3 gap-4 tk-card">
 					<view v-for="(item, index) in vipSku" :key="index"
@@ -176,7 +163,7 @@
 			<text class="desc">暂无会员等级</text>
 		</view>
 		<view class="h-[240rpx]"></view>
-		<view v-if="selectData && payStatus&&(currLevelInfo.level_id >= vipInfo.level_id)"
+		<view v-if="selectData&&vipInfo&&currLevelInfo && payStatus&&(currLevelInfo.level_id >= vipInfo.level_id)"
 			class="b-tabbar safe-area-inset-bottom">
 			<view class="flex justify-center items-start mt-[30rpx]">
 				<u-checkbox-group>
@@ -228,10 +215,19 @@
 	import { getMemberLevel, getVipInfo } from '@/addon/tk_vip/api/member';
 	import { createOrder } from '@/addon/tk_vip/api/order';
 	import { img, redirect, deepClone, getToken } from '@/utils/common';
+	import { getRealConfig, checkReal, getRealInfo } from '@/addon/tk_vip/api/real'
 	import useMemberStore from '@/stores/member'
 	import { topTabar } from '@/utils/topTabbar'
 	import { dateChange } from '@/addon/tk_vip/utils/ts/common'
 	import { confirm } from '@/addon/tk_vip/utils/ts/alert'
+	const checkInfo = ref()
+	checkReal().then((res) => {
+		checkInfo.value = res.data
+	})
+	const realInfo = ref()
+	getRealInfo().then((res) => {
+		realInfo.value = res.data
+	})
 	const memberStore = useMemberStore()
 	const loading = ref(false)
 	const changeDate = (dateString) => {
@@ -247,7 +243,10 @@
 	const swiperIndex = ref(0); //当前滑块的索引
 	const levelIndex = ref(0); //当前等级的索引
 	const vipInfo = ref()
-
+	const realConfig = ref()
+	getRealConfig().then((res) => {
+		realConfig.value = res.data
+	})
 	const getVipInfoEvent = () => {
 		getVipInfo().then((res : any) => {
 			vipInfo.value = res.data
@@ -294,6 +293,7 @@
 	const levelStyle = ref(''); // 等级样式
 	const maxWidth = ref(''); // 等级样式
 	const lineStyle = ref(''); // 线样式
+
 	const getMemberLevelFn = () => {
 		loading.value = true;
 		getMemberLevel().then((res : any) => {
@@ -357,12 +357,25 @@
 		isAgree.value = !isAgree.value
 	}
 	const submitOrder = async (type) => {
-		if (vipInfo.value.level_id == currLevelInfo.value.level_id && vipInfo.value.over_time == 0) {
-			uni.$u.toast('已获取永久权限,不需升级');
-			return
-		}
 		if (!isAgree.value) {
 			uni.$u.toast('请先阅读并同意协议');
+			return
+		}
+		//进行实名拦截  
+		if (currLevelInfo.value.level_benefits.tk_vip_fee.is_real == 1 && realConfig.value.open_real == 1) {
+			let real_info = await (await checkReal()).data
+			if (real_info.type == 'redirect') {
+				redirect({ url: real_info.page })
+				return
+			}
+			if (real_info.type == 'msg') {
+				uni.$u.toast(real_info.msg)
+				return
+			}
+
+		}
+		if (vipInfo.value.level_id == currLevelInfo.value.level_id && vipInfo.value.over_time == 0) {
+			uni.$u.toast('已获取永久权限,不需升级');
 			return
 		}
 		if (type == 'add' && selectData.value.over_type == 'fixed') {
@@ -370,6 +383,10 @@
 			let update = changeDate(selectData.value.over_time)
 			if (vip == update) {
 				uni.$u.toast('请等待商家更新新的周期时间');
+				return
+			}
+			if (vip > update) {
+				uni.$u.toast('当前存在更长生效周期，无需购买');
 				return
 			}
 		}
@@ -446,7 +463,7 @@
 	// 判断支付窗口是否显示
 	// 判断条件是 用当前的窗户和当前的用户等级判断 及 判断 overtime 是否 = 0 
 	const payStatus = computed(() => {
-		if ((list.value[levelIndex.value].level_id == vipInfo.value.level_id) && (vipInfo.value.over_time == 0) && vipInfo.value.level_id > 0) return false
+		if (list.value && vipInfo.value && (list.value[levelIndex.value].level_id == vipInfo.value.level_id) && (vipInfo.value.over_time == 0) && vipInfo.value.level_id > 0) return false
 		return true
 	})
 </script>

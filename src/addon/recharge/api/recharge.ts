@@ -27,3 +27,10 @@ export function getRechargeList(data: AnyObject) {
 export function getRechargeDetail(id: number) {
     return request.get(`recharge/recharge/${id}`, {}, {showErrorMessage: true})
 }
+
+/**
+ * 充值套餐列表
+ */
+export function getRechargePackageList() {
+    return request.get('recharge/package')
+}

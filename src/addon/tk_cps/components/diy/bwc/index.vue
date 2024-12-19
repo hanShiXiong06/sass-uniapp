@@ -8,7 +8,7 @@
         }">
 				全城霸王餐
 			</view>
-			<view class="flex items-center" @click="locationVal.repositionFn()">
+			<view class="flex items-center" @click="locationVal.reposition()">
 				<view>
 					<u-icon name="map" :color="diyComponent.localcolor" :size="diyComponent.localsize / 2"></u-icon>
 				</view>
@@ -16,7 +16,7 @@
             color: diyComponent.localcolor,
             fontSize: diyComponent.localsize + 'rpx',
           }">
-					{{ !systemStore.currShippingAddress ? "选择位置" : systemStore.currShippingAddress.community }}
+					{{ !systemStore.diyAddressInfo? "选择位置" : systemStore.diyAddressInfo.community }}
 				</view>
 				<view>
 					<u-icon name="arrow-right" :color="diyComponent.localcolor"
@@ -29,7 +29,7 @@
 			:style="{
 		  background: diyComponent.searchcolor,
 		}">
-			<u-input clearable v-model="keyword" focus="true" placeholder="输入商家名称快速检索" @change="reload" @blur="reload"
+			<u-input clearable v-model="keyword" placeholder="输入商家名称快速检索" @change="reload" @blur="reload"
 				suffixIcon="search" suffixIconStyle="color: #909399"></u-input>
 		</view>
 		<view v-if="diyComponent.cateshow == 1" class="">
@@ -158,15 +158,15 @@
 	import MescrollEmpty from "@/components/mescroll/mescroll-empty/mescroll-empty.vue";
 	import { onLoad, onPageScroll, onReachBottom } from "@dcloudio/uni-app";
 	import useDiyStore from "@/app/stores/diy";
-	import useSystemStore from "@/stores/system";
+	import useSystemStore from "@/addon/tk_cps/stores/system";
 	import { getActList, getActInfo, getNewActList } from "@/addon/tk_cps/api/bwc";
 	import { timeChange, authLogin, getLocationData } from "@/addon/tk_cps/utils/ts/common";
 	import { getAddressByLatlng } from "@/app/api/system";
-	import { useLocation } from '@/hooks/useLocation'
+	import { useLocation } from '@/addon/tk_cps/hooks/useLocation'
 	const locationVal = useLocation(true);
 	locationVal.onLoad();
-	locationVal.initFn();
-	locationVal.refreshLocationFn();
+	locationVal.init();
+	locationVal.refresh();
 	const systemStore = useSystemStore();
 	const currentPosition = ref();
 	let list = ref<Array<Object>>([]);
@@ -196,7 +196,7 @@
 	const getActListFn = () => {
 		let location = getLocationData()
 		if (!location) {
-			location = uni.getStorageSync('location')
+			location = uni.getStorageSync('location_address')
 		}
 		loading.value = true;
 		let data : object = {
@@ -212,7 +212,6 @@
 				let newArr = res.data.data.merchantList as Array<Object>;
 				if (newArr.length == 0) {
 					loading.value = false;
-					//page.value = res.data.data.pageId
 					uni.showToast({
 						title: "已经没有更多数据",
 						icon: "none",
@@ -232,7 +231,7 @@
 				loading.value = false;
 			});
 	};
-	watch(() => systemStore.location, (nval, oval) => {
+	watch(() => systemStore.diyAddressInfo, (nval, oval) => {
 		if (nval.latitude && nval.longitude) {
 			loading.value = true;
 			listData.value = []

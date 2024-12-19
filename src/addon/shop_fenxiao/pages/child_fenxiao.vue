@@ -15,7 +15,7 @@
 					<view class="flex flex-col ml-auto items-end text-[24rpx]">
 						<text class="leading-normal">{{item.child_fenxiao_num}} 人</text>
 						<text class="leading-normal">{{item.fenxiao_order_num}} 单</text>
-						<text class="leading-normal">{{item.fenxiao_commission}} 元</text>
+						<text class="leading-normal">{{item.fenxiao_total_order}} 元</text>
 					</view>
 				</view>
 			</view>

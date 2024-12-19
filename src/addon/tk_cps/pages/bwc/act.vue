@@ -2,12 +2,12 @@
 	<view class="detail-box">
 		<view class="flex items-center mb-[16rpx] mt-[32rpx] flex-right justify-between mr-2">
 			<view class="ml-4 font-bold text-[36rpx]">全城霸王餐</view>
-			<view class="flex items-center" @click="locationVal.repositionFn()">
+			<view class="flex items-center" @click="locationVal.reposition()">
 				<view>
 					<u-icon name="map" color="#ffab45" size="18"></u-icon>
 				</view>
 				<view class="text-[#ffab45] text-xs tk-sltext">
-					{{ !systemStore.currShippingAddress ? "选择位置" : systemStore.currShippingAddress.community }}
+					{{ !systemStore.diyAddressInfo ? "选择位置" : systemStore.diyAddressInfo.community }}
 				</view>
 				<view>
 					<u-icon name="arrow-right" color="#ffab45" size="18"></u-icon>
@@ -132,16 +132,17 @@
 	const { setShare, onShareAppMessage, onShareTimeline } = useShare();
 	import { useLogin } from "@/hooks/useLogin";
 	import useMemberStore from "@/stores/member";
-	import useSystemStore from "@/stores/system";
+	import useSystemStore from "@/addon/tk_cps/stores/system";
 	const memberStore = useMemberStore();
 	const userInfo = computed(() => memberStore.info);
 	const systemStore = useSystemStore();
 	import { getAddressByLatlng } from "@/app/api/system";
-	import { useLocation } from '@/hooks/useLocation'
+	import { useLocation } from '@/addon/tk_cps/hooks/useLocation'
 	authLogin()
 	const locationVal = useLocation(true);
 	locationVal.onLoad();
-	locationVal.initFn();
+	locationVal.onLoad();
+	locationVal.init();
 	const currentPosition = ref('定位中');
 	/************* 分享海报-start **************/
 	let sharePosterRef = ref(null);
@@ -197,7 +198,7 @@
 	const getActListFn = () => {
 		let location = getLocationData()
 		if (!location) {
-			location = uni.getStorageSync('location')
+			location = uni.getStorageSync('location_address')
 		}
 		loading.value = true;
 		let data : object = {
@@ -216,6 +217,7 @@
 						title: "已经没有更多数据",
 						icon: "none",
 					});
+					page.value = '没有更多'
 					return
 				}
 				if (page.value == '') {
@@ -230,7 +232,7 @@
 				loading.value = false;
 			});
 	};
-	watch(() => systemStore.location, (nval, oval) => {
+	watch(() => systemStore.diyAddressInfo, (nval, oval) => {
 		if (nval.latitude && nval.longitude) {
 			loading.value = true;
 			listData.value = []

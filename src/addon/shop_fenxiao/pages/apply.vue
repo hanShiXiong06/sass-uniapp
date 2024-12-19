@@ -1,5 +1,5 @@
 <template>
-	<view class="bg-[var(--page-bg-color)] overflow-hidden min-h-[100vh]" :style="themeColor()" v-if="Object.values(repeatFlag).every((el) => el)">
+	<view class="bg-[var(--page-bg-color)] overflow-hidden min-h-[100vh]" :style="themeColor()" v-show="Object.values(repeatFlag).every((el) => el)">
 		<block v-if="config.is_fenxiao == '0'">
 			<view class="empty-page">
 				<image class="img" mode="aspectFit" :src="img('addon/shop_fenxiao/unopened-fenxiao.png')"></image>
@@ -14,7 +14,15 @@
 		</block>
 		<block v-else>
 			<block v-if="info.status === 0 && Object.keys(config).length && config.apply_type != '3'">
+				<!-- #ifdef MP-WEIXIN -->
+				<view class="fixed top-0 left-0 right-0 z-10">
+					<top-tabbar :data="param" :scrollBool="topTabarObj.getScrollBool()" class="top-header"/>
+				</view>
 				<image class="w-[100vw] min-h-[100%] h-[100%]" mode="widthFix" :src="img(config.apply_head || '')"></image>
+				<!-- #endif -->
+				 <!-- #ifdef H5-->
+				<image class="w-[100vw] min-h-[100%] h-[100%]" :style="screenTempStyle()" mode="widthFix" :src="img(config.apply_head || '')"></image>
+				<!-- #endif -->
 				<view class="bg-[#fff] relative sidebar-margin mt-[-60rpx] rounded-[var(--rounded-big)] h-[100rpx] flex justify-between items-center px-[30rpx]">
 					<text class="text-[30rpx] font-500 text-[#333]">{{t('referrer')}}</text>
 					<text class="text-[28rpx]" :class="{'text-[var(--text-color-light6)]': info.bindFenxiaoMember, 'text-[var(--text-color-light9)]': !info.bindFenxiaoMember}">{{ info.bindFenxiaoMember ? info.bindFenxiaoMember.nickname : t('notHave') }}</text>
@@ -22,7 +30,7 @@
 				
 				<view class="apply-condition z-10 rounded-[var(--rounded-big)] mt-[var(--top-m)] box-border sidebar-margin" v-if="['1','2','3'].indexOf(config.fenxiao_condition) > -1">
 					<view class="apply-condition-wrap z-10 rounded-[var(--rounded-big)] px-[10rpx] pb-[10rpx] box-border">
-						<view class="flex items-center justify-between h-[40rpx] px-[20rpx] pt-[26rpx] pb-[14rpx]">
+						<view class="flex items-center justify-between min-h-[40rpx] px-[20rpx] pt-[26rpx] pb-[14rpx]">
 							<view class="text-[30rpx] font-500 text-[#fff]">申请条件</view>
 							<view class="flex items-baseline text-[26rpx] text-[#fff]" v-if="config.fenxiao_condition === '1'">
 								<text>累计消费</text>
@@ -66,13 +74,13 @@
 									</u--image>
 									<view class="flex flex-1 flex-col justify-between py-[6rpx] ml-[20rpx] goods-item-content">
 										<view class="multi-hidden text-[26rpx] font-500 leading-[1.4]">{{ item.goods_name }}</view>
-										<view class="flex items-end justify-between">
+										<view class="flex items-end justify-between" v-if="item.goods_sku">
 											<view class="text-[var(--price-text-color)] inline-block price-font leading-[1]">
 												<text class="text-[24rpx]">￥</text>
 												<text class="text-[40rpx]">{{parseFloat(moneyFormat(item.goods_sku.price)).toFixed(2).toString().split('.')[0]}}</text>
 												<text class="text-[24rpx]">.{{parseFloat(moneyFormat(item.goods_sku.price)).toFixed(2).toString().split('.')[1]}}</text>
 											</view>
-											<text class=" nc-iconfont nc-icon-gouwucheV6xx-2 text-[#fff] text-[28rpx] bg-[#FE4C19] h-[48rpx] w-[48rpx] text-center leading-[48rpx] rounded-[50rpx]"></text>
+											<text class=" nc-iconfont nc-icon-gouwucheV6xx6 text-[#fff] text-[28rpx] bg-[#FE4C19] h-[48rpx] w-[48rpx] text-center leading-[48rpx] rounded-[50rpx]"></text>
 										</view>
 									</view>
 								</view>
@@ -122,7 +130,28 @@
 	import { t } from '@/locale'
 	import { onShow } from '@dcloudio/uni-app'
 	import { getMemberInfo, getConfig, applyInfo, getCheck, apply } from '@/addon/shop_fenxiao/api/fenxiao'
+	import { topTabar } from '@/utils/topTabbar'
+	import { onPageScroll } from '@dcloudio/uni-app';
+	/********* 自定义头部 - start ***********/
+	const topTabarObj = topTabar()
+	let param = topTabarObj.setTopTabbarParam({title:'分销商申请'})
 
+	/********* 自定义头部 - end ***********/
+	/********* 通屏 ***********/
+	const systemInfo = uni.getSystemInfoSync();
+	const screenTempStyle = ()=> {
+		let style = "";
+		// #ifdef H5
+		// h5,上移的像素，采取的是平均值
+		if (systemInfo.platform === 'android') {
+			style = 'margin-top: -44.5px;';
+		} else if (systemInfo.platform === 'ios') {
+			style = 'margin-top: -55px;';
+		}
+		// #endif
+		return style;
+	}
+	/********* 通屏 ***********/
 	const config : Record<string, any> = ref({})
 	const info : Record<string, any> = ref({})
 	// const loading = ref<boolean>(true)
@@ -159,7 +188,9 @@
 		getConfig().then((res : any) => {
 			config.value = Object.assign(config.value, res.data.fenxiao_config)
 			if (config.value.is_show_apply != '1') isAgree.value = true
-			repeatFlag.value.config = true
+			setTimeout(()=>{
+				repeatFlag.value.config = true
+			}, 500)
 		}).catch(() => {
 			repeatFlag.value.config = true
 		})
@@ -256,7 +287,7 @@
 		background: linear-gradient( 91deg, #EEB2AA 0%, #EE9D9A 100%), #E99490;
 	}
 	.apply-condition{
-		background: linear-gradient( 270deg, #FF5F67 0%, #FF424B 100%);
+		background: linear-gradient( 90deg, #FF7811 0%, #FF2F17 100%);
 	}
 	.fenxiao-goods-item{
 		.goods-item-content{

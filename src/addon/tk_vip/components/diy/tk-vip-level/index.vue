@@ -31,48 +31,28 @@
 				<text class="iconfont iconxiayibu1 ml-[4rpx] -mb-[2rpx] !text-[14rpx] text-[#333]"></text>
 			</view>
 		</view>
-		<view v-if="diyComponent.style == 'style-3'"
-			class="rounded-[var(--rounded-big)] style-bg-3 py-[var(--pad-top-m)] px-[var(--pad-sidebar-m)]">
-			<view class="flex items-center justify-between style-border-3 mb-[30rpx] pb-[40rpx]">
-				<view class="flex flex-col flex-1">
-					<view class="flex items-center justify-between">
-						<view class="flex items-center">
-							<view
-								class="flex font-500 leading-[30rpx] box-border text-[#fff] pl-[50rpx] text-[24rpx] w-[120rpx] h-[30rpx] bg-contain bg-no-repeat"
-								:style="{'backgroundImage': 'url('+img('static/resource/images/diy/member/VIP.png')+')'}">
-								VIP.{{currIndex}}
-							</view>
-							<text
-								class="text-[#733F02] ml-[8rpx] text-[30rpx] font-500 max-w-[380rpx] truncate">{{info.member_level_name}}</text>
-						</view>
-						<view class="flex items-center" @click="toLink('/addon/tk_vip/pages/index')">
-							<view class="inline-block">
-								<text class="nc-iconfont nc-icon-a-bangzhuV6xx-36 !text-[22rpx] text-[#733F02]"></text>
-								<text class="text-[22rpx] text-[#733F02] ml-[6rpx] leading-[24rpx]">规则</text>
-							</view>
-							<view class="ml-[2rpx] -mb-[4rpx] text-[#733F02] !text-[24rpx] nc-iconfont nc-icon-youV6xx">
-							</view>
-						</view>
-					</view>
-					<!-- <text class="text-[24rpx] text-[#794200] mt-[10rpx]">购物或邀请好友可以提升等级</text> -->
+		<view v-if="diyComponent.style == 'style-4'"
+			class="flex items-center justify-between style-4 px-[24rpx] py-[20rpx]"
+			:style="{'backgroundImage': 'url('+img('static/resource/images/diy/member/style4_bg.jpg')+')'}">
+			<view class="flex flex-col">
+				<view class="flex items-center">
+					<image :src="img('static/resource/images/diy/member/style4_vip.png')" mode="aspectFit"
+						class="w-[70rpx] h-[32rpx] pt-[1rpx]" />
+					<text
+						class="text-[30rpx] text-[#FFEFB0] leading-[normal] ml-[8rpx] font-500 max-w-[420rpx] truncate">{{info.member_level_name}}</text>
 				</view>
-
+				<view class="text-[#B0B0B0] text-[24rpx] mt-[10rpx] leading-[32rpx]"
+					v-if="benefits_arr && benefits_arr.length">
+					<text>{{info.member_level_name}}享</text>
+					<text class="text-[#FFEFB0]">{{benefits_arr[0].title}}</text>
+				</view>
 			</view>
-			<view class="flex items-center justify-between">
-				<view class="flex flex-col flex-1 mt-[2rpx]">
-					<view class="overflow-hidden rounded-[20rpx]">
-						<progress :percent="progress()" activeColor="#fff" backgroundColor="rgba(255,5,5,0.1)"
-							stroke-width="4" />
-					</view>
-					<text class="text-[22rpx] ml-[2rpx] leading-[1.4] text-[#794200] mt-[16rpx]"
-						v-if="upgradeGrowth > 0">还差{{upgradeGrowth}}成长值即可升级为{{ list[afterCurrIndex].level_name }}</text>
-					<text class="text-[22rpx] ml-[2rpx] text-[#794200] mt-[16rpx]" v-else>恭喜您升级为最高等级</text>
-				</view>
-				<view
-					class="flex items-center rounded-[30rpx] bg-[rgb(245,230,185)] px-[24rpx] text-[22rpx] text-[#733F02] h-[56rpx] ml-[40rpx] leading-normal"
-					@click="toLink('/addon/tk_vip/pages/index')">
-					{{info.member_level ? (upgradeGrowth > 0 ? '做任务' : '点击查看') : '去解锁'}}
-				</view>
+			<view class="flex items-center justify-center rounded-[30rpx] box-border style-btn w-[150rpx] h-[50rpx]"
+				@click="toLink('/addon/tk_vip/pages/index')">
+				<text
+					class="text-[22rpx] text-[#333] mr-[8rpx]">{{ info.member_level ? (upgradeGrowth > 0 ? '去升级' : '点击查看') : '去解锁' }}</text>
+				<image :src="img('static/resource/images/diy/member/style4_arrow.png')" mode="aspectFit"
+					class="w-[26rpx] h-[26rpx] pt-[2rpx]" />
 			</view>
 		</view>
 	</view>

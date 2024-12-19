@@ -6,7 +6,14 @@ export function getCategoryTree() {
 }
 // 获取 商家的收货地址
 export function getShopAddressList() {
-  return request.get(`phone_shop_price/address_list`);
+  // 如果 request.get(`phone_shop_price/address_list`) 没有数据
+  // 则请求 request.get(`shop_price/address_list`);
+  return request.get(`phone_shop_price/address_list`).then((res) => {
+    if (res.data.data.length === 0) {
+      return request.get(`shop_price/address_list`);
+    }
+    return res;
+  });
 }
 
 // ecycle_price/recycle_category/tree

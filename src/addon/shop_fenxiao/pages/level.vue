@@ -68,14 +68,7 @@
 					</scroll-view>
 				</view>
 			</view>
-			<view class="mt-[60rpx] flex flex-col items-center sidebar-margin pb-[30rpx]">
-				<view class="flex items-center mb-[30rpx]" v-if="goodsList && Object.keys(goodsList).length">
-					<image class="w-[38rpx] h-[22rpx]" :src="img('addon/shop_fenxiao/level/title_left.png')" mode="aspectFill"></image>
-					<text class="text-[30rpx] mx-[18rpx] font-500 text-[#EF000C]">猜你喜欢</text>
-					<image class="w-[38rpx] h-[22rpx]" :src="img('addon/shop_fenxiao/level/title_right.png')" mode="aspectFill"></image>
-				</view>
-				<diy-goods-list @loadingFn="getGoodsListFn" :component="goodsData"/>
-			</view>
+			<ns-goods-recommend></ns-goods-recommend>
 			
         </view>
 		<loading-page :loading="loading"></loading-page>
@@ -90,7 +83,7 @@
 	import { getFenxiaoDetail, getConfig } from '@/addon/shop_fenxiao/api/fenxiao';
 	import {onShow } from '@dcloudio/uni-app'
     import { topTabar } from '@/utils/topTabbar'
-	import diyGoodsList from '@/addon/shop/components/diy/goods-list/index.vue';
+	import nsGoodsRecommend from '@/addon/shop/components/ns-goods-recommend/ns-goods-recommend.vue';
 	
 	/********* 自定义头部 - start ***********/
 	const topTabarObj = topTabar()
@@ -104,31 +97,6 @@
 			backgroundRepeat: 'no-repeat'
 		}
 	})
-	
-	// 商品列表组件
-	const goodsData = ref({
-		style: 'style-2',
-		num: 4,
-		source: 'all',
-		margin: {
-			both: 10,
-			bottom: 0,
-			top: 0
-		},
-		priceStyle: {
-			mainColor: "#ff4142",
-			mainControl: true
-		},
-		goodsNameStyle:{
-			color: "#303133",
-			control: true,
-			fontWeight: "normal"
-		},
-		saleStyle: {
-			color: "#999",
-			control: true
-		}
-	});
 	
 	onShow(() => {
 		getFenxiaoDetailFn();
@@ -258,12 +226,6 @@
 	    	return level;
 	    }
 	})
-	
-	// 获取分销商品数据
-	const goodsList = ref()
-	const getGoodsListFn = (data: any)=>{
-		goodsList.value = data || {}
-	}
 </script>
 
 <style lang="scss" scoped>

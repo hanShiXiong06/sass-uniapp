@@ -19,7 +19,7 @@
 					<view class="text-[36rpx] font-500 price-font text-active">{{ order.order_money }}</view>
 					<view class="leading-[38rpx] text-[26rpx]" v-if="order.order_status_info">{{ order.order_status_info.name }}</view>
 				</view>
-				<view class="text-[24rpx] text-[var(--text-color-light6)] mb-[10rpx] leading-[34rpx]">充值方式: {{order.item[0].item_name}}</view>
+				<view class="text-[24rpx] text-[var(--text-color-light6)] mb-[10rpx] leading-[34rpx]">充值方式: {{order.item.item_name}}</view>
 				<view class="text-[24rpx] text-[var(--text-color-light6)] mb-[10rpx] leading-[34rpx]">支付时间: {{order.create_time}}</view>
 			</view>
 			<mescroll-empty v-if="!list.length && loading" :option="{tip : t('emptyTip') }"></mescroll-empty>

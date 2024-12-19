@@ -1,7 +1,7 @@
 import { img, getToken } from '@/utils/common'
 
 import { getAddressByLatlng } from "@/app/api/system";
-import useSystemStore from "@/stores/system";
+import useSystemStore from "@/addon/tk_cps/stores/system";
 const systemStore = useSystemStore();
 import { useLogin } from "@/hooks/useLogin";
 /**
@@ -12,7 +12,7 @@ const getLocation = (param : any = {}) => {
 		type: param.type || 'gcj02',
 		success: res => {
 			const systemStore = useSystemStore()
-			systemStore.setLocation(res);
+			systemStore.setAddressInfo(res);
 			typeof param.success == 'function' && param.success(res);
 		},
 		fail: res => {
@@ -62,14 +62,14 @@ export function timeChangeDay(timestamp) {
 }
 
 export function getLocationData() {
-	const data = uni.getStorageSync('location')
+	const data = uni.getStorageSync('location_address')
 
 	if (data) {
 		return data
 	}
 	else {
 		getLocation()
-		let e = uni.getStorageSync('location')
+		let e = uni.getStorageSync('location_address')
 		let data = {
 			latlng: ''
 		};

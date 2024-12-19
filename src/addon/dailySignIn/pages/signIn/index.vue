@@ -244,7 +244,7 @@ const memberInfo = computed(() => useMemberStore().info);
 const onLoadSignIn = () => {
   signInData.value.headimg = signInData.value.headimg !="" ?memberInfo.value.headimg:""
   setTimeout(() => {
-    if (!signInData.value.signState) {
+    if (!memberInfo.value) {
       setTimeout(() => {
         redirect({ url: "/app/pages/member/index" });
       }, 1000)

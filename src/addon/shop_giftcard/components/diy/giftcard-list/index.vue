@@ -2,18 +2,22 @@
 	<x-skeleton :type="skeleton.type" :loading="skeleton.loading" :config="skeleton.config">
 		<view :style="warpCss">
 			<view :style="maskLayer"></view>
-			<div class="diy-shop-giftcard-list relative flex flex-wrap justify-between">
+			<view class="diy-shop-giftcard-list relative flex flex-wrap justify-between" v-if="giftcardList.length">
 				<template v-if="diyComponent.style == 'style-1'">
-					<view class="flex flex-col bg-[#fff] box-border rounded-[var(--rounded-mid)] overflow-hidden border-[2rpx] border-solid border-[#F8F8F8]" :class="{'mt-[24rpx]': index > 1}" :style="itemCss" v-for="(item,index) in giftcardList" :key="item.giftcard_id" @click="toLink(item)">
-						<image v-if="item.cover" class="w-[100%] h-[210rpx] rounded-[var(--rounded-mid)] overflow-hidden" :src="img(item.cover? item.cover.split(',')[0] : '')" @error="item.cover= defaultCard(item)" mode="aspectFill"></image>
-						<image v-else class="w-[100%] h-[210rpx] rounded-[var(--rounded-mid)] overflow-hidden" :src="img(defaultCard(item))" mode="aspectFill"></image>
+					<view class="flex flex-col bg-[#fff] box-border overflow-hidden border-[2rpx] border-solid border-[#F8F8F8]" :class="{'mt-[24rpx]': index > 1}" :style="itemCss" v-for="(item,index) in giftcardList" :key="item.giftcard_id" @click="toLink(item)">
+						<image v-if="item.cover" class="w-[100%] h-[210rpx] overflow-hidden" :src="img(item.cover? item.cover.split(',')[0] : '')" :style="goodsItemCss" @error="item.cover= defaultCard(item)" mode="aspectFill"></image>
+						<image v-else class="w-[100%] h-[210rpx] overflow-hidden" :style="goodsItemCss" :src="img(defaultCard(item))" mode="aspectFill"></image>
 						<view class="flex justify-between h-[80rpx] items-center px-[var(--pad-sidebar-m)]">
 							<view class="max-w-[250rpx] text-[28rpx] font-400 truncate text-[#303133]" :style="{ color : diyComponent.cardNameStyle.color, fontWeight : diyComponent.cardNameStyle.fontWeight }">{{ item.card_name}}</view>
 							<text class="text-[30rpx] iconfont" :class="{'iconchuzhikaV6mm text-[#EF000C]': item.card_right_type == 'balance','iconduihuankaV6mm-1 text-[#FF7700]': item.card_right_type == 'goods'}"></text>
 						</view>
 					</view>
 				</template>
-			</div>
+			</view>
+            <view v-else-if="!giftcardList.length" class="empty-page">
+                <image class="img" :src="img('static/resource/images/system/empty.png')" model="aspectFit" />
+                <view class="desc">暂无礼品卡</view>
+            </view>
 		</view>
 	</x-skeleton>
 </template>
@@ -96,6 +100,15 @@
 		}
         return style;
     })
+	
+	const goodsItemCss = computed(() => {
+	    var style = '';
+	    if (diyComponent.value.topElementRounded) style += 'border-top-left-radius:' + diyComponent.value.topElementRounded * 2 + 'rpx;';
+	    if (diyComponent.value.topElementRounded) style += 'border-top-right-radius:' + diyComponent.value.topElementRounded * 2 + 'rpx;';
+	    if (diyComponent.value.bottomElementRounded) style += 'border-bottom-left-radius:' + diyComponent.value.bottomElementRounded * 2 + 'rpx;';
+	    if (diyComponent.value.bottomElementRounded) style += 'border-bottom-right-radius:' + diyComponent.value.bottomElementRounded * 2 + 'rpx;';
+	    return style;
+	})
 	
 	const style1Width = computed(() => {
 		var style = '';

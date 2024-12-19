@@ -1,9 +1,9 @@
 <template>
 	<view class="bg-[#f8f8f8] min-h-[100vh] giftcard-list" :style="themeColor()">
 		<view class="fixed left-0 top-0 right-0 z-10" v-if="categoryLoading">
-			<scroll-view :scroll-x="true" class="tab-style-2">
+			<scroll-view :scroll-x="true" class="tab-style-2" scroll-with-animation :scroll-into-view="'id' + cardCategory">
 				<view class="tab-content">
-					<view class="tab-items mx-[20rpx]" :class="{ 'class-select': cardCategory === item.category_id }" @click="cardCategoryFn(item.category_id)" v-for="(item, index) in cardCategoryList">{{ item.category_name }}</view>
+					<view class="tab-items mx-[20rpx]" :class="{ 'class-select': cardCategory === item.category_id }"  :id="'id' + index" @click="cardCategoryFn(item.category_id)" v-for="(item, index) in cardCategoryList">{{ item.category_name }}</view>
 				</view>
 			</scroll-view>
 		</view>
@@ -76,7 +76,7 @@ const getGiftCardPageListFn = (mescroll: any) => {
 const getGiftCardCategoryListFn = () => {
 	categoryLoading.value = false;
 	cardCategoryList.value = [];
-	let obj = { category_name: t('all'), category_id: '' };
+	let obj = { category_name: '全部', category_id: '' };
 	cardCategoryList.value.push(obj);
 
 	getGiftCardCategoryList().then((res: any) => {
@@ -110,13 +110,16 @@ const defaultCard = (data)=> {
 </script>
 <style lang="scss" scoped>
 .tab-style-2{
-	.tab-content .tab-items{
+	.tab-content{
+		justify-content: flex-start;
+		.tab-items{
 		&:nth-child(1){
 			margin-left: 0;
 		}
 		&:last-of-type{
 			margin-right: 0;
 		}
+	}
 	}
 }
 .template-item{

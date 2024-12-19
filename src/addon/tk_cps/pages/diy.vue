@@ -30,12 +30,14 @@
 </template>
 
 <script setup lang="ts">
-	import { ref } from 'vue';
+	import { ref, nextTick } from 'vue';
 	import { useDiy } from '@/hooks/useDiy'
 	import { redirect } from '@/utils/common';
 	import diyGroup from '@/addon/components/diy/group/index.vue'
 	import fixedGroup from '@/addon/components/fixed/group/index.vue'
 	import { timeChange, authLogin, getLocationData } from "@/addon/tk_cps/utils/ts/common";
+	import { useShare } from '@/hooks/useShare'
+	const { setShare, onShareAppMessage, onShareTimeline } = useShare()
 	authLogin()
 	const diy = useDiy({
 		name: 'DIY_TK_CPS_DIY'
@@ -43,21 +45,20 @@
 
 	const diyGroupRef = ref(null)
 
+	const wxPrivacyPopupRef : any = ref(null)
 	// 监听页面加载
 	diy.onLoad();
 
 	// 监听页面显示
 	diy.onShow((data : any) => {
-
-		if (data.value) {
-			// uni.setNavigationBarTitle({
-			// 	title: diyData.title
-			// })
-		} else if (data.page) {
-			// 跳转到设置的启动页
-			redirect({ url: data.page, mode: 'reLaunch' })
-		}
+		let share = data.share ? JSON.parse(data.share) : null;
+		setShare(share);
 		diyGroupRef.value?.refresh();
+		// #ifdef MP
+		nextTick(() => {
+			if (wxPrivacyPopupRef.value) wxPrivacyPopupRef.value.proactive();
+		})
+		// #endif
 	});
 
 	// 监听页面卸载
@@ -65,7 +66,6 @@
 
 	// 监听下拉刷新事件
 	diy.onPullDownRefresh()
-
 	// 监听滚动事件
 	diy.onPageScroll()
 </script>

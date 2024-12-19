@@ -1,4 +1,44 @@
-import { img } from '@/utils/common'
+import { img, redirect, getToken } from '@/utils/common'
+import { checkReal } from '@/addon/tk_vip/api/real'
+import useSystemStore from "@/stores/system";
+const systemStore = useSystemStore();
+import { useLogin } from "@/hooks/useLogin";
+export function authLogin() {
+	if (!getToken()) {
+		const login = useLogin();
+		// 第三方平台自动登录
+		// #ifdef MP
+		login.getAuthCode();
+		// #endif
+		// #ifdef H5
+		useLogin().setLoginBack({ url: '/addon/tk_cps/pages/diy' })
+		// #endif
+	}
+	return true //自动进行登录
+}
+export function checkRealFn() {
+	if (!getToken()) {
+		const login = useLogin();
+		// 第三方平台自动登录
+		// #ifdef MP
+		login.getAuthCode();
+		// #endif
+		// #ifdef H5
+		useLogin().setLoginBack({ url: '/addon/tk_vip/pages/index' })
+		// #endif
+	}
+	checkReal().then(async (res) => {
+		let real_info = await res.data
+		if (real_info.type == 'redirect') {
+			redirect({ url: real_info.page })
+			return
+		}
+		if (real_info.type == 'msg') {
+			uni.$u.toast(real_info.msg)
+			return
+		}
+	})
+}
 export function dateChange(date) {
 	return new Date(date).getTime() // 将日期值转换为时间戳
 }

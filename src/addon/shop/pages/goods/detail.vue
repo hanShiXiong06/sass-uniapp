@@ -14,7 +14,7 @@
 				</view>
 				<!-- <view class="media-mode absolute top-0 left-0 w-full h-full transition-transform duration-300 ease-linear transform"
 					:class="{'translate-x-0':switchMedia === 'video','-translate-x-full':switchMedia != 'video'}">
-					<video id="goodsVideo" class="w-full h-full" :src="img(goodsDetail.goods.goods_video)" :poster="img(goodsDetail.goods.goods_cover_thumb_big)" objectFit="cover"></video>
+					<video id="goodsVideo" class="w-full h-full" :src="img(goodsDetail.goods.goods_video)" :poster="img(goodsDetail.goods.goods_cover_thumb_mid)" objectFit="cover"></video>
 				</view> -->
 				<!-- 切换视频、图片 -->
 				<!-- <view class="media-mode absolute bottom-[74rpx] w-full text-center leading-[50rpx] " v-if="goodsDetail.goods.goods_video != ''">
@@ -88,7 +88,7 @@
 							<text class="whitespace-nowrap mr-[4rpx]">划线价:</text>
 							<text class="line-through">￥{{ goodsDetail.market_price }}</text>
 						</view>
-						<view class="text-[24rpx] leading-[34rpx] text-[var(--text-color-light6)]" v-if="goodsDetail.stock && parseFloat(goodsDetail.stock)">
+						<view class="text-[24rpx] leading-[34rpx] text-[var(--text-color-light6)]">
 							<text class="whitespace-nowrap mr-[4rpx]">库存:</text>
 							<text class="">{{ goodsDetail.stock }}</text>
 							<text class="">{{ goodsDetail.goods.unit }}</text>
@@ -138,6 +138,14 @@
 									{{ item.title }}
 								</text>
 							</block>
+						</view>
+						<text class="nc-iconfont nc-icon-youV6xx text-[26rpx] text-[var(--text-color-light6)] ml-[8rpx]"></text>
+					</view>
+					<view class="card-template-item" @click="manjianOpenFn" v-if="Object.keys(manjianData).length">
+						<text class="text-[#333] text-[26rpx] leading-[30rpx] font-400 shrink-0 mr-[20rpx]">优惠</text>
+						<view class="ml-auto flex-1 flex-nowrap flex items-center overflow-hidden h-[44rpx] justify-end">
+							<view class="bg-[var(--primary-color-light)] text-[var(--primary-color)] rounded-[6rpx]	text-[22rpx] flex items-center justify-center w-[86rpx] h-[34rpx] mr-[6rpx]">满减送</view>
+							<view class="truncate max-w-[430rpx] text-[26rpx]">{{manjianData.name}}</view>
 						</view>
 						<text class="nc-iconfont nc-icon-youV6xx text-[26rpx] text-[var(--text-color-light6)] ml-[8rpx]"></text>
 					</view>
@@ -197,6 +205,8 @@
 						<u-parse :content="goodsDetail.goods.goods_desc" :tagStyle="{img: 'vertical-align: top;',p:'overflow: hidden;word-break:break-word;' }"></u-parse>
 					</view>
 				</view>
+				
+				<ns-goods-recommend></ns-goods-recommend>
 
 				<view class="tab-bar-placeholder"></view>
 				<view class="border-[0] border-t-[2rpx] border-solid border-[#f5f5f5] w-[100%] flex justify-between pl-[32rpx] pr-[4rpx] bg-[#fff] box-border fixed left-0 bottom-0 tab-bar z-1 items-center">
@@ -231,7 +241,10 @@
 						<!-- #endif -->
 					</view>
 					<view class="flex flex-1" v-if="goodsDetail.goods.status == 1">
-						<block v-if="maxBuy > 0 || maxBuy == -1">
+						<button v-if="goodsDetail.goods.is_gift"
+							class="!w-[420rpx] flex-1 !h-[70rpx] font-500 text-[26rpx] !text-[#fff] !bg-[#ccc] !m-0 leading-[70rpx] rounded-full remove-border"
+							>商品为赠品不可购买</button>
+						<block v-else-if="maxBuy > 0 || maxBuy == -1">
 							<button
 								v-if="goodsDetail.type == '' && (goodsDetail.goods.goods_type == 'real' || (goodsDetail.goods.goods_type == 'virtual' && goodsDetail.goods.virtual_receive_type != 'verify'))"
 								class="flex-1 !h-[70rpx] font-500 text-[26rpx] !text-[#fff] !m-0 !mr-[16rpx] leading-[70rpx] rounded-full remove-border"
@@ -239,18 +252,18 @@
 								加入购物车</button>
 							<button
 								v-if="isShowSingleSku"
-								:style="{ width : (goodsDetail.goods.goods_type == 'real' || (goodsDetail.goods.goods_type == 'virtual' && goodsDetail.goods.virtual_receive_type != 'verify')) ?  '200rpx' : '420rpx' + '!important'  }"
+								:style="{ width : (goodsDetail.goods.goods_type == 'real' || (goodsDetail.goods.goods_type == 'virtual' && goodsDetail.goods.virtual_receive_type != 'verify')) ?  '200rpx' : '400rpx' + '!important'  }"
 								class="flex-1 !h-[70rpx] font-500 text-[26rpx] !text-[#fff] primary-btn-bg !m-0 !mr-[16rpx] leading-[70rpx] rounded-full remove-border"
 								@click="buyFn('buy_now')">立即购买</button>
 							<button v-else
-								:style="{ width : (goodsDetail.goods.goods_type == 'real' || (goodsDetail.goods.goods_type == 'virtual' && goodsDetail.goods.virtual_receive_type != 'verify')) ?  '200rpx' : '420rpx' + '!important'  }"
+								:style="{ width : (goodsDetail.goods.goods_type == 'real' || (goodsDetail.goods.goods_type == 'virtual' && goodsDetail.goods.virtual_receive_type != 'verify')) ?  '200rpx' : '400rpx' + '!important'  }"
 								class="flex-1 !h-[70rpx] font-500 text-[26rpx] !text-[#fff] !bg-[#ccc] !m-0 !mr-[16rpx] leading-[70rpx] rounded-full remove-border"
 								>已售罄</button>
 						</block>
-						<button v-else-if="isShowSingleSku && maxBuy == 0"
+						<button v-else-if="maxBuy == 0"
 							:style="{ width : '420rpx' + '!important'  }"
 							class="flex-1 !h-[70rpx] font-500 text-[26rpx] !text-[#fff] !bg-[#ccc] !m-0 leading-[70rpx] rounded-full remove-border"
-							>超出限购数量</button>
+							>已达限购数量</button>
 					</view>
 					<view class="flex flex-1" v-else>
 						<button class="w-[100%] !h-[70rpx] font-500 text-[26rpx] !text-[#fff] !bg-[#ccc] !m-0 leading-[70rpx] rounded-full remove-border">该商品已下架</button>
@@ -331,10 +344,10 @@
 					</view>
 				</u-popup>
 			</view>
-			<ns-goods-sku ref="goodsSkuRef" :goods-detail="goodsDetail" @change="specSelectFn"></ns-goods-sku>
+			<ns-goods-sku v-if="loading" ref="goodsSkuRef" :goods-detail="goodsDetail" @change="specSelectFn"></ns-goods-sku>
+			<ns-goods-manjian ref="manjianShowRef"></ns-goods-manjian>
 			<share-poster ref="sharePosterRef" posterType="shop_goods" :posterId="goodsDetail.goods.poster_id" :posterParam="posterParam" :copyUrlParam="copyUrlParam" />
 		</view>
-		<loading-page :loading="loading"></loading-page>
 
 		<!-- #ifdef MP-WEIXIN -->
 		<!-- 小程序隐私协议 -->
@@ -348,15 +361,17 @@ import { ref, computed, getCurrentInstance, nextTick } from 'vue';
 import { onLoad, onShow, onUnload,onPageScroll } from '@dcloudio/uni-app'
 import { img, redirect,handleOnloadParams, getToken, deepClone, goback } from '@/utils/common';
 import { t } from '@/locale';
-import { getGoodsDetail, collect, cancelCollect, getEvaluateList } from '@/addon/shop/api/goods';
+import { getGoodsDetail, browse, collect, cancelCollect, getEvaluateList, getManjian } from '@/addon/shop/api/goods';
 import { getShopCouponList, getCoupon } from '@/addon/shop/api/coupon';
 import nsGoodsSku from '@/addon/shop/components/ns-goods-sku/ns-goods-sku.vue';
+import nsGoodsManjian from '@/addon/shop/components/ns-goods-manjian/ns-goods-manjian.vue';
 import useCartStore from '@/addon/shop/stores/cart'
 import { useLogin } from '@/hooks/useLogin'
 import useMemberStore from '@/stores/member'
 import { useShare }from '@/hooks/useShare'
 import sharePoster from '@/components/share-poster/share-poster.vue'
 import {useGoods} from '@/addon/shop/hooks/useGoods'
+import nsGoodsRecommend from '@/addon/shop/components/ns-goods-recommend/ns-goods-recommend.vue';
 
 const diyGoods = useGoods();
 // 使用 reactive 创建响应式对象
@@ -380,6 +395,7 @@ const cartTotalNum = computed(() => cartStore.totalNum)
 const goodsSkuRef: any = ref(null);
 const goodsDetail: any = ref({});
 const switchMedia: any = ref('img');
+const manjianShowRef: any = ref(null); //满减送
 
 const isAttrFormatShow = ref(false); //控制属性是否展开
 
@@ -405,10 +421,12 @@ onLoad((option: any) => {
 })
 
 onShow(() => {
-	getDetailInfo();
+	loading.value = false;
 	// 删除配送方式
 	uni.removeStorageSync('distributionType');
 	cartStore.getList();
+	getManjianInfo();
+	getDetailInfo();
 })
 
 const getDetailInfo = ()=>{
@@ -434,6 +452,8 @@ const getDetailInfo = ()=>{
 		goodsDetail.value.goods.goods_image.forEach((item: any, index: any) => {
 			goodsDetail.value.goods.goods_image[index] = img(item);
 		})
+
+		loading.value = true;
 
 		let data: any = deepClone(res.data);
 		goodsDetail.value.goods.attr_format = []
@@ -487,6 +507,11 @@ const getDetailInfo = ()=>{
 		// 获取评价
 		getEvaluateListFn();
 
+		if(getToken()) {
+			// 我的足迹
+			myBrowseFn(goodsDetail.value.goods.goods_id);
+		}
+
 		copyUrlFn();
 
 		nextTick(() => {
@@ -508,11 +533,33 @@ const getDetailInfo = ()=>{
 	})
 }
 
+// 我的足迹
+const myBrowseFn = (goods_id:any)=>{
+	browse({
+		goods_id
+	}).then((res: any) => {})
+}
+
+// 获取满减信息
+let manjianData = ref({})
+const getManjianInfo = ()=>{
+	getManjian({
+		goods_id: pageParameter.goods_id || '',
+		sku_id: pageParameter.sku_id || ''
+	}).then((res: any) => {
+		if(Object.keys(res.data).length){
+			manjianData.value.condition_type = res.data.condition_type;
+			manjianData.value.rule_json = res.data.rule_json;
+			manjianData.value.name = res.data.manjian_name;
+		}
+	})
+}
+
 // 商品限购
 const maxBuy = ref(-1);
 const goodsMaxBuy = (data:any = {})=>{
 	// 限购 - 是否开启限购
-	if(data.goods.is_limit){
+	if(data.goods.is_limit && userInfo.value && data.goods.stock > 0){
 		if(data.goods.max_buy){
 			let max_buy = 0;
 			if(data.goods.limit_type == 1){ //单次限购
@@ -570,8 +617,14 @@ const isGoodsPropertyTemp = computed(() => {
 	return bool;
 })
 
+const manjianOpenFn = () =>{
+	manjianShowRef.value.open(manjianData.value);
+}
+
 const buyFn = (type: any) => {
-	goodsSkuRef.value.open(type)
+	if(goodsSkuRef.value){
+		goodsSkuRef.value.open(type)
+	}
 }
 
 // 收藏
@@ -585,7 +638,7 @@ const collectFn = () => {
 		});
 		return false
 	}
-	let api = isCollect.value ? cancelCollect(goodsDetail.value.goods_id) : collect(goodsDetail.value.goods_id);
+	let api = isCollect.value ? cancelCollect({ goods_ids: [goodsDetail.value.goods_id]}) : collect(goodsDetail.value.goods_id);
 	api.then(res => {
 		isCollect.value = !isCollect.value;
 		if (isCollect.value) {
