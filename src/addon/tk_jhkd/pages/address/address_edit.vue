@@ -37,8 +37,10 @@
 				<u-textarea clearable border="none" v-model="addressInfo" height="40" placeholder="在此处输入粘贴地址可以快速自动识别"
 					maxlength="240" @keydown.enter="handleEnter" @keydown.shift.enter="handleShiftEnter"
 					@paste="handlePaste" autoHeight />
-				<view class="flex justify-end
-				 tk-tag w-48px text-xs mt-1 ml-2" @click="fanyiAddressEvent()">地址识别</view>
+				<view class="
+				 text-xs text-center bg-[#4f38ce] text-white p-1 rounded-[60px] w-[20%]" @click="fanyiAddressEvent()">
+					地址识别
+				</view>
 			</view>
 			<view class="mt-[40rpx]">
 				<u-button type="primary" shape="circle" :text="t('save')" @click="save" :disabled="btnDisabled"

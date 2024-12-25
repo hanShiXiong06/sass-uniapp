@@ -1,5 +1,21 @@
 import { checkAddPay } from "@/addon/tk_jhkd/api/orderadd";
 import { redirect } from "@/utils/common"
+const getSiteId = () => {
+	let siteId = ''
+	// #ifdef H5
+	const match = location.href.match(/\/wap\/(\d*)\//);
+	match && (siteId = match[1])
+	// #endif
+
+	// #ifdef MP-WEIXIN
+	if (uni.getExtConfigSync) {
+		const extConfig = uni.getExtConfigSync()
+		extConfig.site_id && (siteId = extConfig.site_id)
+	}
+	// #endif
+
+	return siteId
+}
 export function dateChange(date) {
 	return new Date(date).getTime() // 将日期值转换为时间戳
 }

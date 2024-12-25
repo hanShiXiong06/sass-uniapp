@@ -1,12 +1,10 @@
 <template>
-	<view class="tk-card !bg-[#f4f4f4]">
-
-
-		<view class="fb flex item-center">
-			<view class="">
+	<view class="tk-card1 !bg-[#ffffff]">
+		<view class="fb flex items-center " style="width:100%">
+			<view class="w-[12%]">
 				<text class="tag">寄</text>
 			</view>
-			<view class="w-[380rpx]">
+			<view class="w-[64%]">
 				<text v-if="form.startAddress == []" class="font-bold">从哪里寄？</text>
 				<text v-if="form.startAddress == []" class="tk-sltext">请选择寄件地址</text>
 
@@ -16,19 +14,19 @@
 						{{ form.startAddress.mobile }}
 					</text>
 				</text>
-				<text v-if="form.startAddress" class="text-xs font-bold">{{ form.startAddress.address
+				<text v-if="form.startAddress" class="text-xs font-bold text-[32rpx]">{{ form.startAddress.address
               }}</text>
 			</view>
-			<view class="">
+			<view class="w-[18%]">
 				<text class="bt text-sm" @click="toSelectAddress('startaddress')">地址簿</text>
 			</view>
 		</view>
 		<view class="line-box1 mt-2"></view>
-		<view class="fb fb flex item-center mt-2">
-			<view class="">
+		<view class="fb fb flex items-center mt-2" style="width:100%">
+			<view class="w-[12%]">
 				<text class="tag" style="background: #4541c7; color: #ffffff">收</text>
 			</view>
-			<view class="w-[380rpx]">
+			<view class="w-[64%]">
 				<view v-if="form.endAddress == []" class="font-bold">收件人信息？</view>
 				<text v-if="form.endAddress == []" class="tk-sltext">请选择收件地址</text>
 				<text v-if="form.endAddress" class="font-bold tk-sltext text-sm">
@@ -37,10 +35,10 @@
 						{{ form.endAddress.mobile }}
 					</text>
 				</text>
-				<text v-if="form.endAddress" class="text-xs font-bold">{{ form.endAddress.address
+				<text v-if="form.endAddress" class="text-xs font-bold text-[32rpx]">{{ form.endAddress.address
               }}</text>
 			</view>
-			<view class="">
+			<view class="w-[18%]">
 				<text class="bt text-sm" @click="toSelectAddress('endaddress')">地址簿</text>
 			</view>
 		</view>
@@ -49,7 +47,7 @@
 			请认真核实地址,填写实际重量再下单！
 		</view>
 	</view>
-	<view class="tk-card">
+	<view class="tk-card1">
 		<view class="fb">
 			<view class="fl items-center">
 				<view class="text-xs tk-tag mr-1">必填</view>
@@ -62,41 +60,59 @@
 	<view class="pl-2 pr-2">
 		<u-alert :title="tip.title" type="info" :closable="tip.closable" :description="tip.description"></u-alert>
 	</view>
-	<view v-if="preData" class="mt-[40rpx] overflow-y-auto">
+	<view v-if="preData" class=" overflow-y-auto">
 		<block v-for="(item, index) in preData" :key="index">
 			<view class="fb p-[12rpx] tk-card1" :class="[
-		
 		   { 'selectitemclass': currentIndex == index },
 		 ]" @click="selectPre(index)" v-if="item.onlinePay == 'Y'">
-				<view class="fl">
+				<view class="fl items-center" style="width:100%">
 					<view>
-						<image style="width: 68rpx; height: 68rpx; border-radius: 8rpx" :src="img(item.logo)" mode="">
+						<image style="width: 120rpx; height: 120rpx; border-radius: 120rpx" :src="img(item.logo)"
+							mode="">
 						</image>
 					</view>
 
-					<view class="ml-[18rpx]" style="width:100% !import">
-						<view class="flex items-center justify-between w-[580rpx]">
-							<view class="flex items-center">
-								<view class="font-weight text-xs text-sltext w-[260rpx]">{{
+					<view class="ml-[18rpx]" style="width:100%">
+						<view class="flex items-center justify-between ">
+
+							<view class="font-weight text-sltext text-[30rpx]">{{
 								  item.channelName
 								}}</view>
-								<view class="text-xs text-[#272822] ml-4  w-[160rpx]">限重:{{ item.limitWeight }}kg</view>
-							</view>
 
-							<view class="font-weight text-sm w-[160rpx]">{{ item.showPrice }}元 </view>
+							<view class="font-weight text-[32rpx]">{{ item.showPrice }}元 </view>
 						</view>
-						<view class="line-box1 mt-1"></view>
-						<view v-if="item.price_rule.add" class="flex text-xs  mt-1 font-bold">
+
+						<view v-if="item.calcFeeType=='profit'" class="flex text-xs  mt-2 font-bold">
 							<view
-								class="text-[24rpx] text-center p-1 bg-[#cbe3e0] rounded-lg text-slate-600 bg-opacity-50">
+								class="text-[26rpx] w-[40%]  p-1 bg-[#eff1f9] rounded-lg text-slate-600 bg-opacity-50">
 								首重:{{item.price_rule.first}}元/{{item.price_rule.start}}kg</view>
 							<view
-								class="text-[24rpx]  text-center ml-2  p-1 bg-[#cbe3e0] rounded-lg text-slate-600 bg-opacity-50">
+								class="text-[26rpx] w-[40%]  ml-2  p-1 !pb-0 bg-[#eff1f9] rounded-lg text-slate-600 bg-opacity-50">
 								续重:{{item.price_rule.add}}元/kg
 							</view>
 
 						</view>
+						<view v-else>
+							<view
+								class="text-[26rpx] font-bold w-[40%]  ml-2 mt-2 p-1 !pb-0  bg-[#eff1f9] rounded-lg text-slate-600 bg-opacity-50 text-red-400">
+								{{(item.showPrice/item.originalFee*10).toFixed(1)}}折
+							</view>
 
+						</view>
+						<view v-if="item.originalFee>0&&(item.originalFee-item.showPrice)>0" class="flex text-xs  mt-2">
+							<view
+								class="text-[26rpx] w-[40%]  p-1 bg-[#eff1f9] rounded-lg text-slate-600 bg-opacity-50 ">
+								原价{{item.originalFee}}元
+							</view>
+
+							<view
+								class="text-[26rpx] font-bold w-[40%]  ml-2  p-1 !pb-0  bg-[#e6e8f1] rounded-lg text-slate-600 bg-opacity-50 text-red">
+								优惠:{{(item.originalFee-item.showPrice).toFixed(2)}}元
+							</view>
+
+						</view>
+						<view v-if="item.limitWeight>0" class="text-xs text-[#272822] mt-1 ml-1">
+							限重:{{ item.limitWeight }}kg</view>
 					</view>
 				</view>
 
@@ -104,22 +120,7 @@
 		</block>
 	</view>
 	<view class="tk-card" v-if="jhkdservice">
-		<checkbox-group class="uni-list" @change="checkboxChange">
-			<label class="text-xs fl items-center uni-list-cell uni-list-cell-pd">
-				<view>
-					<checkbox color="#3c4cde" style="transform: scale(0.6)" value="true" :checked="isOpenAgreement">
-					</checkbox>
-				</view>
-				<view @click="
-            redirect({
-              url: '/addon/tk_jhkd/pages/agreement?type=jhkdyesgoods',
-            })
-          ">
-					阅读并同意《{{
-            jhkdservice.title ? jhkdservice.title : "寄件服务协议"
-          }}》</view>
-			</label>
-		</checkbox-group>
+
 	</view>
 	<view class="mt-[380rpx] mb-[260rpx] flex items-center"></view>
 	<!-- 物品信息弹出框 -->
@@ -187,8 +188,7 @@
 		</view>
 		<u-loading-icon class="mt-4" duration="1000" mode="circle" on="linear" color="#4541c7" v-if="bjshow == true"
 			:vertical="true"></u-loading-icon>
-		<!-- <view v-if="bjshow==false" class="tk-card butto text-xl" @click="closeShow()">获取报价</view>
-		<view v-if="bjshow==true" class="tk-card butto text-xl" @click=" ">正在计算</view> -->
+
 		<view v-if="bjshow == false" class="flex flex-1 p-4">
 			<button class="w-[100%] !h-[72rpx] leading-[72rpx] text-[26rpx] rounded-[50rpx]"
 				style="color:#ffffff;backgroundColor:#4541c7" type="default" @click="closeShow()">
@@ -207,31 +207,45 @@
 
 	<view class="b-tabbar safe-area-inset-bottom">
 
-		<view class="b-tabbar-back">
-			<view v-if="selectData&&selectData.price_rule.add>0"
-				class="flex text-xs font-bold p-2 text-[24rpx] bg-[#e5fffb] rounded-lg text-[#ff557f] bg-opacity-50">
-				<view>首重:{{selectData.price_rule.first}}元/{{selectData.price_rule.start}}kg</view>
-				<view class="ml-2">续重:{{selectData.price_rule.add}}元/kg</view>
-			</view>
-			<view class=" fb items-center pl-2 pr-2 pb-2 pt-2">
-				<view class="">
-					<view class="flex">
-						<view class="text-xs">
-							快递：
+		<view class="b-tabbar-back pl-2 pt-2">
+			<view v-if="jhkdservice">
+				<checkbox-group class="uni-list" @change="checkboxChange">
+					<label class="text-xs fl items-center uni-list-cell uni-list-cell-pd">
+						<view>
+							<checkbox color="#3c4cde" style="transform: scale(0.6)" value="true"
+								:checked="isOpenAgreement">
+							</checkbox>
 						</view>
-						<view class="text-xs font-bold tk-sltext">{{ selectData ? selectData.channelName : "请选择快递" }}
+						<view @click="
+				    redirect({
+				      url: '/addon/tk_jhkd/pages/agreement?type=jhkdservice',
+				    })
+				  ">
+							阅读并同意《{{
+				    jhkdservice.title ? jhkdservice.title : "寄件服务协议"
+				  }}》</view>
+					</label>
+				</checkbox-group>
+			</view>
+			<view class=" fb items-center pl-2 pr-2 pb-2 pt-1">
+				<view class="w-[60%]">
+					<view class="flex items-center">
+						<view class="text-xs font-bold tk-sltext text-[30rpx] w-[40%]">
+							{{ selectData ? selectData.channelName : "请选择快递" }}
+						</view>
+						<view v-if="form.goods!=''" class="ml-2 text-xs text-slate-500">{{form.goods}}{{form.weight}}kg
 						</view>
 					</view>
 
-					<view class="flex items-center">
+					<view v-if="selectData" class="flex items-center mt-1">
 						<view class="text-xs">快递费：</view>
-						<view class="font-bold">{{
+						<view class="font-bold text-[36rpx] text-red">{{
 						  selectData ? selectData.showPrice+'元' : "请先选择快递"
 						}}</view>
 					</view>
 
 				</view>
-				<text class="tt-bbut text-center" @click="submitOrder()">立即下单</text>
+				<text class="tt-bbut text-center w-[20%]" @click="submitOrder()">立即下单</text>
 			</view>
 
 		</view>
@@ -241,7 +255,7 @@
 		<u-icon name="share" color="#000000" size="24"></u-icon>
 	</button>
 	<share-poster ref="sharePosterRef" posterType="tk_jhkd_poster" :posterId="poster_id" :posterParam="posterParam"
-		:copyUrlParam="copyUrlParam" />
+		:copyUrlParam="copyUrlParam" :copyUrl="'/addon/tk_jhkd/pages/index'" />
 	<pay ref="payRef" @close="payLoading = false"></pay>
 </template>-
 <script setup lang="ts">
@@ -276,7 +290,7 @@
 	const payRef = ref(null);
 	const payLoading = ref(false);
 	const isReadJhkdService = ref(false);
-	const isOpenAgreement = ref(true);
+	const isOpenAgreement = ref(false);
 	const bjshow = ref(false);
 	const currentIndex = ref(null);
 	const tip = ref({
@@ -412,6 +426,16 @@
 		uni.removeStorage({ key: "selectAddressCallback" });
 	}
 	const writeGood = () => {
+		if (!getToken()) {
+			const login = useLogin();
+			// 第三方平台自动登录
+			// #ifdef MP
+			login.getAuthCode();
+			// #endif
+			// #ifdef H5
+			useLogin().setLoginBack({ url: '/addon/tk_jhkd/pages/ordersubmit' })
+			// #endif
+		}
 		if (form.startAddress == []) {
 			toSelectAddress("startaddress");
 			uni.$u.toast("请填写取件地址");
@@ -427,6 +451,7 @@
 		form.delivery_info = [];
 	};
 	const closeShow = async () => {
+
 		if (form.goods == "") {
 			uni.$u.toast("请填写物品名称");
 			return;
@@ -443,6 +468,8 @@
 		}
 		bjshow.value = true;
 		const data = await preOrder(form);
+		selectData.value = null;
+		selectData.value = null;
 		form.key = data.data.key;
 		preData.value = data.data.list;
 		bjshow.value = false;
@@ -450,6 +477,7 @@
 		form.delivery_info = [];
 	};
 	const submitOrder = async () => {
+		checkAddPayEvent()
 		if (!userInfo.value) {
 			useLogin().setLoginBack({ url: "/addon/tk_jhkd/pages/ordersubmit" });
 			return false;
@@ -541,11 +569,11 @@
 
 	:root,
 	.tk-card1 {
-		background-color: rgba(181, 213, 214, 0.3);
+		background-color: rgba(253, 253, 253, 0.2);
 		margin: 24rpx;
 		border-radius: 12rpx;
 		padding: 12rpx;
-		box-shadow: 0 1px 1px 0 rgba(234, 234, 234, 0.2), 0 2px 2px 0 rgba(231, 231, 231, 0.2);
+		box-shadow: 0 1px 1px 0 rgba(145, 145, 145, 0.2), 0 2px 2px 0 rgba(231, 231, 231, 0.2);
 	}
 
 	page {
@@ -554,16 +582,16 @@
 		--primary-color-disabled: #ffb397;
 		--primary-color-light: #ffeae2;
 		--page-bg-color: #f7f7f7;
-		--price-text-color: #e1251b;
+		--price-text-color: #ED1B26;
 	}
 
 
 
 	.selectitemclass {
-		background-color: #e4feff;
+		background-color: #d2e7e6;
 		padding: 20rpx;
 		/* 假设 p-2 对应 20rpx */
-		color: #ff557f;
+		color: #4541C7;
 		font-size: 32rpx;
 		border-radius: 8rpx;
 		/* 假设 rounded 对应 8rpx */
@@ -622,13 +650,14 @@
 		bottom: 12rpx;
 		left: 0;
 		right: 0;
-		margin: 0rpx 24rpx;
+		margin: 0rpx 8rpx;
 		border-radius: 12rpx;
 		padding: 12rpx;
+		background: linear-gradient(-90deg, #dde5e5 0%, #dde4ef 100%);
 	}
 
 	.b-tabbar-back {
-		background: rgba(214, 234, 248, 0.9);
+		background: #f9f9f9;
 		border-radius: 12rpx;
 		// box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1), 1px 1px 1px rgba(0, 0, 0, 0.1);
 	}

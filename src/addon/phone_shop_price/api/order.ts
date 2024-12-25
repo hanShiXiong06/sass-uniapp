@@ -69,3 +69,41 @@ export interface RecycleOrderDevice {
   update_at: number;
   check_at: number;
 }
+
+// 获取订单状态列表
+export function getOrderStatus() {
+  return request.get("phone_shop_price/recycle_order/status_count");
+}
+// 获取设备状态列表
+export function getDeviceStatus() {
+  return request.get("phone_shop_price/recycle_order/device_status/list");
+}
+
+// 更新订单状态
+export function updateOrderStatus(data: {
+  order_id: number | string;
+  status: string;
+  action:
+    | "cancel"
+    | "reject"
+    | "confirm"
+    | "complete"
+    | "delete"
+    | "update_delivery"
+    | "update_express";
+  delivery_type?: "mail" | "self";
+  express_id?: string;
+}) {
+  return request.put(
+    "phone_shop_price/recycle_order/update_status/" + data.order_id,
+    data
+  );
+}
+// 确认设备
+export function deviceConfirm(id: number) {
+  return request.put(`phone_shop_price/recycle_order/device_confirm/${id}`);
+}
+// 取消设备
+export function deviceCancel(id: number) {
+  return request.put(`phone_shop_price/recycle_order/device_cancel/${id}`);
+}

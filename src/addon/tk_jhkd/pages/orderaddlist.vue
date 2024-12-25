@@ -1,6 +1,6 @@
 <template>
 	<view class="bg-[#f8f8f8] min-h-screen overflow-hidden">
-		<view class="fixed left-0 top-0 right-0 z-10 mb-2" v-if="statusLoading">
+		<view class="z-10 mb-2" v-if="statusLoading">
 			<scroll-view scroll-x="true" class="scroll-Y box-border px-[24rpx] bg-white">
 				<view class="flex whitespace-nowrap justify-around">
 					<view :class="[
@@ -11,7 +11,7 @@
 			</scroll-view>
 		</view>
 
-		<mescroll-body ref="mescrollRef" top="44rpx" @init="mescrollInit" @down="downCallback" @up="getOrderListFn">
+		<mescroll-body ref="mescrollRef" @init="mescrollInit" @down="downCallback" @up="getOrderListFn">
 			<view v-if="list.length > 0" class="tk-card" v-for="(item, index) in list" key="index">
 				<view class="text-xs font-weight" @click="
             goto('/addon/tk_jhkd/pages/orderdetail?id=' + item.orderInfo.id)

@@ -8,49 +8,59 @@
 					<view class="mr-4 tk-tag" v-if="form.order_status_arr">{{form.order_status_arr.name}}</view>
 				</view>
 			</view>
-			<view class="flex mt-1 items-center">
-				<view class="mr-4">
-					<text class="qu-tag text-xs">取</text>
-				</view>
-				<view class="" v-if="form.orderInfo">
-					<view class="tk-sltext text-xs text-[#4b4b4b] font-bold">
-						{{JSON.parse(form.orderInfo.start_address).address}}
+			<view class="ml-2">
+				<view class="flex mt-1 items-center">
+					<view class="mr-4">
+						<text class="qu-tag text-xs">取</text>
 					</view>
-					<view class="text-xs flex">
-						<view class="tk-sltext">
-							{{JSON.parse(form.orderInfo.start_address).full_address}}
+					<view class="" v-if="form.orderInfo">
+						<view class="tk-sltext text-xs text-[#4b4b4b] font-bold">
+							{{JSON.parse(form.orderInfo.start_address).address}}
+						</view>
+						<view class="text-xs flex">
+							<view class="tk-sltext">
+								{{JSON.parse(form.orderInfo.start_address).full_address}}
+							</view>
+						</view>
+						<view class="text-xs flex">
+							<view class="tk-sltext">
+								{{JSON.parse(form.orderInfo.start_address).mobile}}
+							</view>
 						</view>
 					</view>
-					<view class="text-xs flex">
-						<view class="tk-sltext">
-							{{JSON.parse(form.orderInfo.start_address).mobile}}
+				</view>
+				<view class="flex mt-2 items-center">
+
+					<view class="mr-4">
+						<text class="song-tag text-[32rpx]">收</text>
+					</view>
+					<view class="" v-if="form.orderInfo">
+						<view class="flex">
+
+							<view class="tk-sltext text-xs font-bold text-[32rpx]">
+								{{JSON.parse(form.orderInfo.end_address).address}}
+							</view>
+
 						</view>
-					</view>
-				</view>
-			</view>
-			<view class="flex mt-2 items-center">
-				<view class="mr-4">
-					<text class="song-tag text-xs">送</text>
-				</view>
-				<view class="" v-if="form.orderInfo">
-					<view class="tk-sltext text-xs text-[#4b4b4b] font-bold">
-						{{JSON.parse(form.orderInfo.end_address).address}}
-					</view>
-					<view class="text-xs flex">
-						<view class="tk-sltext w-3/4">{{JSON.parse(form.orderInfo.end_address).full_address}}</view>
-					</view>
-					<view class="text-xs flex">
-						<view class="tk-sltext w-3/4">{{JSON.parse(form.orderInfo.end_address).mobile}}</view>
+
+						<view class="text-xs flex mt-1">
+							<view class="tk-sltext w-3/4">{{JSON.parse(form.orderInfo.end_address).full_address}}</view>
+						</view>
+						<view class="text-xs flex">
+							<view class="tk-sltext w-3/4">{{JSON.parse(form.orderInfo.end_address).mobile}}</view>
+						</view>
 					</view>
 				</view>
 			</view>
 
-			<view class="detail-tag text-xs font-weight p-4 text-[#878787]" v-if="form.orderInfo">
+
+			<view class="detail-tag !text-[24rpx] font-weight p-4 !p-2 rounded-[8rpx] mt-2" v-if="form.orderInfo">
 				物品:{{form.orderInfo.goods}}下单重量:{{form.orderInfo.weight}}kg {{form.orderInfo.goods}}
 				{{form.orderInfo.long}}x{{form.orderInfo.width}}x{{form.orderInfo.height}}cm
 			</view>
 
-			<view class="detail-tag font-weight p-4 text-[#313131]">备注:{{form.remark}}
+			<view class="detail-tag font-weight p-4 text-[#313131] !text-[24rpx] mt-1 rounded-[8rpx]">
+				备注:{{form.remark}}
 
 			</view>
 
@@ -97,13 +107,15 @@
 			<view class="mb-2 font-weight text-xs text-slate-600"
 				v-if="form.orderInfo &&pickInfo&&form.orderInfo.order_status==1">
 				<view class="fl items-center">
-					<view class="">揽件员：{{pickInfo.courierName}}</view>
-					<view class="ml-4 mr-1" @click="telPicker(pickInfo.courierPhone)">联系电话：{{pickInfo.courierPhone}}
+					<view v-if="pickInfo.courierName" class="">揽件员：{{pickInfo.courierName}}</view>
+					<view v-if="pickInfo.courierPhone" class="ml-4 mr-1" @click="telPicker(pickInfo.courierPhone)">
+						联系电话：{{pickInfo.courierPhone}}
 					</view>
-					<u-icon name="phone" color="#676767" size="18" @click="telPicker(pickInfo.courierPhone)"></u-icon>
+					<u-icon v-if="pickInfo.courierPhone" name="phone" color="#676767" size="18"
+						@click="telPicker(pickInfo.courierPhone)"></u-icon>
 				</view>
 				<view v-if="pickInfo&&pickInfo.pickUpCode" class="mt-2">
-					<u-code-input size="24" bold color="#2931cc" :value="pickInfo.pickUpCode"></u-code-input>
+					<view class="font-bold text-[32rpx]">取件码：{{pickInfo.pickUpCode}}</view>
 				</view>
 			</view>
 
@@ -115,15 +127,10 @@
 					<view class="ml-2 text-sm">
 						{{ form.orderInfo && form.orderInfo.delivery_arry ? form.orderInfo.delivery_arry.name : '' }}
 					</view>
-					<view v-if="form.orderInfo &&form.orderInfo.order_status!=1"
-						class="ml-2 font-weight text-xs text-slate-600">
+					<view class="ml-2 font-weight text-xs text-slate-600">
 						{{form.orderInfo &&form.orderInfo.delivery_id?form.orderInfo.delivery_id:'暂无单号'}}
 					</view>
 
-				</view>
-
-				<view class="tk-tag ml-2 font-weight text-xs text-slate-600">
-					{{form.orderInfo &&form.orderInfo.order_status_desc?form.orderInfo.order_status_desc:'暂无状态'}}
 				</view>
 
 			</view>
@@ -162,7 +169,7 @@
 	import {
 		timeChange
 	} from '@/addon/tk_jhkd/utils/ts/common';
-	import { img } from '@/utils/common'
+	import { img, copy } from '@/utils/common'
 	const payRef = ref(null)
 	const payLoading = ref(false)
 	const form = reactive({})
@@ -237,7 +244,6 @@
 		}
 		if (form.orderInfo.courier_context) {
 			pickInfo.value = JSON.parse(form.orderInfo.courier_context)
-			console.log(pickInfo.value)
 		}
 	}
 	onLoad((options : any) => {

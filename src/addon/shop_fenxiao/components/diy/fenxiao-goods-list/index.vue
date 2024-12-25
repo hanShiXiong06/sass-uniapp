@@ -5,9 +5,9 @@
 			<view class="diy-fenxiao-goods-list relative flex flex-wrap justify-between" v-if="goodsList.length">
 				<block v-if="diyComponent.style == 'style-1'">
 					<view class="bg-white w-full flex p-[20rpx] mx-[20rpx] overflow-hidden" :class="{ 'mt-[20rpx]': index > -10,'mb-[20rpx]': (index+1) == goodsList.length }" :style="itemCss" v-for="(item,index) in goodsList" :key="item.goods_id" @click="toLink(item)">
-						<u--image class="rounded-[var(--goods-rounded-mid)] overflow-hidden" width="190rpx" height="190rpx" :src="img(item.goods_cover_thumb_mid || '')" model="aspectFill">
+						<u--image radius="var(--goods-rounded-mid)" class="overflow-hidden" width="190rpx" height="190rpx" :src="img(item.goods_cover_thumb_mid || '')" model="aspectFill">
 							<template #error>
-								<image class="w-[190rpx] h-[190rpx] rounded-[var(var(--goods-rounded-mid))] overflow-hidden" :src="img('static/resource/images/diy/shop_default.jpg')" mode="aspectFill"></image>
+								<image class="w-[190rpx] h-[190rpx] rounded-[var(--goods-rounded-mid)] overflow-hidden" :src="img('static/resource/images/diy/shop_default.jpg')" mode="aspectFill"></image>
 							</template>
 						</u--image>
 						<view class="flex-1 flex flex-col ml-[20rpx] pt-[6rpx]">
@@ -85,7 +85,7 @@
                 <view class="desc">暂无商品</view>
             </view>
 		</view>
-		<share-poster ref="sharePosterRef" posterType="fenxiao_goods" :posterParam="posterParam" :copyUrlParam="copyUrlParam" :copyUrl="copyUrl" />
+			<share-poster ref="sharePosterRef" posterType="fenxiao_goods" :posterParam="posterParam" :copyUrlParam="copyUrlParam" :copyUrl="copyUrl" @close="closeSharePoster" />
 	</x-skeleton>
 </template>
 
@@ -97,10 +97,11 @@
 	import { getFenxiaoComponents } from '@/addon/shop_fenxiao/api/fenxiao';
 	import useMemberStore from '@/stores/member'
     import sharePoster from '@/components/share-poster/share-poster.vue'
+	import { useShare }from '@/hooks/useShare'
 
 	const props = defineProps(['component', 'index', 'pullDownRefreshCount','value']);
 	const diyStore = useDiyStore()
-	
+
 	// 会员信息
 	const memberStore = useMemberStore()
 	const userInfo = computed(() => memberStore.info)
@@ -173,14 +174,14 @@
 		}
         return style;
     })
-	
+
 	const style2Width = computed(() => {
 		var style = '';
 		if(diyComponent.value.margin && diyComponent.value.margin.both) style += 'calc((100vw - ' + (diyComponent.value.margin.both*4) + 'rpx - 20rpx) / 2)'
 		else style += 'calc((100vw - 20rpx) / 2 )'
 		return style;
 	})
-	
+
 	const style3Css = computed(() => {
         var style = '';
         style += 'padding:0 20rpx;';
@@ -218,6 +219,7 @@
         getFenxiaoComponents(data).then((res: any) => {
             goodsList.value = res.data;
             skeleton.loading = false;
+	        setCurrentShare();
             if(diyComponent.value.componentBgUrl) {
                 setTimeout(() => {
                     const query = uni.createSelectorQuery().in(instance);
@@ -325,10 +327,13 @@
 	const toLink = (data: any) => {
 		redirect({ url: '/addon/shop/pages/goods/detail', param: { goods_id: data.goods_id } })
 	}
-	
+
 	const toFenxiaoLink = () => {
 	    redirect({ url: '/addon/shop_fenxiao/pages/index'})
 	}
+
+	const shareType = ref('page') // page：分享页面，goods：分享商品
+	const{ setShare } = useShare()
 
 	/************* 分享海报-start **************/
 	const sharePosterRef: any = ref(null);
@@ -339,7 +344,25 @@
 	const copyUrlFn = (data: any)=>{
 		copyUrl.value = '/addon/shop/pages/goods/detail';
 		copyUrlParam.value = '?goods_id=' + data.goods_id;
-		if (userInfo.value && userInfo.value.member_id) copyUrlParam.value += '&mid=' + userInfo.value.member_id;
+
+		let path = '/addon/shop/pages/goods/detail?goods_id=' + data.goods_id;
+		if (userInfo.value && userInfo.value.member_id) {
+			copyUrlParam.value += '&mid=' + userInfo.value.member_id;
+			path += '&mid=' + userInfo.value.member_id;
+		}
+
+		let share = {
+			title: data.goods_name,
+			path,
+			url: data.goods_cover_thumb_mid
+		}
+
+		setShare({
+			weapp: {
+				...share
+			}
+		});
+
 	}
 	const openShareFn = (data: any)=>{
 		posterParam.sku_id = data.goodsSku.sku_id;
@@ -348,6 +371,34 @@
         }
 		copyUrlFn(data);
 		sharePosterRef.value.openShare()
+		shareType.value = 'goods'
+	}
+
+	const closeSharePoster = () => {
+		shareType.value = 'page'
+		setCurrentShare();
+	}
+
+	const setCurrentShare = ()=>{
+		copyUrl.value = '/addon/shop_fenxiao/pages/zone';
+		copyUrlParam.value = '';
+
+		let path = '/addon/shop_fenxiao/pages/zone';
+		if (userInfo.value && userInfo.value.member_id) {
+			copyUrlParam.value += '?mid=' + userInfo.value.member_id;
+			path += '?mid=' + userInfo.value.member_id;
+		}
+
+		let share = {
+			title: '分销专区',
+			path
+		}
+
+		setShare({
+			weapp: {
+				...share
+			}
+		});
 	}
 	/************* 分享海报-end **************/
 </script>

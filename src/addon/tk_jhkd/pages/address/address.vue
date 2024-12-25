@@ -1,62 +1,43 @@
 <template>
-	<view v-if="!loading" :style="themeColor()">
-		<!-- <view class="border-0 !border-b !border-[#eee] border-solid fixed top-0 left-0 right-0 z-99 bg-[#fff]"
-			v-if="!source">
-			<u-tabs :list="tabs" @click="switchTab" :current="current"
-				itemStyle="width:50%;height:88rpx;box-sizing: border-box;"></u-tabs>
-		</view> -->
-		<scroll-view scroll-y="true" :class="{ 'pt-[0rpx]' : !source }">
-			<u-swipe-action>
-				<view class="p-[12rpx]" v-show="current == 0">
-					<u-swipe-action-item :options="addressOptions" @click="swipeClick" v-for="item in addressList">
-						<view
-							class="border-2 !border-b !border-[#f5f5f5] border-solid pb-[30rpx] flex items-center p-2">
-							<view class="flex-1 line-feed" @click="selectAddress(item)">
-								<view class="font-bold my-[10rpx] text-sm line-feed">{{ item.full_address }}</view>
-								<view class="text-sm flex items-center">
-									<view>{{ item.name }}</view>
-									<text class="text-[26rpx] text-gray-subtitle">{{ mobileHide(item.mobile) }}</text>
-									<view
-										class="bg-primary text-white text-xs px-[10rpx] leading-none flex items-center h-[32rpx] ml-[10rpx] rounded  min-w-[50rpx]"
-										v-if="item.is_default == 1">{{ t('default') }}</view>
+	<view class="address bg-[var(--page-bg-color)] min-h-[100vh]" v-if="!loading" :style="themeColor()">
+		<scroll-view scroll-y="true">
+			<view class="sidebar-margin pt-[var(--top-m)]" v-if="addressList.length">
+				<view class="mb-[var(--top-m)] rounded-[var(--rounded-big)] overflow-hidden"
+					v-for="(item, index) in addressList">
+					<view class="flex flex-col card-template">
+						<view class="flex-1 line-feed mr-[20rpx]" @click="selectAddress(item)">
+							<view class="flex items-center">
+								<view class="text-[#333] text-[30rpx] leading-[34rpx] font-500">{{ item.name }}</view>
+								<text class="text-[#333] text-[30rpx] ml-[10rpx]">{{ mobileHide(item.mobile) }}</text>
+							</view>
+							<view
+								class="mt-[16rpx] text-[26rpx] line-feed text-[var(--text-color-light9)] leading-[1.4]">
+								{{ item.full_address }}
+							</view>
+						</view>
+						<view class="flex justify-end pt-[26rpx]">
+
+							<view class="flex">
+								<view class="text-[26rpx]" @click.stop="editAddress(item.id)"><text
+										class="nc-iconfont nc-icon-xiugaiV6xx shrink-0 text-[26rpx] mr-[4rpx]"></text>编辑
+								</view>
+								<view @click.stop="deleteAddressFn(item.id)" class="ml-[40rpx] text-[26rpx]"><text
+										class="nc-iconfont nc-icon-shanchu-yuangaizhiV6xx shrink-0 text-[26rpx] mr-[4rpx]"></text>删除
 								</view>
 							</view>
-							<text class="iconfont iconbianji shrink-0 text-[40rpx] p-[20rpx] pr-0"
-								@click="editAddress(item.id)"></text>
 						</view>
-					</u-swipe-action-item>
-					<view v-if="!addressList.length" class="pt-[20vh]">
-						<mescroll-empty :option="{tip : '暂无地址'}"></mescroll-empty>
 					</view>
 				</view>
-				<view class="p-[30rpx]" v-show="current == 1">
-					<u-swipe-action-item :options="addressOptions" @click="swipeClick"
-						v-for="item in locationAddressList">
-						<view class="border-0 !border-b !border-[#f5f5f5] border-solid pb-[30rpx] flex items-center">
-							<view class="flex-1" @click="selectAddress(item)">
-								<view class="font-bold my-[10rpx] text-sm line-feed">{{ item.full_address }}</view>
-								<view class="text-sm flex items-center">
-									<view>{{ item.name }}</view>
-									<text class="text-[26rpx] text-gray-subtitle">{{ mobileHide(item.mobile) }}</text>
-									<view
-										class="bg-primary text-white text-xs px-[10rpx] leading-none flex items-center h-[32rpx] ml-[10rpx] rounded min-w-[50rpx]"
-										v-if="item.is_default == 1">{{ t('default') }}</view>
-								</view>
-							</view>
-							<text class="iconfont iconbianji shrink-0 text-[40rpx] p-[20rpx] pr-0"
-								@click="editAddress(item.id)"></text>
-						</view>
-					</u-swipe-action-item>
-					<view v-if="!locationAddressList.length" class="pt-[20vh]">
-						<mescroll-empty :option="{tip : '暂无地址'}"></mescroll-empty>
-					</view>
+			</view>
+			<mescroll-empty v-if="!addressList.length" :option="{tip : '暂无收货地址'}"></mescroll-empty>
+			<view class="w-full footer">
+				<view
+					class="py-[var(--top-m)] px-[var(--sidebar-m)] footer w-full fixed bottom-0 left-0 right-0 box-border">
+					<button hover-class="none"
+						class="bg-[#3F2DA3] text-[#fff] h-[80rpx] leading-[80rpx] rounded-[100rpx] text-[26rpx] font-500"
+						@click="addAddress">创建地址</button>
 				</view>
-			</u-swipe-action>
-			<u-tabbar :fixed="true" :safeAreaInsetBottom="true" :border="false" zIndex="99">
-				<view class="p-[24rpx] pt-0 w-full">
-					<u-button type="primary" shape="circle" text="新增地址" @click="addAddress"></u-button>
-				</view>
-			</u-tabbar>
+			</view>
 		</scroll-view>
 	</view>
 </template>
@@ -140,11 +121,8 @@
 		}
 	}
 
-	const swipeClick = (event : any) => {
-		const list = current.value ? locationAddressList : addressList
-		const data = list.value[event.index]
-
-		deleteAddress(data.id).then(() => {
+	const deleteAddressFn = (id : number) => {
+		deleteAddress(id).then(() => {
 			list.value.splice(event.index, 1)
 		}).catch()
 	}

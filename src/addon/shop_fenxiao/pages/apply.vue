@@ -89,11 +89,9 @@
 					</view>
 				</view>
 				<view class="fixed btn-wrap flex justify-center flex-col bottom-[0] left-[0] right-[0] items-center bg-[#fff] py-[30rpx]">
-					<view class="w-[690rpx] h-[80rpx] text-[26rpx] rounded-[100rpx] text-center leading-[80rpx]"
-						:class="{'bg-[#FFB4B1] text-[#fff]': !Number(config.is_allow_apply), 'primary-btn-bg text-[#fff]': Number(config.is_allow_apply)}"
-						:disabled="!Number(config.is_allow_apply)" @click="save">{{ Number(config.is_allow_apply) ? '申请成为分销商' : '尚未达到申请条件' }}
+					<view class="w-[690rpx] h-[80rpx] text-[26rpx] rounded-[100rpx] text-center leading-[80rpx]" :class="{'bg-[#FFB4B1] text-[#fff]': !Number(config.is_allow_apply), 'primary-btn-bg text-[#fff]': Number(config.is_allow_apply)}" @click="save">{{ Number(config.is_allow_apply) ? '申请成为分销商' : '尚未达到申请条件' }}
 					</view>
-					<view class="flex justify-center items-baseline mt-[20rpx] -mb-[10rpx]" v-if="config.is_show_apply === '1'">
+					<view class="flex justify-center items-baseline mt-[20rpx] -mb-[10rpx]" v-if="config.is_show_apply=='1' && config.is_allow_apply == '1'">
 						<u-checkbox-group>
 							<u-checkbox activeColor="var(--primary-color)" :checked="isAgree" shape="circle" size="14" @change="agreeChange" :customStyle="{ 'marginTop': '4rpx' }" />
 						</u-checkbox-group>
@@ -233,10 +231,15 @@
 	}
 	const lock = ref<boolean>(false)
 	const save = () => {
-		if (!isAgree.value) {
+		if(!Number(config.value.is_allow_apply)){
+			return false
+		}
+
+		if (!isAgree.value && config.value.is_allow_apply) {
 			uni.showToast({ title: '请阅读并同意《分销申请协议》', icon: 'none' })
 			return false
 		}
+		
 		if (lock.value) return false
 		lock.value = true
 		apply().then((res) => {

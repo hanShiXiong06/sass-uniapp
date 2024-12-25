@@ -90,10 +90,9 @@
 				</view>
 				<view class="text-[16rpx] pl-1 mt-1 text-[#7e7e7e]">
 					注意：下单 1 分钟后才能取消订单哦</view>
-				<view class="line-box1"></view>
 
 				<view v-if="item.addorderInfo&&item.deliveryRealInfo.fee_weight>0&&item.addorderInfo.order_status==0">
-
+					<view class="line-box1"></view>
 					<view
 						class="flex items-center mt-1 mb-2 flex text-xs font-bold p-2 text-[24rpx] bg-[#e5fffb] rounded-lg text-red bg-opacity-50">
 						<view v-if="item.deliveryRealInfo.fee_weight>item.orderInfo.weight" class="">
@@ -108,8 +107,6 @@
 						</block>
 					</view>
 					<view class='flex justify-end mt-1 items-center'>
-
-
 
 						<view class='font-bold text-red text-[28rpx]'>
 							需补差价:￥{{item.addorderInfo.order_money}}</view>

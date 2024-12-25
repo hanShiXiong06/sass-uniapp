@@ -169,7 +169,7 @@
                         </up-col>
                         <up-col span="9">
                             <view class="input-wrapper payment-select">
-                                <up-button type="primary" size="mini" @click="pay_show = true">
+                                <up-button type="primary" @click="pay_show = true">
                                     {{ pay_type || '选择收款方式' }}
                                 </up-button>
                                 <up-picker :show="pay_show" :columns="columns" @confirm="confirm"
@@ -186,7 +186,7 @@
                             <view class="input-wrapper qrcode-wrapper">
                                 <image v-if="form.qrcode_image" :src="form.qrcode_image" mode="aspectFit"
                                     class="qrcode-image" @click="previewImage"></image>
-                                <view v-else class="no-qrcode">暂无收款码</view>
+                                <view v-else class="no-qrcode">首次使用请先添加收款方式</view>
                             </view>
                         </up-col>
                     </up-row>
@@ -1056,6 +1056,7 @@ onMounted(() => {
     display: flex;
     gap: 20rpx;
     align-items: center;
+    font-size: 46rpx;
 
     :deep(.u-button) {
         flex-shrink: 0;

@@ -54,20 +54,33 @@
 	import { ref, computed } from 'vue';
 	import { t } from '@/locale'
 	import { onLoad } from '@dcloudio/uni-app'
-	import { img, redirect, isWeixinBrowser, moneyFormat } from '@/utils/common'
+	import { img, redirect, isWeixinBrowser, moneyFormat, getToken } from '@/utils/common'
 	import { createOrder } from '@/addon/fast_pay/api/pay'
 	import { getConfig } from '@/addon/fast_pay/api/config'
 	import { useLogin } from '@/hooks/useLogin';
 	import useMemberStore from '@/stores/member'
 	const memberStore = useMemberStore()
 	const userInfo = computed(() => memberStore.info)
-
 	const price = ref('')
 	const remark = ref('')
 	const showremark = ref(false)
 	const payRef = ref(null)
 	const payLoading = ref(false)
 	const config = ref()
+	const authLogin = () => {
+		if (!getToken()) {
+			const login = useLogin();
+			// 第三方平台自动登录
+			// #ifdef MP
+			login.getAuthCode();
+			// #endif
+			// #ifdef H5
+			useLogin().setLoginBack({ url: '/addon/fast_pay/pages/pay/pay' })
+			// #endif
+		}
+		return true //自动进行登录
+	}
+	authLogin()
 	const getConfigInfo = async () => {
 		const res = await getConfig()
 		config.value = res.data
@@ -126,6 +139,7 @@
 
 
 	const goPay = async () => {
+		authLogin()
 		if (!price.value) {
 			uni.showToast({
 				title: '请输入金额',
@@ -133,17 +147,7 @@
 			})
 			return
 		}
-		// 检测是否登录
-		if (!userInfo.value) {
-			let pid = uni.getStorageSync('pid');
-			if (pid && pid > 0) {
-				useLogin().setLoginBack({ url: '/addon/fast_pay/pages/pay/pay?mid=' + pid })
-				return false
-			} else {
-				useLogin().setLoginBack({ url: '/addon/fast_pay/pages/pay/pay' })
-				return false
-			}
-		}
+
 		// 再次验证金额
 		if (!/^(0|[1-9]\d*)(\.\d{1,2})?$/.test(price.value)) {
 			uni.showToast({

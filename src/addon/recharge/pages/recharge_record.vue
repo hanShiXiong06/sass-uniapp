@@ -2,7 +2,7 @@
 	<view class="min-h-[100vh] bg-[var(--page-bg-color)] overflow-hidden" :style="themeColor()">
 		<view class="tab-style-1 !py-[24rpx] bg-[#fff] fixed top-0 left-0 right-0 z-10" v-if="statusList">
 		    <view class="tab-left">
-				<view class="tab-left-item" :class="{'!text-primary class-select': activeStatus=== ''}" @click="statusItemFn('')">全部</view>		
+				<view class="tab-left-item" :class="{'!text-primary class-select': activeStatus=== ''}" @click="statusItemFn('')">全部</view>
 				<block v-for="(item,index) in statusList" :key="index">
 					<!-- v-if="item.status != -1" -->
 		        <view class="tab-left-item" :class="{'!text-primary class-select': activeStatus=== item.status}" @click="statusItemFn(item.status)">{{ item.name }}</view>
@@ -16,7 +16,7 @@
 		<mescroll-body ref="mescrollRef" @init="mescrollInit" :down="{ use: false }" @up="getListFn" top="88rpx">
 			<view v-for="(order,index) in list" :key="order.order_id" class="sidebar-margin card-template mt-[var(--top-m)]" @click="toDetailFn(order)">
 				<view class="flex items-center justify-between  mb-[20rpx]">
-					<view class="text-[36rpx] font-500 price-font text-active">{{ order.order_money }}</view>
+					<view class="text-[36rpx] font-500 price-font text-primary">{{ order.order_money }}</view>
 					<view class="leading-[38rpx] text-[26rpx]" v-if="order.order_status_info">{{ order.order_status_info.name }}</view>
 				</view>
 				<view class="text-[24rpx] text-[var(--text-color-light6)] mb-[10rpx] leading-[34rpx]">充值方式: {{order.item.item_name}}</view>
@@ -64,12 +64,12 @@
 		create_time.value = data;
 		getMescroll().resetUpScroll();
 	}
-	
+
 	getRechargeStatusListFn()
     const list = ref<Array<any>>([]),
         loading = ref<boolean>(false),
         mescrollRef = ref(null);
-	
+
     interface mescrollStructure {
         num: number,
         size: number,
@@ -118,7 +118,4 @@
 </script>
 
 <style lang="scss" scoped>
-.text-active{
-    color: #FF0D3E;
-}
 </style>

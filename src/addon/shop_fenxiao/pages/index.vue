@@ -1,6 +1,9 @@
 <template>
     <view :style="themeColor()" class="bg-[var(--page-bg-color)] min-h-[100vh] overflow-hidden">
         <view v-if="!loading">
+			<!-- #ifdef MP-WEIXIN -->
+			<top-tabbar :data="param" class="top-header" :scrollBool="topTabarObj.getScrollBool()"/>
+			<!-- #endif -->
             <block v-if="config.is_fenxiao == 1">
                 <view class="h-[320rpx] box-border px-[var(--sidebar-m)] pt-[44rpx] flex flex-col justify-between" :style="{ 'background': 'url(' + img('addon/shop_fenxiao/index/header_bg.png') + ') left top / 100% 100% no-repeat' }">
                     <view class="flex items-center">
@@ -158,6 +161,13 @@ import { moneyFormat, img, redirect } from '@/utils/common';
 import { t } from '@/locale';
 import { getFenxiaoDetail, getChildFenxiao, getFenxiaoTeam, getConfig } from '@/addon/shop_fenxiao/api/fenxiao';
 import useSystemStore from '@/stores/system'
+import { topTabar } from '@/utils/topTabbar'
+
+/********* 自定义头部 - start ***********/
+const topTabarObj = topTabar()
+let param = topTabarObj.setTopTabbarParam({title:'分销中心',topStatusBar: {textColor: '#333'} })
+
+/********* 自定义头部 - end ***********/
 
 const systemStore = useSystemStore()
 const detail = ref({ 'member': {}, 'fenxiao_level': {} });

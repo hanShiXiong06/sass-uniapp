@@ -15,11 +15,16 @@ export function getQueryModelList(params: any) {
 }
 
 //
-export function getModelList() {
-  return request.get(`hsx_phone_query/list`);
+export function getModelList(params: any) {
+  return request.get("hsx_phone_query/list", params);
 }
 
 // 获取单条详情
 export function getModelDetail(id: number) {
   return request.get(`hsx_phone_query/detail/` + id);
+}
+
+// 获取水印配置
+export function getWatermark() {
+  return request.get("hsx_phone_query/config/watermark");
 }

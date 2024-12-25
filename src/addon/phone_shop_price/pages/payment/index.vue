@@ -9,7 +9,7 @@
                         <text class="default-tag" v-if="item.is_default">默认</text>
                     </view>
                     <view class="account-info">{{ item.account }}</view>
-                    <view class="create-time" v-if="item.create_time">创建时间: {{ formatDate(item.create_time) }}</view>
+                    <view class="create-time" v-if="item.create_time">创建时间: {{ item.create_time }}</view>
                 </view>
                 <view class="payment-actions">
                     <button class="btn-default" v-if="!item.is_default" @tap="handleSetDefault(item.id)">设为默认</button>
@@ -57,7 +57,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { getPaymentList, addPayment, updatePayment, deletePayment, setDefaultPayment, type PaymentInfo } from '../../api/payment'
-import { showToast, showModal, formatDate, img } from '@/utils/common'
+
+import { img } from '@/utils/common'
 import { uploadImage } from '@/app/api/system'
 
 const popup = ref<any>(null)
@@ -88,12 +89,14 @@ const loadPaymentList = async () => {
     try {
         const res = await getPaymentList()
         if (res.code === 1 && res.data) {
+            console.log(res.data);
+
             paymentList.value = Array.isArray(res.data) ? res.data : []
         } else {
-            showToast(res.msg || '获取列表失败')
+            uni.showToast(res.msg || '获取列表失败')
         }
     } catch (error) {
-        showToast('获取列表失败')
+        uni.showToast('获取列表失败')
     }
 }
 
@@ -111,7 +114,7 @@ const chooseImage = () => {
             uploadPaymentImage(res.tempFilePaths[0])
         },
         fail: () => {
-            showToast('选择图片失败')
+            uni.showToast('选择图片失败')
         }
     })
 }
@@ -123,14 +126,14 @@ const uploadPaymentImage = async (filePath: string) => {
             filePath: filePath,
             name: 'file'
         })
-        
+
         if (res.code === 1) {
             formData.value.qrcode_image = res.data.url
         } else {
-            showToast(res.msg || '上传失败')
+            uni.showToast(res.msg || '上传失败')
         }
     } catch (error) {
-        showToast('上传失败')
+        uni.showToast('上传失败')
     }
 }
 
@@ -139,13 +142,13 @@ const handleSetDefault = async (id: number) => {
     try {
         const res = await setDefaultPayment(id)
         if (res.code === 1) {
-            showToast('设置成功', 'success')
+            uni.showToast('设置成功', 'success')
             loadPaymentList()
         } else {
-            showToast(res.msg || '设置失败')
+            uni.showToast(res.msg || '设置失败')
         }
     } catch (error) {
-        showToast('设置失败')
+        uni.showToast('设置失败')
     }
 }
 
@@ -168,13 +171,13 @@ const handleDelete = (id: number) => {
                 try {
                     const res = await deletePayment(id)
                     if (res.code === 1) {
-                        showToast('删除成功', 'success')
+                        uni.showToast('删除成功', 'success')
                         loadPaymentList()
                     } else {
-                        showToast(res.msg || '删除失败')
+                        uni.showToast(res.msg || '删除失败')
                     }
                 } catch (error) {
-                    showToast('删除失败')
+                    uni.showToast('删除失败')
                 }
             }
         }
@@ -184,12 +187,12 @@ const handleDelete = (id: number) => {
 // 提交表单
 const handleSubmit = async () => {
     if (!formData.value.account) {
-        showToast('请输入收款账号')
+        uni.showToast('请输入收款账号')
         return
     }
 
     if (formData.value.pay_type !== '银行卡' && !formData.value.qrcode_image) {
-        showToast('请上传收款码')
+        uni.showToast('请上传收款码')
         return
     }
 
@@ -202,14 +205,14 @@ const handleSubmit = async () => {
         }
 
         if (res.code === 1) {
-            showToast(isEdit.value ? '编辑成功' : '添加成功', 'success')
+            uni.showToast(isEdit.value ? '编辑成功' : '添加成功', 'success')
             hidePopup()
             loadPaymentList()
         } else {
-            showToast(res.msg || (isEdit.value ? '编辑失败' : '添加失败'))
+            uni.showToast(res.msg || (isEdit.value ? '编辑失败' : '添加失败'))
         }
     } catch (error) {
-        showToast(isEdit.value ? '编辑失败' : '添加失败')
+        uni.showToast(isEdit.value ? '编辑失败' : '添加失败')
     }
 }
 
@@ -239,6 +242,7 @@ const resetForm = () => {
     background: linear-gradient(180deg, #f0f9ff 0%, #f7f8fa 100%);
     min-height: 100vh;
 }
+
 
 .payment-list {
     .payment-item {
@@ -455,6 +459,7 @@ const resetForm = () => {
     padding: 48rpx 40rpx;
     position: relative;
     overflow: hidden;
+    box-sizing: border-box;
 
     &::before {
         content: '';
@@ -641,6 +646,7 @@ const resetForm = () => {
         opacity: 0;
         transform: translateY(20rpx);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);

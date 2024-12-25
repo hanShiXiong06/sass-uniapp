@@ -117,7 +117,8 @@
 
 		let share = {
 			title: data.goods_name,
-			path
+			path,
+			url: data.goods_cover_thumb_mid
 		}
 
 		setShare({

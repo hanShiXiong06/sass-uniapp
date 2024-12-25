@@ -1,17 +1,17 @@
 <template>
     <view class="w-screen h-screen flex flex-col" :style="themeColor()">
-        <view class="flex-1">
+        <!--<view class="flex-1">-->
             <!-- #ifdef H5 -->
-            <view class="h-[100rpx]"></view>
+            <!--<view class="h-[100rpx]"></view>-->
             <!-- #endif -->
-            <view class="px-[60rpx] pt-[100rpx] mb-[100rpx]">
-                <view class="font-bold text-lg">绑定微信</view>
-            </view>
-            <view class="px-[60rpx]">
-                <u-form labelPosition="left" :model="formData" errorType='toast' :rules="rules" ref="formRef">
-                    <u-form-item labelWidth="100" label="微信号" prop="wx_id" :border-bottom="true" required="true">
-                        <u-input v-model="formData.wx_id" border="none" clearable placeholder="请输入微信号" class="!bg-transparent" :disabled="real_name_input"/>
-                    </u-form-item>
+            <!--<view class="px-[60rpx] pt-[100rpx] mb-[100rpx]">-->
+            <!--    <view class="font-bold text-lg">绑定微信</view>-->
+            <!--</view>-->
+            <!--<view class="px-[60rpx]">-->
+            <!--    <u-form labelPosition="left" :model="formData" errorType='toast' :rules="rules" ref="formRef">-->
+            <!--        <u-form-item labelWidth="100" label="微信号" prop="wx_id" :border-bottom="true" required="true">-->
+            <!--            <u-input v-model="formData.wx_id" border="none" clearable placeholder="请输入微信号" class="!bg-transparent" :disabled="real_name_input"/>-->
+            <!--        </u-form-item>-->
 					<!-- <u-form-item label="" prop="wx_qrcode" :border-bottom="true">
 						<u-upload @afterRead="afterRead" :maxCount="1">
 							<u-avatar :src="img(formData.wx_qrcode)" size="60" leftIcon="none"></u-avatar>
@@ -19,28 +19,28 @@
 						</u-upload>
 					</u-form-item> -->
 					
-					<u-form-item
-						label="二维码"
-						prop="wx_qrcode"
-						labelWidth="100"
-						required="true"
-					>
-						<u-upload uploadIcon="photo-fill" accept="image" :fileList="fileList" @afterRead="afterRead" :maxCount="1" @delete="deletePic" :previewFullImage="true">
-						</u-upload>
-					</u-form-item>
+					<!--<u-form-item-->
+					<!--	label="二维码"-->
+					<!--	prop="wx_qrcode"-->
+					<!--	labelWidth="100"-->
+					<!--	required="true"-->
+					<!-- > -->
+					<!--	<u-upload uploadIcon="photo-fill" accept="image" :fileList="fileList" @afterRead="afterRead" :maxCount="1" @delete="deletePic" :previewFullImage="true">-->
+					<!--	</u-upload>-->
+					<!--</u-form-item>-->
                     
-					<u-form-item labelWidth="100" label="是否显示" prop="status" :border-bottom="true">
-					    <up-switch :activeValue="1" :inactiveValue="0" v-model="formData.status" @change="statusChange"></up-switch>
-					</u-form-item>
-					<text class="text-[12px] text-gray-subtitle">开启后，你的下级可以通过以上信息添加您的微信</text>
+					<!--<u-form-item labelWidth="100" label="是否显示" prop="status" :border-bottom="true">-->
+					<!--    <up-switch :activeValue="1" :inactiveValue="0" v-model="formData.status" @change="statusChange"></up-switch>-->
+					<!--</u-form-item>-->
+					<!--<text class="text-[12px] text-gray-subtitle">开启后，你的下级可以通过以上信息添加您的微信</text>-->
 					
                     
-                    <view class="mt-[60rpx]">
-                        <u-button type="primary" text="绑定" :loading="loading" loadingText="绑定中" @click="handleBind"></u-button>
-                    </view>
-                </u-form>
-            </view>
-        </view>
+     <!--               <view class="mt-[60rpx]">-->
+     <!--                   <u-button type="primary" text="绑定" :loading="loading" loadingText="绑定中" @click="handleBind"></u-button>-->
+     <!--               </view>-->
+                <!--</u-form>-->
+            <!--</view>-->
+        <!--</view>-->
 
         <!-- #ifdef MP-WEIXIN -->
         <!-- 小程序隐私协议 -->

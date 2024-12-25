@@ -4,6 +4,7 @@
 			<view class="flex items-center justify-between">
 				<view class="flex items-center">
 					<view class="font-bold z-10084 text-[36rpx]">
+						商户
 						实名认证
 					</view>
 					<view class="ml-2">
@@ -32,7 +33,8 @@
 					<up-form-item v-if="realConfig&&realConfig.is_upload_card&&realConfig.is_upload_card==1" label=""
 						borderBottom ref="item1">
 						<view class="flex flex-col mt-2" v-if="deatailData.status==10||deatailData.status==2">
-							<view class="text-xs text-slate-400">上传身份证国徽面</view>
+							<!--<view class="text-xs text-slate-400">上传身份证国徽面</view>-->
+							<view class="text-xs text-slate-400">上传营业执照</view>
 							<upload-img class="mt-[20rpx]" :max-count="1" v-model="deatailData.card_img_front"
 								:multiple="true" />
 						</view>

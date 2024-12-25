@@ -377,7 +377,10 @@ onShow(() => {
                 redirect({ url: '/addon/phone_shop/pages/order/detail', param: { order_id: orderId }, mode: 'redirectTo' })
             }
         })
+
     }
+
+
 })
 
 /**

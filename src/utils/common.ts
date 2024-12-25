@@ -427,7 +427,7 @@ export function copy(value: any, callback: any) {
     oInput.setAttribute("readonly", "readonly");
     document.body.appendChild(oInput);
     oInput.select(); // 选择对象
-    document.execCommand("Copy"); // 执行浏览器复��命令
+    document.execCommand("Copy"); // 执行浏览器复制命令
     oInput.className = 'oInput';
     oInput.style.display = 'none';
     uni.hideKeyboard();
@@ -492,7 +492,7 @@ export function handleOnloadParams(option: any) {
 /**
  * @description 深度克隆
  * @param {object} obj 需要深度克隆的对象
- * @returns {*} 克隆后的对象或者原值（是对象）
+ * @returns {*} 克隆后的对象或者原值（不是对象）
  */
 export function deepClone(obj: any) {
     // 对常见的“非”值，直接返回原来值
@@ -516,13 +516,16 @@ export function deepClone(obj: any) {
  * @param delay
  * @returns
  */
-export function debounce(fn: Function, delay: number = 300) {
+export function debounce(fn: (args?: any) => any, delay: number = 300) {
     let timer: null | number = null
-    return function (this: any, ...args: any[]) {
-        if (timer) clearTimeout(timer)
+    return function (...args) {
+        if (timer != null) {
+            clearTimeout(timer)
+            timer = null
+        }
         timer = setTimeout(() => {
-            fn.apply(this, args)
-        }, delay)
+            fn.call(this, ...args)
+        }, delay);
     }
 }
 
@@ -559,50 +562,4 @@ export function goback(data: any) {
             });
         }
     }, 600);
-}
-
-// 显示提示
-export function showToast(title: string, icon: 'none' | 'success' | 'loading' = 'none') {
-    uni.showToast({
-        title,
-        icon
-    })
-}
-
-// 显示模态框
-export function showModal(options: {
-    title?: string
-    content: string
-    showCancel?: boolean
-    success?: (result: any) => void
-}) {
-    uni.showModal({
-        title: options.title || '��示',
-        content: options.content,
-        showCancel: options.showCancel !== false,
-        success: options.success
-    })
-}
-
-// 格式化时间
-export function formatDate(timestamp: number) {
-    const date = new Date(timestamp * 1000)
-    const year = date.getFullYear()
-    const month = String(date.getMonth() + 1).padStart(2, '0')
-    const day = String(date.getDate()).padStart(2, '0')
-    const hour = String(date.getHours()).padStart(2, '0')
-    const minute = String(date.getMinutes()).padStart(2, '0')
-    return `${year}-${month}-${day} ${hour}:${minute}`
-}
-
-// 节流函数
-export function throttle(fn: Function, delay: number) {
-    let last = 0
-    return function (this: any, ...args: any[]) {
-        const now = Date.now()
-        if (now - last > delay) {
-            fn.apply(this, args)
-            last = now
-        }
-    }
 }

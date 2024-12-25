@@ -50,13 +50,14 @@
 </template>
 
 <script setup lang="ts">
-	import { redirect, img, } from '@/utils/common';
+	import { redirect, img, getToken } from '@/utils/common';
 	import { onLoad } from '@dcloudio/uni-app'
 	import {ref, reactive,computed,onMounted} from 'vue'
 	import { activateCard } from '@/addon/shop_giftcard/api/card';
 	import { getGiftCardConfig } from '@/addon/shop_giftcard/api/giftcard';
 	import { t } from '@/locale'
 	import { topTabar } from '@/utils/topTabbar';
+	import { useLogin } from '@/hooks/useLogin'
 
 	/********* 自定义头部 - start ***********/
 	const topTabarObj = topTabar()
@@ -123,6 +124,12 @@
 	const formRef: any = ref(null)
 
 	const save = ()=>{
+		if(!getToken()){
+			useLogin().setLoginBack({
+				url: '/app/pages/index/index'
+			})
+			return false
+		}
 		if(disable.value) return
 		formRef.value.validate().then(() => {
 			disable.value = true
