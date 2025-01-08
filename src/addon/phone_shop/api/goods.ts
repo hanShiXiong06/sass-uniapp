@@ -76,3 +76,10 @@ export function getGoodsComponents(params: Record<string, any>) {
 export function oparationGoods(goods_id: any) {
   return request.get(`phone_shop/goods/operation/${goods_id}`);
 }
+/**
+ * 获取brand列表
+ * brand
+ * */ 
+export function getBrandList() {
+  return request.get(`phone_shop/goods/brand/list`);
+}

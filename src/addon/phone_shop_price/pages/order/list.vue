@@ -375,6 +375,12 @@ const updateStatus = async (order: Order, action: ActionType, extraData: any = {
                                 title: `${actionTextMap[action]}成功`,
                                 icon: 'success'
                             });
+                            // 重新加载数据
+                            await loadData();
+                            // 重新加载状态列表
+                            await loadStatusList();
+                            resolve(result);
+
                             resolve(result);
                         } else {
                             resolve(undefined);
@@ -525,6 +531,8 @@ const toggleDeliveryType = async (order: Order, type: 'mail' | 'self') => {
         order.delivery_type = type;
         // 重新加载数据以更新状态
         await loadData();
+        // 重新加载状态列表
+        await loadStatusList();
     }
 };
 

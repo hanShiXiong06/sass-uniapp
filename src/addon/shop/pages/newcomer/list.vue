@@ -125,7 +125,7 @@ menuButtonInfo = uni.getMenuButtonBoundingClientRect();
 // #endif
 /********* 自定义头部 - start ***********/
 const topTabarObj = topTabar()
-let param = topTabarObj.setTopTabbarParam({title:'新人专享列表',topStatusBar: {textColor: '#fff'}})
+let param = topTabarObj.setTopTabbarParam({title:'',topStatusBar: {textColor: '#fff'}})
 let pageNullParam = topTabarObj.setTopTabbarParam({title:'新人专享列表',topStatusBar: {textColor: '#333'} })
 const topStyle = computed(() => {
 	let style = pxToRpx(Number(menuButtonInfo.height) + menuButtonInfo.top + 8)+ 30 + 'rpx;'

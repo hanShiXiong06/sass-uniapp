@@ -105,7 +105,7 @@
 											<text class="text-[40rpx] font-500">{{ parseFloat(goodsItem.price).toFixed(2).split('.')[0] }}</text>
 											<text class="text-[24rpx] font-500">.{{ parseFloat(goodsItem.price).toFixed(2).split('.')[1] }}</text>
 										</block>
-										<block v-if="parseFloat(goodsItem.price) && !goodsItem.extend">
+										<block v-if="!goodsItem.extend">
 											<text class="text-[24rpx]">￥</text>
 											<text class="text-[40rpx] font-500">{{ parseFloat(goodsItem.price).toFixed(2).split('.')[0] }}</text>
 											<text class="text-[24rpx] font-500">.{{ parseFloat(goodsItem.price).toFixed(2).split('.')[1] }}</text>
@@ -182,14 +182,21 @@
 						<view class="text-[28rpx]">{{ t('deliveryType') }}</view>
 						<view class="text-[28rpx]">{{ detail.delivery_type_name }}</view>
 					</view>
-					<view v-if="detail.pay" class=" card-template-item justify-between">
+					<view v-if="detail.pay" class=" card-template-item justify-between !mb-[18rpx]">
 						<view class="text-[28rpx]">{{ t('payTypeName') }}</view>
 						<view class="text-[28rpx]">{{ detail.pay.type_name }}</view>
+					</view>
+					<view v-if="detail.pay && detail.member_id !== detail.pay.main_id && detail.pay.status == 2 " class="card-template-item justify-end">
+						<view class="friend-pay relative px-[20rpx] py-[12rpx] bg-[#F2F2F2] rounded-[10rpx] flex items-center">
+							<u-avatar :src="img(detail.pay.pay_member_headimg)" size="20" leftIcon="none" :default-url="img('static/resource/images/default_headimg.png')"  />
+							<text class="ml-[14rpx] text-[24rpx] using-hidden">{{ detail.pay.pay_member }}{{ t('helpPay') }}</text>
+						</view>
 					</view>
 					<view v-if="detail.pay" class=" card-template-item justify-between">
 						<view class="text-[28rpx]">{{ t('payTime') }}</view>
 						<view class="text-[28rpx]">{{ detail.pay.pay_time }}</view>
 					</view>
+					
 				</view>
 				<!-- 核销码 -->
 				<block v-if="isShowVerify">
@@ -701,5 +708,19 @@
 	}
 	:deep(.u-image__error){
 		background-color: transparent !important;
+	}
+	.friend-pay{
+		&::after{
+			content: '';
+			display: block;
+			width: 20rpx;
+			height: 20rpx;
+			background-color: #f2f2f2;
+			position: absolute;
+			right: 30rpx;
+			top: 0;
+			transform: translateY(-50%) rotate(45deg);
+			border-radius: 4rpx;
+		}
 	}
 </style>

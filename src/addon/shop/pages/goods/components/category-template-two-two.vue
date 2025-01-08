@@ -382,7 +382,7 @@ const animationAddCart = (row: any, id: any) => {
 			uni.createSelectorQuery().in(instance).select('#' + id).boundingClientRect((position: any) => {
 				animationElStatus.value = `top: ${ position.top }px; left: ${ position.left }px;`
 				setTimeout(() => {
-					animationElStatus.value = `top: ${ res.top + res.height / 2 - position.height / 2 }px; left: ${ res.left + res.width / 2 - position.width / 2 }px; transition: all 0.8s; transform: rotate(-720deg);`
+					animationElStatus.value = `top: ${ res.top + res.height / 2 - position.height / 3 }px; left: ${ res.left + res.width / 2 - position.width / 3 }px; transition: all 0.8s; transform: rotate(-720deg);`
 				}, 20);
 
 				setTimeout(() => {
@@ -407,7 +407,7 @@ const animationAddCart = (row: any, id: any) => {
 		animationElStatus.value = `top: ${ itemCartTop }px; left: ${ itemCartLift }px;`
 
 		setTimeout(() => {
-			animationElStatus.value = `top: ${ animationEndTop + animationEnd.offsetHeight / 2 - itemCart.offsetHeight / 2 }px; left: ${ animationEndLeft + animationEnd.offsetWidth / 2 - itemCart.offsetHeight / 2 }px; transition: all 0.8s; transform: rotate(-720deg);`
+			animationElStatus.value = `top: ${ animationEndTop + animationEnd.offsetHeight / 2 - itemCart.offsetHeight / 3 }px; left: ${ animationEndLeft + animationEnd.offsetWidth / 2 - itemCart.offsetHeight / 3 }px; transition: all 0.8s; transform: rotate(-720deg);`
 		}, 20);
 		setTimeout(() => {
 			animationElStatus.value = ''

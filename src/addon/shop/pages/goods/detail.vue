@@ -205,7 +205,7 @@
 						<u-parse :content="goodsDetail.goods.goods_desc" :tagStyle="{img: 'vertical-align: top;',p:'overflow: hidden;word-break:break-word;' }"></u-parse>
 					</view>
 				</view>
-				
+
 				<ns-goods-recommend></ns-goods-recommend>
 
 				<view class="tab-bar-placeholder"></view>
@@ -515,6 +515,7 @@ const getDetailInfo = ()=>{
 		copyUrlFn();
 
 		nextTick(() => {
+
 			setTimeout(() => {
 				const query = uni.createSelectorQuery().in(instance);
 				query.select('.swiper-box').boundingClientRect((data: any) => {
@@ -525,7 +526,15 @@ const getDetailInfo = ()=>{
 						detailHead = data.height ? data.height : 0;
 					}
 				}).exec();
+
+				if(sharePosterRef.value) {
+					posterParam.sku_id = goodsDetail.value.sku_id;
+					if (userInfo.value && userInfo.value.member_id) posterParam.member_id = userInfo.value.member_id;
+					sharePosterRef.value.loadPoster();
+				}
+
 			}, 400)
+
 			// #ifdef MP
 			if(wxPrivacyPopupRef.value) wxPrivacyPopupRef.value.proactive();
 			// #endif
@@ -873,8 +882,6 @@ const copyUrlFn = ()=>{
 }
 
 const openShareFn = ()=>{
-    posterParam.sku_id = goodsDetail.value.sku_id;
-    if (userInfo.value && userInfo.value.member_id) posterParam.member_id = userInfo.value.member_id;
 	sharePosterRef.value.openShare()
 }
 /************* 分享海报-end **************/
@@ -887,7 +894,7 @@ const goodsPrice = computed(() => {
     let price = "0.00";
 	if (Object.keys(goodsDetail.value).length && goodsDetail.value.type == 'newcomer_discount' && goodsDetail.value.is_newcomer && goodsDetail.value.newcomer_price != goodsDetail.value.price) {
 		// 新人价
-		price = goodsDetail.value.newcomer_price ? goodsDetail.value.newcomer_price : goodsDetail.value.price;
+		price = goodsDetail.value.newcomer_price;
 		priceType.value = 'newcomer_price'
 	} else if (Object.keys(goodsDetail.value).length && goodsDetail.value.type == 'discount' && Object.keys(goodsDetail.value.goods).length && goodsDetail.value.goods.is_discount && goodsDetail.value.sale_price != goodsDetail.value.price) {
         // 折扣价

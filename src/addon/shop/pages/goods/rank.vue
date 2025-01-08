@@ -5,7 +5,7 @@
 		<!-- #endif -->
 		<!-- 顶部图片 -->
 		<view class="rank-head">
-			<image class="w-[100%] h-[426rpx]" :src="img(rankConfig.rank_images)" mode="aspectFill"></image>
+			<image class="w-[100%] h-[435rpx]" :src="img(rankConfig.rank_images)" mode="aspectFill"></image>
 			<view class="content-box">
 				<!-- 榜单分类按钮 -->
 				<scroll-view scroll-x="true" class="category-slider" scroll-with-animation :scroll-into-view="'id' + activeIndex">
@@ -26,10 +26,10 @@
 			</view>
 
 		</view>
-		<view class="rank-list p-[20rpx] relative -mt-[30rpx]">
+		<view class="rank-list p-[20rpx] relative -mt-[42rpx]">
 
 			<!-- 列表 -->
-			<mescroll-body ref="mescrollRef" height="688px"  @init="mescrollInit" :down="{ use: false }" @up="getRankGoodsListFn">
+			<mescroll-body ref="mescrollRef" :height="listHeight"  @init="mescrollInit" :down="{ use: false }" @up="getRankGoodsListFn">
 				<view class="bg-[#fff] flex rounded-[var(--rounded-mid)] p-[20rpx]" v-for="(item,index) in rankGoodsList" :key="item.goods_id" :class="{'mb-[20rpx]': (rankGoodsList.length-1) != index}" v-if="rankGoodsList.length"  @click="toLink(item.goods_id)">
 					<view class="w-[240rpx] h-[240rpx] flex items-center justify-center relative">
 						  <!-- 榜单排名图片 -->
@@ -120,6 +120,17 @@ const topStyle = computed(() => {
 })
 /********* 自定义头部 - end ***********/
 
+// 获取系统信息
+const systemInfo = uni.getSystemInfoSync();
+const topImageHeight = 450; 
+const screenHeight = systemInfo.windowHeight; 
+// 将屏幕高度转换为 rpx
+const screenHeightInRpx = (screenHeight / systemInfo.screenWidth) * 750;
+// 计算列表高度
+const listHeight = computed(() => {
+  const listHeightValue = screenHeightInRpx - topImageHeight;
+  return `${listHeightValue}rpx`;
+});
 /**************** 榜单规则 ********************/
 const rankPopup = ref(false)
 const closeFn = () =>{

@@ -187,4 +187,13 @@ const toDetail = (data: any) => {
 .bg-color{
 	background-color: #f5f5f5;
 }
+:deep(.u-swipe-action-item__right){
+	padding: 2rpx; 
+}
+:deep(.u-swipe-action-item__right__button__wrapper){
+    padding:0 10rpx !important;
+}
+:deep(.u-swipe-action-item__right__button__wrapper__text){
+    font-size:24rpx !important;
+}
 </style>

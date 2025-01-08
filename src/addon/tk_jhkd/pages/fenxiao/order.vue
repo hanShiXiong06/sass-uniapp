@@ -1,150 +1,148 @@
 <template>
-	<view class="min-h-[100vh] w-full" :style="themeColor()" v-if="memberStore.info">
-
-		<view class="tk-card" v-if="fenxiaoinfo">
-			<view class="flex justify-between">
-				<view class="flex">
-					<view class="ml-2 rounded-full border-2 border-gray-300">
-						<u-avatar :src="img(info.headimg)" size="55" leftIcon="none"
-							:default-url="img('static/resource/images/default_headimg.png')" />
-					</view>
-
-					<view class="ml-2">
-						<view class="">
-							<view class="text-[#4c4d47] truncate max-w-[320rpx] ">
+	<view class="min-h-[100vh] w-full bg-[#f8f9fa]" :style="themeColor()" v-if="memberStore.info">
+		<view class="p-4 bg-gradient-to-br from-[#454337] to-[#5a5749]">
+			<view class="flex justify-between items-center">
+				<!-- 左侧用户信息 -->
+				<view class="flex items-center space-x-3">
+					<u-avatar :src="img(info.headimg)" size="55"
+						:default-url="img('static/resource/images/default_headimg.png')"
+						class="border-2 border-[#D5C6A9]/30 rounded-full shadow-lg" />
+					<view class="space-y-1.5">
+						<view class="flex items-center space-x-2">
+							<text class="text-[#D5C6A9] font-medium text-lg truncate max-w-[320rpx]">
 								{{ info.nickname }}
-							</view>
-							<view
-								class="flex bg-[#333333] items-center pl-2 pr-2 pt-1  pb-1 h-[32rpx] rounded-[var(--goods-rounded-mid)]"
-								@click="shareEvent()">
-								<view>
-									<u-icon name="integral" size="18" color="#fdfdfd"></u-icon>
-								</view>
-								<view class="text-[#CECECE] text-xs ml-1">{{info.member_level_name}}</view>
-							</view>
+							</text>
 						</view>
-
+						<view
+							class="inline-flex items-center space-x-1.5 bg-black/20 backdrop-blur-sm px-3 py-1 rounded-full"
+							@click="shareEvent()">
+							<u-icon name="integral" size="14" color="#D5C6A9"></u-icon>
+							<text class="text-[#D5C6A9] text-xs">{{ info.member_level_name }}</text>
+						</view>
 					</view>
 				</view>
 
+				<!-- 右侧推广码按钮 -->
 				<view
-					class="flex bg-[#454337] items-center pl-2 pr-2 pt-1 pb-1 h-[32rpx] rounded-[var(--goods-rounded-mid)]"
+					class="flex items-center space-x-2 bg-[#D5C6A9]/10 backdrop-blur-sm px-4 py-2 rounded-full active:scale-95 transition-transform"
 					@click="shareEvent()">
-					<view>
-						<u-icon :name="img('addon/tk_jhkd/fenxiao/tgm.png')"></u-icon>
-					</view>
-					<view class="text-[#D5C6A9] ml-1">推广码</view>
-				</view>
-
-			</view>
-			<view class="flex items-center bg-[#FBFBFB] mb-2 mt-4">
-				<view class="w-1 h-3 !bg-[#E9D88B]"></view>
-				<view class="font-bold ml-2 text-[28rpx]">推广订单</view>
-			</view>
-			<view class="flex mt-2" v-if="orderData">
-				<view
-					class="w-[50%] bg-gradient-to-r  from-[#ffffff] to-[#fbfdf8] rounded-[12rpx] p-2 text-center m-2 backdrop-blur-sm">
-					<view class="font-bold">
-						{{orderData.first_order}}
-					</view>
-					<view class="text-slate-500 text-xs">一级订单</view>
-				</view>
-				<view
-					class="w-[50%] bg-gradient-to-r from-[#ffffff] to-[#fbfdf8] rounded-[12rpx] p-2 text-center m-2 backdrop-blur-sm">
-					<view class="font-bold">
-						{{orderData.two_order}}
-					</view>
-					<view class="text-slate-500 text-xs">二级订单</view>
+					<u-icon :name="img('addon/tk_jhkd/fenxiao/tgm.png')" size="16" color="#D5C6A9"></u-icon>
+					<text class="text-[#D5C6A9] text-sm font-medium">推广码</text>
 				</view>
 			</view>
 		</view>
-		<view class="tk-card !p-0">
-			<scroll-view scroll-x="true" class="scroll-Y box-border px-[22rpx]  pb-1 pt-1 rounded-[12rpx]">
-				<view class="flex items-center justify-between" style="width: 100%;">
-					<view class=" bg-[#ececec]  p-1 pl-11 pr-11 rounded-[12rpx] "
-						:class="['',{'!bg-[#454337] p-1 pl-2 pr-2 font-bold rounded-[12rpx] text-[#D5C6A9]': type == item.type}]"
-						@click="typeChange(item.type)" v-for="(item,index) in typeList">{{item.name}}</view>
+		<view class="tk-card shadow-sm rounded-lg mb-4" v-if="fenxiaoinfo">
+			<!-- 推广订单统计 -->
+			<view class="mt-4">
+				<view class="flex items-center mb-4">
+					<view class="w-1 h-5 bg-[#E9D88B] rounded-full"></view>
+					<text class="font-bold ml-3 text-[30rpx] text-gray-800">推广订单</text>
+				</view>
+				<view class="grid grid-cols-2 gap-4" v-if="orderData">
+					<view @click="typeChange('first')"
+						class="bg-gradient-to-br from-white to-[#fbfdf8] rounded-xl p-4 shadow-sm">
+						<text class="text-2xl font-bold text-gray-800 block text-center">{{ orderData.first_order
+							}}</text>
+						<text class="text-gray-500 text-sm mt-2 block text-center">一级订单</text>
+					</view>
+					<view @click="typeChange('two')"
+						class="bg-gradient-to-br from-white to-[#fbfdf8] rounded-xl p-4 shadow-sm">
+						<text class="text-2xl font-bold text-gray-800 block text-center">{{ orderData.two_order
+							}}</text>
+						<text class="text-gray-500 text-sm mt-2 block text-center">二级订单</text>
+					</view>
+				</view>
+			</view>
+		</view>
+
+		<!-- 订单类型选择器 -->
+		<view class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm">
+			<scroll-view scroll-x="true" class="whitespace-nowrap py-3 px-4" :show-scrollbar="false" enhanced
+				:bounces="true">
+				<view class="inline-flex space-x-4 px-2">
+					<view v-for="(item, index) in typeList" :key="index" class="relative inline-block"
+						@click="typeChange(item.type)">
+						<view class="px-6 py-2.5 rounded-full text-[28rpx] transition-all duration-300 relative" :class="[
+							type == item.type
+								? 'bg-gradient-to-r from-[#454337] to-[#5a5749] text-[#D5C6A9] font-bold shadow-md transform scale-105'
+								: 'text-gray-600 hover:bg-gray-50 active:bg-gray-100'
+						]">
+							<text>{{ item.name }}</text>
+							<view v-if="type == item.type"
+								class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-10 h-1 rounded-full bg-gradient-to-r from-[#E9D88B] to-[#D5C6A9]">
+							</view>
+						</view>
+					</view>
 				</view>
 			</scroll-view>
 		</view>
-		<block v-if="list" v-for="(item,index) in list" :key="index">
-			<view class="tk-card !mt-0">
-				<view class="flex justify-between items-center">
 
-					<view class="" @click="copy(item.order_id)">订单号:{{item.order_id}}</view>
-					<view v-if="item.status==1" class="flex">
-						<view
-							class="flex bg-[#333333] items-center pl-2 pr-2 pt-1  pb-1 h-[32rpx] rounded-[var(--goods-rounded-mid)]">
-							<view class="text-[#CECECE] text-xs ml-1">已结算</view>
+		<!-- 订单列表 -->
+		<mescroll-body ref="mescrollRef" @init="mescrollInit" @down="downCallback" @up="getOrderListFn">
+			<template v-if="list">
+				<view v-for="(item, index) in list" :key="index" class="tk-card !mt-3 !p-4 rounded-lg shadow-sm">
+					<!-- 订单头部信息 -->
+					<view class="flex justify-between items-center pb-3 border-b border-gray-100">
+						<view class="flex items-center space-x-2" @click="copy(item.order_id)">
+							<text class="text-gray-500">订单号:</text>
+							<text class="text-gray-700">{{ item.order_id }}</text>
+						</view>
+						<view :class="[
+							'px-3 py-1 rounded-full text-sm',
+							item.status == 1 ? 'bg-green-50 text-green-600' : 'bg-gray-50 text-gray-600'
+						]">
+							{{ item.status == 1 ? '已结算' : (item.status == 0 ? '未结算' : '已取消') }}
 						</view>
 					</view>
-					<view v-else class="flex">
-						<view
-							class="flex bg-[#b3b3b3] items-center pl-2 pr-2 pt-1  pb-1 h-[32rpx] rounded-[var(--goods-rounded-mid)]">
-							<view class="text-[#f3f3f3] text-xs ml-1">未结算</view>
+
+					<!-- 配送信息 -->
+					<view class="flex items-center justify-center mt-4 space-x-6" v-if="item.end_address">
+						<view class="flex items-center space-x-3">
+							<text class="bg-[#CCC6A9] text-white px-2 py-1 rounded-lg text-sm">寄</text>
+							<text class="text-gray-800 font-medium">{{ item.start_address.address.split('-')[0]
+								}}</text>
+						</view>
+						<view class="flex items-center space-x-2">
+							<up-icon name="more-dot-fill" color="#63625f" size="20"></up-icon>
+							<up-icon name="more-dot-fill" color="#63625f" size="20"></up-icon>
+							<up-icon name="arrow-right" color="#63625f" size="20"></up-icon>
+						</view>
+						<view class="flex items-center space-x-3">
+							<text class="bg-[#454337] text-white px-2 py-1 rounded-lg text-sm">收</text>
+							<text class="text-gray-800 font-medium">{{ item.end_address.address.split('-')[0] }}</text>
+						</view>
+					</view>
+
+					<!-- 订单底部信息 -->
+					<view class="mt-4 pt-3 border-t border-gray-100">
+						<view class="flex justify-between items-center mb-2">
+							<text class="text-gray-500">订单状态：{{ item.status_name }}</text>
+							<text v-if="type == 'first' && item.first_commission > 0" class="text-[#454337] font-bold">
+								佣金: {{ item.first_commission }}
+							</text>
+							<text v-if="type == 'two' && item.two_commission > 0" class="text-[#454337] font-bold">
+								佣金: {{ item.two_commission }}
+							</text>
+						</view>
+						<view class="flex justify-between items-center text-sm">
+							<text class="text-gray-600">下单人：{{ item.memberInfo.nickname }}</text>
+							<text class="text-gray-500">{{ item.create_time }}</text>
 						</view>
 					</view>
 				</view>
-				<view class="flex justify-center mt-3" v-if="item.end_address">
-					<view class="flex items-center">
-						<view class="mr-2">
-							<text class="qu-tag text-sm p-2 rounded-xl">寄</text>
-						</view>
-						<view class="flex flex-col items-center">
-							<view class="text-sm font-bold flex">
-								<view class="">{{ item.start_address.address.split('-')[0] }}
-								</view>
-							</view>
-
-						</view>
-					</view>
-					<view class="flex items-center ml-4 mr-4" v-if="item.end_address">
-						<view class="flex">
-
-							<view>
-								<up-icon name="more-dot-fill" color="#63625f" size="28"></up-icon>
-							</view>
-							<view>
-								<up-icon name="more-dot-fill" color="#63625f" size="28"></up-icon>
-							</view>
-							<view>
-								<up-icon name="arrow-right" color="#63625f" size="28"></up-icon>
-							</view>
-						</view>
-
-					</view>
-					<view class="flex items-center" v-if="item.end_address">
-						<view class="mr-4">
-							<text class="song-tag text-sm p-2 rounded-xl">收</text>
-						</view>
-						<view class="">
-
-							<view class="flex flex-col items-center">
-								<view class="text-sm font-bold flex">
-									<view class="">{{ item.end_address.address.split('-')[0] }}
-									</view>
-								</view>
-
-							</view>
-						</view>
-					</view>
-				</view>
-				<view class="flex items-center justify-between mt-2">
-					<view class="">订单状态：{{item.status_name}}</view>
-					<view v-if="type=='first'&&item.first_commission>0" class="font-bold">佣金:{{item.first_commission }}
-					</view>
-					<view v-if="type=='two'&&item.two_commission>0" class="font-bold">佣金:{{item.two_commission }}
-					</view>
-				</view>
-				<view class="flex justify-between">
-					<view class="">下单人：{{item.memberInfo.nickname}}</view>
-					<view>{{item.create_time}}</view>
-				</view>
+			</template>
+			<view class="mt-120px">
+				<up-empty v-if="list.length == 0" mode="list" text="暂无数据"></up-empty>
 			</view>
-		</block>
-		<up-empty v-if="list.length==0" mode="list" text="暂无数据">
-		</up-empty>
+		</mescroll-body>
+
+		<!-- 返回顶部按钮 -->
+		<view v-show="showBackTop" @click="backToTop"
+			class="fixed right-4 bottom-24 bg-white/80 backdrop-blur-sm p-3 rounded-full shadow-lg z-50 transition-all duration-300">
+			<u-icon name="arrow-upward" color="#454337" size="24"></u-icon>
+		</view>
 	</view>
+
 	<share-poster ref="sharePosterRef" posterType="tk_jhkd_poster" :posterId="poster_id" :posterParam="posterParam"
 		:copyUrlParam="copyUrlParam" :copyUrl="'/addon/tk_jhkd/pages/index'" />
 	<tabbar addon="tk_jhkd" />
@@ -152,390 +150,160 @@
 </template>
 
 <script setup lang="ts">
-	import { ref, computed } from 'vue';
-	import { moneyFormat, img, redirect, getToken, isWeixinBrowser, getSiteId, handleOnloadParams, copy } from '@/utils/common';
-	import { getMemberCommission } from '@/app/api/member';
-	import useMemberStore from '@/stores/member'
-	import { onLoad, onPageScroll, onReachBottom } from '@dcloudio/uni-app';
-	import {
-		checkFenxiao, getFenxiaoInfo, getFenxiaoOrder, getOrderData
-	} from '@/addon/tk_jhkd/api/fenxiao'
-	import { useLogin } from '@/hooks/useLogin'
-	import { timeChange } from "@/addon/tk_jhkd/utils/ts/common";
-	const list = ref([])
-	const page = ref(1)
-	const loading = ref(false)
-	const orderData = ref()
-	getOrderData().then((res) => {
-		orderData.value = res.data
-	})
-	const typeList = ref([
-		{
-			name: '一级订单',
-			type: 'first'
-		},
-		{
-			name: '二级订单',
-			type: 'two'
-		}
-	])
-	const type = ref('first')
-	const typeChange = (e) => {
-		type.value = e
-		page.value = 1
-		list.value = []
-		getOrderListFn()
+import { ref, computed } from 'vue';
+import { moneyFormat, img, redirect, getToken, isWeixinBrowser, getSiteId, handleOnloadParams, copy } from '@/utils/common';
+import { getMemberCommission } from '@/app/api/member';
+import useMemberStore from '@/stores/member'
+import { onLoad, onPageScroll, onReachBottom } from '@dcloudio/uni-app';
+import {
+	checkFenxiao, getFenxiaoInfo, getFenxiaoOrder, getOrderData
+} from '@/addon/tk_jhkd/api/fenxiao'
+import { useLogin } from '@/hooks/useLogin'
+import { timeChange } from "@/addon/tk_jhkd/utils/ts/common";
+import MescrollBody from '@/components/mescroll/mescroll-body/mescroll-body.vue';
+import MescrollEmpty from '@/components/mescroll/mescroll-empty/mescroll-empty.vue';
+import useMescroll from '@/components/mescroll/hooks/useMescroll.js'
+const { mescrollInit, downCallback, getMescroll } = useMescroll(onPageScroll, onReachBottom);
+const list = ref([])
+const page = ref(1)
+const loading = ref(false)
+const orderData = ref()
+getOrderData().then((res) => {
+	orderData.value = res.data
+})
+const typeList = ref([
+	{
+		name: '一级订单',
+		type: 'first'
+	},
+	{
+		name: '二级订单',
+		type: 'two'
 	}
-	// 提现
-	const applyCashOut = () => {
-		uni.setStorageSync('cashOutAccountType', 'commission')
-		redirect({ url: '/app/pages/member/apply_cash_out' })
+])
+const type = ref('first')
+const typeChange = (e) => {
+	type.value = e
+	page.value = 1
+	list.value = []
+	getMescroll().resetUpScroll()
+}
+// 提现
+const applyCashOut = () => {
+	uni.setStorageSync('cashOutAccountType', 'commission')
+	redirect({ url: '/app/pages/member/apply_cash_out' })
+}
+const userInfo = computed(() => memberStore.info)
+/************* 分享海报-start **************/
+let sharePosterRef = ref(null);
+let copyUrlParam = ref('');
+let posterParam = {};
+const poster_id = ref(0)
+const fenxiaoinfo = ref()
+const getFenxiaoInfoEvent = async () => {
+	const res = await getFenxiaoInfo()
+	fenxiaoinfo.value = res.data
+}
+getFenxiaoInfoEvent()
+// 分享海报链接
+const copyUrlFn = () => {
+
+	if (userInfo.value && userInfo.value.member_id) copyUrlParam.value += '?mid=' + userInfo.value.member_id;
+}
+const shareEvent = () => {
+
+	// 检测是否登录
+	if (!userInfo.value) {
+
+		useLogin().setLoginBack({ url: '/addon/tk_jhkd/pages/index' })
+		return false
+
 	}
-	const userInfo = computed(() => memberStore.info)
-	/************* 分享海报-start **************/
-	let sharePosterRef = ref(null);
-	let copyUrlParam = ref('');
-	let posterParam = {};
-	const poster_id = ref(0)
-	const fenxiaoinfo = ref()
-	const getFenxiaoInfoEvent = async () => {
-		const res = await getFenxiaoInfo()
-		fenxiaoinfo.value = res.data
-	}
-	getFenxiaoInfoEvent()
-	// 分享海报链接
-	const copyUrlFn = () => {
 
-		if (userInfo.value && userInfo.value.member_id) copyUrlParam.value += '?mid=' + userInfo.value.member_id;
-	}
-	const shareEvent = () => {
+	if (userInfo.value && userInfo.value.member_id)
+		posterParam.member_id = userInfo.value.member_id;
+	copyUrlFn()
+	sharePosterRef.value.openShare()
+}
+/************* 分享海报-end **************/
 
-		// 检测是否登录
-		if (!userInfo.value) {
+const memberStore = useMemberStore();
+const info = computed(() => memberStore.info)
+// 获取系统状态栏的高度
+let menuButtonInfo: any = {};
+// 如果是小程序，获取右上角胶囊的尺寸信息，避免导航栏右侧内容与胶囊重叠(支付宝小程序非本API，尚未兼容)
+// #ifdef MP-WEIXIN || MP-BAIDU || MP-TOUTIAO || MP-QQ
+menuButtonInfo = uni.getMenuButtonBoundingClientRect();
+// #endif
 
-			useLogin().setLoginBack({ url: '/addon/tk_jhkd/pages/index' })
-			return false
-
-		}
-
-		if (userInfo.value && userInfo.value.member_id)
-			posterParam.member_id = userInfo.value.member_id;
-		copyUrlFn()
-		sharePosterRef.value.openShare()
-	}
-	/************* 分享海报-end **************/
-
-	const memberStore = useMemberStore();
-	const info = computed(() => memberStore.info)
-	// 获取系统状态栏的高度
-	let menuButtonInfo : any = {};
-	// 如果是小程序，获取右上角胶囊的尺寸信息，避免导航栏右侧内容与胶囊重叠(支付宝小程序非本API，尚未兼容)
-	// #ifdef MP-WEIXIN || MP-BAIDU || MP-TOUTIAO || MP-QQ
-	menuButtonInfo = uni.getMenuButtonBoundingClientRect();
-	// #endif
-	const headerStyle = computed(() => {
-		return {
-			backgroundImage: 'url(' + img('static/resource/images/member/commission/commission_bg.png') + ') ',
-			backgroundSize: 'cover',
-			backgroundRepeat: 'no-repeat',
-			backgroundPosition: 'center',
-		}
-	})
-	//  16为自定头部的padding-bottom
-	const mescrollTop = computed(() => {
-		return Object.keys(menuButtonInfo).length ? (Number(menuButtonInfo.height) * 2 + menuButtonInfo.top * 2 + 530 + 16) + 'rpx' : '530rpx'
-	})
-	const getOrderListFn = () => {
-		loading.value = true;
-		let data : object = {
-			page: page.value,
-			limit: 15,
-			type: type.value
-		};
-		getFenxiaoOrder(data)
-			.then((res) => {
-				let newArr = res.data.data as Array<Object>;
-				if (newArr.length == 0) {
-					loading.value = false;
-					uni.showToast({
-						title: "已经没有更多数据",
-						icon: "none",
-					});
-					return
-				}
-				if (list.value.length == 0) {
-					page.value++
-					list.value = newArr;
-				} else {
-					page.value++
-					list.value = list.value.concat(newArr);
-				}
-			})
-			.catch(() => {
-				loading.value = false;
-			});
+const getOrderListFn = (mescroll) => {
+	loading.value = true;
+	let data: object = {
+		page: mescroll.num,
+		limit: mescroll.size,
+		type: type.value
 	};
-	onReachBottom(() => {
-		page.value++
-		getOrderListFn()
-	})
-	onPageScroll(() => {
-		loading.value = false;
-		getOrderListFn()
-	});
-	onLoad((option) => {
-		// #ifdef MP-WEIXIN
-		// 处理小程序场景值参数
-		option = handleOnloadParams(option);
-		// #endif
-		let pid = uni.getStorageSync('pid');
-		if (pid && pid > 0) {
-			checkFenxiao({ pid: pid })
-		}
-		getOrderListFn()
+	getFenxiaoOrder(data)
+		.then((res) => {
+			let newArr = res.data.data as Array<Object>;
+			mescroll.endSuccess(newArr.length);
+			//设置列表数据
+			if (mescroll.num == 1) {
+				list.value = []; //如果是第一页需手动制空列表
+			}
+			list.value = list.value.concat(newArr);
+			loading.value = true;
+		})
+		.catch(() => {
+			loading.value = false;
+		});
+};
 
+onLoad((option) => {
+	// #ifdef MP-WEIXIN
+	// 处理小程序场景值参数
+	option = handleOnloadParams(option);
+	// #endif
+	let pid = uni.getStorageSync('pid');
+	if (pid && pid > 0) {
+		checkFenxiao({ pid: pid })
+	}
+	getOrderListFn()
+
+})
+// 返回顶部功能
+const showBackTop = ref(false)
+const scrollTop = ref(0)
+
+// 监听页面滚动
+onPageScroll((e) => {
+	scrollTop.value = e.scrollTop
+	showBackTop.value = scrollTop.value > 200
+})
+
+// 返回顶部方法
+const backToTop = () => {
+	uni.pageScrollTo({
+		scrollTop: 0,
+		duration: 300
 	})
+}
 </script>
+
 <style lang="scss" scoped>
-	@import '@/addon/tk_jhkd/utils/styles/common.scss';
+@import '@/addon/tk_jhkd/utils/styles/common.scss';
 
-	.line-box {
-		background-color: #e3e3e3;
-		height: 2rpx;
-		width: 100%;
-	}
+.stats-card {
+	@apply relative overflow-hidden;
 
-	.bgcontent {
-		background: linear-gradient(0deg, rgba(255, 255, 255, 0.2) 0%, rgba(252, 252, 242, 1.0) 40%);
-	}
-
-	.gotx {
-		background: linear-gradient(90deg, rgba(252, 242, 189, 1) 20%, rgba(255, 236, 171, 1.0) 40%);
-	}
-
-	.class-select {
-		position: relative;
-		font-weight: bold;
-
-		&::after {
-			content: "";
-			position: absolute;
-			bottom: 0;
-			height: 6rpx;
-			background-color: var(--primary-color);
-			width: 90%;
-			left: 50%;
-			transform: translateX(-50%);
+	&:hover {
+		.stats-icon {
+			@apply opacity-100 scale-110;
 		}
 	}
+}
 
-	page {
-		background-color: #F5F5F5;
-	}
-
-	.fx {
-		font-size: 15px;
-		display: flex;
-		width: 18%;
-		text-align: center;
-		background: #000000;
-		padding: 10px;
-		border-radius: 0px 10px 10px 0px;
-	}
-
-	.fx .icon1 {
-		width: 15px;
-		height: 15px;
-		margin-right: 5px;
-	}
-
-	.fxwz {
-		font-size: 12px !important;
-		color: #cecdcd;
-	}
-
-	.reseller {
-
-		min-height: 100vh;
-		font-size: 14px;
-
-		.top {
-			color: #FFFFFF;
-			//display: flex;
-			justify-content: space-between;
-			position: relative;
-			width: 100%;
-			height: 250px;
-
-			background-size: cover;
-			background-position: center;
-			background-repeat: no-repeat;
-
-			//background-color: #2196F3;
-			//background: linear-gradient(top, #2196F3, #03A9F4);
-			.top1 {
-				display: flex;
-			}
-
-			.title {
-				background-color: #FFFFFF
-			}
-
-			.num {
-				font-size: 15px;
-				line-height: 25px;
-				text-align: center;
-				width: 33%;
-				padding-top: 8%;
-			}
-
-			.num1 {
-				text-align: center;
-				width: 100%;
-				padding-top: 10%;
-			}
-
-		}
-
-		.jilu {
-			font-size: 15px;
-			position: absolute;
-			left: 78%;
-			top: 20%;
-		}
-
-		.jl {
-			font-size: 12px !important;
-			background: #ffffff05;
-			padding: 10px;
-			border-radius: 10px 0px 0px 10px;
-		}
-
-		.fx {
-			font-size: 15px;
-			position: absolute;
-			display: flex;
-			left: 0;
-			top: 20%;
-			width: 18%;
-			text-align: center;
-			background: #ffffff21;
-			padding: 10px;
-			border-radius: 0px 10px 10px 0px;
-		}
-
-		.fx .icon1 {
-			width: 15px;
-			height: 15px;
-			margin-right: 5px;
-		}
-
-		.fxwz {
-			font-size: 12px !important;
-			color: #cecdcd;
-		}
-
-		.tixian {
-			display: flex;
-			justify-content: center;
-			background-color: #F5F5F5;
-			width: 55%;
-			height: 60px;
-			border-radius: 60px;
-			position: absolute;
-			bottom: -30px;
-			left: 23%;
-
-			.btn {
-				margin-top: 7%;
-				text-align: center;
-				width: 85%;
-				background-color: #e5349b;
-				height: 40px;
-				border: none;
-				border-radius: 50px;
-				line-height: 40px;
-				color: #FFFFFF;
-			}
-
-
-		}
-
-		.icon {
-			display: flex;
-			justify-content: space-between;
-			flex-wrap: wrap;
-
-			margin-left: 3%;
-			margin-right: 3%;
-			margin-top: 10%;
-
-			.ico {
-				border-radius: 10px;
-				border: 1px solid #C0C0C0;
-				width: 49%;
-				height: auto;
-				margin-top: 8px;
-				padding-bottom: 10px;
-				border: none;
-				font-size: 15px;
-				flex-direction: column;
-				background-color: #FFFFFF;
-
-				.img {
-					width: 40px;
-					height: 40px;
-				}
-
-				.tubiao {
-					margin-top: 20px;
-					margin-left: 10px;
-					text-align: center;
-					width: 35%;
-					float: left;
-				}
-
-				.tt {
-					float: left;
-					margin-top: 17px;
-				}
-
-				.text {
-					color: #8F8F94;
-					text-align: center;
-					font-size: 14px;
-
-				}
-
-				.text_r {
-					font-size: 18px;
-					font-weight: bold;
-				}
-			}
-		}
-
-		.kong {
-			height: 100px;
-		}
-	}
-
-	.qu-tag {
-		background: #CCC6A9;
-		color: #ffffff;
-		height: 28rpx;
-		line-height: 28rpx;
-		text-align: center;
-		width: 32rpx;
-		display: inline-block;
-	}
-
-	.song-tag {
-		background: #454337;
-		color: #ffffff;
-		height: 28rpx;
-		line-height: 28rpx;
-		text-align: center;
-		width: 32rpx;
-		display: inline-block;
-	}
+.stats-icon {
+	@apply absolute right-4 top-1/2 transform -translate-y-1/2 opacity-50 transition-all duration-300;
+}
 </style>

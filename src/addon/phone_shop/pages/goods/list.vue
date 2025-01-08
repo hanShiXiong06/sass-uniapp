@@ -1,722 +1,1145 @@
 <template>
 	<view class="bg-gray-100 min-h-[100vh]" :style="themeColor()">
-		<view class="fixed left-0 right-0 top-0 product-warp bg-[#fff] px-[30rpx]">
+		<!-- 顶部搜索栏 -->
+		<view class="fixed left-0 right-0 top-0 bg-[#fff] px-[30rpx] z-50">
 			<view class="py-[14rpx] flex items-center justify-between">
 				<view class="flex-1 flex items-center h-[64rpx] bg-[#F6F8F8] rounded-[33rpx] px-[32rpx] mr-[30rpx]">
-					<u-input class="flex-1" maxlength="50" v-model="goods_name" @confirm="searchTypeFn('all')"
-						placeholder="请搜索您想要的商品(串号搜索前加#)" placeholderClass="text-[#a5a6a6] text-[26rpx]" fontSize="26rpx"
+					<u-input class="flex-1" maxlength="50" v-model="goods_name" @confirm="searchGoods"
+						placeholder="请输入商品名称或串号(#)" placeholderClass="text-[#a5a6a6] text-[26rpx]" fontSize="26rpx"
 						clearable border="none"></u-input>
 					<text class="nc-iconfont nc-icon-sousuo-duanV6xx1 text-[32rpx] ml-[18rpx] !text-[#999]"
-						@click="searchTypeFn('all')"></text>
+						@click="searchGoods"></text>
 				</view>
-				<view
-					:class="['nc-iconfont text-[34rpx] text-[#666]', listType ? 'nc-icon-erweimaV6xx' : 'nc-icon-yingyongliebiaoV6xx']"
-					@click="listIconBtn"></view>
-			</view>
-			<view class="flex justify-between tems-center py-[22rpx] px-[20rpx]">
-				<view class=" flex items-center justify-between text-[24rpx] text-[#666] flex-1">
-					<!-- <text :class="{ 'text-[#303133] ': searchType == 'all' }" @click="searchTypeFn('day')">今日上新</text> -->
-					<view class="flex items-center"
-						:class="{ 'text-[#303133]': searchType == 'sale_num', 'active': create_time }"
-						@click="searchTypeFn('day')">
-						<text class="mr-[4rpx]">今日上新</text>
-						<text v-if="create_time"
-							class="text-[18rpx]  nc-iconfont nc-icon-shanchu-yuangaizhiV6xx"></text>
-						<!-- <text v-else class="text-[18rpx] text-[#666] nc-iconfont nc-icon-a-xiangxiaV6xx1"></text> -->
+				<view class="flex items-center">
+					<view class="mr-[20rpx]" @click="redirect({ url: '/addon/phone_shop/pages/goods/new_arrivals' })">
+						<text class="nc-iconfont nc-icon-shangxinV6xx text-[32rpx] text-[#666]"></text>
 					</view>
-					<view class="flex items-center" :class="{ 'text-[#303133]': searchType == 'price' }"
-						@click="searchTypeFn('price')">
-						<text class=" mr-[4rpx]">价格</text>
+					<view
+						:class="['nc-iconfont text-[34rpx] text-[#666]', listType ? 'nc-icon-erweimaV6xx' : 'nc-icon-yingyongliebiaoV6xx']"
+						@click="listIconBtn"></view>
+				</view>
+			</view>
 
+			<!-- 筛选标签 -->
+			<scroll-view scroll-x class="filter-scroll" show-scrollbar="false">
+				<view class="filter-scroll-content">
+					<!-- 分类筛选 -->
+					<view class="filter-tag" :class="{ 'active': activeFilters.category }"
+						@click="showPopup('category')">
+						<text>分类</text>
+						<text class="nc-iconfont nc-icon-a-xiangxiaV6xx1 text-[20rpx] ml-[4rpx]"></text>
 					</view>
-					<view class="flex items-center" :class="{ 'text-[#303133]': searchType == 'label' }"
-						@click="searchTypeFn('label')">
-						<text class="mr-[2rpx]">筛选</text>
-						<text class="nc-iconfont color-[#666] nc-icon-shaixuanV6xx text-[28rpx]"></text>
+					<!-- 成色筛选 -->
+					<view class="filter-tag" :class="{ 'active': activeFilters.brand }" @click="showPopup('brand')">
+						<text>成色</text>
+						<text class="nc-iconfont nc-icon-a-xiangxiaV6xx1 text-[20rpx] ml-[4rpx]"></text>
+					</view>
+					<!-- 价格筛选 -->
+					<view class="filter-tag" :class="{ 'active': activeFilters.price }" @click="showPopup('price')">
+						<text>价格</text>
+						<text class="nc-iconfont nc-icon-a-xiangxiaV6xx1 text-[20rpx] ml-[4rpx]"></text>
+					</view>
+					<!-- 排序方式 -->
+					<view class="filter-tag" :class="{ 'active': activeFilters.sort }" @click="showPopup('sort')">
+						<text>{{ sortText }}</text>
+						<text class="nc-iconfont nc-icon-a-xiangxiaV6xx1 text-[20rpx] ml-[4rpx]"></text>
+					</view>
+					<!-- 重置按钮 -->
+					<view class="filter-tag reset" @click="resetFilters" v-if="hasActiveFilters">
+						<text class="nc-iconfont nc-icon-zhongzhiV6xx text-[24rpx] mr-[4rpx]"></text>
+						<text>重置</text>
 					</view>
 				</view>
-			</view>
+			</scroll-view>
 		</view>
-		<u-popup :show="pricePopup" mode="top" @close="pricePopup = false">
-			<view @touchmove.prevent.stop>
 
-				<!--        价格区间筛选 -->
-				<view class="flex justify-center flex-wrap  pb-[20rpx]">
+		<!-- 分类弹窗 -->
+		<u-popup :show="popups.category" mode="top" @close="closePopup('category')" :round="10">
+			<view class="popup-content category-popup justify-between">
+				<!-- 一级分类 -->
+				<view class='flex items-center justify-between h-full'>
+					<scroll-view scroll-y class="category-left">
+						<view class="category-item" v-for="item in categoryList" :key="item.category_id"
+							:class="{ 'active': currentCategory.category_id === item.category_id }"
+							@click="selectParentCategory(item)">
+							<text>{{ item.category_name }}</text>
+							<text class="count">({{ item.goods_count || 0 }})</text>
+						</view>
+					</scroll-view>
 
-					<view class="flex flex-wrap pl-[30rpx] pt-[30rpx] mr-3">
-
-						<u-input placeholder="最低价格" border="surround" class="mr-3"
-							prefixIconStyle="font-size: 22px;color: #909399" v-model="price_between.start_price">
-						</u-input>
-						-
-						<u-input placeholder="最高价格" border="surround" class="ml-3" v-model="price_between.end_price" />
-						<!-- <view @click='price_order_change'>
-							<text v-if="price == 'asc'"
-								class="text-[18rpx] text-[#666] nc-iconfont nc-icon-a-xiangshangV6xx1"></text>
-							<text v-else class="text-[18rpx] text-[#666] nc-iconfont nc-icon-a-xiangxiaV6xx1"></text>
-						</view> -->
-					</view>
-
-					<view class="flex flex-wrap justify-end pl-[30rpx] p-[30rpx] ">
-						<div class="flex ">
-							<u-button type="success" :plain="true" class="mr-3 " text="重置"
-								@click="resetQuery"></u-button>
-							<u-button type="primary" @click="searchTypeFn" text="搜索"></u-button>
-						</div>
-
-
-					</view>
-				</view>
-			</view>
-		</u-popup>
-		<u-popup :show="labelPopup" mode="top" @close="labelPopup = false">
-			<view @touchmove.prevent.stop>
-				<!-- <view class="text-sm font-bold px-[30rpx] mt-3">全部分类</view> -->
-				<view class="  tabs-box z-2 fixed left-0 bg-[#fff] bottom-[50px] top-20 pl-[10rpx] pt-[30rpx]">
-					<scroll-view :scroll-y="true" class="scroll-height bg-[#ddd] ">
-						<view class="bg-[#F4F6F8]">
-							<view class="tab-item truncate"
-								:class="{ 'tab-item-active': currGoodsCategory == index, 'rounded-br-[12rpx]': currGoodsCategory - 1 === index, 'rounded-tr-[12rpx]': currGoodsCategory + 1 === index }"
-								v-for="(item, index) in categoryList" :key="item.category_id"
-								@click="loadCategory(item.category_id)">
-								<view class="text-box px-[16rpx] truncate">
-									{{ item.category_name }}
+					<!-- 二级分类 -->
+					<scroll-view scroll-y class="category-right" v-if="currentCategory.child_list?.length">
+						<view class="sub-category-list">
+							<view class="sub-category-item" v-for="item in currentCategory.child_list"
+								:key="item.category_id"
+								:class="{ 'active': selectedCategories.includes(item.category_id) }"
+								@click="selectSubCategory(item)">
+								<view class="content">
+									<text>{{ item.category_name }}</text>
+									<text class="count">({{ item.goods_count || 0 }})</text>
 								</view>
+								<text class="nc-iconfont nc-icon-duigouV6xx check-icon"
+									v-if="selectedCategories.includes(item.category_id)"></text>
 							</view>
 						</view>
 					</scroll-view>
 				</view>
-
-				<!--        价格区间筛选 -->
-				<view class="flex justify-center flex-wrap pl-[200rpx] pb-[20rpx]">
-					<scroll-view class="h-[70vh]" :scroll-y="true">
-						<view
-							class="bg-[#fff] grid grid-cols-3 gap-x-[50rpx] gap-y-[32rpx] py-[33rpx] px-[23rpx]  rounded-[16rpx]">
-							<template v-for="(item, index) in categoryList[currGoodsCategory]?.child_list"
-								:key="item.category_id">
-
-								<view class="text-center flex flex-col items-center pt-[8rpx] rounded "
-									:class="{ 'bg-[#f4f6f8]': goods_category == item.category_id }"
-									@click="loadTreeCategory(item.category_id)">
-									<u--image radius="12rpx" width="60rpx" height="60rpx"
-										:src="img(item.image ? item.image : '')" model="aspectFill">
-										<template #error>
-											<image class="rounded-[12rpx] overflow-hidden w-[60rpx] h-[60rpx]"
-												:src="img('static/resource/images/diy/shop_default.jpg')"
-												mode="aspectFill">
-											</image>
-										</template>
-									</u--image>
-									<view class="text-[24rpx] text-center mt-[12rpx] leading-[34rpx]">{{
-										item.category_name
-									}}
-									</view>
-								</view>
-							</template>
+				<!-- 底部按钮 -->
+				<view class="category-footer">
+					<view class="selected-tags" v-if="selectedCategoryNames.length">
+						<view class="tag" v-for="(name, index) in selectedCategoryNames" :key="index">
+							{{ name }}
+							<text class="nc-iconfont nc-icon-guanbiV6xx" @click.stop="removeCategory(index)"></text>
 						</view>
-					</scroll-view>
-
-					<view class="flex flex-wrap justify-end pl-[30rpx] p-[30rpx] ">
-						<div class="flex ">
-							<u-button type="success" :plain="true" class="mr-3 " text="重置"
-								@click="resetQuery"></u-button>
-							<u-button type="primary" @click="searchTypeFn" text="搜索"></u-button>
-						</div>
-
-
+					</view>
+					<view class="btn-group">
+						<u-button type="info" :plain="true" text="重置" @click="resetCategories"></u-button>
+						<u-button type="primary" text="确定" @click="confirmCategories"></u-button>
 					</view>
 				</view>
 			</view>
 		</u-popup>
 
+		<!-- 成色弹窗 -->
+		<u-popup :show="popups.brand" mode="top" @close="closePopup('brand')" :round="10">
+			<view class="popup-content">
+				<view class="brand-list">
+					<view class="brand-item" v-for="(item, index) in brandList" :key="index"
+						:class="{ 'active': filters.brand === item.value }" @click="selectbrand(item)">
+						<text>{{ item.label }}</text>
+					</view>
+					<!-- 清除 -->
+					<view class="brand-item" @click="resetBrand">
+						<text>清除</text>
+					</view>
+				</view>
+			</view>
+		</u-popup>
 
+		<!-- 价格弹窗 -->
+		<u-popup :show="popups.price" mode="top" @close="closePopup('price')" :round="10">
+			<view class="popup-content">
+				<view class="price-range">
+					<view class="input-group">
+						<u-input v-model="filters.price_min" type="number" placeholder="最低价" :border="true"></u-input>
+						<text class="separator">-</text>
+						<u-input v-model="filters.price_max" type="number" placeholder="最高价" :border="true"></u-input>
+					</view>
+					<view class="price-tags">
+						<view class="price-tag" v-for="(item, index) in priceRanges" :key="index"
+							:class="{ 'active': filters.price_range === item.value }" @click="selectPriceRange(item)">
+							{{ item.label }}
+						</view>
+					</view>
+					<view class="btn-group">
+						<u-icon name='trash' :plain="true" @click="resetPrice"> </u-icon>
+
+						<u-button type="primary" text="确定" @click="confirmPrice"></u-button>
+					</view>
+				</view>
+			</view>
+		</u-popup>
+
+		<!-- 排序弹窗 -->
+		<u-popup :show="popups.sort" mode="top" @close="closePopup('sort')" :round="10">
+			<view class="popup-content">
+				<view class="sort-list">
+					<view class="sort-item" v-for="(item, index) in sortOptions" :key="index"
+						:class="{ 'active': filters.sort === item.value }" @click="selectSort(item)">
+						<text>{{ item.label }}</text>
+						<text class="nc-iconfont nc-icon-duigouV6xx" v-if="filters.sort === item.value"></text>
+					</view>
+				</view>
+			</view>
+		</u-popup>
+
+		<!-- 商品列表 -->
 		<mescroll-body ref="mescrollRef" top="160rpx" bottom="50px" @init="mescrollInit" :down="{ use: false }"
-			@up="getAllAppListFn">
-
-			<view v-if="articleList.length"
-				:class="['sidebar-marign', !listType ? 'flex justify-between flex-wrap' : '']">
-				<template v-for="(item, index) in articleList">
-					<template v-if="listType" :key="item.app_id">
-						<view class="bg-white flex p-[20rpx] rounded-[16rpx] overflow-hidden mt-[20rpx]"
-							:class="{ 'mb-[20rpx]': (index + 1) == articleList.length }"
-							@click="toDetail(item.goods_id)">
-							<u--image class="rounded-[10rpx] overflow-hidden" width="190rpx" height="190rpx"
-								:src="img(item.goods_cover_thumb_mid ? item.goods_cover_thumb_mid : '')"
-								model="aspectFill">
+			@up="getGoodsList">
+			<view v-if="goodsList.length" :class="['sidebar-margin', !listType ? 'grid-list' : '']">
+				<template v-for="(item, index) in goodsList" :key="item.goods_id">
+					<!-- 列表样式 -->
+					<template v-if="listType">
+						<view class="goods-item-list" @click="toDetail(item.goods_id)">
+							<u--image class="goods-image" width="190rpx" height="190rpx"
+								:src="img(item.goods_cover_thumb_mid)" radius="10">
 								<template #error>
-									<image class="w-[190rpx] h-[190rpx] rounded-[10rpx] overflow-hidden"
-										:src="img('static/resource/images/diy/shop_default.jpg')" mode="aspectFill">
+									<image class="goods-image"
+										:src="img('static/resource/images/diy/shop_default.jpg')">
 									</image>
 								</template>
 							</u--image>
-							<view class="flex-1 flex flex-col ml-[20rpx] py-[6rpx]">
-								<view class="text-[28rpx] text-[#303133] leading-[40rpx]  multi-hidden mb-[10rpx]">
-									{{
-										item.goods_name }}</view>
-								<view class="text-[16rpx] text-[#303133] leading-[40rpx]  multi-hidden mb-[10rpx]"
-									v-if="item.sub_title">
-									{{ item.sub_title }}
+							<view class="goods-info">
+								<view class="goods-name">{{ item.goods_name }}</view>
+								<view class="goods-subtitle" v-if="item.sub_title">{{ item.sub_title }}</view>
+								<view class="goods-sku" v-if="item.goodsSku.sku_no">
+									<text class="label">串号:</text>
+									<text class="value">{{ item.goodsSku.sku_no }}</text>
 								</view>
-								<view class="text-[16rpx] text-[#303133] leading-[40rpx]  multi-hidden mb-[10rpx]"
-									v-if="item.goodsSku.sku_no"> sn:
-									{{
-										item.goodsSku.sku_no }}
+								<view class="goods-brand" v-if="item.brand">
+									<text class="label">成色:</text>
+									<text class="value">{{ getbrandLabel(item.brand) }}</text>
 								</view>
-								<view class="mt-auto flex justify-between items-baseline">
-									<view class="text-[var(--price-text-color)] price-font flex items-baseline">
-										<text class="text-[26rpx] font-500">￥</text>
-										<text class="text-[36rpx] font-500">{{
-											goodsPrice(item).toFixed(2).split('.')[0]
-										}}</text>
-										<text class="text-[24rpx] font-500">.{{
-											goodsPrice(item).toFixed(2).split('.')[1] }}</text>
-										<image class="h-[24rpx] w-[72rpx] ml-[6rpx]"
-											v-if="priceType(item) == 'member_price'"
+								<view class="goods-bottom">
+									<view class="price-wrap">
+										<text class="symbol">￥</text>
+										<text class="price">{{ goodsPrice(item).toFixed(2).split('.')[0] }}</text>
+										<text class="decimal">.{{ goodsPrice(item).toFixed(2).split('.')[1] }}</text>
+										<image class="price-tag" v-if="priceType(item) == 'member_price'"
 											:src="img('addon/phone_shop/VIP.png')" mode="heightFix" />
-										<image class="h-[24rpx] w-[72rpx] ml-[6rpx]"
-											v-if="priceType(item) == 'discount_price'"
+										<image class="price-tag" v-if="priceType(item) == 'discount_price'"
 											:src="img('addon/phone_shop/discount.png')" mode="heightFix" />
 									</view>
-									<text class="text-[22rpx] text-[#999]">库存:{{ item.goodsSku.stock }}{{ item.unit
-										}} |
-										已售:{{
-											item.sale_num }}{{ item.unit
-										}}</text>
-
-									<text @click.stop="onGoodsShare(item.goods_id)"
-										class="nc-iconfont nc-icon-fenxiangV6xx"></text>
-									<!-- #ifdef MP || APP-PLUS  -->
-									<!-- #endif -->
+									<view class="action-btns">
+										<view class="stock-info">
+											<text>库存:{{ item.goodsSku.stock }}{{ item.unit }}</text>
+											
+										</view>
+										<view class="download-btn" @click.stop="downloadGoods(item)">
+											<text class="nc-iconfont nc-icon-fenxiangV6xx"></text>
+										</view>
+									</view>
 								</view>
 							</view>
 						</view>
 					</template>
+					<!-- 网格样式 -->
 					<template v-else>
-						<view
-							class="goods-item-style-two flex flex-col bg-[#fff] box-border rounded-[12rpx] overflow-hidden mt-[20rpx]"
-							@click="toDetail(item.goods_id)">
-							<u--image width="100%" height="350rpx"
-								:src="img(item.goods_cover_thumb_mid ? item.goods_cover_thumb_mid : '')"
-								model="aspectFill">
+						<view class="goods-item-grid" @click="toDetail(item.goods_id)">
+							<u--image class="goods-image" width="100%" height="350rpx"
+								:src="img(item.goods_cover_thumb_mid)" radius="10">
 								<template #error>
-									<image class="w-[100%] h-[350rpx]"
-										:src="img('static/resource/images/diy/shop_default.jpg')" mode="aspectFill">
+									<image class="goods-image"
+										:src="img('static/resource/images/diy/shop_default.jpg')">
 									</image>
 								</template>
 							</u--image>
-							<view class="px-[16rpx] flex-1 pt-[16rpx] pb-[20rpx] flex flex-col justify-between">
-								<view class="text-[#303133] leading-[40rpx] text-[28rpx] multi-hidden">
-									{{ item.goods_name }}
-								</view>
-								<view class="text-[#303133] leading-[40rpx] text-[20rpx] multi-hidden">
-									{{ item.sub_title }}
-								</view>
-								<view class="flex justify-between flex-wrap items-baseline mt-[16rpx]">
-									<view class="text-[var(--price-text-color)] price-font flex items-baseline">
-										<!--										<text class="text-[20rpx]  mr-[4rpx]">￥</text>-->
-										<!--										<text class="text-[36rpx] font-500">{{ item.goodsSku.price }}</text>-->
-
-										<text class="text-[26rpx] font-500">￥</text>
-										<text class="text-[36rpx] font-500">{{
-											goodsPrice(item).toFixed(2).split('.')[0]
-										}}</text>
-										<text class="text-[24rpx] font-500">.{{
-											goodsPrice(item).toFixed(2).split('.')[1] }}</text>
-										<image class="h-[24rpx] ml-[6rpx]" v-if="priceType(item) == 'member_price'"
+							<view class="goods-info">
+								<view class="goods-name">{{ item.goods_name }}</view>
+								<view class="goods-subtitle" v-if="item.sub_title">{{ item.sub_title }}</view>
+								<view class="price-wrap">
+									<view class="left">
+										<text class="symbol">￥</text>
+										<text class="price">{{ goodsPrice(item).toFixed(2).split('.')[0] }}</text>
+										<text class="decimal">.{{ goodsPrice(item).toFixed(2).split('.')[1] }}</text>
+									</view>
+									<view class="right">
+										<image class="price-tag" v-if="priceType(item) == 'member_price'"
 											:src="img('addon/phone_shop/VIP.png')" mode="heightFix" />
-										<image class="h-[24rpx] ml-[6rpx]" v-if="priceType(item) == 'discount_price'"
+										<image class="price-tag" v-if="priceType(item) == 'discount_price'"
 											:src="img('addon/phone_shop/discount.png')" mode="heightFix" />
 									</view>
-									<text class="text-[22rpx] text-[#999]"> 库存{{ item.goodsSku.stock }}{{ item.unit
-										}} </text>
+								</view>
+								<view class="goods-bottom">
+									<view class="left">
+										<text class="stock">库存:{{ item.goodsSku.stock }}{{ item.unit }}</text>
+										<text class="brand" v-if="item.brand">{{ getbrandLabel(item.brand) }}</text>
+									</view>
+									<view class="download-btn" @click.stop="downloadGoods(item)">
+										<text class="nc-iconfont nc-icon-fenxiangV6xx"></text>
+									</view>
 								</view>
 							</view>
 						</view>
 					</template>
 				</template>
 			</view>
-			<view class="mx-[30rpx] mt-[20rpx] bg-[#fff] rounded-[16rpx] noData flex items-center justify-center"
-				v-if="!articleList.length && loading">
-				<mescroll-empty :option="{ tip: '暂无商品' }"></mescroll-empty>
+			<view class="empty-state" v-if="!goodsList.length && loading">
+				<u-empty mode="data" text="暂无相关商品"></u-empty>
 			</view>
 		</mescroll-body>
-		<!-- 小程序隐私协议 -->
-		<wx-privacy-popup ref="wxPrivacyPopupRef"></wx-privacy-popup>
 
 		<tabbar />
 	</view>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, onMounted } from 'vue'
-import { t } from '@/locale'
-import { redirect, img, getToken, deepClone } from '@/utils/common';
-import { getGoodsDetail, getGoodsCategoryTree, getGoodsPages } from '@/addon/phone_shop/api/goods';
-import MescrollBody from '@/components/mescroll/mescroll-body/mescroll-body.vue';
-import MescrollEmpty from '@/components/mescroll/mescroll-empty/mescroll-empty.vue';
-import useMescroll from '@/components/mescroll/hooks/useMescroll.js';
-import { onLoad, onPageScroll, onReachBottom } from '@dcloudio/uni-app';
+import { reactive, ref, computed } from 'vue'
+import { redirect, img, getToken } from '@/utils/common'
+import { getGoodsPages, getGoodsCategoryTree, getBrandList, getGoodsDetail } from '@/addon/phone_shop/api/goods'
+import MescrollBody from '@/components/mescroll/mescroll-body/mescroll-body.vue'
+import useMescroll from '@/components/mescroll/hooks/useMescroll.js'
+import { onPageScroll, onReachBottom, onLoad } from '@dcloudio/uni-app'
 
-const { mescrollInit, downCallback, getMescroll } = useMescroll(onPageScroll, onReachBottom);
+const { mescrollInit, getMescroll } = useMescroll(onPageScroll, onReachBottom)
 
-const categoryList = ref<Array<Object>>([]);
-const articleList = ref<Array<any>>([]);
-const coupon_id = ref<number | string>('');
-const currGoodsCategory = ref<number | string>('');
-const mescrollRef = ref(null);
-const loading = ref<boolean>(false);
-// 标签
-const labelPopup = ref(false);
-const pricePopup = ref(false);
-const goods_name = ref("");
-const price = ref("");
-const sale_num = ref("");
-const create_time = ref("");
-const searchType = ref('all');
-const isShow = ref(false)//输入框清除文字按钮
-let price_between = ref({
-	start_price: '',
-	end_price: '',
-});
-
-//列表类型
+// 列表数据
+const goodsList = ref<Array<any>>([])
+const mescrollRef = ref(null)
+const loading = ref<boolean>(false)
 const listType = ref(true)
-onLoad(async (option) => {
-	goods_category.value = option.curr_goods_category || ''
-	goods_name.value = option.goods_name || ''
-	coupon_id.value = option.coupon_id || ''
-	if (option.create_time) {
-		create_time.value = new Date().getTime()
-	}
 
-
+// 搜索和筛选
+const goods_name = ref("")
+const categoryList = ref<Array<any>>([])
+const filters = reactive({
+	category_id: '',
+	brand: '',
+	price_min: '',
+	price_max: '',
+	price_range: '',
+	sort: 'default'
 })
 
-interface mescrollStructure {
-	num: number,
-	size: number,
-	endSuccess: Function,
-	[propName: string]: any
+// 弹窗控制
+const popups = reactive({
+	category: false,
+	brand: false,
+	price: false,
+	sort: false
+})
+
+// 成色选项
+const brandList = ref([
+	// { label: '全新', value: 'new' },
+	// { label: '99新', value: '99' },
+	// { label: '95新', value: '95' },
+	// { label: '9成新', value: '90' },
+	// { label: '8成新', value: '80' },
+	// { label: '7成新', value: '70' }
+])
+
+// 价格区间
+const priceRanges = [
+	{ label: '1000以下', value: '0-1000' },
+	{ label: '1000-3000', value: '1000-3000' },
+	{ label: '3000-5000', value: '3000-5000' },
+	{ label: '5000-8000', value: '5000-8000' },
+	{ label: '8000以上', value: '8000-999999' }
+]
+
+// 排序选项
+const sortOptions = [
+	{ label: '默认排序', value: 'default' },
+	{ label: '价格从低到高', value: 'price_asc' },
+	{ label: '价格从高到低', value: 'price_desc' },
+	{ label: '销量从高到低', value: 'sales_desc' },
+	{ label: '最新上架', value: 'time_desc' }
+]
+
+// 计算属性
+const activeFilters = computed(() => ({
+	category: !!filters.category_id,
+	brand: !!filters.brand,
+	price: !!(filters.price_min || filters.price_max || filters.price_range),
+	sort: filters.sort !== 'default'
+}))
+
+const hasActiveFilters = computed(() =>
+	Object.values(activeFilters.value).some(v => v)
+)
+
+const sortText = computed(() => {
+	const option = sortOptions.find(item => item.value === filters.sort)
+	return option ? option.label : '排序'
+})
+// getBrandList
+const _getBrandList = async () => {
+	const res = await getBrandList()
+	if (res.code !== 1) return
+	// brandList = res.data
+	// 格式化 数据 brand_name 为 label value 
+	console.log(res.data)
+	const result = res.data.map((item: any) => ({
+		label: item.brand_name,
+		value: item.brand_id
+	}))
+	brandList.value = result
+	console.log(result)
 }
-const goodsDetail = ref({})
-const onGoodsShare = (id: number) => {
+// resetBrand 	
+const resetBrand = () => {
+	filters.brand = ''
+	closePopup('brand')
+	searchGoods()
+}
 
-	getGoodsDetail({
-		goods_id: id,
-	}).then(res => {
-		if (!res.data.goods || JSON.stringify(res.data) === '[]') {
-			uni.showToast({ title: '找不到该商品', icon: 'none' })
-			setTimeout(() => {
-				redirect({ url: '/addon/phone_shop/pages/index', mode: 'reLaunch' })
-			}, 600)
-			return false
-		}
+// 页面加载
+onLoad(async (option) => {
+	if (option.category_id) {
+		filters.category_id = option.category_id
+	}
+	if (option.goods_name) {
+		goods_name.value = option.goods_name
+	}
+	await loadCategories()
+	await _getBrandList()
+})
 
-		goodsDetail.value = deepClone(res.data);
-		// 如果  goodsDetail.value.goods.goods_image 中有 , 则转为数组 如果没有则是单张图片
+// 分类相关状态
+const currentCategory = ref<any>({})
+const selectedCategories = ref<number[]>([])
+const selectedCategoryNames = ref<string[]>([])
 
-		if (goodsDetail.value.goods.goods_image.indexOf(',') > -1) {
-			goodsDetail.value.goods.goods_image = goodsDetail.value.goods.goods_image.split(',')
-		} else {
-			goodsDetail.value.goods.goods_image = [goodsDetail.value.goods.goods_image]
-		}
+// 选择一级分类
+const selectParentCategory = (item: any) => {
+	currentCategory.value = item
+	// 如果当前一级分类已经被选中，则取消选中
+	const index = selectedCategories.value.indexOf(item.category_id)
+	if (index > -1) {
+		selectedCategories.value.splice(index, 1)
+		selectedCategoryNames.value.splice(index, 1)
+	} else if (!item.child_list?.length) {
+		// 如果没有子分类，直接选中一级分类
+		selectedCategories.value.push(item.category_id)
+		selectedCategoryNames.value.push(item.category_name)
+	}
+}
 
-		// console.log(goodsDetail.value.goods.goods_image);
-		downloadMultipleImages(goodsDetail.value.goods.goods_image).then(res => {
+// 选择二级分类
+const selectSubCategory = (item: any) => {
+	// 如果已经选中了父分类，先移除父分类
+	const parentIndex = selectedCategories.value.indexOf(currentCategory.value.category_id)
+	if (parentIndex > -1) {
+		selectedCategories.value.splice(parentIndex, 1)
+		selectedCategoryNames.value.splice(parentIndex, 1)
+	}
 
-			if (res) {
+	const index = selectedCategories.value.indexOf(item.category_id)
+	if (index > -1) {
+		selectedCategories.value.splice(index, 1)
+		selectedCategoryNames.value.splice(index, 1)
+	} else {
+		selectedCategories.value.push(item.category_id)
+		selectedCategoryNames.value.push(item.category_full_name)
+	}
+}
 
-				let sku_no = goodsDetail.value.sku_no ? '#' + goodsDetail.value.sku_no + ' ' : ''
-				uni.setClipboardData({
-					data: goodsDetail.value.goods.goods_name + ' ' + goodsDetail.value.goods.sub_title + ' ' + sku_no + goodsDetail.value.goods.price,
-					success() {
-						uni.showToast({
-							title: '图片下载及复制文案成功',
-							icon: 'none'
-						})
+// 移除已选分类
+const removeCategory = (index: number) => {
+	selectedCategories.value.splice(index, 1)
+	selectedCategoryNames.value.splice(index, 1)
+}
+
+// 重置分类选择
+const resetCategories = () => {
+	selectedCategories.value = []
+	selectedCategoryNames.value = []
+	currentCategory.value = {}
+}
+
+// 确认分类选择
+const confirmCategories = () => {
+	// 如果没有选择任何分类，但有当前选中的一级分类，则选中一级分类
+	if (selectedCategories.value.length === 0 && currentCategory.value.category_id) {
+		selectedCategories.value.push(currentCategory.value.category_id)
+		selectedCategoryNames.value.push(currentCategory.value.category_name)
+	}
+	filters.category_id = selectedCategories.value.join(',')
+	closePopup('category')
+	searchGoods()
+}
+
+// 修改加载分类方法
+const loadCategories = async () => {
+	try {
+		const res = await getGoodsCategoryTree()
+		categoryList.value = res.data
+		// 如果有预选分类，需要��置选中状态
+		if (filters.category_id) {
+			const ids = filters.category_id.split(',').map(Number)
+			selectedCategories.value = ids
+			// 查找并设置分类名称
+			const names: string[] = []
+			categoryList.value.forEach(parent => {
+				parent.child_list?.forEach(child => {
+					if (ids.includes(child.category_id)) {
+						names.push(child.category_full_name)
 					}
 				})
-			} else {
-				uni.showToast({
-					title: '下载失败',
-					icon: 'none'
-				});
-			}
-		})
-		//iPhone15 Pro 128G 111 #990899
-
-	})
-
+			})
+			selectedCategoryNames.value = names
+		}
+	} catch (error) {
+		console.error('加载分类失败:', error)
+	}
 }
 
-
-/************** 一键复制-start **********/
-// const toCopy = () => {
-// 	// 复制商品名称 及价格
-// 	let sku_no = goodsDetail.value.sku_no ? goodsDetail.value.sku_no + '|' : ''
-// 	uni.setClipboardData({
-// 		data: goodsDetail.value.goods.goods_name + '|' + goodsDetail.value.goods.sub_title + '|' + sku_no + goodsDetail.value.sale_price + "元",
-// 		success() {
-// 			uni.showToast({
-// 				title: '复制成功',
-// 				icon: 'none'
-// 			})
-// 		}
-// 	})
-// }
-/************** 一键复制-end **********/
-/*
-* downloadBanner
-* 一键下载所有的banner图片
-* */
-
-
-
-// #ifdef MP || APP-PLUS
-// Main function to download all images
-// const downloadBanner = () => {
-// 	const images = goodsDetail.value.goods.goods_image;
-// 	downloadMultipleImages(images)
-// }
-
-// 下载单个图片的函数
-function downloadImage(imageUrl: string) {
-	return new Promise((resolve, reject) => {
-		uni.downloadFile({
-			url: imageUrl,
-			success: (res) => {
-				if (res.errMsg == "downloadFile:ok") {
-					uni.saveImageToPhotosAlbum({
-						filePath: res.tempFilePath,
-						success: () => {
-							uni.showToast({
-								title: '保存成功',
-								icon: 'none'
-							});
-							resolve(res.tempFilePath);  // 成功时解析文件路径
-						},
-						fail: () => {
-							uni.showToast({
-								title: '保存失败，请稍后重试',
-								icon: 'none'
-							});
-							reject('保存图片失败');  // 失败时拒绝
-						}
-					});
-				} else {
-					reject('下载文件失败');  // 下载文件失败时拒绝
-				}
-			},
-			fail: () => {
-				uni.showToast({
-					title: '保存失败，请稍后重试',
-					icon: 'none'
-				});
-				reject('下载过程中出错');  // 请求失败时拒绝
-			}
-		});
-	});
-}
-
-// 下载多个图片的函数
-function downloadMultipleImages(images: Object) {
-	// 创建多个下载任务
-	let downloadTasks = images.map((imageUrl: string) => downloadImage(imageUrl));
-	loading.value = true;
-	// 使用 Promise.all 等待所有图片下载完成
-	return Promise.all(downloadTasks)
-		.then((results) => {
-			loading.value = false;
-			return true
-
-		})
-		.catch((error) => {
-			loading.value = false;
-			return false
-
-		});
-}
-
-
-// #endif
-
-const getAllAppListFn = (mescroll: mescrollStructure) => {
-	loading.value = false;
-	let data: object = {
-		goods_category: goods_category.value,
-		page: mescroll.num || 15,
+// 获取商品列表
+const getGoodsList = (mescroll: any) => {
+	loading.value = false
+	const params = {
+		page: mescroll.num,
 		limit: mescroll.size,
 		keyword: goods_name.value,
-		coupon_id: coupon_id.value,
-		order: searchType.value === 'all' ? '' : searchType.value,
-		sort: searchType.value == 'price' ? price.value : sale_num.value,
-		start_price: price_between.value.start_price,
-		end_price: price_between.value.end_price,
-		create_time: create_time.value
-	};
-	getGoodsPages(data).then((res: any) => {
-		let newArr = (res.data.data as Array<Object>);
-		//设置列表数据
-		// if (Number(mescroll.num) === 1) {
-		// 	articleList.value = []; //如果是第一页需手动制空列表
-		// }
+		goods_category: filters.category_id,
+		brand: filters.brand,
+		start_price: filters.price_min || undefined,
+		end_price: filters.price_max || undefined
+	}
 
+	// 添加排序参数
+	if (filters.sort !== 'default') {
+		const [field, order] = filters.sort.split('_')
+		params.order = field
+		params.sort = order
+	}
 
-		articleList.value = articleList.value.concat(newArr);
-		mescroll.endSuccess(newArr.length);
-		loading.value = true;
+	getGoodsPages(params).then((res: any) => {
+		const newArr = res.data.data
+		if (mescroll.num === 1) goodsList.value = []
+		goodsList.value = goodsList.value.concat(newArr)
+		mescroll.endSuccess(newArr.length)
+		loading.value = true
 	}).catch(() => {
-		loading.value = true;
-		mescroll.endErr(); // 请求失败, 结束加载
+		loading.value = true
+		mescroll.endErr()
 	})
 }
 
-
-const loadCategory = (id: string) => {
-	goods_category.value = id;
-	articleList.value = [];
-	// getMescroll().resetUpScroll();
-	// labelPopup.value = false;
-	// 返回id在数组中的下标
-	const index = categoryList.value.findIndex((item: any) => item.category_id == id);
-	// 赋值给currGoodsCategory
-	currGoodsCategory.value = index
-
+// 搜索商品
+const searchGoods = () => {
+	goodsList.value = []
+	getMescroll().resetUpScroll()
 }
-const loadTreeCategory = (id: string) => {
 
+// 显示弹窗
+const showPopup = (type: string) => {
+	Object.keys(popups).forEach(key => {
+		popups[key] = key === type
+	})
+}
 
-	if (goods_category.value == id) {
-		goods_category.value = categoryList.value[currGoodsCategory.value - 1].category_id || ''
+// 关闭弹窗
+const closePopup = (type: string) => {
+	popups[type] = false
+}
+
+// 选择分类
+const selectCategory = (item: any) => {
+	filters.category_id = item.category_id
+	closePopup('category')
+	searchGoods()
+}
+
+// 选择成色
+const selectbrand = (item: any) => {
+	filters.brand = filters.brand === item.value ? '' : item.value
+	closePopup('brand')
+	searchGoods()
+}
+
+// 选择价格区间
+const selectPriceRange = (item: any) => {
+	if (filters.price_range === item.value) {
+		filters.price_range = ''
+		filters.price_min = ''
+		filters.price_max = ''
 	} else {
-		goods_category.value = id;
-	}
-
-	articleList.value = [];
-}
-
-
-const goods_category = ref('');
-// 搜索
-
-const searchTypeFn = async (type) => {
-	console.log(type);
-
-	if (categoryList.value.length == 0) {
-		await getGoodsCategoryTree().then((res: any) => {
-			const initData = { category_name: "全部", category_id: '' };
-			categoryList.value.push(initData);
-			categoryList.value = categoryList.value.concat(res.data);
-			// loadCategory(categoryList.value[0].category_id)
-		});
-	}
-	searchType.value = type;
-	if (type == 'all') {
-		sale_num.value = '';
-		price.value = '';
-
-	}
-	if (type == 'day') {
-		// 今日上新 当前的日期 通过 原生的js 完成 yyyy-hh-mm
-		goods_category.value = ''
-		create_time.value = create_time.value ? "" : new Date().toLocaleDateString().split('/').join('-');
-	}
-	if (type == 'sale_num') {
-		price.value = '';
-		if (sale_num.value) {
-			sale_num.value = sale_num.value == 'asc' ? 'desc' : 'asc';
-		} else {
-			sale_num.value = 'asc';
-		}
-	}
-	if (type == 'price') {
-		console.log(price_between.value);
-		pricePopup.value = !pricePopup.value
-
-	}
-	if (type == 'label') {
-		sale_num.value = 'asc';
-		price.value = 'asc';
-
-		labelPopup.value = !labelPopup.value;
-	} else {
-		labelPopup.value = false;
-		articleList.value = [];
-
-		getMescroll().resetUpScroll();
+		filters.price_range = item.value
+		const [min, max] = item.value.split('-')
+		filters.price_min = min
+		filters.price_max = max
 	}
 }
-// const price_order_change = () => {
 
-// 	if (price.value) {
-// 		price.value = price.value == 'asc' ? 'desc' : 'asc';
-// 	} else {
-// 		price.value = 'asc';
-// 	}
-// }
+// 确认价格筛选
+const confirmPrice = () => {
+	closePopup('price')
+	searchGoods()
+}
 
-//列表样式切换
+// 重置价格筛选
+const resetPrice = () => {
+	filters.price_min = ''
+	filters.price_max = ''
+	filters.price_range = ''
+}
+
+// 选择排序方式
+const selectSort = (item: any) => {
+	filters.sort = item.value
+	closePopup('sort')
+	searchGoods()
+}
+
+// 重置所有筛选
+const resetFilters = () => {
+	Object.keys(filters).forEach(key => {
+		filters[key] = key === 'sort' ? 'default' : ''
+	})
+	searchGoods()
+}
+
+// 切换列表样式
 const listIconBtn = () => {
 	listType.value = !listType.value
 }
+
+// 获取成色标签
+const getbrandLabel = (value: string) => {
+	const item = brandList.find(item => item.value === value)
+	return item ? item.label : value
+}
+
+// 跳转详情
 const toDetail = (id: string | number) => {
 	redirect({ url: '/addon/phone_shop/pages/goods/detail', param: { goods_id: id }, mode: 'navigateTo' })
 }
-// resetQuery 重置搜索
-const resetQuery = () => {
-	goods_name.value = '';
-	currGoodsCategory.value = ''
-	goods_category.value = ''
-	coupon_id.value = '';
-	price.value = '';
-	sale_num.value = '';
-	price_between.value.start_price = '';
-	price_between.value.end_price = '';
-	labelPopup.value = false;
-	pricePopup.value = false;
-	searchType.value = 'all';
-	listType.value = true;
-	articleList.value = [];
-	create_time.value = ''
-	getMescroll().resetUpScroll();
-}
-onMounted(() => {
-	setTimeout(() => {
-		getMescroll().optUp.textNoMore = t("end");
-	}, 500)
-});
 
-// 是否展示会员价
-const isMemberPriceShow = (data: any) => {
-	let bool = false;
-	if (data.member_discount && getToken()) {
-		bool = true;
-	} else {
-		bool = false
-	}
-	return bool;
-}
-// 价格类型
+// 价格相关方法
 const priceType = (data: any) => {
-	let type = "";
 	if (data.is_discount && data.goodsSku.sale_price != data.goodsSku.price) {
-		type = 'discount_price'// 折扣
+		return 'discount_price'
 	} else if (data.member_discount && getToken() && data.goodsSku.member_price != data.goodsSku.price) {
-		type = 'member_price' // 会员价
-	} else {
-		type = ""
+		return 'member_price'
 	}
-	return type;
+	return ""
 }
-// 商品价格
+
 const goodsPrice = (data: any) => {
-	let price = "0.00";
+	let price = "0.00"
 	if (data.is_discount && data.goodsSku.sale_price != data.goodsSku.price) {
-		price = data.goodsSku.sale_price ? data.goodsSku.sale_price : data.goodsSku.price // 折扣价
+		price = data.goodsSku.sale_price || data.goodsSku.price
 	} else if (data.member_discount && getToken() && data.goodsSku.member_price != data.goodsSku.price) {
-		price = data.goodsSku.member_price ? data.goodsSku.member_price : data.goodsSku.price // 会员价
+		price = data.goodsSku.member_price || data.goodsSku.price
 	} else {
 		price = data.goodsSku.price
 	}
-	return parseFloat(price);
+	return parseFloat(price)
+}
+
+// 下载单个商品
+const downloadGoods = async (item: any) => {
+	const res = await getGoodsDetail({ goods_id: item.goods_id })
+	if (!res.data.goods) {
+		uni.showToast({ title: '商品信息获取失败', icon: 'none' })
+		return
+	}
+
+	const images = res.data.goods.goods_image.split(',')
+	downloadImages(images, item)
+}
+
+// 下载图片并复制文案
+const downloadImages = (images: string[], item: any, showToast: boolean = true) => {
+	return new Promise((resolve) => {
+		const tasks = images.map((url: string) => {
+			return new Promise((resolve, reject) => {
+				uni.downloadFile({
+					url,
+					success: (res) => {
+						if (res.statusCode === 200) {
+							uni.saveImageToPhotosAlbum({
+								filePath: res.tempFilePath,
+								success: resolve,
+								fail: reject
+							})
+						} else {
+							reject()
+						}
+					},
+					fail: reject
+				})
+			})
+		})
+
+		Promise.all(tasks).then(() => {
+			const sku_no = item.goodsSku.sku_no ? '#' + item.goodsSku.sku_no + ' ' : ''
+			const text = `${item.goods_name} ${item.sub_title} ${sku_no}${goodsPrice(item)}`
+			uni.setClipboardData({
+				data: text,
+				success: () => {
+					if (showToast) {
+						uni.showToast({ title: '图片下载及文案复制成功', icon: 'none' })
+					}
+					resolve(true)
+				}
+			})
+		}).catch(() => {
+			if (showToast) {
+				uni.showToast({ title: '下载失败', icon: 'none' })
+			}
+			resolve(false)
+		})
+	})
 }
 </script>
 
 <style lang="scss" scoped>
-.scroll-view-wrap {
-	word-break: keep-all;
-}
-
-.text-color {
-	color: var(--primary-color);
-}
-
-.label-select {
-	color: var(--primary-color);
-	border-color: var(--primary-color);
-	background-color: var(--primary-color-light);
-}
-
-:deep(.u-popup .u-transition) {
-	top: 156rpx !important;
-}
-
-.product-warp {
-	z-index: 99999;
-}
-
-:deep(.tab-bar-placeholder) {
-	display: none !important;
-}
-
-:deep(.u-tabbar__placeholder) {
-	display: none !important;
-}
-
-:deep(.u-input__content__clear) {
-	width: 28rpx;
-	height: 28rpx;
-	font-size: 28rpx;
-	background-color: #999;
-}
-
-.noData {
-	height: calc(100vh - 200rpx - 50px - constant(safe-area-inset-bottom));
-	height: calc(100vh - 200rpx - 50px - env(safe-area-inset-bottom));
-}
-
-.goods-item-style-two {
-	width: calc(50% - 10rpx);
-}
-
-
-.tabs-box {
-	width: 182rpx;
-	font-size: 28rpx;
-}
-
-.tabs-box .tab-item {
-	height: 92rpx;
-	text-align: center;
-	line-height: 92rpx;
-	background-color: #e7e2e23f;
-}
-
-.tabs-box .tab-item-active {
+.filter-scroll {
+	width: 100%;
+	white-space: nowrap;
+	padding: 16rpx 0;
 	position: relative;
-	color: var(--primary-color);
-	background-color: #ffffff;
 
-	&::before {
-		display: inline-block;
-		position: absolute;
-		left: 0rpx;
-		top: 50%;
-		transform: translateY(-50%);
-		content: '';
-		width: 6rpx;
-		height: 48rpx;
-		background-color: var(--primary-color);
+	&::-webkit-scrollbar {
+		display: none;
 	}
 
-	&::after {
-		display: inline-block;
-		position: absolute;
-		left: 0rpx;
-		top: 50%;
-		transform: translateY(-50%);
-		content: '';
-		width: 6rpx;
-		height: 48rpx;
-		background-color: var(--primary-color);
+	.filter-scroll-content {
+		display: inline-flex;
+		padding: 0 30rpx;
 	}
 }
 
-.scroll-height {
-	height: 100%;
+.filter-tag {
+	display: inline-flex;
+	align-items: center;
+	height: 56rpx;
+	padding: 0 24rpx;
+	margin-right: 20rpx;
+	font-size: 26rpx;
+	color: #666;
+	background: #f6f8f8;
+	border-radius: 28rpx;
+	transition: all 0.3s;
+	flex-shrink: 0;
+
+	&:last-child {
+		margin-right: 0;
+	}
+
+	&.active {
+		color: var(--primary-color);
+		background: var(--primary-color-light);
+	}
+
+	&.reset {
+		color: #999;
+	}
 }
 
-.active {
-	color: #f00
+.popup-content {
+	background: #fff;
+	padding: 30rpx;
+	max-height: 60vh;
+}
+
+.category-scroll {
+	max-height: 50vh;
+}
+
+.category-item {
+	padding: 24rpx 0;
+	font-size: 28rpx;
+	color: #333;
+	border-bottom: 1px solid #f5f5f5;
+
+	&.active {
+		color: var(--primary-color);
+	}
+
+	.count {
+		font-size: 24rpx;
+		color: #999;
+		margin-left: 10rpx;
+	}
+}
+
+.brand-list {
+	display: flex;
+	flex-wrap: wrap;
+	margin: -10rpx;
+}
+
+.brand-item {
+	width: calc(33.33% - 20rpx);
+	height: 70rpx;
+	margin: 10rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 26rpx;
+	color: #666;
+	background: #f6f8f8;
+	border-radius: 8rpx;
+
+	&.active {
+		color: var(--primary-color);
+		background: var(--primary-color-light);
+	}
+}
+
+.price-range {
+	.input-group {
+		display: flex;
+		align-items: center;
+		margin-bottom: 30rpx;
+
+		.separator {
+			margin: 0 20rpx;
+			color: #999;
+		}
+	}
+
+	.price-tags {
+		display: flex;
+		flex-wrap: wrap;
+		margin: -10rpx;
+		margin-bottom: 30rpx;
+	}
+
+	.price-tag {
+		width: calc(33.33% - 20rpx);
+		height: 70rpx;
+		margin: 10rpx;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 26rpx;
+		color: #666;
+		background: #f6f8f8;
+		border-radius: 8rpx;
+
+		&.active {
+			color: var(--primary-color);
+			background: var(--primary-color-light);
+		}
+	}
+
+	.btn-group {
+		display: flex;
+		justify-content: space-between;
+		gap: 20rpx;
+
+		:deep(.u-button) {
+			flex: 1;
+		}
+	}
+}
+
+.sort-list {
+	.sort-item {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 24rpx 0;
+		font-size: 28rpx;
+		color: #333;
+		border-bottom: 1px solid #f5f5f5;
+
+		&.active {
+			color: var(--primary-color);
+		}
+	}
+}
+
+.goods-item-list {
+	display: flex;
+	padding: 20rpx;
+	margin: 20rpx;
+	background: #fff;
+	border-radius: 16rpx;
+
+	.goods-image {
+		width: 190rpx;
+		height: 190rpx;
+		border-radius: 10rpx;
+		overflow: hidden;
+	}
+
+	.goods-info {
+		flex: 1;
+		margin-left: 20rpx;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.goods-name {
+		font-size: 28rpx;
+		color: #333;
+		line-height: 1.4;
+		margin-bottom: 10rpx;
+	}
+
+	.goods-subtitle {
+		font-size: 24rpx;
+		color: #666;
+		margin-bottom: 10rpx;
+	}
+
+	.goods-sku,
+	.goods-brand {
+		font-size: 24rpx;
+		margin-bottom: 6rpx;
+
+		.label {
+			color: #999;
+		}
+
+		.value {
+			color: #666;
+			margin-left: 10rpx;
+		}
+	}
+
+	.goods-bottom {
+		margin-top: auto;
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-end;
+
+		.action-btns {
+			display: flex;
+			align-items: center;
+			gap: 20rpx;
+		}
+
+		.download-btn {
+			width: 48rpx;
+			height: 48rpx;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background: var(--primary-color);
+			border-radius: 24rpx;
+			color: #fff;
+
+			.nc-iconfont {
+				font-size: 24rpx;
+			}
+		}
+	}
+}
+
+.goods-item-grid {
+	background: #fff;
+	border-radius: 16rpx;
+	overflow: hidden;
+	margin: 10rpx;
+	width: calc(50% - 20rpx);
+
+	.goods-image {
+		width: 100%;
+		height: 350rpx;
+	}
+
+	.goods-info {
+		padding: 20rpx;
+	}
+
+	.goods-name {
+		font-size: 28rpx;
+		color: #333;
+		line-height: 1.4;
+		margin-bottom: 10rpx;
+	}
+
+	.goods-subtitle {
+		font-size: 24rpx;
+		color: #666;
+		margin-bottom: 16rpx;
+	}
+
+	.goods-bottom {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-top: 10rpx;
+
+		.left {
+			flex: 1;
+			display: flex;
+			align-items: center;
+			gap: 12rpx;
+			font-size: 24rpx;
+
+			.stock {
+				color: #999;
+			}
+
+			.brand {
+				color: #666;
+				background: #f6f8f8;
+				padding: 4rpx 12rpx;
+				border-radius: 4rpx;
+			}
+		}
+
+		.download-btn {
+			width: 48rpx;
+			height: 48rpx;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background: var(--primary-color);
+			border-radius: 24rpx;
+			color: #fff;
+
+			.nc-iconfont {
+				font-size: 24rpx;
+			}
+		}
+	}
+}
+
+.price-wrap {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+
+	.symbol {
+		font-size: 24rpx;
+		color: var(--price-text-color);
+	}
+
+	.price {
+		font-size: 36rpx;
+		font-weight: bold;
+		color: var(--price-text-color);
+		font-family: 'DIN';
+	}
+
+	.decimal {
+		font-size: 24rpx;
+		color: var(--price-text-color);
+		font-family: 'DIN';
+	}
+
+	.price-tag {
+		height: 24rpx;
+		margin-left: 6rpx;
+	}
+}
+
+.stock-info {
+	font-size: 22rpx;
+	color: #999;
+
+	.separator {
+		margin: 0 10rpx;
+	}
+}
+
+.grid-list {
+	display: flex;
+	flex-wrap: wrap;
+	padding: 10rpx;
+}
+
+.empty-state {
+	padding: 40rpx;
+	background: #fff;
+	border-radius: 16rpx;
+	margin: 20rpx;
+}
+
+.category-popup {
+	display: flex;
+	flex-direction: column;
+	height: 70vh;
+	padding: 0;
+
+	.category-left {
+		width: 200rpx;
+		height: calc(100% - 120rpx);
+		background: #f8f8f8;
+
+		.category-item {
+			padding: 30rpx 20rpx;
+			font-size: 28rpx;
+			color: #333;
+			border-bottom: 1px solid #eee;
+			position: relative;
+			transition: all 0.3s;
+
+			&.active {
+				color: var(--primary-color);
+				background: #fff;
+				font-weight: 500;
+
+				&::before {
+					content: '';
+					position: absolute;
+					left: 0;
+					top: 50%;
+					transform: translateY(-50%);
+					width: 6rpx;
+					height: 36rpx;
+					background: var(--primary-color);
+					border-radius: 0 4rpx 4rpx 0;
+				}
+			}
+
+			.count {
+				font-size: 24rpx;
+				color: #999;
+				margin-left: 8rpx;
+			}
+		}
+	}
+
+	.category-right {
+		flex: 1;
+		height: calc(100% - 120rpx);
+		background: #fff;
+
+		.sub-category-list {
+			padding: 20rpx;
+		}
+
+		.sub-category-item {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 24rpx 20rpx;
+			margin-bottom: 16rpx;
+			border-radius: 8rpx;
+			background: #f8f8f8;
+			transition: all 0.3s;
+
+			&.active {
+				color: var(--primary-color);
+				background: var(--primary-color-light);
+			}
+
+			.content {
+				font-size: 28rpx;
+
+				.count {
+					font-size: 24rpx;
+					color: #999;
+					margin-left: 8rpx;
+				}
+			}
+
+			.check-icon {
+				font-size: 32rpx;
+				color: var(--primary-color);
+			}
+		}
+	}
+
+	.category-footer {
+		height: 150rpx;
+		padding: 20rpx;
+		border-top: 1px solid #eee;
+		background: #fff;
+
+		.selected-tags {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 16rpx;
+			margin-bottom: 20rpx;
+			max-height: 80rpx;
+			overflow-y: auto;
+
+			.tag {
+				display: inline-flex;
+				align-items: center;
+				padding: 4rpx 16rpx;
+				font-size: 24rpx;
+				color: var(--primary-color);
+				background: var(--primary-color-light);
+				border-radius: 24rpx;
+
+				.nc-iconfont {
+					margin-left: 8rpx;
+					font-size: 24rpx;
+				}
+			}
+		}
+
+		.btn-group {
+			display: flex;
+			justify-content: space-between;
+			gap: 20rpx;
+
+			:deep(.u-button) {
+				flex: 1;
+			}
+		}
+	}
 }
 </style>

@@ -48,7 +48,7 @@
 															    </template>
 															</u--image>
 														</view>
-                                                        <view class="flex flex-1 flex-wrap ml-[20rpx]">
+                                                        <view class="flex flex-1 flex-col justify-between ml-[20rpx]">
                                                             <view class="w-[100%] flex flex-col items-baseline">
                                                                 <view class="text-[#333] text-[28rpx] max-h-[80rpx] leading-[40rpx] multi-hidden font-400">
 																	{{ item.goods.goods_name }}
@@ -65,7 +65,7 @@
 																	</view>
 																</template>
 															</view>
-															<view v-if="item.manjian_info && Object.keys(item.manjian_info).length && item.manjian_info.is_show" class="flex items-center mt-[10rpx]" @click.stop="manjianOpenFn(item.manjian_info)">
+															<view v-if="item.manjian_info && Object.keys(item.manjian_info).length && item.manjian_info.is_show" class="flex items-center mt-[8rpx] mb-[auto]" @click.stop="manjianOpenFn(item.manjian_info)">
 																<view class="bg-[var(--primary-color-light)] text-[var(--primary-color)] rounded-[6rpx] text-[20rpx] flex items-center justify-center w-[88rpx] h-[36rpx] mr-[6rpx]">满减送</view>
 																<text class="text-[22rpx] text-[#999]">{{item.manjian_info.manjian_name}}</text>
 															</view>
@@ -171,7 +171,7 @@
 							<text class="text-[28rpx]">商品总额</text>
 							<text class="text-[28rpx]">￥{{total.goods_money}}</text>
 						</view>
-						<view class="flex justify-between h-[60rpx] px-[var(--pad-sidebar-m)]" v-if="total.promotion_money">
+						<view class="flex justify-between h-[60rpx] px-[var(--pad-sidebar-m)]" v-if="Number(total.promotion_money)">
 							<text class="text-[28rpx]">满减</text>
 							<text class="text-[28rpx] text-[red]">-￥{{total.promotion_money}}</text>
 						</view>
@@ -195,7 +195,7 @@
 						        ￥{{ parseFloat(total.order_money).toFixed(2) }}
 						    </text>
 						</view>
-						<view class="flex items-center justify-end mt-[6rpx]" v-if="total.promotion_money" @click="couponDetailsShow = true">
+						<view class="flex items-center justify-end mt-[6rpx]" v-if="Number(total.promotion_money)" @click="couponDetailsShow = true">
 							<text class="text-[22rpx] text-[#666]">优惠明细</text>
 							<text class="iconfont iconjiantoushang text-[#666] !text-[22rpx] ml-[4rpx] font-bold"></text>
 						</view>

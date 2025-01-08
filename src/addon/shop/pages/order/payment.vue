@@ -219,21 +219,23 @@
 
             <!-- 选择优惠券 -->
             <select-coupon :order-key="createData.order_key" ref="couponRef" @confirm="confirmSelectCoupon" />
-            <!-- 选择自提点 -->
-            <select-store ref="storeRef" @confirm="confirmSelectStore" />
-            <!-- 发票 -->
-            <invoice ref="invoiceRef" @confirm="confirmInvoice" />
-			<!-- 地址 -->
-			<address-list ref="addressRef" @confirm="confirmAddress" />
-			<!-- 满减 -->
-			<ns-goods-manjian ref="manjianShowRef"></ns-goods-manjian>
-            <pay ref="payRef" @close="payClose" />
         </view>
+		
+		<!-- 选择自提点 -->
+		<select-store ref="storeRef" @confirm="confirmSelectStore" />
+		<!-- 发票 -->
+		<invoice ref="invoiceRef" @confirm="confirmInvoice" />
+		<!-- 地址 -->
+		<address-list ref="addressRef" @confirm="confirmAddress" />
+		<!-- 满减 -->
+		<ns-goods-manjian ref="manjianShowRef"></ns-goods-manjian>
+		<pay ref="payRef" @close="payClose" />
+		
     </view>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, nextTick } from 'vue'
 import { orderCreateCalculate, orderCreate } from '@/addon/shop/api/order'
 import { redirect, img, moneyFormat, mobileHide } from '@/utils/common'
 import selectCoupon from './components/select-coupon/select-coupon'
@@ -242,6 +244,7 @@ import addressList from './components/address-list/address-list'
 import invoice from './components/invoice/invoice'
 import nsGoodsManjian from '@/addon/shop/components/ns-goods-manjian/ns-goods-manjian.vue';
 import { useSubscribeMessage } from '@/hooks/useSubscribeMessage'
+import { onShow } from '@dcloudio/uni-app'
 import { cloneDeep } from 'lodash-es'
 
 const createData: any = ref({
@@ -266,6 +269,18 @@ const createLoading = ref(false)
 const activeIndex = ref(0)//配送方式激活
 const delivery_type_list = ref([])
 uni.getStorageSync('orderCreateData') && Object.assign(createData.value, uni.getStorageSync('orderCreateData'))
+
+onShow(() => {
+	nextTick(()=>{
+		if(storeRef.value){
+			storeRef.value.getData((data:any)=>{
+				if(data.length){
+					createData.value.delivery.take_store_id = ((data[0] && data[0].store_id) ? data[0].store_id: 0)
+				}
+			});
+		}
+	})
+})
 
 // 选择地址之后跳转回来
 const selectAddress = uni.getStorageSync('selectAddressCallback')
@@ -323,7 +338,6 @@ const calculate = () => {
 
     }).catch()
 }
-
 calculate()
 
 // 改变配送方式

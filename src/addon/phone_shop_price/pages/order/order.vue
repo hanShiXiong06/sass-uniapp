@@ -293,7 +293,7 @@
 
             <!-- 提交按钮 -->
             <view class="submit-section">
-                <up-button type="primary" @click="submitOrder" text="提交订单"></up-button>
+                <up-button type="primary" @click="submitOrder" text="提交订单(内测中)"></up-button>
             </view>
         </u-form>
     </view>

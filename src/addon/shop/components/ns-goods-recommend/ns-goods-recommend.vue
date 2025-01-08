@@ -34,7 +34,7 @@ const goodsData = ref({
     },
     priceStyle: {
         mainColor: "#ff4142",
-        mainControl: true
+        control: true
     },
     goodsNameStyle:{
         color: "#303133",

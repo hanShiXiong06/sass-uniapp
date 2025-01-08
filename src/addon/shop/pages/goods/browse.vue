@@ -1,7 +1,7 @@
 <template>
     <view class="bg-[var(--page-bg-color)] min-h-screen overflow-hidden" :style="themeColor()">
-        <view>
-            <view class="tab-style-1 py-[20rpx] bg-[#fff] border-0  border-solid border-b-[1rpx] border-[#f6f6f6]">
+        <view class="fixed top-0 left-0 right-0 z-200">
+            <view class="tab-style-1 py-[20rpx] bg-[#fff] border-0  border-solid border-b-[1rpx] border-[#f6f6f6] ">
                 <view class="tab-left text-[28rpx]">
                     <text>共</text>
                     <text class="text-primary">{{ browseTotal }}</text>
@@ -16,7 +16,9 @@
                 <view  @click="isEdit = !isEdit" class="text-[#333] text-[28rpx]">{{ isEdit ? '完成' : '管理' }}</view>
                 </view>
             </view>
-            <view v-if="browseList.length" class="pb-[168rpx]">
+        </view>
+        <mescroll-body ref="mescrollRef" top="76" bottom="168"  @init="mescrollInit" :down="{ use: false }" @up="getBrowseListFn">
+            <view v-if="browseList.length">
                 <view class="bg-[#fff] mb-[20rpx] pt-[30rpx] px-[20rpx]"  v-for="(item,index) in browseList" :key="index">
                     <view class="flex items-center h-[34rpx]  mb-[20rpx]">
                         <view class="self-center w-[58rpx]  flex items-center" v-if="isEdit" @click.stop="isSelectGroup(item)">
@@ -39,9 +41,9 @@
                                     <text class="text-[#fff] text-[28rpx]">已失效</text>
                                 </view>
                                 <view class="absolute top-0 left-0 right-0 bottom-0 p-[10rpx] flex justify-end items-start z-100" v-if="isEdit" @click.stop="changeItem(item,subItem)">
-                                   <view class="bg-[#fff] w-[34rpx] h-[34rpx] rounded-[17rpx] flex items-center justify-center">
+                                <view class="bg-[#fff] w-[34rpx] h-[34rpx] rounded-[17rpx] flex items-center justify-center">
                                         <text class="iconfont text-primary text-[34rpx] w-[34rpx] h-[34rpx] rounded-[17rpx] overflow-hidden shrink-0" :class="{ 'iconxuanze1':subItem.checked,'bg-[#F5F5F5]':!subItem.checked}"></text>
-                                   </view>
+                                </view>
                                 </view>
                             </view>
                             <view class="text-[var(--price-text-color)] price-font">
@@ -53,10 +55,8 @@
                     </view>
                 </view>
             </view>
-        </view>
-        <view v-if="!browseList.length && !loading">
-            <mescroll-empty  :option="{tip : '暂无浏览的商品'}"></mescroll-empty>
-        </view>
+            <mescroll-empty  v-if="!browseList.length && loading" :option="{tip : '暂无浏览的商品'}"></mescroll-empty>
+        </mescroll-body>
         <view v-if="browseList.length && isEdit" class="fixed left-0 right-0 bottom-0 z-200 bg-[#fff]  pb-ios">
             <view v-if="checkedNum" class="h-[66rpx] flex items-center justify-between pl-[30rpx] pr-[20rpx] border-0  border-b-[1rpx] border-solid border-[#f6f6f6]">
                 <view class="text-[24rpx]">
@@ -85,37 +85,74 @@ import { ref, computed } from 'vue'
 import { img, redirect } from '@/utils/common';
 import { getBrowse, delBrowse } from '@/addon/shop/api/goods';
 import selectDate from '@/components/select-date/select-date.vue';
+import MescrollBody from '@/components/mescroll/mescroll-body/mescroll-body.vue';
 import MescrollEmpty from '@/components/mescroll/mescroll-empty/mescroll-empty.vue';
+import useMescroll from '@/components/mescroll/hooks/useMescroll.js';
+import { onPageScroll, onReachBottom } from '@dcloudio/uni-app';
+const { mescrollInit, downCallback, getMescroll } = useMescroll(onPageScroll, onReachBottom);
+
 const isEdit = ref(false)
-let loading = ref<boolean>(true);
+let loading = ref<boolean>(false);
 const optionLoading = ref(false)
 const browseTotal = ref<number>(0);
 let browseList = ref<any>([]);
 const create_time = ref([])
-const getBrowseListFn = () =>{
-    loading.value = true;
-    getBrowse({date: create_time.value}).then((res: any) => {
-        browseTotal.value = res.data.count;
-        let data = res.data.list;
-        browseList.value = []
-        for(let key in data){
-            let obj = {
-                date: key,
-                checked: false,
-                list: data[key]
+let dateList = ref<any>([])
+const getBrowseListFn = (mescroll: any) =>{
+    loading.value = false;
+    let data: object = {
+		page: mescroll.num,
+		limit: mescroll.size,
+        date: create_time.value
+	};
+    getBrowse(data).then((res: any) => {
+        browseTotal.value = res.data.total;
+        let newArr = (res.data.data as Array<Object>);
+        //设置列表数据
+		if (Number(mescroll.num) === 1) {
+			browseList.value = []; //如果是第一页需手动制空列表
+		}  
+        // 按日期分组
+        const groupedData = newArr.reduce((acc: any, item: any) => {
+            const date = item.browse_time.split(' ')[0]; // 提取日期部分
+            if (!acc[date]) {
+                acc[date] = [];
             }
-            obj.list = obj.list.map((item: any) => {
-                item.checked = false
-                return item
-            })
-            browseList.value.push(obj)
-        }
-        loading.value = false;
+            acc[date].push(item);
+            return acc;
+        }, {});
+
+        // 转换为所需格式
+        const formattedData = Object.keys(groupedData).map(date => ({
+            date: date,
+            list: groupedData[date]
+        }));
+        formattedData.forEach((item: any) => {
+            item.checked = false;
+            item.list.forEach((subItem: any)=> {
+                subItem.checked = false; // 初始化选中状态
+            });
+        });
+        // 合并相同日期的数据
+        formattedData.forEach((newItem: any) => {
+            const existingItemIndex = browseList.value.findIndex((item: any) => item.date === newItem.date);
+            if (existingItemIndex !== -1) {
+                // 合并到已有的日期数据中
+                browseList.value[existingItemIndex].list = [...browseList.value[existingItemIndex].list, ...newItem.list];
+            } else {
+                // 新增日期数据
+                browseList.value.push(newItem);
+            }
+        });
+		mescroll.endSuccess(newArr.length);
+		loading.value = true;
     }).catch(() => {
-        loading.value = false;
+        loading.value = true;
+		mescroll.endErr(); // 请求失败, 结束加载
     })
 }
-getBrowseListFn()
+
+
 
 // 选择数量
 const checkedNum = computed(() => {
@@ -183,8 +220,8 @@ const deleteBrowseFn = () => {
         })
     })
     delBrowse({goods_ids: ids}).then((res: any) => {
-        getBrowseListFn()
         optionLoading.value = false
+        getMescroll().resetUpScroll();
     })
 }
 
@@ -200,7 +237,7 @@ const clearBrowseFn = () => {
     })
 
     delBrowse({goods_ids: ids}).then((res: any) => {
-        getBrowseListFn()
+        getMescroll().resetUpScroll();
         optionLoading.value = false
     })
 }
@@ -213,7 +250,7 @@ const handleSelect = () =>{
 const confirmFn = (data: any) =>{
 	create_time.value = data;
     browseList.value = []
-    getBrowseListFn()
+    getMescroll().resetUpScroll();
 }
 
 

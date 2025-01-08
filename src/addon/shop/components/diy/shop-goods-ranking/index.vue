@@ -1,14 +1,14 @@
 <template>
 	<view :style="warpCss" class="overflow-hidden">
 		<scroll-view scroll-x="true" class="w-[100%] whitespace-nowrap">
-			<view class="flex items-center">
-				<view class="inline-block" v-for="(item,index) in diyComponent.list" :key="item.id">
-					<view class="w-[460rpx] px-[20rpx] pb-[20rpx] pt-[20rpx] flex flex-col items-start" :class="{'mr-[20rpx]': (diyComponent.list.length-1) != index}" :style="swiperItemCss(item)" v-if="listGoods[item.id] && listGoods[item.id].length > 0">
+			<view class="flex items-start">
+				<view class="inline-block" v-for="(item,index) in diyComponent.list" :key="index">
+					<view class="w-[460rpx] px-[20rpx] pb-[20rpx] pt-[20rpx] flex flex-col items-start" :class="{'mr-[20rpx]': (diyComponent.list.length-1) != index}" :style="swiperItemCss(item)" v-if="listGoods[item.rankIds[0]] && listGoods[item.rankIds[0]].length > 0">
 						<view class="flex items-center h-[50rpx]">
 							<image class="w-[30rpx] h-[30rpx] mr-[10rpx]" v-if="item.imgUrl" :src="img(item.imgUrl)" mode="aspectFill"></image>
 							<view :style="{'color': item.textColor}">
 								<text class="text-[30rpx] font-bold" v-if="item.text">{{ item.text }}</text>
-								<text class="text-[30rpx] font-bold" v-else>{{ listGoodsNames[item.id] }}</text>
+								<text class="text-[30rpx] font-bold" v-else>{{ listGoodsNames[item.rankIds[0]] }}</text>
 							</view>
 
 						</view>
@@ -17,7 +17,7 @@
 							<text class="iconfont iconyouV6xx !text-[24rpx]" v-if="item.subTitle.text"></text>
 						</view>
 						<view class="mt-[30rpx]">
-							<view class="flex bg-[#fff] p-[10rpx] rounded-[16rpx] mb-[16rpx]"  v-for="(goods, gIndex) in listGoods[item.id]"  :class="{'mb-0': gIndex === listGoods[item.id].length - 1}" @click="toDetail(goods.goods_id)">
+							<view class="flex bg-[#fff] p-[10rpx] rounded-[16rpx] mb-[16rpx]"  v-for="(goods, gIndex) in listGoods[item.rankIds[0]]"  :class="{'mb-0': gIndex === listGoods[item.rankIds[0]].length - 1}" @click="toDetail(goods.goods_id)">
 								<view class="relative w-[130rpx] h-[130rpx] mr-[16rpx]">
 									<image class="absolute top-[6rpx] left-[8rpx] w-[30rpx] h-[36rpx]" :style="{ zIndex:2 }" :src="getRankBadge(goods.rank_num)" mode="aspectFill"></image>
 									<view class="absolute top-[2rpx] left-[-3rpx] flex items-center justify-center w-[50rpx] h-[50rpx]"  :style="{ zIndex: 3 }">
@@ -96,7 +96,7 @@
 		}
 		if (data.bgUrl) {
 			style += 'background-image:' + 'url(' + img(data.bgUrl) + ');';
-			style += 'background-size: 100% 100%;';
+			style += 'background-size: 100%;';
 			style += 'background-repeat: no-repeat;';
 		}
 
@@ -144,7 +144,7 @@
 							const newItem = { ...fakeGoods, rank_num: i + 1 };  // rank_num 从 1 开始递增
 							fakeGoodsList.push(newItem);
 						}
-						listGoods[item.id] = fakeGoodsList;
+						listGoods[item.rankIds[0]] = fakeGoodsList;
 					}
 				});
 			}
@@ -164,8 +164,8 @@
 			};
 			getRankComponentsGoodsList(data).then((res) => {
 				if (res.data && res.data.goods_list.length > 0) {
-					listGoods[item.id] = res.data.goods_list;
-					listGoodsNames[item.id] = res.data.name;
+					listGoods[item.rankIds[0]] = res.data.goods_list;
+					listGoodsNames[item.rankIds[0]] = res.data.name;
 				}
 			}).catch((error) => {
 				console.error('获取商品数据失败:', error);
