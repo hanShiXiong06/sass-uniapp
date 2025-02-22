@@ -102,8 +102,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { onLoad, onShow } from '@dcloudio/uni-app'
-import { useLogin } from '@/hooks/useLogin';
-import { img, redirect, urlDeconstruction, getToken, moneyFormat, mobileHide,isWeixinBrowser } from '@/utils/common';
+import { img, redirect, urlDeconstruction, moneyFormat, mobileHide,isWeixinBrowser } from '@/utils/common';
 import {  getTechnicianGoods } from '@/addon/o2o/api/technician';
 import {  orderCalculate,orderCreate } from '@/addon/o2o/api/order';
 import { getReserveConfig } from '@/addon/o2o/api/goods';
@@ -151,7 +150,7 @@ const getTechnicianGoodsFn = (id) => {
 			userList.value[0].push(obj)
 			loading.value = false
 		})
-		
+
 	}).catch(() => {
 		loading.value = false
 	})
@@ -175,6 +174,7 @@ if (selectAddress) {
     createData.value.delivery.take_address_id = selectAddress.address_id
     uni.removeStorage({ key: 'selectAddressCallback' })
 }
+
 /**
  * 选择地址
  */
@@ -198,6 +198,7 @@ const createVerify = () => {
     }
 	return true
 }
+
 // 验证上门时间
 const timeVerify = () => {
 	if (!createData.value.reserve_service_time) {
@@ -206,6 +207,7 @@ const timeVerify = () => {
     }
 	return true
 }
+
 /**
  * 订单计算
  */

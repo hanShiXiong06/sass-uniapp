@@ -80,7 +80,7 @@
 												<text class="text-[40rpx]">{{parseFloat(moneyFormat(item.goods_sku.price)).toFixed(2).toString().split('.')[0]}}</text>
 												<text class="text-[24rpx]">.{{parseFloat(moneyFormat(item.goods_sku.price)).toFixed(2).toString().split('.')[1]}}</text>
 											</view>
-											<text class=" nc-iconfont nc-icon-gouwucheV6xx6 text-[#fff] text-[28rpx] bg-[#FE4C19] h-[48rpx] w-[48rpx] text-center leading-[48rpx] rounded-[50rpx]"></text>
+											<text class=" nc-iconfont nc-icon-gouwucheV6xx6 text-[#fff] text-[28rpx] bg-[var(--primary-color)] h-[48rpx] w-[48rpx] text-center leading-[48rpx] rounded-[50rpx]"></text>
 										</view>
 									</view>
 								</view>
@@ -89,7 +89,7 @@
 					</view>
 				</view>
 				<view class="fixed btn-wrap flex justify-center flex-col bottom-[0] left-[0] right-[0] items-center bg-[#fff] py-[30rpx]">
-					<view class="w-[690rpx] h-[80rpx] text-[26rpx] rounded-[100rpx] text-center leading-[80rpx]" :class="{'bg-[#FFB4B1] text-[#fff]': !Number(config.is_allow_apply), 'primary-btn-bg text-[#fff]': Number(config.is_allow_apply)}" @click="save">{{ Number(config.is_allow_apply) ? '申请成为分销商' : '尚未达到申请条件' }}
+					<view class="w-[690rpx] h-[80rpx] text-[26rpx] rounded-[100rpx] text-center leading-[80rpx]" :class="{'bg-[var(--primary-color-disabled)] text-[#fff]': !Number(config.is_allow_apply), 'primary-btn-bg text-[#fff]': Number(config.is_allow_apply)}" @click="save">{{ Number(config.is_allow_apply) ? '申请成为分销商' : '尚未达到申请条件' }}
 					</view>
 					<view class="flex justify-center items-baseline mt-[20rpx] -mb-[10rpx]" v-if="config.is_show_apply=='1' && config.is_allow_apply == '1'">
 						<u-checkbox-group>
@@ -290,7 +290,7 @@
 		background: linear-gradient( 91deg, #EEB2AA 0%, #EE9D9A 100%), #E99490;
 	}
 	.apply-condition{
-		background: linear-gradient( 90deg, #FF7811 0%, #FF2F17 100%);
+		background: linear-gradient( 90deg, var(--primary-color) 0%, var(--primary-color)  100%);
 	}
 	.fenxiao-goods-item{
 		.goods-item-content{

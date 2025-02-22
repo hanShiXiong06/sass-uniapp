@@ -34,9 +34,7 @@
 					<view v-if="detail.delivery_type == 'store'">
 						<view class="flex items-center">
 							<view>
-								<u--image class="overflow-hidden" radius="var(--goods-rounded-mid)" width="100rpx" height="100rpx"
-									:src="img(detail.store.store_logo ? detail.store.store_logo : '')"
-									model="aspectFill">
+								<u--image class="overflow-hidden" radius="var(--goods-rounded-mid)" width="100rpx" height="100rpx" :src="img(detail.store.store_logo ? detail.store.store_logo : '')" model="aspectFill">
 									<template #error>
 										<image class="w-[100rpx] h-[100rpx] rounded-[var(--goods-rounded-mid)] overflow-hidden" :src="img('addon/shop/store_default.png')" mode="aspectFill"></image>
 									</template>
@@ -80,9 +78,7 @@
 								<view>
 									<view class="text-[28rpx] max-w-[490rpx] truncate leading-[40rpx] text-[#333]">{{ goodsItem.goods_name }}</view>
 									<view v-if="goodsItem.sku_name">
-										<view class="text-[22rpx] mt-[14rpx] text-[var(--text-color-light9)] truncate max-w-[490rpx] leading-[28rpx]">
-											{{ goodsItem.sku_name }}
-										</view>
+										<view class="text-[22rpx] mt-[14rpx] text-[var(--text-color-light9)] truncate max-w-[490rpx] leading-[28rpx]">{{ goodsItem.sku_name }}</view>
 									</view>
 								</view>
 								<view v-if="goodsItem.manjian_info && Object.keys(goodsItem.manjian_info).length" class="flex items-center mt-[10rpx] mb-[auto]" @click.stop="manjianOpenFn(goodsItem.manjian_info)">
@@ -128,6 +124,11 @@
 								class="text-[22rpx] text-[#303133]  leading-[50rpx] px-[20rpx] border-[2rpx] border-solid border-[#999] rounded-full ml-[20rpx]"
 								@click="applyRefund(goodsItem.order_goods_id)">申请退款</view>
 						</view>
+
+						<!-- 商品的万能表单信息 -->
+						<view :class="{'diy-form-wrap' : goodsDiyFormData.length }" v-if="goodsItem.form_record_id">
+							<diy-form-detail :record_id="goodsItem.form_record_id" completeLayout="style-2" @callback="getGoodsDiyFormDetailCallback" />
+						</view>
 					</view>
 					<view class="pt-[20rpx] bg-[#f9f9f9] mt-[20rpx] mx-[var(--pad-sidebar-m)] rounded-[var(--rounded-big)]" v-if="detail.gift_goods.length">
 						<view class="order-goods-item flex justify-between flex-wrap px-[var(--pad-sidebar-m)] pb-[20rpx]" v-for="(goodsItem, goodsIndex) in detail.gift_goods" :key="goodsIndex">
@@ -136,8 +137,7 @@
 									:src="img(goodsItem.goods_image_thumb_small ? goodsItem.goods_image_thumb_small : '')"
 									model="aspectFill">
 									<template #error>
-										<image
-											class="w-[120rpx] h-[120rpx] rounded-[var(--goods-rounded-big)] overflow-hidden"
+										<image class="w-[120rpx] h-[120rpx] rounded-[var(--goods-rounded-big)] overflow-hidden"
 											:src="img('static/resource/images/diy/shop_default.jpg')" mode="aspectFill">
 										</image>
 									</template>
@@ -167,7 +167,7 @@
 						<view class="flex items-center text-[28rpx]">
 							<text>{{ detail.order_no }}</text>
 							<text class="w-[2rpx] h-[20rpx] bg-[#999] mx-[10rpx]"></text>
-							<text class="text-[#EF900A]" @click="copy(detail.order_no)">复制</text>
+							<text class="text-[var(--primary-color)]" @click="copy(detail.order_no)">复制</text>
 						</view>
 					</view>
 					<view v-if="detail.out_trade_no" class="justify-between card-template-item">
@@ -196,7 +196,7 @@
 						<view class="text-[28rpx]">{{ t('payTime') }}</view>
 						<view class="text-[28rpx]">{{ detail.pay.pay_time }}</view>
 					</view>
-					
+
 				</view>
 				<!-- 核销码 -->
 				<block v-if="isShowVerify">
@@ -243,6 +243,11 @@
 						</view>
 					</view>
 				</block>
+
+				<!-- 待付款订单的万能表单信息 -->
+				<view :class="{'sidebar-margin mt-[var(--top-m)] card-template' : orderDiyFormData.length }" v-if="detail.form_record_id">
+					<diy-form-detail :record_id="detail.form_record_id" completeLayout="style-2" @callback="getOrderDiyFormDetailCallback" />
+				</view>
 				<view class="sidebar-margin mt-[var(--top-m)] card-template">
 					<view class="card-template-item justify-between">
 						<view class="text-[28rpx]">{{ t('goodsMoney') }}</view>
@@ -361,6 +366,7 @@
 	import nsGoodsManjian from '@/addon/shop/components/ns-goods-manjian/ns-goods-manjian.vue';
 	import { topTabar } from '@/utils/topTabbar';
 	import { cloneDeep } from 'lodash-es';
+	import diyFormDetail from '@/addon/components/diy-form-detail/index.vue'
 
 	/********* 自定义头部 - start ***********/
 	const topTabarObj = topTabar()
@@ -413,7 +419,7 @@
 				obj.order_goods_id = res.data.order_goods[0].order_goods_id
 				getVerifyCodeFn(obj);
 			}
-			
+
 			detail.value.goods = []; //购买商品
 			detail.value.gift_goods = []; //赠品
 			detail.value.order_goods.forEach((item,index)=>{
@@ -423,8 +429,6 @@
 					detail.value.goods.push(item);
 				}
 			})
-			
-			
 
 			let evaluateCount = 0;
 			for (let i = 0; i < detail.value.order_goods.length; i++) {
@@ -444,7 +448,7 @@
 			loading.value = false;
 		})
 	}
-	
+
 	// 满减
 	const manjianOpenFn = (data:any) =>{
 		let obj = {};
@@ -578,6 +582,7 @@
 			}
 		}
 	}
+
 	const dateFormat = (res: any, type: any) => {
 		let data;
 		if (res.indexOf('/') != -1) {
@@ -659,6 +664,18 @@
 		})
 	}
 	/************ 虚拟商品核销-end ***************/
+
+	// 商品表单信息
+	const goodsDiyFormData = ref([]);
+	const getGoodsDiyFormDetailCallback = (data: any) => {
+		goodsDiyFormData.value = data;
+	}
+
+	// 订单表单信息
+	const orderDiyFormData = ref([]);
+	const getOrderDiyFormDetailCallback = (data: any) => {
+		orderDiyFormData.value = data;
+	}
 </script>
 <style lang="scss" scoped>
 	.text-item {

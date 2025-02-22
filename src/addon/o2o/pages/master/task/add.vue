@@ -47,6 +47,7 @@
         images:[],
         item_images:''
 	})
+
     onLoad((option) => {
 		Object.keys(formData.value).forEach((key: string) => {
 			if (option[key] != undefined) formData.value[key] = option[key]
@@ -61,41 +62,42 @@
 			}
 		})
 	})
+
     const serviceRef = ref<any>(null)
 	// 表单验证规则
 	const price_pass = (rule: any, value: string, callback: any) => {
-	  if (value === '' || value == null) {
-	    callback(new Error('请输入价格'))
-	  } else if (Number(value) <= 0) {
-	    callback(new Error('价格需大于0'))
-	  } else {
-	    callback()
-	  }
+		if (value === '' || value == null) {
+			callback(new Error('请输入价格'))
+		} else if (Number(value) <= 0) {
+			callback(new Error('价格需大于0'))
+		} else {
+			callback()
+		}
 	}
 
 	const formRules = reactive({//表单校验不要使用计算属性，计算属性在使用i18n时会反复触发表单校验
-        item_name: [
-	    { required: true, message: '请输入服务项目', trigger: 'blur' }
-	  ],
-	  price: [
-	    { required: true, validator: price_pass, trigger: 'blur' }
-	  ]
+		item_name: [
+			{ required: true, message: '请输入服务项目', trigger: 'blur' }
+		],
+		price: [
+			{ required: true, validator: price_pass, trigger: 'blur' }
+		]
 	})
 
 	// 提交
 	const onSave = async () => {
 		serviceRef.value.validate().then(() => {
-		    if (loading.value) return
-		    loading.value = true
-		    const data =  cloneDeep(formData.value)
-            data.item_images = data.images.toString()
+			if (loading.value) return
+			loading.value = true
+			const data = cloneDeep(formData.value)
+			data.item_images = data.images.toString()
 			let api = formData.value.order_item_id ? editService : addService
-		    api(data).then(res => {
-		    	loading.value = false;
-		    	redirect({url:'/addon/o2o/pages/master/task/detail',param:{order_id:formData.value.order_id}})
-		    }).catch(() => {
-		    	loading.value = false;
-		    })
+			api(data).then(res => {
+				loading.value = false;
+				redirect({ url: '/addon/o2o/pages/master/task/detail', param: { order_id: formData.value.order_id } })
+			}).catch(() => {
+				loading.value = false;
+			})
 		})
 	}
 </script>

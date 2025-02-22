@@ -13,11 +13,11 @@
       </view>
 
       <!-- 固定模板渲染 -->
-      <view class="fixed-template-wrap" v-if="diy.data.pageMode == 'fixed'">
+      <!-- <view class="fixed-template-wrap" v-if="diy.data.pageMode == 'fixed'">
 
         <fixed-group :data="diy.data" :pullDownRefreshCount="diy.pullDownRefreshCount" />
 
-      </view>
+      </view> -->
 
     </view>
 
@@ -32,7 +32,7 @@
 <script setup lang="ts">
 
 
-import { ref } from 'vue';
+import { ref, nextTick } from 'vue';
 import { useDiy } from '@/hooks/useDiy'
 import diyGroup from '@/addon/components/diy/group/index.vue'
 import fixedGroup from '@/addon/components/fixed/group/index.vue'
@@ -49,13 +49,19 @@ diy.onLoad();
 // 监听页面显示
 diy.onShow((data: any) => {
   diyGroupRef.value?.refresh();
+  // #ifdef MP
+  nextTick(() => {
+    if (wxPrivacyPopupRef.value) wxPrivacyPopupRef.value.proactive();
+  })
+  // #endif
 });
-
+// 监听页面隐藏
+diy.onHide();
 // 监听页面卸载
 diy.onUnload();
 
 // 监听下拉刷新事件
-diy.onPullDownRefresh()
+// diy.onPullDownRefresh()
 
 // 监听滚动事件
 diy.onPageScroll()

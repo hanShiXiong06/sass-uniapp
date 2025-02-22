@@ -1,0 +1,14 @@
+{
+   "auditTitle":"正在审核，内容仅自己可见" ,
+   "auditdesc":"发布的内容审核通过后，将展示在首页！",
+   "auditrefuse":"您的审核已被拒绝",
+   "followed":"已关注",
+   "follow":"关注",
+   "manage":"管理",
+   "edit":"编辑",
+   "delete":"删除",
+   "buy":"购买",
+   "comment":"评论",
+   "reply":"回复",
+   "expandMore":"展开更多"
+}

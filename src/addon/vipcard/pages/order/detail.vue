@@ -65,9 +65,15 @@
                                     {{detail.pay_time}}
                                 </view>
                             </u-form-item>
-                            <u-form-item :label="t('modePayment')" borderBottom v-if="detail.pay_type_name">
-                                <view class="border-style !border-0">
-                                    {{detail.pay_type_name}}
+                            <u-form-item :label="t('modePayment')"  v-if="detail.pay">
+                                <view>
+                                    <view class="mb-[18rpx]">
+                                        {{detail.pay.type_name }}
+                                    </view>
+                                    <view class="friend-pay relative px-[20rpx] py-[12rpx] bg-[#F2F2F2] rounded-[10rpx] flex items-center" v-if="detail.pay && detail.member_id !== detail.pay.main_id && detail.pay.status == 2 " >
+                                        <u-avatar :src="img(detail.pay.pay_member_headimg)" size="20" leftIcon="none" :default-url="img('static/resource/images/default_headimg.png')"  />
+                                        <text class="ml-[14rpx] text-[24rpx] using-hidden">{{ detail.pay.pay_member }}{{ t('helpPay') }}</text>
+                                    </view>
                                 </view>
                             </u-form-item>
                         </u--form>
@@ -240,5 +246,22 @@
 	.tab-bar-placeholder {
 		padding-bottom: calc(constant(safe-area-inset-bottom) + 32rpx);
 		padding-bottom: calc(env(safe-area-inset-bottom) + 32rpx);
+	}
+    :deep(.u-form-item__body){
+        align-items: flex-start;
+    }
+    .friend-pay{
+		&::after{
+			content: '';
+			display: block;
+			width: 20rpx;
+			height: 20rpx;
+			background-color: #f2f2f2;
+			position: absolute;
+			left: 30rpx;
+			top: 0;
+			transform: translateY(-50%) rotate(45deg);
+			border-radius: 4rpx;
+		}
 	}
 </style>

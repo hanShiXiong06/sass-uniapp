@@ -138,7 +138,6 @@
 					margin: auto;
 					left: 0px;
 					right: 0px;
-					bottom: 0;
 					width: auto;
 					border: none;
 					border-radius: 2px;
@@ -173,7 +172,7 @@
 					opacity: $disable;
 				}
 			}
-			
+
 		}
 	}
 </style>

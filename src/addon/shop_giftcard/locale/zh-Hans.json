@@ -15,5 +15,7 @@
     "pages.receive_info": "领取礼品卡",
     "pages.use_card": "礼品卡使用",
     "pages.use_goods_select": "选择兑换商品",
-    "pages.payment": "待付款订单"
+    "pages.payment": "待付款订单",
+    "pages.member_give_info": "送出礼品卡详情",
+    "pages.give_info": "领取礼品卡"
 }

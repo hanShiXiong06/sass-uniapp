@@ -397,6 +397,7 @@ const cartCalculateFn = () =>{
 	
 	if(!calculateArr.length){
 		total.value.order_money = 0
+		total.value.promotion_money = 0
 		return false;
 	}
 	
@@ -514,7 +515,7 @@ const cartOptions = ref([
     {
         text: t('delete'),
         style: {
-            backgroundColor: '#EF000C', 
+            backgroundColor: 'var(--primary-color)', 
 			width: '100rpx',
 			height:'100%',
 			borderRadius: '10rpx'	   

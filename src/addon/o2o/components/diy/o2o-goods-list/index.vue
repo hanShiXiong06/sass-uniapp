@@ -32,24 +32,23 @@
 			<template v-else>
 				<view class="flex flex-wrap justify-between">
 					<block v-if="diyComponent.style == 'style1'">
-						<view :class="['w-[48%] bg-[#fff] box-border rounded-[12rpx] overflow-hidden',{'mt-[24rpx]': index > 1}]"
-						      v-for="(item,index) in goodsList" :key="item.goods_id" @click="toLink(item)">
+						<view :class="['w-[48%] bg-[#fff] box-border rounded-[12rpx] overflow-hidden',{'mt-[24rpx]': index > 1}]" v-for="(item,index) in goodsList" :key="item.goods_id" @click="toLink(item)">
 							<u--image width="100%" height="332rpx" :src="img(item.cover_thumb_mid || '')" mode="aspectFill">
 								<template #error>
 									<u-icon name="photo" color="#999" size="50"></u-icon>
 								</template>
 							</u--image>
-							<view class="px-[16rpx] mt-[18rpx] max-h-[40rpx] leading-[40rpx] text-[28rpx] using-hidden">
+							<view class="px-[16rpx] mt-[18rpx] max-h-[40rpx] leading-[40rpx] text-[28rpx] truncate">
 								{{item.goods_name}}
 							</view>
 							<view class="px-[16rpx] flex items-center mt-[10rpx]">
-								<text class="text-[24rpx] text-[var(--primary-color)] px-[10rpx] py-[6rpx] rounded-[6rpx]  bg-[var(--label-bg-color)]">
+								<text class="text-[24rpx] text-[var(--primary-color)] px-[10rpx] py-[6rpx] rounded-[6rpx]  bg-[var(--primary-color-light)]">
 									{{ item.buy_type_name }}
 								</text>
 							</view>
 							<view class="px-[16rpx] pb-[20rpx] flex justify-between items-center mt-[12rpx]">
 								<view class="text-[28rpx]  text-[var(--price-text-color)] font-600 price-font">
-									
+
 									<text class="">
 										￥{{goodsPrice(item) }}
 										<image  v-if="priceType(item) == 'member_price'" class="h-[24rpx] ml-[4rpx] w-[60rpx]" :src="img('addon/o2o/VIP.png')" mode="heightFix" />
@@ -70,13 +69,9 @@
 								</template>
 							</u--image>
 							<view class="flex-1 flex flex-col ml-[20rpx]">
-								<view class="text-[28rpx] h-[80rpx] leading-[40rpx]  text-[#333] multi-hidden mb-[10rpx]">
-									{{item.goods_name}}
-								</view>
+								<view class="text-[28rpx] h-[80rpx] leading-[40rpx]  text-[#333] multi-hidden mb-[10rpx]">{{item.goods_name}}</view>
 								<view class="flex items-center">
-									<text class="text-[24rpx] text-[var(--primary-color)] px-[10rpx] py-[6rpx] rounded-[6rpx] bg-[var(--label-bg-color)]">
-										{{ item.buy_type_name }}
-									</text>
+									<text class="text-[24rpx] text-[var(--primary-color)] px-[10rpx] py-[6rpx] rounded-[6rpx] bg-[var(--primary-color-light)]">{{ item.buy_type_name }}</text>
 								</view>
 								<view class="mt-auto flex justify-between items-center">
 									<view class="text-[28rpx]  text-[var(--price-text-color)] font-600 price-font">
@@ -103,7 +98,7 @@
 										<u-icon name="photo" color="#999" size="30"></u-icon>
 									</template>
 								</u--image>
-								<view class="px-[16rpx] mt-[28rpx] max-h-[40rpx] leading-[40rpx] text-[28rpx] using-hidden text-[#333]">
+								<view class="px-[16rpx] mt-[28rpx] max-h-[40rpx] leading-[40rpx] text-[28rpx] truncate text-[#333]">
 									{{item.goods_name}}
 								</view>
 								<view class="px-[16rpx] pb-[20rpx] flex items-center mt-[8rpx]">
@@ -132,7 +127,7 @@
     import {getGoodsComponents} from '@/addon/o2o/api/goods';
     import skeleton from '@/addon/o2o/components/skeleton/index'
 
-    const props = defineProps(['component', 'index', 'pullDownRefreshCount']);
+    const props = defineProps(['component', 'index']);
     const diyStore = useDiyStore();
 
     const goodsList = ref<Array<any>>([]);
@@ -182,16 +177,9 @@
         return style;
     });
 
-    watch(
-        () => props.pullDownRefreshCount,
-        (newValue, oldValue) => {
-            // 处理下拉刷新业务
-        }
-    )
-
     const getGoodsListFn = () => {
         loading.value = true;
-		
+
         let data = {
             num: diyComponent.value.source == 'all' ? diyComponent.value.num : '',
             goods_ids: diyComponent.value.source == 'custom' ? (diyComponent.value.goods_ids.length > 0 ? diyComponent.value.goods_ids : '-1') : '',
@@ -247,17 +235,18 @@
         if (diyStore.mode == 'decorate') return false;
         redirect({url: '/addon/o2o/pages/goods/detail', param: {sku_id: data.goodsSku.sku_id}})
     }
-	
+
 	// 价格类型
 	let priceType = (data:any) =>{
 		let type = "";
 		if(data.member_discount && getToken()){
 			type = 'member_price' // 会员价
-		}else{ 
+		}else{
 			type = ""
 		}
 		return type;
 	}
+
 	// 商品价格
 	let goodsPrice = (data:any) =>{
 		let price = "0.00";
@@ -268,7 +257,7 @@
 		}
 		return parseFloat(price).toFixed(2);
 	}
-	
+
 </script>
 
 <style lang="scss" scoped>

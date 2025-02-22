@@ -151,6 +151,8 @@
 					</view>
 				</view>
 
+				<sow-show v-if="goodsDetail.sow_show_list" :items="goodsDetail.sow_show_list" class="sidebar-margin"></sow-show>
+
 				<view v-if="goodsDetail.evaluate_is_show" class="mt-[var(--top-m)] sidebar-margin card-template">
 					<view class="flex items-center justify-between min-h-[40rpx]" :class="{'mb-[30rpx]': evaluate && evaluate.list && evaluate.list.length}">
 						<text class="title !mb-[0]">宝贝评价({{ evaluate.count }})</text>
@@ -334,7 +336,7 @@
 									<text v-if="item.btnType === 'collecting'"
 										class="bg-[var(--primary-color)] mr-[20rpx] w-[106rpx] box-border text-center text-[#fff] h-[50rpx] text-[22rpx] px-[20rpx] leading-[50rpx] rounded-[100rpx]"
 										@click="getCouponFn(item, index)">领取</text>
-									<text v-else class="!bg-[#FFB4B1] mr-[20rpx] text-[#fff] mr-[20rpx] h-[50rpx] text-[22rpx] px-[20rpx] leading-[50rpx] rounded-[100rpx]">{{ item.btnType === 'collected' ? '已领完' : '已领取' }}</text>
+									<text v-else class="!bg-[var(--primary-color-disabled)] mr-[20rpx] text-[#fff] mr-[20rpx] h-[50rpx] text-[22rpx] px-[20rpx] leading-[50rpx] rounded-[100rpx]">{{ item.btnType === 'collected' ? '已领完' : '已领取' }}</text>
 								</view>
 							</view>
 						</scroll-view>
@@ -357,7 +359,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, getCurrentInstance, nextTick } from 'vue';
+import { ref, computed, getCurrentInstance, nextTick, } from 'vue';
 import { onLoad, onShow, onUnload,onPageScroll } from '@dcloudio/uni-app'
 import { img, redirect,handleOnloadParams, getToken, deepClone, goback } from '@/utils/common';
 import { t } from '@/locale';
@@ -371,7 +373,9 @@ import useMemberStore from '@/stores/member'
 import { useShare }from '@/hooks/useShare'
 import sharePoster from '@/components/share-poster/share-poster.vue'
 import {useGoods} from '@/addon/shop/hooks/useGoods'
+import useSystemStore from '@/stores/system'
 import nsGoodsRecommend from '@/addon/shop/components/ns-goods-recommend/ns-goods-recommend.vue';
+import sowShow from '@/components/sow-show/sow-show.vue';
 
 const diyGoods = useGoods();
 // 使用 reactive 创建响应式对象
@@ -412,6 +416,7 @@ const sendMessageImg = ref('')
 const wxPrivacyPopupRef:any = ref(null)
 const videoContext: any = ref(null)
 let pageParameter = {};
+
 onLoad((option: any) => {
 	// #ifdef MP-WEIXIN
 	// 处理小程序场景值参数
@@ -421,12 +426,19 @@ onLoad((option: any) => {
 })
 
 onShow(() => {
-	loading.value = false;
-	// 删除配送方式
-	uni.removeStorageSync('distributionType');
-	cartStore.getList();
-	getManjianInfo();
-	getDetailInfo();
+	setTimeout(()=>{ //延迟器用于sku框中的表单上传图片时，让onshow慢与图片上传方法
+		// 详情sku-表单，上传图片时不触发onshow内部方法
+		if(!uni.getStorageSync('sku_form_refresh')){
+			loading.value = false;
+			// 删除配送方式
+			uni.removeStorageSync('distributionType');
+			cartStore.getList();
+			getManjianInfo();
+			getDetailInfo();
+		}else{
+			uni.removeStorageSync('sku_form_refresh');
+		}
+	})
 })
 
 const getDetailInfo = ()=>{
@@ -482,6 +494,7 @@ const getDetailInfo = ()=>{
 		uni.setNavigationBarTitle({
 			title: goodsDetail.value.goods.goods_name
 		})
+
 		setShare({
 			wechat: {
 				...share
@@ -586,7 +599,6 @@ const goodsMaxBuy = (data:any = {})=>{
 		}
 	}
 }
-
 
 const specSelectFn = (id: any) => {
 	goodsDetail.value.skuList.forEach((item: any, index: any) => {
@@ -914,7 +926,11 @@ const goodsPrice = computed(() => {
 // 关闭预览图片
 onUnload(()=>{
 	// #ifdef  H5 || APP
-	uni.closePreviewImage()
+	try {
+		uni.closePreviewImage()
+	}catch (e) {
+
+	}
 	// #endif
 })
 </script>

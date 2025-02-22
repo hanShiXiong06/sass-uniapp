@@ -8,16 +8,12 @@
                         <image v-if="['refund_completed'].indexOf(detail.status) != -1" class="w-[70rpx] h-[70rpx] mt-[45rpx]" :src="img('addon/o2o/refund/complete.png')" />
                         <image v-if="['cancel','refund_fail','refund_refuse'].indexOf(detail.status) != -1" class="w-[70rpx] h-[70rpx] mt-[45rpx]" :src="img('addon/o2o/refund/close.png')" />
                     </view>
-                    <view class="ml-[20rpx] text-[#fff] mt-[50rpx] text-[40rpx]">
-                        {{ detail.status_name }}
-                    </view>
+                    <view class="ml-[20rpx] text-[#fff] mt-[50rpx] text-[40rpx]">{{ detail.status_name }}</view>
                 </view>
 
                 <view class="bg-[#fff] mx-[30rpx] p-[30rpx] rounded-[10rpx] flex justify-between flex-wrap mt-[30rpx]">
                     <view class="w-[160rpx] h-[160rpx] flex-2" @click="goodsEvent(detail.order_item.goods_id)">
-                        <u--image class="rounded-[10rpx] overflow-hidden" width="160rpx" height="160rpx"
-                            :src="img(detail.order_item.item_image_thumb_small ? detail.order_item.item_image_thumb_small : '')"
-                            model="aspectFill">
+                        <u--image class="rounded-[10rpx] overflow-hidden" width="160rpx" height="160rpx" :src="img(detail.order_item.item_image_thumb_small ? detail.order_item.item_image_thumb_small : '')" model="aspectFill">
                             <template #error>
                                 <u-icon name="photo" color="#999" size="50"></u-icon>
                             </template>
@@ -28,7 +24,7 @@
                             <text class="text-[28rpx] text-item leading-[40rpx]">{{ detail.order_item.item_name }}</text>
                         </view>
                         <view class="text-[24rpx] flex">
-                            <text class="text-[var(--primary-color)] rounded-[6rpx] py-[6rpx] bg-[var(--label-bg-color)] px-[10rpx]">{{ detail.order_item.item_type == 'reservation' ? '预约' : '一口价' }}</text>
+                            <text class="text-[var(--primary-color)] rounded-[6rpx] py-[6rpx] bg-[var(--primary-color-light)] px-[10rpx]">{{ detail.order_item.item_type == 'reservation' ? '预约' : '一口价' }}</text>
                         </view>
                         <view class="flex justify-between">
                             <text class="text-right text-[28rpx]  text-[var(--price-text-color)] price-font">￥{{ detail.order_item.price }}</text>
@@ -37,40 +33,32 @@
                     </view>
                 </view>
                 <view class="bg-[#fff] mx-[30rpx] p-[30rpx] mt-[30rpx] rounded-[10rpx]">
-                    <view
-                        class="flex justify-between text-[28rpx] pt-[20rpx] border-top-[2rpx] border-[solid] border-[#f1f1f1]">
+                    <view class="flex justify-between text-[28rpx] pt-[20rpx] border-top-[2rpx] border-[solid] border-[#f1f1f1]">
                         <view>{{t('refundMoney')}}</view>
                         <view class="w-[400rpx] multi-hidden text-right leading-[1.2]">{{ detail.status == 'wait_refund' ? parseFloat(detail.apply_money).toFixed(2) : parseFloat(detail.money).toFixed(2) }}</view>
                     </view>
-                    <view
-                        class="flex justify-between text-[28rpx] pt-[20rpx] border-top-[2rpx] border-[solid] border-[#f1f1f1] mt-[40rpx]">
+                    <view class="flex justify-between text-[28rpx] pt-[20rpx] border-top-[2rpx] border-[solid] border-[#f1f1f1] mt-[40rpx]">
                         <view>{{t('refundCause')}}</view>
                         <view class="w-[400rpx] multi-hidden text-right leading-[1.2]">{{ detail.reason || '--' }}</view>
                     </view>
-                    <view
-                        class="flex justify-between text-[28rpx] pt-[20rpx] border-top-[2rpx] border-[solid] border-[#f1f1f1] mt-[40rpx]">
+                    <view class="flex justify-between text-[28rpx] pt-[20rpx] border-top-[2rpx] border-[solid] border-[#f1f1f1] mt-[40rpx]">
                         <view>{{t('refundNo')}}</view>
                         <view>{{ detail.refund_no}}</view>
                     </view>
-                    <view
-                        class="flex justify-between text-[28rpx] pt-[20rpx] border-top-[2rpx] border-[solid] border-[#f1f1f1] mt-[40rpx]">
+                    <view class="flex justify-between text-[28rpx] pt-[20rpx] border-top-[2rpx] border-[solid] border-[#f1f1f1] mt-[40rpx]">
                         <view>{{t('createTime')}}</view>
                         <view>{{ detail.create_time }}</view>
                     </view>
-                    <view
-                        class="flex justify-between text-[28rpx] pt-[20rpx] border-top-[2rpx] border-[solid] border-[#f1f1f1] mt-[40rpx]">
+                    <view class="flex justify-between text-[28rpx] pt-[20rpx] border-top-[2rpx] border-[solid] border-[#f1f1f1] mt-[40rpx]">
                         <view>{{t('createExplain')}}</view>
                         <view class="max-w-[480rpx]">{{ detail.remark }}</view>
                     </view>
-                    <view v-if="detail.voucher"
-                        class="text-[28rpx] pt-[20rpx] border-top-[2rpx] border-[solid] border-[#f1f1f1] mt-[40rpx]">
+                    <view v-if="detail.voucher" class="text-[28rpx] pt-[20rpx] border-top-[2rpx] border-[solid] border-[#f1f1f1] mt-[40rpx]">
                         <view>{{t('voucher')}}</view>
                         <view class="flex mt-[20rpx] flex-wrap">
                             <block v-for="(item,index) in detail.voucher.split(',')">
                                 <view class="w-[140rpx] h-[140rpx] mr-[10rpx] mb-[10rpx]" @click="handleImg(item)">
-                                    <u--image class="rounded-[10rpx] overflow-hidden " width="140rpx" height="140rpx"
-                                        :src="img(item ? item : '')" 
-                                        model="aspectFill">
+                                    <u--image class="rounded-[10rpx] overflow-hidden " width="140rpx" height="140rpx" :src="img(item ? item : '')" model="aspectFill">
                                         <template #error>
                                             <u-icon name="photo" color="#999" size="50"></u-icon>
                                         </template>
@@ -79,16 +67,14 @@
                             </block>
                         </view>
                     </view>
-                    <view v-if="detail.refuse_reason"
-                        class="flex justify-between text-[28rpx] pt-[20rpx] border-top-[2rpx] border-[solid] border-[#f1f1f1] mt-[40rpx]">
+                    <view v-if="detail.refuse_reason" class="flex justify-between text-[28rpx] pt-[20rpx] border-top-[2rpx] border-[solid] border-[#f1f1f1] mt-[40rpx]">
                         <view>{{t('createExplain')}}</view>
                         <view class="max-w-[480rpx]">{{ detail.refuse_reason }}</view>
                     </view>
                 </view>
 
                 <view class="bg-[#fff] mx-[30rpx] p-[30rpx] mt-[30rpx] rounded-[10rpx]">
-                    <view
-                        class="flex justify-between text-[28rpx] border-top-[2rpx] border-[solid] border-[#f1f1f1]">
+                    <view class="flex justify-between text-[28rpx] border-top-[2rpx] border-[solid] border-[#f1f1f1]">
                         <view>{{t('record')}}</view>
                         <view class="flex items-center" @click="redirect({url: '/addon/o2o/pages/refund/log', param: { refund_no: detail.refund_no}})">
                             <text>{{t('check')}}</text>
@@ -117,10 +103,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive } from 'vue';
 import { onLoad,onUnload } from '@dcloudio/uni-app'
 import { t } from '@/locale'
-import { img, redirect, copy } from '@/utils/common';
+import { img, redirect } from '@/utils/common';
 import { getRefundDetail, cancelRefund } from '@/addon/o2o/api/order';
 
 const detail = ref<Object>({});
@@ -160,18 +146,18 @@ const cancelRefundFn = (data) => {
 	cancelRefundshow.value = true;
 }
 
-const refundConfirm = ()=>{
-	cancelRefund(currRefundId).then((res) => {
-		cancelRefundshow.value = false;
-		redirect({
-		url: '/addon/o2o/pages/order/detail',
-		param: {
-			order_id: curOrderId
-		}
-	})
-	}).catch(() => {
-		cancelRefundshow.value = false;
-	})
+const refundConfirm = ()=> {
+    cancelRefund(currRefundId).then((res) => {
+        cancelRefundshow.value = false;
+        redirect({
+            url: '/addon/o2o/pages/order/detail',
+            param: {
+                order_id: curOrderId
+            }
+        })
+    }).catch(() => {
+        cancelRefundshow.value = false;
+    })
 }
 
 const refundCancel = ()=>{
@@ -191,7 +177,7 @@ const handleImg = (url) => {
 		indicator: "number",
 		loop: true
 	})
-	
+
 }
 
 // 关闭预览图片

@@ -8,158 +8,230 @@
                 <!-- 装修模式下，设置负上边距后超出的内容，禁止选中设置 -->
                 <view v-if="diyGroup.isShowPlaceHolder(index,component)" class="absolute w-full z-1" :style="{ height : (component.margin.top * 2 * -1) + 'rpx' }" @click.stop="diyGroup.placeholderEvent"></view>
             <template v-if="component.componentName == 'ActiveCube'">
-                <diy-active-cube :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.ActiveCube" />
+                <diy-active-cube ref="diyActiveCubeRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.ActiveCube" />
             </template>
             <template v-if="component.componentName == 'CarouselSearch'">
-                <diy-carousel-search :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.CarouselSearch" />
+                <diy-carousel-search ref="diyCarouselSearchRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.CarouselSearch" />
             </template>
             <template v-if="component.componentName == 'FloatBtn'">
-                <diy-float-btn :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.FloatBtn" />
+                <diy-float-btn ref="diyFloatBtnRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.FloatBtn" />
+            </template>
+            <template v-if="component.componentName == 'FormAddress'">
+                <diy-form-address ref="diyFormAddressRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.FormAddress" />
+            </template>
+            <template v-if="component.componentName == 'FormCheckbox'">
+                <diy-form-checkbox ref="diyFormCheckboxRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.FormCheckbox" />
+            </template>
+            <template v-if="component.componentName == 'FormDate'">
+                <diy-form-date ref="diyFormDateRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.FormDate" />
+            </template>
+            <template v-if="component.componentName == 'FormDateScope'">
+                <diy-form-date-scope ref="diyFormDateScopeRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.FormDateScope" />
+            </template>
+            <template v-if="component.componentName == 'FormEmail'">
+                <diy-form-email ref="diyFormEmailRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.FormEmail" />
+            </template>
+            <template v-if="component.componentName == 'FormFile'">
+                <diy-form-file ref="diyFormFileRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.FormFile" />
+            </template>
+            <template v-if="component.componentName == 'FormIdentity'">
+                <diy-form-identity ref="diyFormIdentityRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.FormIdentity" />
+            </template>
+            <template v-if="component.componentName == 'FormIdentityPrivacy'">
+                <diy-form-identity-privacy ref="diyFormIdentityPrivacyRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.FormIdentityPrivacy" />
+            </template>
+            <template v-if="component.componentName == 'FormImage'">
+                <diy-form-image ref="diyFormImageRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.FormImage" />
+            </template>
+            <template v-if="component.componentName == 'FormInput'">
+                <diy-form-input ref="diyFormInputRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.FormInput" />
+            </template>
+            <template v-if="component.componentName == 'FormLocation'">
+                <diy-form-location ref="diyFormLocationRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.FormLocation" />
+            </template>
+            <template v-if="component.componentName == 'FormMobile'">
+                <diy-form-mobile ref="diyFormMobileRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.FormMobile" />
+            </template>
+            <template v-if="component.componentName == 'FormNumber'">
+                <diy-form-number ref="diyFormNumberRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.FormNumber" />
+            </template>
+            <template v-if="component.componentName == 'FormPrivacy'">
+                <diy-form-privacy ref="diyFormPrivacyRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.FormPrivacy" />
+            </template>
+            <template v-if="component.componentName == 'FormPrivacyPop'">
+                <diy-form-privacy-pop ref="diyFormPrivacyPopRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.FormPrivacyPop" />
+            </template>
+            <template v-if="component.componentName == 'FormRadio'">
+                <diy-form-radio ref="diyFormRadioRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.FormRadio" />
+            </template>
+            <template v-if="component.componentName == 'FormSubmit'">
+                <diy-form-submit ref="diyFormSubmitRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.FormSubmit" />
+            </template>
+            <template v-if="component.componentName == 'FormTable'">
+                <diy-form-table ref="diyFormTableRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.FormTable" />
+            </template>
+            <template v-if="component.componentName == 'FormTextarea'">
+                <diy-form-textarea ref="diyFormTextareaRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.FormTextarea" />
+            </template>
+            <template v-if="component.componentName == 'FormTime'">
+                <diy-form-time ref="diyFormTimeRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.FormTime" />
+            </template>
+            <template v-if="component.componentName == 'FormTimeScope'">
+                <diy-form-time-scope ref="diyFormTimeScopeRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.FormTimeScope" />
+            </template>
+            <template v-if="component.componentName == 'FormVideo'">
+                <diy-form-video ref="diyFormVideoRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.FormVideo" />
+            </template>
+            <template v-if="component.componentName == 'FormWechatName'">
+                <diy-form-wechat-name ref="diyFormWechatNameRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.FormWechatName" />
             </template>
             <template v-if="component.componentName == 'GraphicNav'">
-                <diy-graphic-nav :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.GraphicNav" />
+                <diy-graphic-nav ref="diyGraphicNavRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.GraphicNav" />
             </template>
             <template v-if="component.componentName == 'HorzBlank'">
-                <diy-horz-blank :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.HorzBlank" />
+                <diy-horz-blank ref="diyHorzBlankRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.HorzBlank" />
             </template>
             <template v-if="component.componentName == 'HorzLine'">
-                <diy-horz-line :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.HorzLine" />
+                <diy-horz-line ref="diyHorzLineRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.HorzLine" />
             </template>
             <template v-if="component.componentName == 'HotArea'">
-                <diy-hot-area :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.HotArea" />
+                <diy-hot-area ref="diyHotAreaRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.HotArea" />
             </template>
             <template v-if="component.componentName == 'ImageAds'">
-                <diy-image-ads :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.ImageAds" />
+                <diy-image-ads ref="diyImageAdsRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.ImageAds" />
             </template>
             <template v-if="component.componentName == 'MemberInfo'">
-                <diy-member-info :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.MemberInfo" />
+                <diy-member-info ref="diyMemberInfoRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.MemberInfo" />
             </template>
             <template v-if="component.componentName == 'MemberLevel'">
-                <diy-member-level :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.MemberLevel" />
+                <diy-member-level ref="diyMemberLevelRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.MemberLevel" />
             </template>
             <template v-if="component.componentName == 'Notice'">
-                <diy-notice :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.Notice" />
+                <diy-notice ref="diyNoticeRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.Notice" />
             </template>
             <template v-if="component.componentName == 'PictureShow'">
-                <diy-picture-show :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.PictureShow" />
+                <diy-picture-show ref="diyPictureShowRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.PictureShow" />
             </template>
             <template v-if="component.componentName == 'RichText'">
-                <diy-rich-text :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.RichText" />
+                <diy-rich-text ref="diyRichTextRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.RichText" />
             </template>
             <template v-if="component.componentName == 'RubikCube'">
-                <diy-rubik-cube :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.RubikCube" />
+                <diy-rubik-cube ref="diyRubikCubeRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.RubikCube" />
             </template>
             <template v-if="component.componentName == 'Text'">
-                <diy-text :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.Text" />
+                <diy-text ref="diyTextRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.Text" />
             </template>
             <template v-if="component.componentName == 'VipcardCard'">
-                <diy-vipcard-card :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.VipcardCard" />
+                <diy-vipcard-card ref="diyVipcardCardRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.VipcardCard" />
             </template>
             <template v-if="component.componentName == 'VipcardReserve'">
-                <diy-vipcard-reserve :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.VipcardReserve" />
+                <diy-vipcard-reserve ref="diyVipcardReserveRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.VipcardReserve" />
             </template>
             <template v-if="component.componentName == 'VipcardStore'">
-                <diy-vipcard-store :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.VipcardStore" />
+                <diy-vipcard-store ref="diyVipcardStoreRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.VipcardStore" />
             </template>
             <template v-if="component.componentName == 'Article'">
-                <diy-article :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.Article" />
-            </template>
-            <template v-if="component.componentName == 'GoodsCoupon'">
-                <diy-goods-coupon :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.GoodsCoupon" />
-            </template>
-            <template v-if="component.componentName == 'GoodsList'">
-                <diy-goods-list :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.GoodsList" />
-            </template>
-            <template v-if="component.componentName == 'ManyGoodsList'">
-                <diy-many-goods-list :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.ManyGoodsList" />
-            </template>
-            <template v-if="component.componentName == 'ShopExchangeGoods'">
-                <diy-shop-exchange-goods :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.ShopExchangeGoods" />
-            </template>
-            <template v-if="component.componentName == 'ShopExchangeInfo'">
-                <diy-shop-exchange-info :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.ShopExchangeInfo" />
-            </template>
-            <template v-if="component.componentName == 'ShopGoodsRanking'">
-                <diy-shop-goods-ranking :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.ShopGoodsRanking" />
-            </template>
-            <template v-if="component.componentName == 'ShopGoodsRecommend'">
-                <diy-shop-goods-recommend :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.ShopGoodsRecommend" />
-            </template>
-            <template v-if="component.componentName == 'ShopMemberInfo'">
-                <diy-shop-member-info :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.ShopMemberInfo" />
-            </template>
-            <template v-if="component.componentName == 'ShopNewcomer'">
-                <diy-shop-newcomer :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.ShopNewcomer" />
-            </template>
-            <template v-if="component.componentName == 'ShopOrderInfo'">
-                <diy-shop-order-info :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.ShopOrderInfo" />
-            </template>
-            <template v-if="component.componentName == 'ShopSearch'">
-                <diy-shop-search :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.ShopSearch" />
-            </template>
-            <template v-if="component.componentName == 'SingleRecommend'">
-                <diy-single-recommend :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.SingleRecommend" />
+                <diy-article ref="diyArticleRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.Article" />
             </template>
             <template v-if="component.componentName == 'Brand'">
-                <diy-brand :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.Brand" />
+                <diy-brand ref="diyBrandRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.Brand" />
             </template>
             <template v-if="component.componentName == 'Jhkd'">
-                <diy-jhkd :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.Jhkd" />
+                <diy-jhkd ref="diyJhkdRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.Jhkd" />
+            </template>
+            <template v-if="component.componentName == 'KdGz'">
+                <diy-kd-gz ref="diyKdGzRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.KdGz" />
             </template>
             <template v-if="component.componentName == 'FenxiaoGoodsList'">
-                <diy-fenxiao-goods-list :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.FenxiaoGoodsList" />
+                <diy-fenxiao-goods-list ref="diyFenxiaoGoodsListRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.FenxiaoGoodsList" />
             </template>
             <template v-if="component.componentName == 'O2oGoodsList'">
-                <diy-o2o-goods-list :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.O2oGoodsList" />
+                <diy-o2o-goods-list ref="diyO2oGoodsListRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.O2oGoodsList" />
             </template>
             <template v-if="component.componentName == 'O2oMemberInfo'">
-                <diy-o2o-member-info :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.O2oMemberInfo" />
+                <diy-o2o-member-info ref="diyO2oMemberInfoRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.O2oMemberInfo" />
             </template>
             <template v-if="component.componentName == 'O2oSearch'">
-                <diy-o2o-search :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.O2oSearch" />
+                <diy-o2o-search ref="diyO2oSearchRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.O2oSearch" />
             </template>
             <template v-if="component.componentName == 'O2oTechnician'">
-                <diy-o2o-technician :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.O2oTechnician" />
+                <diy-o2o-technician ref="diyO2oTechnicianRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.O2oTechnician" />
             </template>
             <template v-if="component.componentName == 'TkVipLevel'">
-                <diy-tk-vip-level :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.TkVipLevel" />
+                <diy-tk-vip-level ref="diyTkVipLevelRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.TkVipLevel" />
             </template>
             <template v-if="component.componentName == 'TkVipManage'">
-                <diy-tk-vip-manage :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.TkVipManage" />
+                <diy-tk-vip-manage ref="diyTkVipManageRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.TkVipManage" />
             </template>
             <template v-if="component.componentName == 'TkVipReal'">
-                <diy-tk-vip-real :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.TkVipReal" />
+                <diy-tk-vip-real ref="diyTkVipRealRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.TkVipReal" />
             </template>
             <template v-if="component.componentName == 'GiftcardList'">
-                <diy-giftcard-list :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.GiftcardList" />
+                <diy-giftcard-list ref="diyGiftcardListRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.GiftcardList" />
             </template>
             <template v-if="component.componentName == 'PhoneGoodsCoupon'">
-                <diy-phone-goods-coupon :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.PhoneGoodsCoupon" />
+                <diy-phone-goods-coupon ref="diyPhoneGoodsCouponRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.PhoneGoodsCoupon" />
             </template>
             <template v-if="component.componentName == 'PhoneGoodsList'">
-                <diy-phone-goods-list :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.PhoneGoodsList" />
+                <diy-phone-goods-list ref="diyPhoneGoodsListRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.PhoneGoodsList" />
             </template>
             <template v-if="component.componentName == 'PhoneManyGoodsList'">
-                <diy-phone-many-goods-list :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.PhoneManyGoodsList" />
+                <diy-phone-many-goods-list ref="diyPhoneManyGoodsListRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.PhoneManyGoodsList" />
             </template>
             <template v-if="component.componentName == 'PhoneShopExchangeGoods'">
-                <diy-phone-shop-exchange-goods :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.PhoneShopExchangeGoods" />
+                <diy-phone-shop-exchange-goods ref="diyPhoneShopExchangeGoodsRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.PhoneShopExchangeGoods" />
             </template>
             <template v-if="component.componentName == 'PhoneShopExchangeInfo'">
-                <diy-phone-shop-exchange-info :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.PhoneShopExchangeInfo" />
+                <diy-phone-shop-exchange-info ref="diyPhoneShopExchangeInfoRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.PhoneShopExchangeInfo" />
             </template>
             <template v-if="component.componentName == 'PhoneShopMemberInfo'">
-                <diy-phone-shop-member-info :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.PhoneShopMemberInfo" />
+                <diy-phone-shop-member-info ref="diyPhoneShopMemberInfoRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.PhoneShopMemberInfo" />
             </template>
             <template v-if="component.componentName == 'PhoneShopOrderInfo'">
-                <diy-phone-shop-order-info :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.PhoneShopOrderInfo" />
+                <diy-phone-shop-order-info ref="diyPhoneShopOrderInfoRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.PhoneShopOrderInfo" />
             </template>
             <template v-if="component.componentName == 'PhoneShopSearch'">
-                <diy-phone-shop-search :component="component" :global="data.global" :index="index" :pullDownRefreshCount="props.pullDownRefreshCount" :scrollBool="diyGroup.componentsScrollBool.PhoneShopSearch" />
+                <diy-phone-shop-search ref="diyPhoneShopSearchRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.PhoneShopSearch" />
+            </template>
+            <template v-if="component.componentName == 'GoodsCoupon'">
+                <diy-goods-coupon ref="diyGoodsCouponRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.GoodsCoupon" />
+            </template>
+            <template v-if="component.componentName == 'GoodsList'">
+                <diy-goods-list ref="diyGoodsListRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.GoodsList" />
+            </template>
+            <template v-if="component.componentName == 'ManyGoodsList'">
+                <diy-many-goods-list ref="diyManyGoodsListRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.ManyGoodsList" />
+            </template>
+            <template v-if="component.componentName == 'ShopExchangeGoods'">
+                <diy-shop-exchange-goods ref="diyShopExchangeGoodsRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.ShopExchangeGoods" />
+            </template>
+            <template v-if="component.componentName == 'ShopExchangeInfo'">
+                <diy-shop-exchange-info ref="diyShopExchangeInfoRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.ShopExchangeInfo" />
+            </template>
+            <template v-if="component.componentName == 'ShopGoodsRanking'">
+                <diy-shop-goods-ranking ref="diyShopGoodsRankingRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.ShopGoodsRanking" />
+            </template>
+            <template v-if="component.componentName == 'ShopGoodsRecommend'">
+                <diy-shop-goods-recommend ref="diyShopGoodsRecommendRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.ShopGoodsRecommend" />
+            </template>
+            <template v-if="component.componentName == 'ShopMemberInfo'">
+                <diy-shop-member-info ref="diyShopMemberInfoRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.ShopMemberInfo" />
+            </template>
+            <template v-if="component.componentName == 'ShopNewcomer'">
+                <diy-shop-newcomer ref="diyShopNewcomerRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.ShopNewcomer" />
+            </template>
+            <template v-if="component.componentName == 'ShopOrderInfo'">
+                <diy-shop-order-info ref="diyShopOrderInfoRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.ShopOrderInfo" />
+            </template>
+            <template v-if="component.componentName == 'ShopSearch'">
+                <diy-shop-search ref="diyShopSearchRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.ShopSearch" />
+            </template>
+            <template v-if="component.componentName == 'SingleRecommend'">
+                <diy-single-recommend ref="diySingleRecommendRef" :component="component" :global="data.global" :index="index" :scrollBool="diyGroup.componentsScrollBool.SingleRecommend" />
             </template>
             </view>
         </view>
-        <template v-if="diyStore.mode == '' && data.global.bottomTabBarSwitch">
+        <template v-if="diyStore.mode == '' && data.global && data.global.bottomTabBarSwitch">
             <view class="pt-[20rpx]"></view>
             <tabbar />
         </template>
@@ -170,20 +242,9 @@
    import diyVipcardReserve from '@/addon/vipcard/components/diy/vipcard-reserve/index.vue';
    import diyVipcardStore from '@/addon/vipcard/components/diy/vipcard-store/index.vue';
    import diyArticle from '@/addon/cms/components/diy/article/index.vue';
-   import diyGoodsCoupon from '@/addon/shop/components/diy/goods-coupon/index.vue';
-   import diyGoodsList from '@/addon/shop/components/diy/goods-list/index.vue';
-   import diyManyGoodsList from '@/addon/shop/components/diy/many-goods-list/index.vue';
-   import diyShopExchangeGoods from '@/addon/shop/components/diy/shop-exchange-goods/index.vue';
-   import diyShopExchangeInfo from '@/addon/shop/components/diy/shop-exchange-info/index.vue';
-   import diyShopGoodsRanking from '@/addon/shop/components/diy/shop-goods-ranking/index.vue';
-   import diyShopGoodsRecommend from '@/addon/shop/components/diy/shop-goods-recommend/index.vue';
-   import diyShopMemberInfo from '@/addon/shop/components/diy/shop-member-info/index.vue';
-   import diyShopNewcomer from '@/addon/shop/components/diy/shop-newcomer/index.vue';
-   import diyShopOrderInfo from '@/addon/shop/components/diy/shop-order-info/index.vue';
-   import diyShopSearch from '@/addon/shop/components/diy/shop-search/index.vue';
-   import diySingleRecommend from '@/addon/shop/components/diy/single-recommend/index.vue';
    import diyBrand from '@/addon/tk_jhkd/components/diy/brand/index.vue';
    import diyJhkd from '@/addon/tk_jhkd/components/diy/jhkd/index.vue';
+   import diyKdGz from '@/addon/tk_jhkd/components/diy/kd-gz/index.vue';
    import diyFenxiaoGoodsList from '@/addon/shop_fenxiao/components/diy/fenxiao-goods-list/index.vue';
    import diyO2oGoodsList from '@/addon/o2o/components/diy/o2o-goods-list/index.vue';
    import diyO2oMemberInfo from '@/addon/o2o/components/diy/o2o-member-info/index.vue';
@@ -201,21 +262,34 @@
    import diyPhoneShopMemberInfo from '@/addon/phone_shop/components/diy/phone-shop-member-info/index.vue';
    import diyPhoneShopOrderInfo from '@/addon/phone_shop/components/diy/phone-shop-order-info/index.vue';
    import diyPhoneShopSearch from '@/addon/phone_shop/components/diy/phone-shop-search/index.vue';
+   import diyGoodsCoupon from '@/addon/shop/components/diy/goods-coupon/index.vue';
+   import diyGoodsList from '@/addon/shop/components/diy/goods-list/index.vue';
+   import diyManyGoodsList from '@/addon/shop/components/diy/many-goods-list/index.vue';
+   import diyShopExchangeGoods from '@/addon/shop/components/diy/shop-exchange-goods/index.vue';
+   import diyShopExchangeInfo from '@/addon/shop/components/diy/shop-exchange-info/index.vue';
+   import diyShopGoodsRanking from '@/addon/shop/components/diy/shop-goods-ranking/index.vue';
+   import diyShopGoodsRecommend from '@/addon/shop/components/diy/shop-goods-recommend/index.vue';
+   import diyShopMemberInfo from '@/addon/shop/components/diy/shop-member-info/index.vue';
+   import diyShopNewcomer from '@/addon/shop/components/diy/shop-newcomer/index.vue';
+   import diyShopOrderInfo from '@/addon/shop/components/diy/shop-order-info/index.vue';
+   import diyShopSearch from '@/addon/shop/components/diy/shop-search/index.vue';
+   import diySingleRecommend from '@/addon/shop/components/diy/single-recommend/index.vue';
    import topTabbar from '@/components/top-tabbar/top-tabbar.vue'
    import useDiyStore from '@/app/stores/diy';
    import { useDiyGroup } from './useDiyGroup';
-   import { ref } from 'vue';
+   import { ref,getCurrentInstance } from 'vue';
 
-   const props = defineProps(['data','pullDownRefreshCount']);
-   const topTabbarRef = ref(null);
+   const props = defineProps(['data']);
+   const instance: any = getCurrentInstance();
+   const getFormRef = () => {
+       return {
+           componentRefs: instance.refs
+       }
+   }
    const diyStore = useDiyStore();
    const diyGroup = useDiyGroup({
        ...props,
-       getFormRef() {
-           return {
-               topTabbarRef: topTabbarRef.value
-           }
-       }
+       getFormRef
    });
    const data = ref(diyGroup.data);
 
@@ -225,7 +299,8 @@
    // 监听滚动事件
    diyGroup.onPageScroll();
    defineExpose({
-       refresh: diyGroup.refresh
+       refresh: diyGroup.refresh,
+       getFormRef
    })
 </script>
 <style lang="scss" scoped>

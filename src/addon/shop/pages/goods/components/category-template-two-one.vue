@@ -4,7 +4,7 @@
 			<view v-if="config.search.control" class="search-box box-border z-10 fixed top-0 left-0 right-0  h-[100rpx] bg-[#fff]">
 				<view class="flex-1 search-input">
 					<text @click.stop="searchNameFn" class="nc-iconfont nc-icon-sousuo-duanV6xx1 btn"></text>
-					<input class="input" type="text" v-model="searchName" :placeholder="config.search.title" placeholderClass="text-[var(--text-color-light9)]" @confirm="searchNameFn">
+					<input class="input" type="text" v-model.trim="searchName" :placeholder="config.search.title" placeholderClass="text-[var(--text-color-light9)]" @confirm="searchNameFn">
 					<text v-if="searchName" class="nc-iconfont nc-icon-cuohaoV6xx1 clear" @click="searchName=''"></text>
 				</view>
 			</view>

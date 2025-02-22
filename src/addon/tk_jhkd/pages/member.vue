@@ -30,66 +30,66 @@
 </template>
 
 <script setup lang="ts">
-	import { ref, computed } from 'vue';
-	import { useDiy } from '@/hooks/useDiy'
-	import { redirect } from '@/utils/common';
-	import diyGroup from '@/addon/components/diy/group/index.vue'
-	import fixedGroup from '@/addon/components/fixed/group/index.vue'
-	import useMemberStore from '@/stores/member'
+import { ref, computed } from 'vue';
+import { useDiy } from '@/hooks/useDiy'
+import { redirect } from '@/utils/common';
+import diyGroup from '@/addon/components/diy/group/index.vue'
 
-	// 会员信息
-	const memberStore = useMemberStore()
-	const userInfo = computed(() => memberStore.info)
+import useMemberStore from '@/stores/member'
 
-	const diy = useDiy({
-		name: 'DIY_TK_JHKD_MEMBER_INDEX'
-	})
+// 会员信息
+const memberStore = useMemberStore()
+const userInfo = computed(() => memberStore.info)
 
-	const diyGroupRef = ref(null)
+const diy = useDiy({
+	name: 'DIY_TK_JHKD_MEMBER_INDEX'
+})
 
-	// 监听页面加载
-	diy.onLoad();
+const diyGroupRef = ref(null)
 
-	// 监听页面显示
-	diy.onShow((data : any) => {
-		if (data.value) {
-			// uni.setNavigationBarTitle({
-			// 	title: diyData.title
-			// })
-		} else if (data.page) {
-			// 跳转到设置的启动页
-			redirect({ url: data.page, mode: 'reLaunch' })
-		}
-		diyGroupRef.value?.refresh();
-		if (userInfo.value) {
-			useMemberStore().getMemberInfo()
-		}
-	});
+// 监听页面加载
+diy.onLoad();
 
-	// 监听页面卸载
-	diy.onUnload();
+// 监听页面显示
+diy.onShow((data: any) => {
+	if (data.value) {
+		// uni.setNavigationBarTitle({
+		// 	title: diyData.title
+		// })
+	} else if (data.page) {
+		// 跳转到设置的启动页
+		redirect({ url: data.page, mode: 'reLaunch' })
+	}
+	diyGroupRef.value?.refresh();
+	if (userInfo.value) {
+		useMemberStore().getMemberInfo()
+	}
+});
 
-	// 监听下拉刷新事件
-	diy.onPullDownRefresh()
+// 监听页面卸载
+diy.onUnload();
 
-	// 监听滚动事件
-	diy.onPageScroll()
+// 监听下拉刷新事件
+
+
+// 监听滚动事件
+diy.onPageScroll()
 </script>
 <style lang="scss" scoped>
-	@import '@/styles/diy.scss';
+@import '@/styles/diy.scss';
 </style>
 <style lang="scss">
-	.diy-template-wrap {
+.diy-template-wrap {
 
-		/* #ifdef MP */
-		.child-diy-template-wrap {
-			::v-deep .diy-group {
-				>.draggable-element.top-fixed-diy {
-					display: block !important;
-				}
+	/* #ifdef MP */
+	.child-diy-template-wrap {
+		::v-deep .diy-group {
+			>.draggable-element.top-fixed-diy {
+				display: block !important;
 			}
 		}
-
-		/* #endif */
 	}
+
+	/* #endif */
+}
 </style>

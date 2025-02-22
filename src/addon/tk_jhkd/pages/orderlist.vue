@@ -1,13 +1,13 @@
 <template>
-	<view class="bg-gray-50 min-h-screen">
-		<view class="fixed left-0 top-0 right-0 z-10 backdrop-blur-sm bg-white/80" v-if="statusLoading">
+	<view class="bg-gray-50 min-h-screen" :style="themeColor()">
+		<view class="fixed left-0 top-0 right-0 z-10 backdrop-blur-sm bg-white/100" v-if="statusLoading">
 			<scroll-view scroll-x="true" class="scroll-Y">
 				<view class="flex whitespace-nowrap px-3 py-3">
 					<view v-for="(item, index) in orderStateList" :class="[
-						'px-4 py-2 mx-1.5 rounded-full transition-all duration-300 text-sm font-medium',
+						'relative px-1 py-2 mx-1.5 transition-all duration-300 text-sm font-medium tab-item',
 						orderState === item.status.toString()
-							? 'bg-primary text-white shadow-sm shadow-primary/30'
-							: 'text-gray-600 hover:bg-gray-50'
+							? 'text-[#0057FE] active'
+							: 'text-[#666666] hover:bg-gray-50'
 					]" @click="orderStateFn(item.status)">
 						{{ item.name }}
 					</view>
@@ -16,80 +16,80 @@
 		</view>
 		<view class="h-[60rpx]"></view>
 		<mescroll-body ref="mescrollRef" top="50rpx" @init="mescrollInit" @down="downCallback" @up="getOrderListFn">
-			<view v-if="list.length > 0" class="space-y-3 p-2">
-				<view v-for="(item, index) in list" :key="index"
-					class="bg-white rounded-xl shadow-sm p-3 transition-all duration-300 hover:shadow-md">
+			<view class="tk-card fl items-center">
+				<u-input clearable v-model="keyword" placeholder="订单号/快递号/手机号/姓名" @change="reload()"></u-input>
+			</view>
+			<view v-if="list.length > 0" class="space-y-3 p-2" v-for="(item, index) in list" :key="index">
+				<view
+					class="bg-[#EEF4FF] flex items-center justify-between rounded-[16rpx] shadow-sm p-3 transition-all duration-300 hover:shadow-md">
+					<view class="flex items-center space-x-2">
+						<image :src="img(item.orderInfo?.delivery_arry?.logo)" mode="aspectFill"
+							class="w-5 h-5 rounded-full" />
+						<view class="text-[24rpx]">{{ item.orderInfo?.delivery_arry?.name }}</view>
+					</view>
+					<view class="text-[#828282] text-[24rpx]">
+						下单时间:{{ item.create_time }}
+					</view>
+				</view>
+				<view
+					class="bg-white rounded-[16rpx] shadow-sm p-3 transition-all duration-300 hover:shadow-md !mt-[-12rpx]">
 					<!-- 订单头部 -->
 					<view class="flex justify-between items-center mb-4">
 						<view class="space-y-2">
-							<view class="flex items-center space-x-2 text-xs">
-								<text class="text-gray-600">订单号:</text>
-								<text class="font-medium">{{ item.order_id }}</text>
+							<view class="text-[#828282] text-[24rpx]">
+								订单号:{{ item.order_id }}
 							</view>
 							<view v-if="item.orderInfo.delivery_id" class="flex items-center cursor-pointer group"
 								@click="copy(item.orderInfo.delivery_id)">
-								<text class="text-primary mr-2 truncate w-[200px]">运单号: {{ item.orderInfo.delivery_id
+								<text class="text-[#0057FE] mr-2 truncate w-[200px]">运单号: {{ item.orderInfo.delivery_id
 									}}</text>
 								<up-icon class="border rounded p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-									name="cut" color="#4541c7" size="14">
+									name="cut" color="#0057FE" size="14">
 								</up-icon>
 							</view>
 						</view>
-						<view :class="[
-							'text-sm font-medium px-4 py-1.5 rounded-full transition-colors',
-							item.order_status_data.name === '已关闭'
-								? 'bg-red-50 text-red-600'
-								: 'bg-blue-50 text-blue-600'
-						]">
-							{{ item.order_status_data.name }}
-						</view>
+						<view class="text-[#0057FE] text-[28rpx] font-550">{{ item.order_money }}元</view>
 					</view>
 
 					<!-- 寄收地址区域 -->
-					<view class="bg-gray-50/70 rounded-xl p-2 space-y-2">
-						<view class="flex items-center justify-between">
-							<view class="flex items-center flex-1 space-x-3">
-								<text
-									class="bg-blue-500 text-white px-2.5 py-1.5 rounded-lg text-xs font-medium">寄</text>
-								<view class="space-y-1">
-									<text class="font-bold text-gray-900">
-										{{ JSON.parse(item.orderInfo.start_address).address.split('-')[0] }}
-									</text>
-									<text class="text-gray-500 text-xs block">
-										{{ JSON.parse(item.orderInfo.start_address).name }}
-									</text>
+
+					<view class="flex flex-col items-center justify-center min-h-full w-full">
+						<view class="flex items-center justify-center w-full max-w-2xl px-4">
+							<!-- 起点信息 -->
+							<view class="flex flex-col items-center w-[40%]">
+								<text class="font-bold text-[32rpx]">
+									{{ JSON.parse(item.orderInfo.start_address).address.split('-')[0] }}
+								</text>
+								<text class="text-[#828282] text-xs mt-2 tk-sltext">
+									{{ JSON.parse(item.orderInfo.start_address).name }}
+								</text>
+							</view>
+
+							<!-- 中间状态部分 -->
+							<view class="flex flex-col items-center px-8  w-[20%]">
+								<image :src="img('addon/tk_jhkd/icon/orderline.png')" mode="aspectFill"
+									class="w-15 h-2 rounded-full" />
+								<view :class="[
+									'text-sm font-medium py-1.5 rounded-full transition-colors ',
+									item.order_status_data.name === '已关闭'
+										? 'text-red-600'
+										: 'text-blue-600'
+								]">
+									{{ item.order_status_data.name }}
 								</view>
 							</view>
 
-							<view class="flex items-center px-4 text-gray-400">
-
-								<up-icon name="more-dot-fill" color="#e3ecfa" size="28"></up-icon>
-
-								<up-icon name="arrow-right" color="#e3ecfa" size="20"></up-icon>
-							</view>
-
-							<view class="flex items-center flex-1 space-x-3">
-								<text
-									class="bg-green-500 text-white px-2.5 py-1.5 rounded-lg text-xs font-medium">收</text>
-								<view class="space-y-1">
-									<text class="font-bold text-gray-800">
-										{{ JSON.parse(item.orderInfo.end_address).address.split('-')[0] }}
-									</text>
-									<text class="text-gray-500 text-xs block">
-										{{ JSON.parse(item.orderInfo.end_address).name }}
-									</text>
-								</view>
+							<!-- 终点信息 -->
+							<view class="flex flex-col items-center  w-[40%]">
+								<text class="font-bold text-[32rpx]">
+									{{ JSON.parse(item.orderInfo.end_address).address.split('-')[0] }}
+								</text>
+								<text class="text-[#828282] text-xs mt-2 tk-sltext">
+									{{ JSON.parse(item.orderInfo.end_address).name }}
+								</text>
 							</view>
 						</view>
 					</view>
-
-					<!-- 订单信息 -->
-					<view class="mt-4 flex justify-between items-center">
-						<text class="text-gray-500 text-sm">{{ item.create_time }}</text>
-						<text class="text-red-600 font-bold text-[36rpx]">￥{{ item.order_money }}</text>
-					</view>
-
-					<text class="text-xs text-gray-400 mt-2 block">注意：下单1分钟后才能取消订单哦</text>
 
 					<!-- 超重信息 -->
 					<view
@@ -119,26 +119,26 @@
 						class="mt-4 bg-green-50 rounded-xl p-4">
 						<text class="text-green-700 font-medium">已补差价：￥{{ item.addorderInfo.order_money }}</text>
 					</view>
-
+					<view class="line-box mt-2 mb-2"></view>
 					<!-- 操作按钮 -->
-					<view class="flex justify-between items-center pt-2 border-t border-gray-100">
-						<view class="flex space-x-2">
-							<button v-for="(item1, index1) in item.order_status_arr?.member_action" :key="index1"
-								class="px-3 py-1.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-								@click="clickbut(item1.class, item)">
-								{{ item1.name }}
-							</button>
-						</view>
-						<view class="flex space-x-2">
+					<view class="flex justify-end items-center pt-2 border-t border-gray-100">
+						<view class="flex space-x-2.5 ml-2">
 							<button
-								class="px-3 py-1.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+								class="px-4 py-2 flex items-center justify-center text-[#333333] bg-[#F2F2F2] rounded-[29rpx] text-[28rpx]"
 								@click="goto('/addon/tk_jhkd/pages/orderdetail?id=' + item.id)">
 								查看详情
 							</button>
 							<button v-if="item.addorderInfo && item.addorderInfo.order_status == 0"
-								class="px-3 py-1.5 text-sm bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
+								class="px-4 py-2 flex items-center justify-center text-sm bg-primary text-white rounded-[29rpx] text-[28rpx]"
 								@click="payAdd(item.addorderInfo.id)">
 								补差价
+							</button>
+							<button v-for="(item1, index1) in item.order_status_arr?.member_action" :key="index1"
+								:class="[
+									'px-4 py-2 flex items-center justify-center rounded-[29rpx] text-[28rpx]',
+									item1.class === 'gopay' ? 'actcolor' : ''
+								]" @click="clickbut(item1.class, item)">
+								{{ item1.name }}
 							</button>
 						</view>
 					</view>
@@ -148,19 +148,22 @@
 			<mescroll-empty :option="{ icon: img('static/resource/images/empty.png') }" v-if="!list.length && loading">
 			</mescroll-empty>
 		</mescroll-body>
-		<u-back-top :scroll-top="scrollTop" top="875" bottom="100" right="20"></u-back-top>
+		<u-back-top :scroll-top="scrollTop" top="875" bottom="120" right="20"></u-back-top>
+		<pay ref="payRef" @close="payLoading = false"></pay>
 	</view>
 
 	<up-modal :show="orders.show" @confirm="confirm(item1.class, item)" ref="uModal" @cancel="orders.show = false"
 		:showCancelButton="true" :content="orders.msg" :asyncClose="true">
 	</up-modal>
-
+	<view class="fixed-tip bg-[#fef6e4] " :style="{ bottom: `${bottomDistance}px` }">
+		<view class="p-4 text-center !text-[#7D563C] !text-[24rpx]">注意：下单1分钟后才能取消订单哦</view>
+	</view>
 	<tabbar addon="tk_jhkd" />
-	<pay ref="payRef" @close="payLoading = false"></pay>
+
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { t } from "@/locale";
 import { img, redirect, copy } from "@/utils/common";
 import {
@@ -176,6 +179,37 @@ import useMescroll from "@/components/mescroll/hooks/useMescroll";
 import { onLoad, onPageScroll, onReachBottom } from "@dcloudio/uni-app";
 import { goto } from "@/addon/tk_jhkd/utils/ts/goto";
 import { confirm } from "@/addon/tk_jhkd/utils/ts/alert";
+// import { configStore } from "@/stores/config";
+// const configStore = useConfigStore()
+// const themeColor = computed(() => configStore.getThemeColor)
+// console.log(themeColor.value)
+const bottomDistance = ref(0)
+const tipText = ref('这是一条固定在底部导航栏上方的提示信息')
+const keyword = ref('')
+const reload = () => {
+	getMescroll().resetUpScroll();
+}
+// 计算底部距离
+const calculateBottomDistance = () => {
+	// #ifdef H5
+	bottomDistance.value = 50 // H5端底部导航栏高度
+	// #endif
+
+	// #ifdef MP-WEIXIN
+	const systemInfo = uni.getSystemInfoSync()
+	// 计算实际底部安全距离加上导航栏高度
+	bottomDistance.value = systemInfo.safeAreaInsets?.bottom + 56
+	// #endif
+
+	// #ifdef APP-PLUS
+	const systemInfo = uni.getSystemInfoSync()
+	bottomDistance.value = systemInfo.safeAreaInsets?.bottom + 50
+	// #endif
+}
+
+onMounted(() => {
+	calculateBottomDistance()
+})
 // import { checkAddPayEvent } from "@/addon/tk_jhkd/utils/ts/common"
 // checkAddPayEvent()
 const payAdd = (e) => {
@@ -272,6 +306,7 @@ const getOrderListFn = (mescroll: any) => {
 		page: mescroll.num,
 		limit: mescroll.size,
 		order_status: orderState.value,
+		keyword: keyword.value
 	};
 	getOrderList(data)
 		.then((res) => {
@@ -313,12 +348,44 @@ const orderStateFn = (status: string) => {
 };
 
 onPageScroll((e) => {
-  scrollTop.value = e.scrollTop
+	scrollTop.value = e.scrollTop
 })
 </script>
 
 <style lang="scss" scoped>
-//@import "@/addon/tk_jhkd/utils/styles/common.scss";
+@import "@/addon/tk_jhkd/utils/styles/common.scss";
+
+.actcolor {
+	background: #0057FE !important;
+	color: #ffffff !important;
+}
+
+.fixed-tip {
+	@apply fixed left-0 right-0 z-50;
+}
+
+.line-box {
+	background-color: #F2F2F2;
+	height: 1rpx;
+	width: 100%;
+}
+
+.tab-item {
+	position: relative;
+
+	&.active::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		width: 50%;
+		height: 4px;
+		background-color: #0057FE;
+		border-radius: 6rpx;
+		transform: translateX(50%); // 添加这行来实现居中
+	}
+}
+
 .line-box1 {
 	background-color: #e3e3e3;
 	height: 2rpx;
@@ -327,14 +394,6 @@ onPageScroll((e) => {
 	margin-bottom: 12rpx;
 }
 
-page {
-	--primary-color: #4541c7;
-	--primary-color-dark: #f26f3e;
-	--primary-color-disabled: #ffb397;
-	--primary-color-light: #ffeae2;
-	--page-bg-color: #f7f7f7;
-	--price-text-color: #e1251b;
-}
 
 .qu-tag {
 	background: #fba92d;

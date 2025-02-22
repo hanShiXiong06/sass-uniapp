@@ -15,6 +15,8 @@ import useSystemStore from '@/stores/system'
 
 const systemStore = useSystemStore()
 
+uni.hideTabBar() // 隐藏tabbar
+
 watch(
     () => systemStore.site,
     (newValue, oldValue) => {

@@ -6,7 +6,7 @@
         			<view class="goods-item" @click="toLink(item)">
         				<view class="goods-content flex">
         					<view class="w-[180rpx] mr-3 overflow-hidden rounded leading-none">
-        					    <image :src="img(item.member_card_item.cover_thumb_small)" mode="widthFix" class="w-full leading-none"></image>
+        					    <image :src="img(item.member_card_item.cover_thumb_small)" mode="widthFix" class="w-full h-[auto] leading-none"></image>
         					</view>
         					<view class="flex-1 w-0">
         					    <view class="font-bold truncate text-sm">{{ item.member_card_item.goods_name }}</view>

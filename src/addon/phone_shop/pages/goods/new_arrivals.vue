@@ -1,17 +1,35 @@
 <template>
     <view class="page-container">
         <!-- 顶部导航栏 -->
-        <view class="nav-bar">
-            <view class="nav-content">
-                <view class="title">今日上新</view>
-                <view class="date">{{ formatDate() }}</view>
-            </view>
-        </view>
+        <u-navbar :title="'今日上新'" :titleStyle="{ color: '#333', fontSize: '32rpx',  fontWeight: 'bold' }">
+            <!-- template right -->
+            <template #right>
+                <view class="text-[#333] text-[24rpx] ">{{ formatDate() }}</view>
+            </template>
+        </u-navbar>
 
         <!-- 商品列表 -->
-        <mescroll-body ref="mescrollRef" @init="mescrollInit" @up="upCallback" :down="{ use: false }">
+
+
+        <mescroll-body ref="mescrollRef" @init="mescrollInit" @up="upCallback" :down="{ use: false }" :up="{ 
+                textLoading: '加载中...',
+                textNoMore: '没有更多了',
+                bgColor: 'transparent',
+                textColor: '#999',
+                toTop: {
+                    src: '/static/mescroll-uni/mescroll-totop.png',
+                    offset: 1000,
+                    duration: 300
+                }
+            }">
             <view class="goods-list" v-if="goodsList.length">
-                <view class="goods-item" v-for="item in goodsList" :key="item.goods_id">
+                <view class="goods-item" v-for="(item, index) in goodsList" :key="item.goods_id">
+                    <!-- 序号标签 -->
+                    <view class="item-index">{{ (index + 1).toString().padStart(2, '0') }}</view>
+                    <view class="item-index brand_name" v-if="item.brand_name" size="mini">
+                        {{ item.brand_name}}
+                    </view>
+
                     <view class="goods-content" @click="toDetail(item.goods_id)">
                         <!-- 左侧图片 -->
                         <view class="goods-image">
@@ -25,15 +43,19 @@
                         <!-- 右侧信息 -->
                         <view class="goods-info">
                             <view class="goods-header">
-                                <text class="goods-name">{{ item.goods_name }}</text>
+                                <text class="goods-name">
+                                    {{ item.goods_name }}</text>
                                 <!-- <text class="time">{{ formatTime(item.create_time) }}</text> -->
                             </view>
-                            <view class="goods-subtitle" v-if="item.sub_title">{{ item.sub_title }}</view>
+                            <view class="goods-subtitle " v-if="item.sub_title">
+                                <text class='truncate'> {{ item.sub_title }} </text>
+
+                                <text class="sku text-[#b3d4ff]" v-if="item.goodsSku.sku_no">#{{ item.goodsSku.sku_no
+                                    }}</text>
+
+                            </view>
                             <view class="goods-detail">
-                                <view class="sku-brand">
-                                    <text class="sku" v-if="item.goodsSku.sku_no">#{{ item.goodsSku.sku_no }}</text>
-                                    <text class="brand" v-if="item.brand">{{ item.brand }}</text>
-                                </view>
+
                                 <view class="price-action">
                                     <view class="price-info">
                                         <text class="symbol">￥</text>
@@ -55,21 +77,18 @@
             <u-empty mode="data" text="暂无新品上架" v-else></u-empty>
         </mescroll-body>
 
-        <!-- 底部操作栏 -->
-        <view class="bottom-bar" v-if="goodsList.length">
-            <view class="total">今日新品: {{ total }} 件</view>
-            <!-- <view class="download-all" @click="downloadAll">
-                <text class="nc-iconfont nc-icon-xiazaiV6xx"></text>
-                <text>一键下载</text>
-            </view> -->
-        </view>
+
+        <up-loading-icon v-if='isLoading' :loading="isLoading" loadingText="加载中..." color="#3376cd" iconSize="24"
+            loadingMode="circle"></up-loading-icon>
+
+        <up-text align='center' type="info" v-else text="-- 到头了 --"></up-text>
     </view>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { redirect, img } from '@/utils/common'
-import { getGoodsPages } from '@/addon/phone_shop/api/goods'
+import { getGoodsPages, getGoodsDetail } from '@/addon/phone_shop/api/goods'
 import MescrollBody from '@/components/mescroll/mescroll-body/mescroll-body.vue'
 import useMescroll from '@/components/mescroll/hooks/useMescroll.js'
 import { onPageScroll, onReachBottom } from '@dcloudio/uni-app'
@@ -78,11 +97,13 @@ const { mescrollInit, getMescroll } = useMescroll(onPageScroll, onReachBottom)
 const mescrollRef = ref(null)
 const goodsList = ref<any[]>([])
 const total = ref(0)
+const loading = ref(true)
+const isLoading = ref(false)
 
 // 获取今日日期
 const formatDate = () => {
     const date = new Date()
-    return `${date.getMonth() + 1}月${date.getDate()}日`
+    return `${date.getMonth() + 1}月${date.getDate()}日  今日上新${total.value}件`
 }
 
 // 格式化时间
@@ -97,6 +118,11 @@ const endTime = Math.floor(new Date().getTime() / 1000)
 
 // 上拉加载
 const upCallback = async (mescroll: any) => {
+    if (mescroll.num === 1) {
+        loading.value = true
+    }
+    isLoading.value = true
+
     try {
         const today = new Date()
         today.setHours(0, 0, 0, 0)
@@ -104,7 +130,7 @@ const upCallback = async (mescroll: any) => {
         const params = {
             page: mescroll.num,
             limit: mescroll.size,
-             create_time: [startTime, endTime],
+            create_time: [startTime, endTime],
             order: 'create_time',
             sort: 'desc'
         }
@@ -115,20 +141,84 @@ const upCallback = async (mescroll: any) => {
         if (mescroll.num === 1) goodsList.value = []
         goodsList.value = goodsList.value.concat(data)
         total.value = totalCount
+        loading.value = false
+        isLoading.value = false
 
-        mescroll.endSuccess(data.length)
+        // 判断是否还有更多数据
+
+
+        if (goodsList.value.length >= totalCount) {
+            // 停止 加载的动画
+            loading.value = false
+            isLoading.value = false
+            mescroll.endSuccess(data.length, false)
+
+        } else {
+            mescroll.endSuccess(data.length, true)
+        }
     } catch (error) {
         console.error(error)
+        loading.value = false
+        isLoading.value = false
         mescroll.endErr()
     }
 }
 
 // 下载单个商品
-const downloadGoods = (goods: any) => {
-    // 实现下载逻辑
-    uni.showToast({
-        title: '开始下载...',
-        icon: 'none'
+
+
+// 下载单个商品
+const downloadGoods = async (item: any) => {
+    const res = await getGoodsDetail({ goods_id: item.goods_id })
+    if (!res.data.goods) {
+        uni.showToast({ title: '商品信息获取失败', icon: 'none' })
+        return
+    }
+    const images = res.data.goods.goods_image.split(',')
+    downloadImages(images, item)
+}
+
+// 下载图片并复制文案
+const downloadImages = (images: string[], item: any, showToast: boolean = true) => {
+    return new Promise((resolve) => {
+        const tasks = images.map((url: string) => {
+            return new Promise((resolve, reject) => {
+                uni.downloadFile({
+                    url,
+                    success: (res) => {
+                        if (res.statusCode === 200) {
+                            uni.saveImageToPhotosAlbum({
+                                filePath: res.tempFilePath,
+                                success: resolve,
+                                fail: reject
+                            })
+                        } else {
+                            reject()
+                        }
+                    },
+                    fail: reject
+                })
+            })
+        })
+
+        Promise.all(tasks).then(() => {
+            const sku_no = item.goodsSku.sku_no ? '#' + item.goodsSku.sku_no + ' ' : ''
+            const text = `${item.goods_name} ${item.sub_title} ${sku_no}${goodsPrice(item)}`
+            uni.setClipboardData({
+                data: text,
+                success: () => {
+                    if (showToast) {
+                        uni.showToast({ title: '图片下载及文案复制成功', icon: 'none' })
+                    }
+                    resolve(true)
+                }
+            })
+        }).catch(() => {
+            if (showToast) {
+                uni.showToast({ title: '下载失败', icon: 'none' })
+            }
+            resolve(false)
+        })
     })
 }
 
@@ -136,7 +226,7 @@ const downloadGoods = (goods: any) => {
 const downloadAll = () => {
     // 实现批量下载逻辑
     uni.showToast({
-        title: '开始批量下��...',
+        title: '开始批量下载...',
         icon: 'none'
     })
 }
@@ -178,111 +268,118 @@ const goodsPrice = (data: any) => {
     padding-top: 100rpx;
 }
 
-.nav-bar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
-    background: #fff;
-    padding: var(--status-bar-height) 0 16rpx;
-    box-shadow: 0 1rpx 6rpx rgba(0, 0, 0, 0.05);
-
-    .nav-content {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 30rpx;
-
-        .title {
-            font-size: 32rpx;
-            font-weight: 500;
-            color: #333;
-        }
-
-        .date {
-            font-size: 26rpx;
-            color: #666;
-        }
-    }
-}
-
 .goods-list {
-    padding: calc(var(--status-bar-height) + 80rpx) 20rpx 0;
+    padding: calc(var(--status-bar-height) + 20rpx) 20rpx 0;
+    display: grid;
+    gap: 20rpx;
+    grid-template-columns: repeat(auto-fill, minmax(600rpx, 1fr));
+
+    /* iPad 响应式布局 */
+    @media screen and (min-width: 1024px) {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 1600rpx;
+        margin: 0 auto;
+    }
+
+    @media screen and (min-width: 1280px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+
 }
 
 .goods-item {
-    margin-bottom: 20rpx;
+    margin-bottom: 0;
     padding: 10rpx;
     background: #fff;
     border-radius: 12rpx;
+    box-shadow: 0 1rpx 4rpx rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
 
-    .goods-content {
-        display: flex;
-        align-items: flex-start;
+    /* 在grid布局中保持宽度自适应 */
+    width: 100%;
+    box-sizing: border-box;
+
+    &:active {
+        transform: scale(0.98);
     }
 
-    .goods-image {
-        width: 140rpx;
-        height: 140rpx;
-        margin-right: 20rpx;
-        border-radius: 8rpx;
-        overflow: hidden;
+    .item-index {
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: #f5f7fa;
+        color: #4e82c7;
+        font-size: 20rpx;
+        font-weight: 500;
+        padding: 4rpx 8rpx;
+        border-radius: 12rpx 0 12rpx 0;
+        font-family: 'DIN';
+        z-index: 1;
+    }
+
+    .brand_name {
+        left: auto;
+        right: 0;
+        background: #f0f5ff;
+        color: #3376cd;
+        border-radius: 0 12rpx 0 12rpx;
+    }
+
+    .goods-content {
+        padding-top: 8rpx;
+        display: flex;
+        align-items: flex-start;
+        gap: 16rpx;
     }
 
     .goods-info {
         flex: 1;
         min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8rpx;
 
         .goods-header {
             display: flex;
             align-items: flex-start;
             justify-content: space-between;
-            margin-bottom: 8rpx;
+            margin-bottom: 0;
 
             .goods-name {
                 flex: 1;
-                font-size: 28rpx;
-                color: #333;
-                line-height: 1.4;
-                margin-right: 16rpx;
-            }
-
-            .time {
-                font-size: 22rpx;
-                color: #999;
-                flex-shrink: 0;
+                font-size: 26rpx;
+                font-weight: 500;
+                color: #2c3e50;
+                line-height: 1.3;
+                margin-right: 12rpx;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
         }
 
         .goods-subtitle {
             font-size: 24rpx;
-            color: #666;
+            color: #7f8c8d;
+            line-height: 1.3;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: flex;
+            justify-content: space-between;
 
-            line-height: 1.4;
+            .sku {
+                color: #3376cd;
+                opacity: 0.8;
+            }
         }
 
         .goods-detail {
-            margin-top: 5rpx;
-
-            .sku-brand {
-                display: flex;
-                align-items: center;
-                margin-bottom: 12rpx;
-                font-size: 22rpx;
-
-                .sku {
-                    color: #666;
-                    margin-right: 12rpx;
-                }
-
-                .brand {
-                    color: #666;
-                    background: #f6f8f8;
-                    padding: 2rpx 12rpx;
-                    border-radius: 12rpx;
-                }
-            }
+            margin-top: 4rpx;
 
             .price-action {
                 display: flex;
@@ -292,16 +389,18 @@ const goodsPrice = (data: any) => {
                 .price-info {
                     display: flex;
                     align-items: baseline;
+                    gap: 2rpx;
 
                     .symbol {
                         font-size: 22rpx;
-                        color: var(--price-text-color);
+                        color: #e74c3c;
+                        font-weight: bold;
                     }
 
                     .price {
                         font-size: 30rpx;
                         font-weight: bold;
-                        color: var(--price-text-color);
+                        color: #e74c3c;
                         font-family: 'DIN';
                     }
 

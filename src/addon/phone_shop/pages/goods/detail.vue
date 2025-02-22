@@ -26,10 +26,7 @@
 							}}</text>
 						<text class="text-[50rpx] price-font">.{{ parseFloat(goodsPrice).toFixed(2).split('.')[1]
 							}}</text>
-						<text class="text-[26rpx] mt-[18rpx] ml-[10rpx] line-through price-font"
-							v-if="goodsDetail.market_price && parseFloat(goodsDetail.market_price)">
-							￥{{ goodsDetail.market_price }}
-						</text>
+
 					</view>
 				</view>
 				<view class="flex flex-col text-[#fff] items-end">
@@ -55,10 +52,7 @@
 							parseFloat(goodsPrice).toFixed(2).split('.')[1] }}</text>
 						<image v-if="priceType == 'member_price'" class="h-[34rpx] mr-[12rpx] w-[80rpx]"
 							:src="img('addon/phone_shop/VIP.png')" mode="heightFix" />
-						<text class="text-[26rpx] text-[#999] line-through price-font"
-							v-if="goodsDetail.market_price && parseFloat(goodsDetail.market_price)">
-							￥{{ goodsDetail.market_price }}
-						</text>
+
 					</view>
 					<!-- <view class="font-medium text-[32rpx] multi-hidden leading-[40rpx]">
 						{{ goodsDetail.goods.goods_name }}
@@ -302,7 +296,11 @@
 													<!--										<text class="text-[36rpx] font-500">{{ item.goodsSku.price }}</text>-->
 
 													<text class="text-[26rpx] font-500">￥</text>
-													<text class="text-[36rpx] font-500">{{
+													<text class="text-[36rpx] font-500"
+														v-if="item.goodsSku.member_price">{{
+															parseFloat(item.goodsSku.member_price).toFixed(2).split('.')[0]
+														}}</text>
+													<text class="text-[36rpx] font-500" v-else>{{
 														parseFloat(item.goodsSku.price).toFixed(2).split('.')[0]
 													}}</text>
 													<text class="text-[24rpx] font-500">.{{
@@ -986,21 +984,16 @@ const priceType = ref('') //''=>原价，discount_price=>折扣价，member_pric
 // 商品价格
 const goodsPrice = computed(() => {
 	let price = "0.00";
-
-	console.log(goodsDetail.value);
-	console.log(goodsDetail.value.goods.member_discount, goodsDetail.value.member_price, goodsDetail.value.price)
-	console.log(Object.keys(goodsDetail.value).length && Object.keys(goodsDetail.value.goods).length && goodsDetail.value.goods.member_discount && getToken() && goodsDetail.value.member_price != goodsDetail.value.price);
-
 	if (Object.keys(goodsDetail.value).length && Object.keys(goodsDetail.value.goods).length && goodsDetail.value.goods.is_discount && goodsDetail.value.sale_price != goodsDetail.value.price) {
 		// 折扣价
 		price = goodsDetail.value.sale_price ? goodsDetail.value.sale_price : goodsDetail.value.price;
 		priceType.value = 'discount_price'
-		console.log(111);
+
 	} else if (Object.keys(goodsDetail.value).length && Object.keys(goodsDetail.value.goods).length && goodsDetail.value.goods.member_discount && getToken() && goodsDetail.value.member_price != goodsDetail.value.price) {
 		// 会员价
 		price = goodsDetail.value.member_price ? goodsDetail.value.member_price : goodsDetail.value.price;
 		priceType.value = 'member_price'
-		console.log(goodsDetail.value.member_price);
+
 	} else {
 		price = goodsDetail.value.price
 		priceType.value = ''
@@ -1008,6 +1001,8 @@ const goodsPrice = computed(() => {
 	}
 	return price;
 })
+
+
 
 
 

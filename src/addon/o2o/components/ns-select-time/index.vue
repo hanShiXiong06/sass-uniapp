@@ -5,7 +5,6 @@
 				<text>请选择上门时间</text>
 			</view>
 			<view class="body flex h-[calc(100%-90rpx)] box-border" v-if="dateArr.length">
-
 				<!-- 左侧日期选择 -->
 				<scroll-view :scroll-y="true" class="left bg-[#f8f8f8] shrink-0 w-[230rpx]" scroll-with-animation  :scroll-into-view="'id' + (dateActive ? dateActive - 1 : 0)">
 					<block v-for="(item,index) in dateArr" :key="index">
@@ -92,7 +91,7 @@ export default {
 					}
 
 				})
-				
+
 				let flag = true
 				this.dateArr.forEach((item,index) =>{
 					item.children.forEach((el,key)=>{
@@ -108,9 +107,7 @@ export default {
 						}
 					})
 				})
-				
 			},
-
 			// 日期选择事件
 			selectDateEvent(index, item) {
 				this.dateActive = index
@@ -121,14 +118,12 @@ export default {
 				this.$emit('change', this.orderDateTime)
 				this.$emit('getStamp', this.orderDateStamp)
 			},
-
 			// 时间选择事件
 			selectTimeEvent(index, item) {
 				this.handleSelectQuantum(index, item)
 				this.show = false
 				this.$emit('change', this.orderDateTime)
 			},
-
 			handleSelectQuantum(index, item) {
 				this.timeActive = index
 				this.orderDateTime = `${this.selectDate} ${item.begin}-${item.end}`

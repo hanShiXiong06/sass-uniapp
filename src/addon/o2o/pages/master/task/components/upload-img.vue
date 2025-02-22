@@ -47,9 +47,11 @@ const value = computed({
         emit('update:modelValue', value)
     }
 })
+
 const maxCount = computed(() => {
     return prop.maxCount
 })
+
 const afterRead = (event:any) => {
     if (prop.multiple) {
         event.file.forEach(file => {

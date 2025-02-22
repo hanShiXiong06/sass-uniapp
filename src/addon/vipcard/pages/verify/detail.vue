@@ -6,7 +6,7 @@
                 <view class="mx-[30rpx]">
                     <view class="bg-white px-[30rpx] py-[30rpx] rounded flex mt-[20rpx]" >
                         <view class="w-[180rpx] mr-3 overflow-hidden rounded leading-none">
-                            <image :src="img(verifyDetail.member_card_item.cover_thumb_small)" mode="widthFix" class="w-full leading-none"></image>
+                            <image :src="img(verifyDetail.member_card_item.cover_thumb_small)" mode="widthFix" class="w-full h-[auto] leading-none"></image>
                         </view>
                         <view class="flex-1 w-0">
                             <view class="font-bold truncate text-sm">{{ verifyDetail.member_card_item.goods_name }}</view>

@@ -1,9 +1,7 @@
 <template>
 	<view class="bg-[#F5F6FA] min-h-screen overflow-hidden" :style="themeColor()">
 		<view class="mx-[30rpx] my-[20rpx] bg-[#fff] rounded-[16rpx]">
-			<view class="text-[34rpx] p-[36rpx] border">
-				{{ t('showServiceItem') }}
-			</view>
+			<view class="text-[34rpx] p-[36rpx] border">{{ t('showServiceItem') }}</view>
 			<u-form labelPosition="left" :model="formData" errorType='toast'  ref="serviceRef" :labelWidth="100" class="px-[30rpx]" :labelStyle="{paddingLeft:'30rpx',fontSize:'28rpx'}" >
 				<u-form-item :label="t('serviceItem')" prop="item_name">
 					<u-input v-model="formData.item_name" border="none" readonly ></u-input>
@@ -29,44 +27,45 @@
 </template>
 
 <script setup lang="ts">
-	import { t } from '@/locale'
-    import { onLoad,onUnload } from '@dcloudio/uni-app'
-	import { ref, reactive } from 'vue';
-	import { img, redirect } from '@/utils/common';
-	import  uploadImg from '@/addon/o2o/pages/master/task/components/upload-img.vue'
+import { t } from '@/locale'
+import { onLoad,onUnload } from '@dcloudio/uni-app'
+import { ref, reactive } from 'vue';
+import { img, redirect } from '@/utils/common';
+import  uploadImg from '@/addon/o2o/pages/master/task/components/upload-img.vue'
 
-	const loading = ref(false)
-	const formData = ref<AnyObject>({
-        order_id : '',
-		order_item_id:'',
-        item_name:'',
-        price: 0,
-        images:[],
-        item_images:''
-	})
+const loading = ref(false)
+const formData = ref<AnyObject>({
+    order_id : '',
+	order_item_id:'',
+    item_name:'',
+    price: 0,
+    images:[],
+    item_images:''
+})
 
-    onLoad((option: any) => {
-		Object.keys(formData.value).forEach((key: string) => {
-			if (option[key] != undefined) formData.value[key] = option[key]
-			if(key == 'images'){
-				formData.value[key] = []
-				let img = option.item_images ? option.item_images : null
-				if(img){
-					formData.value[key] = option.item_images.split(',')
-				}else{
-					formData.value[key]=[]
-				}
+onLoad((option: any) => {
+	Object.keys(formData.value).forEach((key: string) => {
+		if (option[key] != undefined) formData.value[key] = option[key]
+		if(key == 'images'){
+			formData.value[key] = []
+			let img = option.item_images ? option.item_images : null
+			if(img){
+				formData.value[key] = option.item_images.split(',')
+			}else{
+				formData.value[key]=[]
 			}
-		})
+		}
 	})
+})
+
 //预览图片
 const imgListPreview = (url) => {
-    let urlList = [];
-	if(formData.value.images){
-        urlList = formData.value.images.map(item => {
-            return img(item)
-        })
-    }
+	let urlList = [];
+	if (formData.value.images) {
+		urlList = formData.value.images.map(item => {
+			return img(item)
+		})
+	}
 	uni.previewImage({
 		current: img(url),
 		urls: urlList,

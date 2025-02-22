@@ -107,3 +107,15 @@ export function deviceConfirm(id: number) {
 export function deviceCancel(id: number) {
   return request.put(`phone_shop_price/recycle_order/device_cancel/${id}`);
 }
+
+// 退回单个设备
+export function returnDevice(data: {
+  device_id: number;
+  reason: string;
+  images?: string[];
+}) {
+  return request.put(
+    `phone_shop_price/recycle_order/device_return/${data.device_id}`,
+    data
+  );
+}

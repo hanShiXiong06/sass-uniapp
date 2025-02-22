@@ -99,28 +99,22 @@
 						<view
 							class="w-[536rpx] box-border bg-white w-full flex mx-[16rpx] px-[24rpx] py-[20rpx] rounded-[12rpx]"
 							:class="{ 'mt-[16rpx]': index }" @click.stop="toLink(item.goods_id)">
-							<view class="overflow-hidden mr-[8rpx] rounded-md position-r">
-								<view class="position-a">
-									<u--image v-if="item.flag" class="position-a" width="58rpx" height="28rpx"
-										src="https://vip.123pan.cn/1832133965/tiantai/1717078717e95d5ba5e4287e7131ff27478e746976_ott.png"
-										model="aspectFill">
-									</u--image>
-								</view>
-								<view class="position-b">
-									<u--image width="168rpx" height="168rpx"
-										:src="img(item.goods_cover_thumb_mid ? item.goods_cover_thumb_mid : '')"
-										model="aspectFill">
-										<template #error>
-											<u-icon name="photo" color="#999" size="50"></u-icon>
-										</template>
-									</u--image>
-								</view>
+							<view
+								class="w-[168rpx] h-[168rpx] flex items-center justify-center mr-[20rpx] rounded-[var(--goods-rounded-small)] overflow-hidden">
+								<u--image width="168rpx" height="168rpx" :radius="'var(--goods-rounded-small)'"
+									:src="img(item.goods_cover_thumb_mid || '')" model="aspectFill">
+									<template #error>
+										<image class="w-[168rpx] h-[168rpx]"
+											:src="img('static/resource/images/diy/shop_default.jpg')" mode="aspectFill">
+										</image>
+									</template>
+								</u--image>
 							</view>
 							<view class="flex flex-1 flex-wrap">
-								<view class="w-[316rpx] max-h-[80rpx] text-[28rpx] leading-[40rpx] multi-hidden">
+								<view class="w-[316rpx] max-h-[40rpx] text-[28rpx] leading-[40rpx] multi-hidden">
 									{{ item.goods_name }}
 								</view>
-								<view class="w-[316rpx] max-h-[80rpx] text-[20rpx] leading-[40rpx]  truncate"
+								<view class="w-[316rpx] max-h-[40rpx] text-[20rpx] leading-[40rpx]  truncate"
 									v-if="item.sub_title">
 									{{ item.sub_title }}
 								</view>
@@ -569,10 +563,10 @@ const itemCart = (row: any, id: any) => {
 		return toLink(row.goods_id)
 	}
 
-	if (!userInfo.value) {
-		useLogin().setLoginBack({ url: '/addon/phone_shop/pages/goods/category' })
-		return false
-	}
+	// if (!userInfo.value) {
+	// 	useLogin().setLoginBack({ url: '/addon/phone_shop/pages/goods/category' })
+	// 	return false
+	// }
 	// 绑定手机号
 	if (uni.getStorageSync('isbindmobile')) {
 		bindMobileRef.value.open()
@@ -654,30 +648,35 @@ const settlement = () => {
 	})
 }
 
-// 价格类型 
+// 价格相关方法
 const priceType = (data: any) => {
-	let type = "";
 	if (data.is_discount && data.goodsSku.sale_price != data.goodsSku.price) {
-		type = 'discount_price'// 折扣
+		return 'discount_price'
 	} else if (data.member_discount && getToken() && data.goodsSku.member_price != data.goodsSku.price) {
-		type = 'member_price' // 会员价
-	} else {
-		type = ""
+		return 'member_price'
+	} if (getToken() && data.goodsSku.member_price != data.goodsSku.price) {
+		return 'member_price'
 	}
-	return type;
+	return ""
 }
 
-// 商品价格
 const goodsPrice = (data: any) => {
-	let price = "0.00";
+	let price = "0.00"
+	console.log(data)
 	if (data.is_discount && data.goodsSku.sale_price != data.goodsSku.price) {
-		price = data.goodsSku.sale_price ? data.goodsSku.sale_price : data.goodsSku.price // 折扣价
+		console.log(1)
+		price = data.goodsSku.sale_price || data.goodsSku.price
 	} else if (data.member_discount && getToken() && data.goodsSku.member_price != data.goodsSku.price) {
-		price = data.goodsSku.member_price ? data.goodsSku.member_price : data.goodsSku.price // 会员价
+
+		price = data.goodsSku.member_price || data.goodsSku.price
+	} else if (getToken() && data.goodsSku.member_price != data.goodsSku.price) {
+
+		price = data.goodsSku.member_price || data.goodsSku.price
 	} else {
+		console.log(3)
 		price = data.goodsSku.price
 	}
-	return price;
+	return parseFloat(price)
 }
 </script>
 

@@ -4,7 +4,7 @@
 			<view class="poster-wrap">
 				<image v-if="poster" :src="poster" mode="widthFix" :show-menu-by-longpress="true"/>
 			</view>
-			 
+
 			<!-- #ifdef H5 -->
 			<view class="tips">长按识别图中二维码</view>
 			<!--  #endif -->
@@ -37,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-	import { img, getToken, redirect, goback } from '@/utils/common';
+	import { img, getToken, goback } from '@/utils/common';
 	import { ref,nextTick } from 'vue';
 	import { onLoad } from '@dcloudio/uni-app'
 	import { getPoster } from '@/app/api/system'
@@ -46,7 +46,7 @@
 
 	const show = ref(false);
 	const loading = ref(true);
-	
+
 	const closeDialog = ()=> {
 		show.value = false;
 	}
@@ -93,7 +93,7 @@
 		})
 		// #endif
 	})
-	
+
 	// 获取分享海报
 	const poster = ref('');
 	const getPosterFn = (id: any) => {
@@ -129,7 +129,7 @@
 							    uni.showToast({title: msg, icon: 'none'})
 							}else if (err.errMsg == "saveImageToPhotosAlbum:fail auth deny" ||
 									err.errMsg == "saveImageToPhotosAlbum:fail:auth denied") {
-									show.value = true; 
+									show.value = true;
 							}else if(err.errMsg == "saveImageToPhotosAlbum:fail cancel"){
 								let msg = '用户取消将图片保存到相册';
 								uni.showToast({title: msg, icon: 'none'})

@@ -2,124 +2,188 @@
     <view class="order-detail">
         <!-- 订单状态卡片 -->
         <view class="status-card">
-            <view class="status-title">
-                <text class="status-text">{{ getOrderStatusText(orderInfo.status) }}</text>
-                <text class="order-no">订单号：{{ orderInfo.order_no }}</text>
+
+            <view class="status-content">
+                <view class="progress-steps">
+
+
+                    <up-steps :current="currentStep">
+                        <up-steps-item v-if="currentStep == -1" error title="已取消" desc="订单取消"></up-steps-item>
+                        <up-steps-item v-else :title="item.name" v-for="item in [
+                            { name: '已下单', desc: '订单已提交' },
+                            { name: '待质检', desc: '待设备检测' },
+                            { name: '待确认', desc: '待确认价格' },
+                            { name: '待打款', desc: '等待转账' },
+                            { name: '已完成', desc: '交易完成' }
+                        ]">
+                            <template #desc>
+                                <text class="desc">{{ item.desc }}</text>
+                            </template>
+                        </up-steps-item>
+
+                    </up-steps>
+                </view>
+                <view class="status-header">
+                    <text class="create-time">
+                        {{ formatTime(orderInfo.create_at) }}
+                    </text>
+                    <view class="status-badge" :class="getStatusClass(orderInfo.status)">
+
+                        <up-icon :name="orderInfo.status == '4' ? 'rmb-circle' : 'checkbox-mark'" size="14" color="#fff"
+                            class="icon-left">
+                        </up-icon>
+                        <text class="status-text">{{ getOrderStatusText(orderInfo.status) }}</text>
+                    </view>
+
+                </view>
+                <view class="order-info">
+                    <view class="info-row">
+                        <view class="label">
+                            <up-icon name="order" size="16" color="#666" class="icon-left"></up-icon>
+                            <text>订单编号</text>
+                        </view>
+                        <text class="value">{{ orderInfo.order_no }}</text>
+                    </view>
+                    <view class="info-row">
+                        <view class="label">
+                            <up-icon name="account" size="16" color="#666" class="icon-left"></up-icon>
+                            <text>用户名称</text>
+                        </view>
+                        <text class="value">{{ orderInfo.send_username }}</text>
+                    </view>
+                    <view class="info-row">
+                        <view class="label">
+                            <up-icon name="phone" size="16" color="#666" class="icon-left"></up-icon>
+                            <text>联系电话</text>
+                        </view>
+                        <text class="value">{{ orderInfo.telphone }}</text>
+                    </view>
+                    <view class="info-row">
+                        <view class="label">
+                            <up-icon name="car" size="16" color="#666" class="icon-left"></up-icon>
+                            <text>配送方式</text>
+                        </view>
+                        <text class="value">{{ orderInfo.delivery_type === 'self' ? '自寄' : '上门取件' }}</text>
+                    </view>
+                    <view class="info-row" v-if="orderInfo.delivery_type === 'mail'">
+                        <view class="label">
+                            <up-icon name="car" size="16" color="#666" class="icon-left"></up-icon>
+                            <text>快递单号</text>
+                        </view>
+                        <text class="value">{{ orderInfo.express_id || '暂无' }}</text>
+                    </view>
+                </view>
+
+                <view class="status-desc">{{ getStatusDescription(orderInfo.status) }}</view>
             </view>
-            <view class="status-desc">{{ getStatusDescription(orderInfo.status) }}</view>
         </view>
 
         <!-- 设备列表 -->
         <view class="devices-list">
-            <view class="section-header">
-                <text class="section-title">设备列表</text>
-                <text class="device-count">共 {{ orderInfo.devices?.length || 0 }} 台设备</text>
-            </view>
-            <view class="device-item" v-for="device in orderInfo.devices" :key="device.id">
-                <!-- 设备基本信息 -->
-                <view class="device-header" @click="toggleDeviceDetail(device.id)">
-                    <view class="device-basic">
-                        <text class="device-model">{{ device.model }}</text>
-                        <text :class="['device-status', getDeviceStatusClass(device.status)]">
-                            {{ getDeviceStatusText(device.status) }}
-                        </text>
-                    </view>
-                    <view class="price-info" v-if="device.final_price">
-                        <text class="price-label">最终报价</text>
-                        <text class="price-value">¥{{ device.final_price }}</text>
-                    </view>
-                    <view class="expand-icon">
-                        <u-icon :name="isDeviceExpanded(device.id) ? 'arrow-up' : 'arrow-down'" size="24"
-                            color="#999"></u-icon>
-                    </view>
-                </view>
+            <view class="section-title">
+                <text class="title">设备列表</text>
+                <text class="device-count">共 {{ orderInfo.devices?.length || 0 }} 台设备 ,
+                    总价值 ¥ {{ final_price }} 元
 
-                <!-- 设备详细信息（折叠面板） -->
-                <view class="device-detail" v-show="isDeviceExpanded(device.id)">
-                    <view class="detail-section">
-                        <view class="section-header">
-                            <text class="section-title">基本信息</text>
+                </text>
+            </view>
+
+            <view class="device-item" v-for="device in orderInfo.devices" :key="device.id">
+                <view class="device-card">
+                    <!-- 设备基本信息 -->
+                    <view class="device-header" @click="toggleDeviceDetail(device.id)">
+                        <text :class="['status-tag', getDeviceStatusClass(device.status)]">
+
+                            <text>{{ getDeviceStatusText(device.status) }}</text>
+                        </text>
+                        <view class="device-basic">
+                            <view class="model-info">
+                                <text class="device-model">
+                                    <up-icon name="phone" size="16" color="#333" class="icon-left"></up-icon>
+                                    <text>{{ device.model || '待识别' }}</text>
+                                </text>
+                            </view>
+                            <text class="device-imei">
+                                <up-icon name="fingerprint" size="14" color="#666" class="icon-left"></up-icon>
+                                <text>IMEI: {{ device.imei }}</text>
+                            </text>
                         </view>
-                        <view class="info-list">
-                            <view class="info-item">
-                                <text class="label">IMEI：</text>
-                                <text class="value">{{ device.imei }}</text>
+                        <view class="price-section">
+                            <text class="price-value" v-if="device.final_price !== '0.00'">¥{{ device.final_price
+                            }}</text>
+                            <text class="price-status" v-else></text>
+                        </view>
+                        <view class="expand-icon" :class="{ 'expanded': isDeviceExpanded(device.id) }">
+                            <up-icon name="arrow-down" size="24" color="#999"></up-icon>
+                        </view>
+                    </view>
+
+                    <!-- 设备图片展示 -->
+                    <view class="device-images" v-if="device.check_images">
+                        <scroll-view scroll-x class="image-scroll">
+                            <view class="image-list">
+                                <view class="image-item" v-for="(img, index) in device.check_images.split(',')"
+                                    :key="index">
+                                    <image :src="img" mode="aspectFill"
+                                        @click="previewImage(device.check_images.split(','), index)" />
+                                </view>
                             </view>
-                            <view class="info-item">
-                                <text class="label">预估价格：</text>
-                                <text class="value">¥{{ device.initial_price }}</text>
+                        </scroll-view>
+                    </view>
+
+                    <!-- 设备详细信息 -->
+                    <view class="device-detail" v-show="isDeviceExpanded(device.id)">
+                        <view class="detail-section price-detail">
+                            <view class="detail-row">
+                                <text class="label">预估价格</text>
+                                <text class="value price">¥{{ device.initial_price || '0.00' }}</text>
                             </view>
-                            <view class="info-item" v-if="device.final_price">
-                                <text class="label">最终价格：</text>
-                                <text class="value">¥{{ device.final_price }}</text>
+                            <view class="detail-row" v-if="device.final_price">
+                                <text class="label">最终价格</text>
+                                <text class="value price">¥{{ device.final_price }}</text>
                             </view>
-                            <view class="info-item" v-if="device.price_remark">
-                                <text class="label">价格备注：</text>
+                            <view class="detail-row" v-if="device.price_remark">
+                                <text class="label">价格说明</text>
                                 <text class="value">{{ device.price_remark }}</text>
                             </view>
                         </view>
-                    </view>
 
-                    <view class="detail-section">
-                        <view class="section-header">
-                            <text class="section-title">检测信息</text>
-                        </view>
-                        <view class="info-list">
-                            <view class="info-item">
-                                <text class="label">检测状态：</text>
+                        <view class="detail-section check-detail">
+                            <view class="detail-row">
+                                <text class="label">检测状态</text>
                                 <text class="value">{{ device.check_status === 1 ? '已检测' : '未检测' }}</text>
                             </view>
-                            <view class="info-item" v-if="device.check_result">
-                                <text class="label">检测结果：</text>
+                            <view class="detail-row" v-if="device.check_result">
+                                <text class="label">检测结果</text>
                                 <text class="value">{{ device.check_result }}</text>
                             </view>
-                            <view class="info-item" v-if="device.check_at">
-                                <text class="label">检测时间：</text>
+                            <view class="detail-row" v-if="device.check_at">
+                                <text class="label">检测时间</text>
                                 <text class="value">{{ formatTime(device.check_at) }}</text>
                             </view>
                         </view>
                     </view>
 
-                    <view class="detail-section">
-                        <view class="section-header">
-                            <text class="section-title">时间信息</text>
-                        </view>
-                        <view class="info-list">
-                            <view class="info-item">
-                                <text class="label">创建时间：</text>
-                                <text class="value">{{ formatTime(device.create_at) }}</text>
-                            </view>
-                            <view class="info-item" v-if="device.update_at">
-                                <text class="label">更新时间：</text>
-                                <text class="value">{{ formatTime(device.update_at) }}</text>
-                            </view>
-                        </view>
+                    <!-- 设备操作按钮 -->
+                    <view class="device-actions" v-if="showDeviceActions(device.status)">
+                        <button class="action-btn reject" disabled @click="handleDeviceReject(device)">
+                            <up-icon name="close" size="18" color="#f56c6c"></up-icon>
+                            不卖了
+                        </button>
+                        <button class="action-btn confirm" @click="handleDeviceConfirm(device)">
+                            <up-icon name="checkmark" size="18" color="#fff"></up-icon>
+                            确认
+                        </button>
                     </view>
-                </view>
-
-                <!-- 设备操作按钮 -->
-                <view class="device-actions" v-if="showDeviceActions(device.status)">
-                    <button class="action-btn reject" @click="handleDeviceReject(device)">
-                        <u-icon name="close" size="24" color="#f56c6c"></u-icon>
-                        <text>不卖了</text>
-                    </button>
-                    <button class="action-btn confirm" @click="handleDeviceConfirm(device)">
-                        <u-icon name="checkmark" size="24" color="#fff"></u-icon>
-                        <text>同意回收</text>
-                    </button>
                 </view>
             </view>
         </view>
 
         <!-- 底部操作栏 -->
         <view class="bottom-actions" v-if="hasUnconfirmedDevices">
-            <!-- <button class="action-btn reject-all" @click="handleRejectAll">
-                <u-icon name="close" size="32" color="#f56c6c"></u-icon>
-                <text>一键取消</text>
-            </button> -->
             <button class="action-btn confirm-all" @click="handleConfirmAll">
-                <u-icon name="checkmark" size="32" color="#fff"></u-icon>
-                <text>一键确认</text>
+                <up-icon name="checkmark-circle" size="20" color="#fff"></up-icon>
+                一键确认所有设备
             </button>
         </view>
     </view>
@@ -159,6 +223,7 @@ interface Device {
     create_at: number;
     update_at: number | null;
     check_at: number | null;
+    check_images?: string;
 }
 
 interface OrderInfo {
@@ -167,6 +232,10 @@ interface OrderInfo {
     status: OrderStatus;
     create_at: number;
     devices: Device[];
+    delivery_type: 'mail' | 'self';
+    express_id?: string;
+    send_username: string;
+    telphone: string;
 }
 
 const orderInfo = ref<OrderInfo>({
@@ -174,12 +243,15 @@ const orderInfo = ref<OrderInfo>({
     order_no: '',
     status: '1',
     create_at: 0,
-    devices: []
+    devices: [],
+    delivery_type: 'self',
+    send_username: '',
+    telphone: '',
+
 })
 
 const loading = ref(false)
 const expandedDevices = ref<number[]>([]) // 存储展开的设备ID
-const deviceStatusList = ref<any[]>([]) // 设备状态列表
 
 // 状态存储
 const statusData = ref<StatusResponse>({
@@ -199,140 +271,154 @@ const loadDeviceStatus = async () => {
     }
 }
 
-// 切换设备详情展开状态
-const toggleDeviceDetail = (deviceId: number) => {
-    const index = expandedDevices.value.indexOf(deviceId)
-    if (index > -1) {
-        expandedDevices.value.splice(index, 1)
-    } else {
-        expandedDevices.value.push(deviceId)
-    }
-}
-
 // 检查设备是否展开
 const isDeviceExpanded = (deviceId: number): boolean => {
     return expandedDevices.value.includes(deviceId)
 }
 
+// 切换设备展开状态
+const toggleDeviceDetail = (deviceId: number) => {
+    const index = expandedDevices.value.indexOf(deviceId)
+    if (index === -1) {
+        expandedDevices.value.push(deviceId)
+    } else {
+        expandedDevices.value.splice(index, 1)
+    }
+}
+
+// 获取状态样式类
+const getStatusClass = (status: OrderStatus): string => {
+    switch (status) {
+        case '1':
+            return 'pending'
+        case '2':
+        case '3':
+            return 'processing'
+        case '4':
+        case '5':
+        case '6':
+            return 'completed'
+        case '7':
+        case '8':
+        case '9':
+            return 'cancelled'
+        default:
+            return 'pending'
+    }
+}
+
 // 检查是否有未确认的设备
 const hasUnconfirmedDevices = computed(() => {
-    console.log(orderInfo.value?.devices)
     return orderInfo.value?.devices?.some(device => device.status == '3') || false
 })
 
 // 处理设备确认
-const handleDeviceConfirm = (device: Device) => {
-    uni.showModal({
-        title: '确认提示',
-        content: `确认同意回收设备 \n ${device.model}？\n最终价格：¥${device.final_price}`,
-        success: async (res) => {
-            if (res.confirm) {
-                // TODO: 调用确认接口
-                const res = await deviceConfirm(device.id)
-                if (res.code !== 1) {
-                    uni.showToast({
-                        title: res.msg || '操作失败',
-                        icon: 'none'
-                    })
-                    return
-                }
-                await loadOrderDetail(orderInfo.value.id)
-                uni.showToast({
-                    title: '确认成功',
-                    icon: 'success'
-                })
-            }
+const handleDeviceConfirm = async (device: Device) => {
+    try {
+        loading.value = true
+        const res = await deviceConfirm(device.id)
+        if (res.code === 1) {
+            uni.showToast({
+                title: '确认成功',
+                icon: 'success'
+            })
+            loadOrderDetail(orderInfo.value.id)
+        } else {
+            uni.showToast({
+                title: res.msg || '操作失败',
+                icon: 'none'
+            })
         }
-    })
+    } catch (error) {
+        console.error('确认设备失败:', error)
+        uni.showToast({
+            title: '操作失败',
+            icon: 'none'
+        })
+    } finally {
+        loading.value = false
+    }
 }
 
 // 处理设备退回
-const handleDeviceReject = (device: Device) => {
-    uni.showModal({
-        title: '确认提示',
-        content: `确认不出售设备 ${device.model}？`,
-        success: async (res) => {
-            if (res.confirm) {
-                // TODO: 调用拒绝接口
-                const res = await deviceCancel(device.id)
-                if (res.code !== 1) {
-                    uni.showToast({
-                        title: res.msg || '操作失败',
-                        icon: 'none'
-                    })
-                    return
-                }
-                await loadOrderDetail(orderInfo.value.id)
-                uni.showToast({
-                    title: '已取消出售',
-                    icon: 'success'
-                })
-            }
-        }
+const handleDeviceReject = async (device: Device) => {
+    uni.showToast({
+        title: '该功能开发中',
+        icon: 'none'
     })
+    return
+    // 退回设备
+
+    try {
+        loading.value = true
+        const res = await deviceCancel(device.id)
+        if (res.code === 1) {
+            uni.showToast({
+                title: '退回成功',
+                icon: 'success'
+            })
+            loadOrderDetail(orderInfo.value.id)
+        } else {
+            uni.showToast({
+                title: res.msg || '操作失败',
+                icon: 'none'
+            })
+        }
+    } catch (error) {
+        console.error('退回设备失败:', error)
+        uni.showToast({
+            title: '操作失败',
+            icon: 'none'
+        })
+    } finally {
+        loading.value = false
+    }
 }
 
 // 一键确认所有设备
-const handleConfirmAll = () => {
-    uni.showModal({
-        title: '确认提示',
-        content: '确认同意回收所有设备？',
-        success: async (res) => {
-            if (res.confirm) {
-                // TODO: 调用批量确认接口
-
-                const res = await updateOrderStatus({
-                    action: 'confirm',
-                    order_id: orderInfo.value.id,
-                    status: '3'
-                })
-                // 如果code !==1 则提示错误
-                if (res.code !== 1) {
-                    uni.showToast({
-                        title: res.msg || '操作失败',
-                        icon: 'none'
-                    })
-                    return
-                }
-                await loadOrderDetail(orderInfo.value.id)
-                uni.showToast({
-                    title: '已确认所有设备',
-                    icon: 'success'
-                })
-            }
+const handleConfirmAll = async () => {
+    try {
+        loading.value = true
+        const unconfirmedDevices = orderInfo.value.devices.filter(device => device.status == '3')
+        if (unconfirmedDevices.length === 0) {
+            uni.showToast({
+                title: '没有需要确认的设备',
+                icon: 'none'
+            })
+            return
         }
-    })
-}
 
-// 一键取消所有设备
-const handleRejectAll = () => {
-    uni.showModal({
-        title: '确认提示',
-        content: '确认取消回收所有设备？',
-        success: (res) => {
-            if (res.confirm) {
-                // TODO: 调用批量取消接口
-                uni.showToast({
-                    title: '已取消所有设备',
-                    icon: 'success'
-                })
-            }
-        }
-    })
+        // 确认所有未确认的设备
+        await Promise.all(unconfirmedDevices.map(device => deviceConfirm(device.id)))
+        uni.showToast({
+            title: '确认成功',
+            icon: 'success'
+        })
+        loadOrderDetail(orderInfo.value.id)
+    } catch (error) {
+        console.error('一键确认失败:', error)
+        uni.showToast({
+            title: '操作失败',
+            icon: 'none'
+        })
+    } finally {
+        loading.value = false
+    }
 }
 
 // 格式化时间
 const formatTime = (timestamp: number) => {
-    return formatDate(timestamp * 1000, 'YYYY-MM-DD HH:mm:ss')
+    return formatDate(timestamp)
 }
 
 // 获取订单详情
 const loadOrderDetail = async (id: string | number) => {
-    loading.value = true
     try {
-        const res = await getOrderDetail(Number(id)) as ApiResponse<OrderInfo>
+        loading.value = true
+        const res = await getOrderDetail(id) as ApiResponse<OrderInfo>
         if (res.code === 1) {
             orderInfo.value = res.data
+
         }
     } catch (error) {
         console.error('获取订单详情失败:', error)
@@ -340,14 +426,6 @@ const loadOrderDetail = async (id: string | number) => {
         loading.value = false
     }
 }
-
-// 页面加载
-onLoad((options?: Record<string, any>) => {
-    if (options?.id) {
-        loadOrderDetail(options.id)
-        loadDeviceStatus() // 加载设备状态列表
-    }
-})
 
 // 获取订单状态文本
 const getOrderStatusText = (status: OrderStatus): string => {
@@ -363,25 +441,25 @@ const getDeviceStatusText = (status: DeviceStatus): string => {
 const getStatusDescription = (status: OrderStatus): string => {
     switch (status) {
         case '1':
-            return '您的订单已提交，等待签收'
+            return '您的订单已提交，等待商家确认'
         case '2':
-            return '商家正在对您的设备进行质检'
+            return '商家正在处理您的订单'
         case '3':
-            return '设备质检完成，请确认价格'
+            return '商家已完成质检，请确认价格'
         case '4':
-            return '价格已确认，等待商家打款'
+            return '您已确认价格，等待商家打款'
         case '5':
-            return '商家已完成打款，请注意查收'
+            return '商家已完成打款，请查收'
         case '6':
             return '订单已完成'
         case '7':
             return '订单已取消'
         case '8':
-            return '设备正在退回中'
+            return '订单已退回'
         case '9':
-            return '设备已退回'
+            return '订单已删除'
         default:
-            return '未知状态'
+            return '订单状态未知'
     }
 }
 
@@ -389,17 +467,17 @@ const getStatusDescription = (status: OrderStatus): string => {
 const getDeviceStatusClass = (status: DeviceStatus): string => {
     switch (status) {
         case '1':
-            return 'status-pending'    // 待质检：橙色
+            return 'status-pending'
         case '2':
-            return 'status-checking'   // 质检中：蓝色
+            return 'status-checking'
         case '3':
-            return 'status-checked'    // 已质检：绿色
+            return 'status-checked'
         case '4':
-            return 'status-confirm'    // 已确认：紫色
+            return 'status-confirmed'
         case '5':
-            return 'status-completed'  // 已完成：绿色
+            return 'status-completed'
         case '6':
-            return 'status-returned'   // 已退回：灰色
+            return 'status-returned'
         default:
             return 'status-unknown'
     }
@@ -409,293 +487,480 @@ const getDeviceStatusClass = (status: DeviceStatus): string => {
 const showDeviceActions = (status: DeviceStatus): boolean => {
     return status == '3' // 只有在已质检状态下才显示操作按钮
 }
+
+// 获取设备状态图标
+const getDeviceStatusIcon = (status: string) => {
+    switch (status) {
+        case 'pending':
+            return 'clock'
+        case 'checking':
+            return 'search'
+        case 'checked':
+            return 'checkmark'
+        case 'confirmed':
+            return 'checkmark-circle'
+        case 'completed':
+            return 'star'
+        case 'returned':
+            return 'reload'
+        default:
+            return 'info-circle'
+    }
+}
+
+// 获取设备状态颜色
+const getDeviceStatusColor = (status: string) => {
+    switch (status) {
+        case 'pending':
+            return '#d48806'
+        case 'checking':
+            return '#096dd9'
+        case 'checked':
+            return '#389e0d'
+        case 'confirmed':
+            return '#531dab'
+        case 'completed':
+            return '#08979c'
+        case 'returned':
+            return '#999'
+        default:
+            return '#999'
+    }
+}
+
+// 预览图片
+const previewImage = (images: string[], current: number) => {
+    uni.previewImage({
+        urls: images,
+        current: images[current],
+        longPressActions: {
+            itemList: ['保存图片'],
+            success: (data) => {
+                if (data.tapIndex === 0) {
+                    uni.saveImageToPhotosAlbum({
+                        filePath: images[current],
+                        success: () => {
+                            uni.showToast({
+                                title: '保存成功',
+                                icon: 'success'
+                            })
+                        },
+                        fail: (err) => {
+                            console.error('保存图片失败:', err)
+                            uni.showToast({
+                                title: '保存失败',
+                                icon: 'none'
+                            })
+                        }
+                    })
+                }
+            }
+        }
+    })
+}
+
+// 计算当前步骤
+const currentStep = computed(() => {
+    const status = orderInfo.value?.status
+    switch (status) {
+        case '1': // 已下单
+            return 0
+        case '2': // 待质检
+        case '3': // 质检中
+            return 1
+        case '4': // 待确认
+        case '5': // 部分确认
+            return 3
+        case '6': // 待打款
+            return 4
+        case '7': // 已完成
+            return -1
+        case '8': // 已取消
+        case '9': // 已删除
+            return -1
+        default:
+            return 0
+    }
+})
+
+// final_price 
+const final_price = computed(() => {
+    // 通过 计算  device 列表中 的 final_price
+    return orderInfo.value?.devices?.reduce((total, device) => total + parseFloat(device.final_price), 0)
+})
+
+// 页面加载
+onLoad((options?: Record<string, any>) => {
+    if (options?.id) {
+        loadDeviceStatus().then(() => {
+            loadOrderDetail(options.id)
+        })
+    }
+})
 </script>
 
 <style lang="scss">
-// 全局变量定义
 page {
-    --primary-color: #1890ff;
-    --primary-color-light: #e6f7ff;
-    --primary-color-dark: #096dd9;
-    --primary-color-disabled: rgba(24, 144, 255, 0.3);
-
-    --warning-color: #fa8c16;
-    --warning-color-light: #fff7e6;
-    --warning-color-disabled: rgba(250, 140, 22, 0.2);
-
-    --success-color: #52c41a;
-    --success-color-light: #f6ffed;
-    --success-color-disabled: rgba(82, 196, 26, 0.2);
-
-    --info-color: #722ed1;
-    --info-color-light: #f9f0ff;
-    --info-color-disabled: rgba(114, 46, 209, 0.2);
-
-    --error-color: #f56c6c;
-    --error-color-light: #fff5f5;
-    --error-color-dark: #f5222d;
-    --error-color-disabled: rgba(245, 34, 45, 0.2);
-
-    --text-color-disabled: #8c8c8c;
-    --bg-color-grey: #f5f5f5;
-    --border-color: rgba(140, 140, 140, 0.2);
-
-    height: 100%;
-    background-color: #f8f9fa;
-}
-
-// 设置根元素样式
-#app {
-    min-height: 100%;
-    background-color: #f8f9fa;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
 }
 
 .order-detail {
     min-height: 100vh;
-    background-color: #f8f9fa !important;
     padding: 24rpx;
     padding-bottom: 180rpx;
-
-    // 添加一个包装器确保内容区域也有背景色
-    &-wrapper {
-        background-color: #f8f9fa;
-        min-height: 100vh;
-        width: 100%;
-    }
+    background: #f8f9fa;
 
     .status-card {
         background: #fff;
-        border-radius: 16rpx;
-        padding: 32rpx;
+        border-radius: 24rpx;
         margin-bottom: 24rpx;
-        box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
-        animation: slideInDown 0.3s ease-out;
+        box-shadow: 0 8rpx 32rpx rgba(31, 45, 61, 0.08);
+        overflow: hidden;
 
-        .status-title {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20rpx;
+        .status-content {
+            padding: 16rpx;
 
-            .status-text {
-                font-size: 36rpx;
-                font-weight: 600;
-                color: #333;
+            .desc {
+                font-size: 20rpx;
             }
 
-            .order-no {
-                font-size: 26rpx;
-                color: #999;
+            .progress-steps {
+                margin: 10rpx 0;
+                padding: 12rpx;
+
+                border-radius: 16rpx;
+                border: 1rpx solid #d9d9d9;
+
+                :deep(.u-steps) {
+                    .u-steps__item {
+                        min-height: 100rpx;
+
+                        &__text {
+                            padding-left: 12rpx;
+
+                            .u-steps__item__title {
+                                font-size: 26rpx;
+                                color: #333;
+                                font-weight: 600;
+                                margin-bottom: 4rpx;
+                            }
+
+                            .u-steps__item__desc {
+                                font-size: 22rpx;
+                                color: #666;
+                            }
+                        }
+
+                        &__dot {
+                            width: 16rpx;
+                            height: 16rpx;
+                            background: #ddd;
+                            border-radius: 50%;
+
+                            &--active {
+                                background: #2979ff;
+                            }
+                        }
+
+                        &__line {
+                            background: #ddd;
+
+                            &--active {
+                                background: #2979ff;
+                            }
+                        }
+                    }
+                }
             }
-        }
 
-        .status-desc {
-            font-size: 28rpx;
-            color: #666;
-        }
-    }
-
-    .section-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 24rpx;
-
-        .section-title {
-            font-size: 32rpx;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .device-count {
-            font-size: 26rpx;
-            color: #999;
-        }
-    }
-
-    .devices-list {
-        .device-item {
-            background: #fff;
-            border-radius: 16rpx;
-            padding: 32rpx;
-            margin-bottom: 24rpx;
-            box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
-            animation: slideInUp 0.3s ease-out;
-            transition: all 0.3s ease;
-
-            .device-header {
+            .status-header {
                 display: flex;
+                align-items: center;
                 justify-content: space-between;
-                align-items: flex-start;
-                margin-bottom: 20rpx;
-                cursor: pointer;
-                position: relative;
-                padding-right: 60rpx;
+                margin: 24rpx 0px;
 
-                .device-basic {
-                    flex: 1;
-                    margin-right: 20rpx;
+                .status-badge {
+                    display: inline-flex;
+                    align-items: center;
+                    padding: 12rpx 24rpx;
+                    border-radius: 32rpx;
+                    background: var(--status-color, #2979ff);
 
-                    .device-model {
-                        font-size: 32rpx;
-                        font-weight: 600;
-                        color: #333;
-                        margin-bottom: 12rpx;
-                        display: block;
-                    }
-
-                    .device-status {
-                        font-size: 24rpx;
-                        padding: 8rpx 24rpx;
-                        border-radius: 24rpx;
-                        display: inline-flex;
+                    .icon-left {
+                        margin-right: 6rpx;
+                        display: inline-block;
                         align-items: center;
-                        gap: 8rpx;
-                        transition: all 0.3s ease;
-                        position: relative;
-                        overflow: hidden;
-                        font-weight: 500;
-
-                        &::before {
-                            content: '';
-                            position: absolute;
-                            left: 0;
-                            top: 0;
-                            width: 100%;
-                            height: 100%;
-                            background: currentColor;
-                            opacity: 0.1;
-                            border-radius: inherit;
-                        }
-
-                        &.status-pending {
-                            color: var(--warning-color, #fa8c16);
-                            background: var(--warning-color-light, #fff7e6);
-                            border: 1px solid var(--warning-color-disabled, rgba(250, 140, 22, 0.2));
-
-                            &::before {
-                                animation: pulse 2s infinite;
-                            }
-                        }
-
-                        &.status-checking {
-                            color: var(--primary-color, #1890ff);
-                            background: var(--primary-color-light, #e6f7ff);
-                            border: 1px solid var(--primary-color-disabled, rgba(24, 144, 255, 0.2));
-
-                            &::before {
-                                animation: scanning 2s infinite;
-                            }
-                        }
-
-                        &.status-checked {
-                            color: var(--success-color, #52c41a);
-                            background: var(--success-color-light, #f6ffed);
-                            border: 1px solid var(--success-color-disabled, rgba(82, 196, 26, 0.2));
-                            animation: highlight 2s infinite;
-                        }
-
-                        &.status-confirm {
-                            color: var(--info-color, #722ed1);
-                            background: var(--info-color-light, #f9f0ff);
-                            border: 1px solid var(--info-color-disabled, rgba(114, 46, 209, 0.2));
-                            font-weight: 600;
-                        }
-
-                        &.status-completed {
-                            color: var(--success-color, #52c41a);
-                            background: var(--success-color-light, #f6ffed);
-                            border: 1px solid var(--success-color-disabled, rgba(82, 196, 26, 0.2));
-                        }
-
-                        &.status-returned {
-                            color: var(--text-color-disabled, #8c8c8c);
-                            background: var(--bg-color-grey, #f5f5f5);
-                            border: 1px solid var(--border-color, rgba(140, 140, 140, 0.2));
-                        }
-
-                        &.status-unknown {
-                            color: var(--text-color-disabled, #8c8c8c);
-                            background: var(--bg-color-grey, #f5f5f5);
-                            border: 1px solid var(--border-color, rgba(140, 140, 140, 0.2));
-                        }
                     }
-                }
 
-                .price-info {
-                    text-align: right;
-                    min-width: 160rpx;
-
-                    .price-label {
+                    .status-text {
                         font-size: 24rpx;
-                        color: #999;
-                        display: block;
-                        margin-bottom: 4rpx;
-                    }
-
-                    .price-value {
-                        font-size: 40rpx;
-                        background: linear-gradient(135deg, var(--error-color, #ff4d4f), var(--error-color-dark, #f5222d));
-                        -webkit-background-clip: text;
-                        color: transparent;
                         font-weight: 600;
-                        text-shadow: 0 2rpx 8rpx var(--error-color-disabled, rgba(245, 34, 45, 0.2));
-                        animation: priceGlow 2s infinite;
+                        color: #fff;
                     }
                 }
 
-                .expand-icon {
-                    position: absolute;
-                    right: 0;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    transition: transform 0.3s ease;
-                }
-
-                &:active {
-                    opacity: 0.7;
+                .create-time {
+                    font-size: 24rpx;
+                    color: #666;
                 }
             }
 
-            .device-detail {
-                animation: expandIn 0.3s ease-out;
+            .order-info {
+                background: rgba(248, 249, 250, 0.8);
+                border-radius: 20rpx;
+                padding: 32rpx;
+                margin-bottom: 32rpx;
+                border: 1rpx solid rgba(255, 255, 255, 0.8);
 
-                .detail-section {
-                    background: #f8f9fa;
-                    border-radius: 12rpx;
-                    padding: 24rpx;
+                .info-row {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
                     margin-bottom: 20rpx;
+                    font-size: 28rpx;
 
                     &:last-child {
                         margin-bottom: 0;
                     }
 
-                    .section-header {
-                        margin-bottom: 16rpx;
+                    .label {
+                        display: flex;
+                        align-items: center;
+                        color: #666;
+                        font-size: 26rpx;
+                        white-space: nowrap;
 
-                        .section-title {
-                            font-size: 28rpx;
-                            font-weight: 500;
-                            color: #333;
+                        .icon-left {
+                            margin-right: 8rpx;
+                            display: inline-block;
+                            align-items: center;
+                            flex-shrink: 0;
+                        }
+                    }
+
+                    .value {
+                        color: #333;
+                        font-size: 26rpx;
+                        font-weight: 500;
+                    }
+                }
+            }
+
+            .status-desc {
+                font-size: 26rpx;
+                color: #666;
+                line-height: 1.6;
+                padding: 0 8rpx;
+            }
+        }
+    }
+
+    .devices-list {
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32rpx;
+            padding: 0 12rpx;
+
+            .title {
+                font-size: 36rpx;
+                font-weight: 700;
+                color: #333;
+                letter-spacing: 1rpx;
+                text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.05);
+            }
+
+            .device-count {
+                font-size: 26rpx;
+                color: #666;
+                font-weight: 500;
+                background: rgba(255, 255, 255, 0.9);
+                padding: 8rpx 24rpx;
+                border-radius: 24rpx;
+                box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+            }
+        }
+
+        .device-item {
+            margin-bottom: 32rpx;
+
+            .device-card {
+                position: relative;
+                background: #fff;
+                border-radius: 24rpx;
+                overflow: hidden;
+                box-shadow: 0 8rpx 32rpx rgba(31, 45, 61, 0.08);
+                border: 1rpx solid rgba(255, 255, 255, 0.6);
+                backdrop-filter: blur(10rpx);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+                &:hover {
+                    transform: translateY(-4rpx);
+                    box-shadow: 0 12rpx 48rpx rgba(31, 45, 61, 0.12);
+                }
+
+                .device-header {
+                    position: relative;
+                    padding: 16rpx;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    border-bottom: 1rpx solid rgba(0, 0, 0, 0.05);
+
+                    .status-tag {
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        background: #f5f7fa;
+                        color: #347ddc;
+                        font-size: 0.625rem;
+                        font-weight: 500;
+                        padding: 0.125rem 0.25rem;
+                        border-radius: 0 0.375rem 0 0.375rem;
+                        font-family: "DIN";
+                        z-index: 1;
+
+                        .icon-left {
+                            margin-right: 4rpx;
+                            display: inline-flex;
+                            align-items: center;
+                        }
+                    }
+
+                    .device-basic {
+                        margin-top: 24rpx;
+
+                        .model-info {
                             display: flex;
                             align-items: center;
+                            gap: 12rpx;
+                            margin-bottom: 12rpx;
 
-                            &::before {
-                                content: '';
-                                width: 6rpx;
-                                height: 24rpx;
-                                background: var(--primary-color);
-                                margin-right: 12rpx;
-                                border-radius: 3rpx;
+                            .device-model {
+                                display: inline-flex;
+                                align-items: center;
+                                font-size: 28rpx;
+                                font-weight: 600;
+                                color: #333;
+
+                                .icon-left {
+                                    margin-right: 6rpx;
+                                    display: inline-flex;
+                                    align-items: center;
+                                }
+                            }
+                        }
+
+                        .device-imei {
+                            display: inline-flex;
+                            align-items: center;
+                            font-size: 24rpx;
+                            color: #666;
+
+                            .icon-left {
+                                margin-right: 6rpx;
+                                display: inline-flex;
+                                align-items: center;
                             }
                         }
                     }
 
-                    .info-list {
-                        .info-item {
+                    .price-section {
+                        text-align: right;
+                        margin-right: 80rpx;
+
+                        .price-value {
+                            font-size: 40rpx;
+                            font-weight: 800;
+                            background: linear-gradient(135deg, #ff4d4f, #f5222d);
+                            -webkit-background-clip: text;
+                            color: transparent;
+                            text-shadow: 0 2rpx 8rpx rgba(245, 34, 45, 0.2);
+                        }
+
+                        .price-status {
+                            font-size: 28rpx;
+                            color: #666;
+                            font-weight: 500;
+                            margin-top: 4rpx;
+                        }
+                    }
+
+                    .expand-icon {
+                        position: absolute;
+                        right: 32rpx;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        transition: all 0.3s ease;
+                        width: 32rpx;
+                        height: 32rpx;
+                        opacity: 0.6;
+
+                        &.expanded {
+                            transform: translateY(-50%) rotate(180deg);
+                            opacity: 0.8;
+                        }
+                    }
+                }
+
+                .device-images {
+                    padding: 32rpx;
+                    background: rgba(248, 249, 250, 0.5);
+                    border-bottom: 1rpx solid rgba(0, 0, 0, 0.05);
+
+                    .image-scroll {
+                        width: 100%;
+                        white-space: nowrap;
+
+                        .image-list {
+                            display: inline-flex;
+                            gap: 24rpx;
+                            padding: 8rpx 4rpx;
+
+                            .image-item {
+                                width: 240rpx;
+                                height: 240rpx;
+                                border-radius: 16rpx;
+                                overflow: hidden;
+                                box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+                                border: 2rpx solid rgba(255, 255, 255, 0.8);
+                                transition: transform 0.3s ease;
+
+                                &:hover {
+                                    transform: scale(1.02);
+                                }
+
+                                image {
+                                    width: 100%;
+                                    height: 100%;
+                                    object-fit: cover;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                .device-detail {
+                    padding: 32rpx;
+                    animation: expandIn 0.3s ease-out;
+
+                    .detail-section {
+                        background: rgba(248, 249, 250, 0.8);
+                        border-radius: 20rpx;
+                        padding: 18rpx;
+                        margin-bottom: 16rpx;
+                        border: 1rpx solid rgba(255, 255, 255, 0.8);
+
+                        &:last-child {
+                            margin-bottom: 0;
+                        }
+
+                        .detail-row {
                             display: flex;
-                            margin-bottom: 12rpx;
-                            font-size: 26rpx;
+                            justify-content: space-between;
+                            margin-bottom: 8rpx;
+                            font-size: 28rpx;
 
                             &:last-child {
                                 margin-bottom: 0;
@@ -703,74 +968,76 @@ page {
 
                             .label {
                                 color: #666;
-                                width: 160rpx;
+                                font-weight: 500;
                             }
 
                             .value {
                                 color: #333;
-                                flex: 1;
+                                font-weight: 600;
+
+                                &.price {
+                                    color: #f5222d;
+                                    font-size: 32rpx;
+                                    font-weight: 700;
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            .device-actions {
-                display: flex;
-                justify-content: flex-end;
-                gap: 24rpx;
-                margin-top: 32rpx;
-                padding-top: 24rpx;
-                border-top: 1px solid #f0f0f0;
-
-                .action-btn {
+                .device-actions {
                     display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 12rpx;
-                    height: 80rpx;
-                    border-radius: 40rpx;
-                    font-size: 28rpx;
-                    font-weight: 500;
-                    transition: all 0.2s ease;
-                    padding: 0 40rpx;
+                    gap: 24rpx;
+                    padding: 32rpx;
+                    border-top: 1rpx solid rgba(0, 0, 0, 0.05);
+                    background: rgba(248, 249, 250, 0.5);
 
-                    &.confirm {
-                        flex: 2;
-                        background: var(--primary-color, #1890ff);
-                        background: linear-gradient(135deg, var(--primary-color, #1890ff), var(--primary-color-dark, #096dd9));
-                        color: #fff;
-                        box-shadow: 0 8rpx 16rpx var(--primary-color-disabled, rgba(24, 144, 255, 0.3));
-
-                        &:active {
-                            transform: scale(0.98);
-                            box-shadow: 0 4rpx 8rpx var(--primary-color-disabled, rgba(24, 144, 255, 0.2));
-                        }
-
-                        .u-icon {
-                            width: 32rpx;
-                            height: 32rpx;
-                        }
-
-                        text {
-                            font-size: 32rpx;
-                        }
-                    }
-
-                    &.reject {
+                    .action-btn {
                         flex: 1;
-                        background: #fff;
-                        color: var(--error-color, #f56c6c);
-                        border: 1px solid var(--error-color, #f56c6c);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 8rpx;
+                        height: 88rpx;
+                        border-radius: 44rpx;
+                        font-size: 30rpx;
+                        font-weight: 600;
+                        letter-spacing: 1rpx;
+                        border: none;
+                        transition: all 0.3s ease;
 
-                        &:active {
-                            transform: scale(0.98);
-                            background: var(--error-color-light, #fff5f5);
+                        &::after {
+                            border: none;
                         }
 
-                        .u-icon {
-                            width: 28rpx;
-                            height: 28rpx;
+                        &.reject {
+                            background: #fff;
+                            color: #f56c6c;
+                            border: 2rpx solid #f56c6c;
+                            box-shadow: 0 4rpx 12rpx rgba(245, 108, 108, 0.1);
+
+                            &:active {
+                                background: #fff5f5;
+                                transform: scale(0.98);
+                                box-shadow: 0 2rpx 6rpx rgba(245, 108, 108, 0.1);
+                            }
+                        }
+
+                        &.confirm {
+                            background: linear-gradient(135deg, #4481eb, #04befe);
+                            color: #fff;
+                            box-shadow: 0 4rpx 16rpx rgba(68, 129, 235, 0.2);
+                            text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+
+                            &:active {
+                                transform: scale(0.98);
+                                box-shadow: 0 2rpx 8rpx rgba(68, 129, 235, 0.2);
+                            }
+                        }
+
+                        .icon-left {
+                            display: inline-block;
+                            align-items: center;
                         }
                     }
                 }
@@ -783,143 +1050,84 @@ page {
         left: 0;
         right: 0;
         bottom: 0;
-        background: #fff;
-        padding: 24rpx;
-        display: flex;
-        justify-content: space-between;
-        gap: 24rpx;
-        box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.08);
-        animation: slideInUp 0.3s ease-out;
+        background: rgba(255, 255, 255, 0.98);
+        padding: 32rpx;
+        box-shadow: 0 -4rpx 24rpx rgba(31, 45, 61, 0.1);
+        backdrop-filter: blur(10rpx);
 
         .action-btn {
-            flex: 1;
+            width: 100%;
+            height: 96rpx;
+            border-radius: 48rpx;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12rpx;
-            height: 88rpx;
-            border-radius: 44rpx;
-            font-size: 32rpx;
-            font-weight: 500;
-            transition: all 0.2s ease;
+            gap: 16rpx;
+            font-size: 34rpx;
+            font-weight: 600;
+            letter-spacing: 2rpx;
+            border: none;
+            transition: all 0.3s ease;
 
-            &.confirm-all {
-                background: linear-gradient(135deg, #1890ff, #096dd9);
-                color: #fff;
-                box-shadow: 0 4rpx 12rpx rgba(24, 144, 255, 0.3);
-
-                &:active {
-                    transform: scale(0.95);
-                    box-shadow: 0 2rpx 6rpx rgba(24, 144, 255, 0.2);
-                }
+            &::after {
+                border: none;
             }
 
-            &.reject-all {
-                background: #fff;
-                color: #f56c6c;
-                border: 1px solid #f56c6c;
+            &.confirm-all {
+                background: linear-gradient(135deg, #4481eb, #04befe);
+                color: #fff;
+                box-shadow: 0 8rpx 24rpx rgba(68, 129, 235, 0.25);
+                text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
 
                 &:active {
-                    transform: scale(0.95);
-                    background: #fff5f5;
+                    transform: scale(0.98);
+                    box-shadow: 0 4rpx 12rpx rgba(68, 129, 235, 0.2);
                 }
             }
         }
     }
 }
 
-@keyframes slideInDown {
-    from {
-        transform: translateY(-20rpx);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
+.status-badge {
+    display: inline-flex;
+    align-items: center;
 }
 
-@keyframes slideInUp {
-    from {
-        transform: translateY(20rpx);
-        opacity: 0;
-    }
+.create-time {
+    display: inline-flex;
+    align-items: center;
+}
 
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
+.device-model {
+    display: inline-flex;
+    align-items: center;
+}
+
+.device-imei {
+    display: inline-flex;
+    align-items: center;
+}
+
+.status-tag {
+    display: inline-flex;
+    align-items: center;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 @keyframes expandIn {
     from {
         opacity: 0;
-        transform: translateY(-10rpx);
+        transform: translateY(-20rpx);
     }
 
     to {
         opacity: 1;
         transform: translateY(0);
-    }
-}
-
-@keyframes pulse {
-    0% {
-        opacity: 0.1;
-    }
-
-    50% {
-        opacity: 0.2;
-    }
-
-    100% {
-        opacity: 0.1;
-    }
-}
-
-@keyframes scanning {
-    0% {
-        transform: translateX(-100%);
-        opacity: 0.2;
-    }
-
-    50% {
-        transform: translateX(0);
-        opacity: 0.1;
-    }
-
-    100% {
-        transform: translateX(100%);
-        opacity: 0.2;
-    }
-}
-
-@keyframes highlight {
-    0% {
-        opacity: 0.1;
-    }
-
-    50% {
-        opacity: 0.3;
-    }
-
-    100% {
-        opacity: 0.1;
-    }
-}
-
-@keyframes priceGlow {
-    0% {
-        opacity: 0.8;
-    }
-
-    50% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0.8;
     }
 }
 </style>

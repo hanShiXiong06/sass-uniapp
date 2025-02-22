@@ -38,20 +38,14 @@
                     </u-row>
                 </view>
             </view>
-            <view class="-mt-[185rpx]" >
+            <view class="-mt-[185rpx]">
                 <view class="mx-3 py-4 px-3 bg-[#fff] rounded-md  box-border" v-if="technicianDetail.desc">
-                    <view class="text-[28rpx]">
-                        {{ t('basicInfo') }}
-                    </view>
-                    <view class="text-[24rpx] mt-[20rpx] leading-[32rpx]" >
-                        {{ technicianDetail.desc }}
-                    </view>
+                    <view class="text-[28rpx]">{{ t('basicInfo') }}</view>
+                    <view class="text-[24rpx] mt-[20rpx] leading-[32rpx]" >{{ technicianDetail.desc }}</view>
                 </view>
             </view>
             <view class="mx-3 py-4 px-3 bg-[#fff] rounded-md box-border" :class="{'mt-[30rpx]':technicianDetail.desc != ''}">
-                <view class="text-[28rpx] mb-[20rpx]">
-                    {{ t('serviceItem') }}
-                </view>
+                <view class="text-[28rpx] mb-[20rpx]">{{ t('serviceItem') }}</view>
                 <block v-for="(subItem,index) in technicianDetail.goods" :key="index">
                     <view class="flex" :class="{'mt-[20rpx]':index}">
                         <view class="w-[160rpx] h-[160rpx]" @click="toLink(subItem.goods_info.goods_id)">
@@ -90,6 +84,7 @@ onLoad((option: any) => {
 	id = option.id || 0
 	getTechnicianDetailFn()
 })
+
 // 技师详情
 const getTechnicianDetailFn = () => {
 	loading.value = true
@@ -100,12 +95,14 @@ const getTechnicianDetailFn = () => {
 		loading.value = false
 	})
 }
+
 // 联系技师
 const callPhoto = (tel) => {
 	uni.makePhoneCall({
 		phoneNumber: tel,
 	});
 }
+
 // 跳转商品详情
 const toLink = (goods_id: any) => {
 	redirect({url:'/addon/o2o/pages/goods/detail',param:{ goods_id }})
@@ -116,11 +113,12 @@ const priceType = (data:any) =>{
 	let type = "";
 	if(data.member_discount && getToken()){
 		type = 'member_price' // 会员价
-	}else{ 
+	}else{
 		type = ""
 	}
 	return type;
 }
+
 // 商品价格
 const goodsPrice = (data:any) =>{
 	let price = "0.00";

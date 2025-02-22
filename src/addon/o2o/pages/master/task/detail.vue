@@ -4,17 +4,17 @@
             <view class="bg-linear h-[742rpx] pt-3 "></view>
             <view class="bg-[#fff] mx-3 py-4 px-3 rounded-md -mt-[740rpx]">
                 <view class="flex">
-                        <view  class="min-w-[50rpx] flex items-center justify-center">
-                            <u-icon name="map" size="20"></u-icon>
-                        </view>
-                        <view class="flex flex-col ml-[20rpx]">
-                            <text class="text-[24rpx] mt-[10rpx] leading-[35rpx]">{{ detail.taker_full_address }}</text>
-                            <view>
-                                <text class="text-[24rpx]">{{ detail.taker_name }}</text>
-                                <text class="text-[24rpx] mt-[15rpx]">{{ detail.taker_mobile }}</text>
-                            </view>
+                    <view  class="min-w-[50rpx] flex items-center justify-center">
+                        <u-icon name="map" size="20"></u-icon>
+                    </view>
+                    <view class="flex flex-col ml-[20rpx]">
+                        <text class="text-[24rpx] mt-[10rpx] leading-[35rpx]">{{ detail.taker_full_address }}</text>
+                        <view>
+                            <text class="text-[24rpx]">{{ detail.taker_name }}</text>
+                            <text class="text-[24rpx] mt-[15rpx]">{{ detail.taker_mobile }}</text>
                         </view>
                     </view>
+                </view>
             </view>
             <view class="flex py-4 px-3 bg-white rounded-md box-border mx-3 mt-[20rpx] task-steps">
                 <u-steps :current="current" activeColor="var(--primary-color)">
@@ -44,7 +44,7 @@
                                         <text class="text-[28rpx] text-item  leading-[40rpx]">{{ subItem.item_name }}</text>
                                     </view>
                                     <view class="text-[24rpx] mt-[14rpx] flex">
-                                        <text class="text-[var(--primary-color)] rounded-[6rpx] py-[6rpx] bg-[var(--label-bg-color)] px-[10rpx]">{{ subItem.item_type_name }}</text>
+                                        <text class="text-[var(--primary-color)] rounded-[6rpx] py-[6rpx] bg-[var(--primary-color-light)] px-[10rpx]">{{ subItem.item_type_name }}</text>
                                     </view>
                                     <view class="text-[28rpx] mt-[14rpx] flex justify-between">
                                         <text class="text-[var(--price-text-color)] price-font">￥{{ subItem.price }}</text>
@@ -55,7 +55,7 @@
                             <view class="flex justify-end self-end w-[100%] mt-[10rpx]">
                                 <view v-if="subItem.refund_no && subItem.refund_status != '' && subItem.refund_status != 'cancel'"
                                     class="text-[26rpx] leading-[56rpx] px-[30rpx] border-[3rpx] border-solid border-[#999] rounded-full ml-[10rpx]"
-                                    @click="redirect({ url: '/addon/o2o/pages/master/task/refund', param: { refund_no : subItem.refund_no} })">{{ t('viewRefund') }}</view> 
+                                    @click="redirect({ url: '/addon/o2o/pages/master/task/refund', param: { refund_no : subItem.refund_no} })">{{ t('viewRefund') }}</view>
                             </view>
                         </view>
                     </block>
@@ -80,7 +80,7 @@
                                     <text class="shrink-0  ml-[10rpx] text-[24rpx] leading-[40rpx] text-[var(--primary-color)]">{{ subItem.pay_time ? t('havePaid') : t('notPaid')  }}</text>
                                 </view>
                                 <view class="text-[24rpx] mt-[14rpx] flex">
-                                    <text class="text-[var(--primary-color)] rounded-[6rpx] py-[6rpx] bg-[var(--label-bg-color)] px-[10rpx]">{{ subItem.item_type_name }}</text>
+                                    <text class="text-[var(--primary-color)] rounded-[6rpx] py-[6rpx] bg-[var(--primary-color-light)] px-[10rpx]">{{ subItem.item_type_name }}</text>
                                 </view>
                                 <view class="text-[28rpx] mt-[14rpx] flex justify-between">
                                     <text class="text-[var(--price-text-color)] price-font">￥{{ subItem.price }}</text>
@@ -89,14 +89,11 @@
                             </view>
                         </view>
                         <view class="flex justify-end mt-[10rpx]">
-                            <view
-                                class="text-[26rpx] leading-[56rpx] px-[30rpx] border-[3rpx] border-solid border-[#999] rounded-full ml-[10rpx]"
+                            <view class="text-[26rpx] leading-[56rpx] px-[30rpx] border-[3rpx] border-solid border-[#999] rounded-full ml-[10rpx]"
                                 @click="showServiceFn(subItem)">{{ t('show') }}</view>
-                            <view v-if="!subItem.pay_time"
-                                class="text-[26rpx] leading-[56rpx] px-[30rpx] border-[3rpx] border-solid border-[#999] rounded-full ml-[10rpx]"
+                            <view v-if="!subItem.pay_time" class="text-[26rpx] leading-[56rpx] px-[30rpx] border-[3rpx] border-solid border-[#999] rounded-full ml-[10rpx]"
                                 @click="editServiceFn(subItem)">{{ t('edit') }}</view>
-                            <view v-if="!subItem.pay_time"
-                                class="text-[26rpx] leading-[56rpx] px-[30rpx] border-[3rpx] border-solid border-[#999] rounded-full ml-[10rpx]"
+                            <view v-if="!subItem.pay_time" class="text-[26rpx] leading-[56rpx] px-[30rpx] border-[3rpx] border-solid border-[#999] rounded-full ml-[10rpx]"
                                 @click="deleteServiceFn(subItem)">{{ t('delete') }}</view>
                         </view>
                     </view>
@@ -164,7 +161,7 @@
 import { t } from '@/locale'
 import { ref, reactive, computed } from 'vue';
 import { onLoad } from '@dcloudio/uni-app'
-import { img, redirect, copy, timeStampTurnTime } from '@/utils/common';
+import { img, redirect } from '@/utils/common';
 import { getTechnicianOrderDetail, beginService, finishService, TransferOrder, deleteService } from '@/addon/o2o/api/o2o'
 import { checkTechnician } from '@/addon/o2o/api/technician';
 import useConfigStore from "@/stores/config";
@@ -176,6 +173,7 @@ onLoad((option) => {
 	orderId.value = option.order_id;
 	checkTechnicianFn()
 });
+
 // 验证是否是技师
 const checkTechnicianFn = () => {
 	checkTechnician().then(res => {
@@ -184,9 +182,9 @@ const checkTechnicianFn = () => {
 		} else {
 			getTechnicianOrderDetailFn(orderId.value);
 		}
-
 	})
 }
+
 // 详情信息
 const getTechnicianOrderDetailFn = (id) => {
 	loading.value = true;
@@ -198,6 +196,7 @@ const getTechnicianOrderDetailFn = (id) => {
 		loading.value = false;
 	})
 }
+
 const getTechnicianDetail = ()=>{
 	getTechnicianOrderDetail(orderId.value).then((res) => {
 		detail.value = res.data
@@ -205,12 +204,14 @@ const getTechnicianDetail = ()=>{
 	}).catch(() => {
 	})
 }
+
 // 联系
 const callPhoto = (tel) => {
 	uni.makePhoneCall({
 		phoneNumber: tel,
 	});
 }
+
 // 导航
 // const goNavigation = (data) => {
 // 	uni.openLocation({
@@ -293,6 +294,7 @@ const showServiceFn = (data) =>{
 const editServiceFn = (data) => {
 	redirect({ url: '/addon/o2o/pages/master/task/add', param: { order_id: data.order_id, order_item_id: data.order_item_id, item_name: data.item_name, price: data.item_money, item_images: data.item_images } })
 }
+
 // 删除服务项
 const deleteServiceFn = (data) => {
 	uni.showModal({
@@ -329,6 +331,7 @@ function dataTurnTime(timeStamp) {
 		return "";
 	}
 }
+
 // 判断当前步骤条的状态
 const current = ref(0)
 function getStatus() {

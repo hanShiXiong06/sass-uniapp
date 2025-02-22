@@ -18,21 +18,22 @@ export function getGoodsList(params: Record<string, any>) {
     return request.get(`o2o/goods`, params)
 }
 
-
 /**
  * 项目详情
  * @param params
  * @returns
  */
 export function getGoodsDetail(params: Record<string, any>) {
-    return request.get(`o2o/goods/detail`,params)
+    return request.get(`o2o/goods/detail`, params)
 }
+
 /**
  * 获取项目列表供组件调用
  */
 export function getGoodsComponents(params: Record<string, any>) {
     return request.get(`o2o/goods/components`, params)
 }
+
 /**
  * 预约设置
  * @returns
@@ -45,20 +46,20 @@ export function getReserveConfig() {
 /**
  * 添加收藏
  */
-export function setCollect(data: AnyObject){
+export function setCollect(data: AnyObject) {
     return request.post(`o2o/collect`, data)
 }
 
 /**
  * 查询收藏（单条）
  */
-export function getCollect(data: AnyObject){
+export function getCollect(data: AnyObject) {
     return request.get(`o2o/collect`, data)
 }
 
 /**
  * 取消收藏
  */
-export function deleteCollect(id: number){
-    return request.delete(`o2o/collect/${id}`)
+export function deleteCollect(id: number) {
+    return request.delete(`o2o/collect/${ id }`)
 }

@@ -1,7 +1,8 @@
 <template>
     <view class="payment-page">
+
         <!-- 收款方式列表 -->
-        <view class="payment-list">
+        <view class="payment-list" v-if="paymentList.length">
             <view class="payment-item" v-for="item in paymentList" :key="item.id">
                 <view class="payment-info">
                     <view class="payment-type">
@@ -17,6 +18,10 @@
                     <button class="btn-delete" @tap="handleDelete(item.id)">删除</button>
                 </view>
             </view>
+        </view>
+        <view v-else class=" text-center  text-[#999] text-base  ">
+            <up-text size="18" align="center" text=" 暂无收款方式 , 请先添加收款方式"> </up-text>
+            <up-text size="15" align="center" text=" 可以添加多个收款方式 "> </up-text>
         </view>
 
         <!-- 添加收款方式按钮 -->
@@ -60,6 +65,7 @@ import { getPaymentList, addPayment, updatePayment, deletePayment, setDefaultPay
 
 import { img } from '@/utils/common'
 import { uploadImage } from '@/app/api/system'
+import { pay } from '@/addon/fast_pay/api/pay'
 
 const popup = ref<any>(null)
 const paymentList = ref<PaymentInfo[]>([])
@@ -163,7 +169,9 @@ const handleEdit = (item: PaymentInfo) => {
 
 // 删除收款方式
 const handleDelete = (id: number) => {
-    showModal({
+
+
+    uni.showModal({
         title: '提示',
         content: '确定要删除该收款方式吗？',
         success: async (res) => {
@@ -412,6 +420,10 @@ const resetForm = () => {
     margin-top: 40rpx;
     padding: 0 20rpx;
     animation: slideUp 0.5s ease;
+    position: fixed;
+    bottom: 20rpx;
+    left: 0;
+    right: 0;
 
     .btn-add {
         width: 100%;

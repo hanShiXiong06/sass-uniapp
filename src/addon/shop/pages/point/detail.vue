@@ -26,7 +26,7 @@
 					</view>
 				</view>
 			</view>
-			
+
 			<view class="bg-[var(--page-bg-color)] overflow-hidden rounded-[40rpx] -mt-[28rpx] relative">
 				<view class="datail-title relative px-[30rpx] pt-[40rpx]">
 					<view class="text-[#333] font-medium text-[30rpx] multi-hidden leading-[40rpx]">
@@ -384,7 +384,7 @@ const isShowSingleSku = computed(() => {
 // 判断商品属性模块是否展示
 const isGoodsPropertyTemp = computed(() => {
 	let bool = false;
-	if(goodsDetail.value.service && goodsDetail.value.service.length || 
+	if(goodsDetail.value.service && goodsDetail.value.service.length ||
 	goodsDetail.value.goodsSpec && goodsDetail.value.goodsSpec.length ||
 	goodsDetail.value.goods.goods_type == 'real'&&goodsDetail.value.delivery_type_list&&goodsDetail.value.delivery_type_list.length){
 		bool = true;
@@ -433,7 +433,7 @@ const imgListPreview = (item:any,index:any) => {
 			urls: urlList
 		})
 	}
-	
+
 }
 // 返回上一页
 const backToPrevious=()=> {
@@ -576,7 +576,11 @@ const openShareFn = ()=>{
 // 关闭预览图片
 onUnload(()=>{
     // #ifdef  H5 || APP
-    uni.closePreviewImage()
+	try {
+		uni.closePreviewImage()
+	}catch (e) {
+
+	}
     // #endif
 })
 </script>

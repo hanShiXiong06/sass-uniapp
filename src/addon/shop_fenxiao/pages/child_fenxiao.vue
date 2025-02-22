@@ -41,7 +41,7 @@
 			loading.value = false;
 		}).catch(() => {
 			loading.value = true;
-			redirect({ url: '/app/pages/member/index', mode: 'switchTab' })
+			redirect({ url: '/app/pages/member/index', mode: 'reLaunch' })
 		})
 	}
 	getData();

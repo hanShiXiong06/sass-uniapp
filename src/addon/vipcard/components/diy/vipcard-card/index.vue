@@ -36,7 +36,7 @@
 	import { getIndexCardList } from '@/addon/vipcard/api/vipcard';
 	import { t } from '@/locale'
 
-    const props = defineProps(['component', 'index', 'pullDownRefreshCount']);
+    const props = defineProps(['component', 'index']);
 	const diyStore = useDiyStore();
 
 	const diyComponent = computed(() => {
@@ -119,13 +119,6 @@
 			getIndexCardListFn();
 		}
 	}
-
-    watch(
-        () => props.pullDownRefreshCount,
-        (newValue, oldValue) => {
-            // 处理下拉刷新业务
-        }
-    )
 
     onMounted(() => {
         refresh();

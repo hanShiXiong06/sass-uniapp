@@ -33,7 +33,7 @@
                                                 <text v-if="subItem.item_type == 'custom'" class="shrink-0  ml-[10rpx] text-[24rpx] leading-[40rpx] text-[var(--primary-color)]">{{ subItem.pay_time ? t('havePaid'): t('notPaid') }}</text>
                                             </view>
                                             <view class="text-[24rpx] mt-[20rpx] flex">
-                                                <text class="text-[var(--primary-color)] rounded-[6rpx] py-[6rpx]  bg-[var(--label-bg-color)] px-[10rpx]">{{ subItem.item_type_name }}</text>
+                                                <text class="text-[var(--primary-color)] rounded-[6rpx] py-[6rpx]  bg-[var(--primary-color-light)] px-[10rpx]">{{ subItem.item_type_name }}</text>
                                             </view>
                                             <view class="text-[28rpx] mt-auto flex justify-between">
                                                 <text class=" px-[10rpx] py-[4rpx] text-[var(--price-text-color)] price-font">￥{{ subItem.price }}</text>
@@ -43,9 +43,7 @@
                                     </view>
                                 </view>
                                 <view class="mt-[34rpx] flex justify-end ">
-                                    <view
-                                        class="inline-block text-[26rpx] leading-[56rpx] px-[30rpx] border-[3rpx] border-solid border-[#999] rounded-full"
-                                        @click.stop="callPhoto(item.taker_mobile)">{{ t('contact') }}</view>
+                                    <view class="inline-block text-[26rpx] leading-[56rpx] px-[30rpx] border-[3rpx] border-solid border-[#999] rounded-full" @click.stop="callPhoto(item.taker_mobile)">{{ t('contact') }}</view>
                                     <view v-for="(btnItem,btnIndex) in item.order_status_info.technician_action" :key="btnIndex"
                                         class="inline-block text-[26rpx] leading-[56rpx] px-[30rpx] border-[3rpx] border-solid border-[#999] rounded-full ml-[20rpx]" @click.stop="orderBtnFn(item, btnItem.key)">
                                         {{ btnItem.name }}</view>
@@ -93,6 +91,7 @@ onLoad((option) => {
 	orderState.value = option.order_status || ""
 	checkTechnicianFn()
 });
+
 // 验证是否是技师
 const checkTechnicianFn = ()=>{
 	checkTechnician().then(res=>{
@@ -101,9 +100,9 @@ const checkTechnicianFn = ()=>{
 		}else{
 			getTechnicianStatusFn();
 		}
-		
 	})
 }
+
 // 获取订单状态
 const getTechnicianStatusFn = () => {
 	statusLoading.value = true;
@@ -146,7 +145,6 @@ const getTechnicianOrderListFn = (mescroll) => {
 		mescroll.endErr(); // 请求失败, 结束加载
 	})
 }
-
 
 // 跳转详情页
 const toLink = (order_id:any) => {
@@ -209,10 +207,10 @@ const beginServiceFn = ()=>{
 		check_code: checkCode.value
 	}
 	beginService(obj).then((res) => {
-		showService.value = false  
+		showService.value = false
 		redirect({ url: '/addon/o2o/pages/master/task/detail',param:{order_id:orderId}})
 	}).catch(() => {
-		showService.value = false  
+		showService.value = false
 		redirect({ url: '/addon/o2o/pages/master/task/detail',param:{order_id:orderId}})
 	})
 }

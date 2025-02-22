@@ -68,10 +68,10 @@
 										<image  v-if="priceType(item) == 'member_price'" class="h-[24rpx] ml-[10rpx] w-[60rpx]" :src="img('addon/o2o/VIP.png')" mode="heightFix" />
 									</view>
 								</view>
-									<view class="flex items-center mt-auto justify-between">
-										<text class="text-[22rpx] text-[#888]">{{t('soldOut')}} {{item.sale_num}}</text>
-										<button  class="text-[#fff] bg-[var(--primary-color)] self-end rounded-3xl text-[26rpx] min-w-[110rpx] h-[44rpx] leading-[44rpx] mx-0 mt-auto">{{t('reserveBtn')}}</button>
-									</view>
+								<view class="flex items-center mt-auto justify-between">
+									<text class="text-[22rpx] text-[#888]">{{t('soldOut')}} {{item.sale_num}}</text>
+									<button  class="text-[#fff] bg-[var(--primary-color)] self-end rounded-3xl text-[26rpx] min-w-[110rpx] h-[44rpx] leading-[44rpx] mx-0 mt-auto">{{t('reserveBtn')}}</button>
+								</view>
 							</view>
 						</view>
 						<mescroll-empty :option="{'icon': img('static/resource/images/empty.png'),'tip': t('nothingMore') }" v-if="!list.length && !loading && listLoading"></mescroll-empty>
@@ -101,21 +101,25 @@
 	const loading = ref<boolean>(true);//页面加载动画
 	const listLoading = ref<boolean>(false);//列表加载动画
 	const labelPopup = ref<boolean>(false)
+
 	interface acceptingDataStructure {
 		data : acceptingDataItemStructure,
 		msg : string,
 		code : number
 	}
+
 	interface acceptingDataItemStructure {
 		data : object,
 		[propName : string] : number | string | object
 	}
+
 	interface mescrollStructure {
 		num : number,
 		size : number,
 		endSuccess : Function,
 		[propName : string] : any
 	}
+
 	// 获取项目列表
 	const getListFn = (mescroll : mescrollStructure) => {
 		loading.value = true;
@@ -143,6 +147,7 @@
 			mescroll.endErr(); // 请求失败, 结束加载
 		})
 	}
+
 	const toLink = (data:any) => {
 		redirect({ url: '/addon/o2o/pages/goods/detail', param: {sku_id:data.goods_sku.sku_id } })
 	}
@@ -150,6 +155,7 @@
 	onLoad(() => {
 		getCategoryData()
 	})
+
 	/**
 	 * @description 获取分类数据
 	 * */
@@ -171,15 +177,15 @@
 
 	// 一级菜单样式控制
 	const tabActive = ref<number>(0)
-	// 二级菜单样式控制 
+	// 二级菜单样式控制
 	const subActive = ref<number>(0)
-	
+
 	// 一级菜单点击事件
 	const firstLevelClick = (index: number, data: Object) => {
 		tabActive.value = index;
-		if(data.children&&data.children.length){
-			subMenuClick(0,data.children[0]);
-		}else{
+		if (data.children && data.children.length) {
+			subMenuClick(0, data.children[0]);
+		} else {
 			category_id.value = data.category_id;
 			getMescroll().resetUpScroll();
 		}
@@ -192,6 +198,7 @@
 		labelPopup.value = false
 		getMescroll().resetUpScroll();
 	}
+
 	// 显示所有分类
 	const isShowAll = ref<boolean>(true)
 	const showAllTabs = () => {
@@ -217,7 +224,7 @@
 		let type = "";
 		if(data.member_discount && getToken()){
 			type = 'member_price' // 会员价
-		}else{ 
+		}else{
 			type = ""
 		}
 		return type;
@@ -232,7 +239,6 @@
 		}
 		return parseFloat(price).toFixed(2);
 	}
-	
 </script>
 
 <style lang="scss" scoped>

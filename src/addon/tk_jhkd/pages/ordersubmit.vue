@@ -1,330 +1,344 @@
 <template>
-	<view class="tk-card1  min-h-[100vh]">
+	<view class="tk-card1  min-h-[100vh]" :style="themeColor()">
 		<!-- 寄件人信息 -->
-		<view class="order-card">
+		<view class="tk-cardd" style="z-index: 1 !important">
 			<!-- 寄件人信息 -->
-			<view class="address-item">
-				<view class="address-content">
-					<view class="left-area">
-						<text class="tag-icon send">寄</text>
-						<view class="dot-line"></view>
-					</view>
-					<view class="info-area" @click="toSelectAddress('startaddress')">
-						<block v-if="form.startAddress">
-							<view class="contact-info">
-								<text class="name">{{ form.startAddress.name }}</text>
-
-								<text class="phone">{{ maskPhone(form.startAddress?.mobile) }}</text>
-								<text class="tag verified">已核验</text>
+			<view class="flex ">
+				<view class="mt-1">
+					<image :src="img('addon/tk_jhkd/icon/ji.png')" style="width: 62rpx;height: 70rpx;" mode="aspectFit">
+					</image>
+				</view>
+				<view class="ml-2 flex items-center justify-between " style="width: 100%;"
+					@click="toSelectAddress('startaddress')">
+					<block v-if="form.startAddress">
+						<view>
+							<view class="flex items-center">
+								<text class="text-[30rpx] font-bold">{{ form.startAddress.name }}</text>
+								<text class="text-[30rpx] font-bold ml-2">{{ form.startAddress?.mobile
+									}}</text>
 							</view>
-							<view class="address-text">{{ form.startAddress.address }}</view>
-						</block>
-						<block v-else>
-							<view class="empty-state">
-								<text class="primary-text">从哪里寄?</text>
-								<view class="flex items-center">
-									<text class="secondary-text">点击选择寄件地址</text>
-									<text class="tag required">必填</text>
-								</view>
+							<view class="text-[28rpx] text-[#878787] mt-2">{{ form.startAddress.address }}</view>
+						</view>
+					</block>
+					<block v-else>
+						<view class="">
+							<text class="text-[28rpx] font-bold">寄件人信息</text>
+							<view class="text-[#A2A2A2]">
+								请选择寄件地址
 							</view>
-						</block>
-					</view>
-					<view class="right-area">
-						<text class="nc-iconfont nc-icon-arrow-right"></text>
+						</view>
+					</block>
+					<view class="flex items-center ml-2  w-[30%]">
+						<view class="w-[2rpx] h-[30rpx] bg-[#E0E0E0]"></view>
+						<view class="ml-2 font-550">地址薄</view>
 					</view>
 				</view>
+
 			</view>
 
-			<!-- 连接线和图标 -->
-			<view class="connection-line">
-				<view class="icon-wrapper" @click="exchangeAddress">
-					<view class="exchange-icon">
-						<view class="arrow arrow-up"></view>
-						<view class="arrow arrow-down"></view>
-					</view>
-				</view>
-				<view class="line-left"></view>
-
-				<view class="line-right"></view>
-			</view>
+			<view class="line-box !bg-[#F2F2F2] !mt-4 !mb-4"></view>
 
 			<!-- 收件人信息 -->
-			<view class="address-item">
-				<view class="address-content">
-					<view class="left-area">
-						<text class="tag-icon receive">收</text>
-						<view class="dot-line"></view>
-					</view>
-					<view class="info-area" @click="toSelectAddress('endaddress')">
-						<block v-if="form.endAddress">
-							<view class="contact-info">
-								<text class="name">{{ form.endAddress.name }}</text>
-								<text class="phone">{{ maskPhone(form.endAddress?.mobile) }}</text>
-								<text class="tag new" v-if="isNewAddress">新地址</text>
+			<view class="flex">
+				<view class="mt-1">
+					<image :src="img('addon/tk_jhkd/icon/shou.png')" style="width: 62rpx;height: 70rpx;"
+						mode="aspectFit"></image>
+				</view>
+				<view class="ml-2 flex items-center justify-between " style="width: 100%;"
+					@click="toSelectAddress('endaddress')">
+					<block v-if="form.endAddress">
+						<view>
+							<view class="flex items-center">
+								<text class="text-[30rpx] font-bold">{{ form.endAddress.name }}</text>
+								<text class="text-[30rpx] font-bold ml-2">{{ form.endAddress?.mobile
+									}}</text>
 							</view>
-							<view class="address-text">{{ form.endAddress.address }}</view>
-						</block>
-						<block v-else>
-							<view class="empty-state">
-								<text class="primary-text">收件人信息</text>
-								<view class="flex items-center">
-									<text class="secondary-text">点击选择收件地址</text>
-									<text class="tag required">必填</text>
-								</view>
+							<view class="text-[28rpx] text-[#878787] mt-2">{{ form.endAddress.address }}</view>
+						</view>
+					</block>
+					<block v-else>
+						<view class="">
+							<text class="text-[28rpx] font-bold">收件人信息</text>
+							<view class="text-[#A2A2A2]">
+								请选择收件地址
 							</view>
-						</block>
-					</view>
-					<view class="right-area">
-						<text class="nc-iconfont nc-icon-arrow-right"></text>
+						</view>
+					</block>
+					<view class="flex items-center ml-2 w-[30%]">
+						<view class="w-[2rpx] h-[30rpx] bg-[#E0E0E0]"></view>
+						<view class="ml-2 font-550">地址薄</view>
 					</view>
 				</view>
+
 			</view>
 
-			<!-- 提示信息 -->
-			<view class="notice-bar">
-				<text class="nc-iconfont nc-icon-warning"></text>
-				<text class="notice-text">请认真核实地址,填写实际重量再下单</text>
-				<text class="tag warning">重要</text>
-			</view>
 		</view>
-
+		<view class="tk-cardd !bg-[#F9EBE0] !mt-[-24rpx]" style="z-index: -1 !important">
+			<view class="text-[24rpx] text-[#7D563C] mt-4 mb-3 ml-[2rpx] font-550" font-550>请认真核对地址，填写实际重量再下单</view>
+		</view>
 		<view class="divider"></view>
 
 		<!-- 物品信息卡片 -->
-		<view class="goods-info-card">
-			<view class="card-header">
-				<view class="header-left">
-					<text class="required-badge">必填</text>
-					<text class="title">物品信息</text>
-					<view class="info-text" v-if="form.goods || form.weight">
-						<text class="goods-name">{{ form.goods }}</text>
-						<text class="weight" v-if="form.weight">{{ form.weight }}kg</text>
-					</view>
-					<view class="empty-text" v-else>请填写物品信息</view>
+		<view class="tk-cardd">
+			<view class="flex justify-between items-center">
+				<view class="flex items-center">
+					<text class="font-550">物品信息</text>
+					<text class="bg-[#EB5757] text-white text-[24rpx] ml-2 px-2 py-1 rounded-[6rpx]">必填</text>
 				</view>
-				<view class="edit-btn" @click="writeGood()">
-					<u-icon name="edit-pen" size="22" color="#4541c7"></u-icon>
+				<view class="flex items-center" @click="writeGood()">
+					<view class="ml-2" v-if="form.goods || form.weight">
+						<text class="text-[#A7A7A7]">{{ form.goods }}</text>
+						<text class="text-[#A7A7A7]" v-if="form.weight">,{{ form.weight }}kg</text>
+					</view>
+
+					<view class="" v-else>请填写物品信息</view>
+					<view class="ml-4">
+						<u-icon name="arrow-right" size="20" color="#000000"></u-icon>
+					</view>
 				</view>
 			</view>
 		</view>
-		<view class="pl-2 pr-2">
-			<u-alert :title="tip.title" type="info" :closable="tip.closable" :description="tip.description"></u-alert>
-		</view>
-		<view v-if="preData" class="courier-list">
+
+		<view v-if="preData" class="courier-list tk-cardd">
 			<view v-for="(item, index) in filteredCourierList" :key="index" class="courier-card"
 				:class="{ 'active': currentIndex === index }" @click="selectPre(index)">
 				<view class="card-content flex items-center">
 					<!-- 快递logo -->
+
 					<view>
 						<image class="courier-logo" :src="img(item.logo)" mode="aspectFit" />
 					</view>
-
-
 					<!-- 快递信息 -->
-					<view class="courier-info">
-						<view class="info-header">
-							<text class="courier-name">{{ item.channelName }}</text>
-							<text class="price">{{ item.showPrice }}元</text>
-						</view>
+					<view class="courier-info flex items-center justify-between">
+						<view>
+							<view class="info-header !mb-2">
+								<text class="courier-name w-[40%] tk-sltext !text-[28rpx]">{{ item.channelName }}</text>
+								<text class="price !text-[28rpx]">{{ item.showPrice }}元起</text>
+							</view>
+							<!-- 价格规则 -->
+							<view v-if="item.calcFeeType == 'profit'">
+								<view class="flex">
+									<view class="bg-[#F3F3F3] px-1 py-1 rounded-[6rpx] font-550 text-[24rpx]">
+										首重:{{ item.price_rule.first }}元/{{ item.price_rule.start }}kg,
+										续重:{{ item.price_rule.add }}元/kg
+									</view>
 
-						<!-- 价格规则 -->
-						<view v-if="item.calcFeeType == 'profit'" class="price-rules">
-							<view class="rule-tag">
-								首重:{{ item.price_rule.first }}元/{{ item.price_rule.start }}kg
+								</view>
 							</view>
-							<view class="rule-tag">
-								续重:{{ item.price_rule.add }}元/kg
+							<view v-else class="flex items-center">
+								<!-- 优惠信息 -->
+								<view v-if="item.originalFee > 0 && (item.originalFee - item.showPrice) > 0"
+									class="discount-info">
+									<view class="original-price">
+										原价{{ item.originalFee }}元
+									</view>
+									<view class="save-price">
+										优惠:{{ (item.originalFee - item.showPrice).toFixed(2) }}元
+									</view>
+								</view>
+								<view class="discount-tag  ml-2">
+									{{ ((item.showPrice / item.originalFee * 10).toFixed(1)) >= 10 ? '无折扣' :
+										(item.showPrice
+											/
+											item.originalFee * 10).toFixed(1) + '折' }}
+								</view>
 							</view>
 						</view>
-						<view v-else class="discount-tag">
-							{{ ((item.showPrice / item.originalFee * 10).toFixed(1)) >= 10 ? '无折扣' : (item.showPrice /
-								item.originalFee * 10).toFixed(1) + '折' }}
-						</view>
+						<view>
+							<up-radio-group v-model="currentIndex" placement="row">
+								<u-radio shape="circle" :name="index"></u-radio>
 
-						<!-- 优惠信息 -->
-						<view v-if="item.originalFee > 0 && (item.originalFee - item.showPrice) > 0"
-							class="discount-info">
-							<view class="original-price">
-								原价{{ item.originalFee }}元
-							</view>
-							<view class="save-price">
-								优惠:{{ (item.originalFee - item.showPrice).toFixed(2) }}元
-							</view>
-						</view>
-
-						<!-- 限重提示 -->
-						<view v-if="item.limitWeight > 0" class="weight-limit">
-							限重:{{ item.limitWeight }}kg
+							</up-radio-group>
+							<!-- {{ currentIndex }} -->
 						</view>
 					</view>
 				</view>
 			</view>
 		</view>
-
+		<view class="tk-cardd text-sm">
+			<view class="font-550">{{ tip.title }}</view>
+			<view class="text-[#878787]">{{ tip.description }}</view>
+		</view>
 		<view class="mt-[380rpx] mb-[260rpx] flex items-center"></view>
 		<!-- 物品信息弹出框 -->
 		<u-popup class="safe-area-inset-bottom" :round="10" @close="close" closeable="true" :show="goodshow"
 			mode="bottom" border-radius="12">
-			<view class="sticky top-0 left-0 right-0 bg-white z-50 ml-2 mt-2 mb-2">
-				<view class="">
-					<text class="text-lg font-medium text-gray-900">填写物品信息</text>
-					<text class="block text-sm text-gray-500">请填写物品重量、体积等信息</text>
+			<view class="popup-header">
+				<view class="flex items-center justify-between px-4 py-3 bg-white">
+					<text class="text-[32rpx] font-550 text-[#333]">物品信息</text>
+					<view class="close-icon" @click="close">
+						<u-icon name="close" size="20" color="#333"></u-icon>
+					</view>
 				</view>
-				<view class="h-px bg-gray-100"></view>
+				<view class="h-[2rpx] bg-[#F2F2F2]"></view>
 			</view>
-			<view class="goods-popup">
+			<scroll-view class="h-[1160rpx] px-[32rpx] box-border mb-[60rpx]" scroll-y="true">
 
-				<view class="pt-0">
+				<view class="!bg-[#F1F2F6] pt-2">
 					<!-- 物品名称 -->
-					<view class="goods-section">
-						<view class="section-title">
-							<text class="required-tag">*</text>
-							<text>物品名称</text>
+					<view class="goods-section bg-white p-4">
+						<view class="items-center flex justify-between">
+							<view class="text-[28rpx] font-550"> 物品类型 </view>
+							<view class="text-[#0057FE] text-[28rpx]"
+								@click="redirect({ url: '/addon/tk_jhkd/pages/agreement?type=jhkdyesgoods' })">
+								违禁品查询
+							</view>
 						</view>
-						<u-input clearable="true" class="goods-input" v-model="form.goods"
-							placeholder="如:生活用品,点击标签快速填写" />
+
 						<view class="goods-tags mt-2">
 							<view v-for="(item, index) in goods" :key="index" class="tag-item"
 								:class="{ 'active': form.goods === item }" @click="goodswrite(index)">{{ item }}</view>
 						</view>
-						<view class="forbidden-link"
-							@click="redirect({ url: '/addon/tk_jhkd/pages/agreement?type=jhkdyesgoods' })">
-							<text class="nc-iconfont nc-icon-warning"></text>
-							<text>违禁品查询</text>
+						<view>
+							<u-input clearable="true" class="goods-input" v-model="form.goods" placeholder="请输入物品名称" />
 						</view>
+
 					</view>
 
-					<!-- 物品重量 -->
-					<view class="goods-section">
-						<view class="section-title">
-							<text class="required-tag">*</text>
-							<text>物品重量</text>
-						</view>
-						<view class="weight-input">
-							<u-number-box button-size="28" color="#4541c7" bgColor="#f5f6fa" iconStyle="color: #4541c7"
-								integer :min="form.customerType == 'kd' ? 1 : 30" :max="10000" v-model="form.weight" />
-							<text class="unit">kg</text>
-						</view>
-						<view class="weight-tip">请填写打包完成后包裹的重量，超重需按照快递原价补差价</view>
-					</view>
-
-					<!-- 包裹数量 -->
-					<view class="goods-section">
-						<view class="section-title">
-							<text>包裹数量</text>
-						</view>
-						<view class="count-input">
-							<u-number-box button-size="28" color="#4541c7" bgColor="#f5f6fa" iconStyle="color: #4541c7"
-								integer :min="1" :max="100" v-model="form.packageCount" />
-							<text class="unit">个</text>
-						</view>
-					</view>
-
-					<!-- 物品体积 -->
-					<view class="goods-section">
-						<view class="section-title">
-							<text>物品体积</text>
-						</view>
-						<view class="volume-input">
-							<view class="volume-item">
-								<u-input border="bottom" maxlength="3" v-model="form.vloumLong" placeholder="长" />
+					<view class="goods-section bg-white p-4 mt-2">
+						<view class="text-[28rpx] font-550"> 物品详情 </view>
+						<!-- 物品重量 -->
+						<view class="flex items-center justify-between mt-2">
+							<view class="section-title">
+								物品重量(kg)
 							</view>
-							<text class="multiply">x</text>
-							<view class="volume-item">
-								<u-input border="bottom" maxlength="3" v-model="form.vloumWidth" placeholder="宽" />
+							<view class="">
+								<u-number-box button-size="48" bgColor="#ffffff" integer
+									:min="form.customerType == 'kd' ? 1 : 30" :max="10000" v-model="form.weight" />
 							</view>
-							<text class="multiply">x</text>
-							<view class="volume-item">
-								<u-input border="bottom" maxlength="3" v-model="form.vloumHeight" placeholder="高" />
+						</view>
+						<view class="text-[#EB5757] text-[24rpx] leading-[32rpx]">请填写打包完成后包裹的重量，超重需按照快递原价补差价，将不会享受快递折扣
+						</view>
+
+						<!-- 包裹数量 -->
+						<view class="flex items-center justify-between mt-3 mb-3">
+							<view class="flex items-center justify-between">
+								<text>包裹数量(个)</text>
 							</view>
-							<text class="unit">cm</text>
+							<view class="count-input">
+								<u-number-box button-size="28" integer :min="1" :max="100" bgColor="#ffffff"
+									v-model="form.packageCount" />
+							</view>
+						</view>
+
+						<!-- 保价金额 -->
+						<view class="goods-section flex items-center justify-between">
+							<view class="section-title">
+								<text>保价金额(元)</text>
+							</view>
+							<view class="ml-2">
+								<u-input inputAlign="right" placeholder="不保价可不填" border="none" fontSize="14"
+									class="goods-input" type="number" v-model="form.guaranteeValueAmount" />
+							</view>
+						</view>
+
+						<!-- 订单备注 -->
+						<view class="goods-section flex items-center justify-between">
+							<view class="section-title">
+								<text>订单备注</text>
+							</view>
+							<u-input inputAlign="right" border="none" fontSize="14" class="goods-input"
+								v-model="form.remark" placeholder="小哥辛苦了!" />
+						</view>
+						<!-- 物品体积 -->
+						<view class="goods-section">
+							<view class="section-title">
+								<text>物品体积</text>
+							</view>
+							<view class="volume-input">
+								<view class="volume-item">
+									<u-input border="bottom" maxlength="3" v-model="form.vloumLong" placeholder="长" />
+								</view>
+								<text class="multiply">x</text>
+								<view class="volume-item">
+									<u-input border="bottom" maxlength="3" v-model="form.vloumWidth" placeholder="宽" />
+								</view>
+								<text class="multiply">x</text>
+								<view class="volume-item">
+									<u-input border="bottom" maxlength="3" v-model="form.vloumHeight" placeholder="高" />
+								</view>
+								<text class="unit">cm</text>
+							</view>
+						</view>
+						<view class="goods-section bg-[#F9EBE0] p-4">
+							<view class="text-[#7D563C]">
+								填写须知
+							</view>
+							<view class="text-[#7D563C] text-[24rpx] leading-[32rpx] mt-1">
+								物品名称必须填写，物品重量需按照实际重量填写,超长物品请填写实际尺寸，如需要保价请填写保价金额</view>
 						</view>
 					</view>
 
-					<!-- 保价金额 -->
-					<view class="goods-section">
-						<view class="section-title">
-							<text>保价金额</text>
-						</view>
-						<view class="insurance-input">
-							<u-input placeholder="不保价可不填" type="number" v-model="form.guaranteeValueAmount" />
-							<text class="unit">元</text>
-						</view>
-					</view>
-
-					<!-- 订单备注 -->
-					<view class="goods-section">
-						<view class="section-title">
-							<text>订单备注</text>
-						</view>
-						<u-input class="remark-input" v-model="form.remark" placeholder="小哥辛苦了!" />
-					</view>
-
+					<view class="h-16"></view>
 					<!-- 提交按钮 -->
-					<view class="submit-section fixed left-0 right-0 bottom-0 bg-white px-4 py-3 shadow-lg">
-						<button class="submit-btn w-full py-3 rounded-lg flex items-center justify-center space-x-2"
-							:class="{ 'loading': bjshow }" @click="closeShow()">
-							<text>{{ bjshow ? 'AI比价中' : '获取报价' }}</text>
-							<u-loading-icon v-if="bjshow" mode="circle" color="#ffffff"></u-loading-icon>
-						</button>
+					<view class="fixed left-0 right-0 bottom-0 bg-white pt-2 ">
+
+						<view class="p-4 pt-2">
+							<up-button type="primary" :class="{ 'loading': bjshow }" @click="closeShow()">
+								<text>{{ bjshow ? '比价中' : '获取报价' }}</text>
+								<u-loading-icon v-if="bjshow" timing-function="linear" color="#ffffff"></u-loading-icon>
+							</up-button>
+						</view>
+
 					</view>
 					<!-- 底部占位，防止内容被固定按钮遮挡 -->
 					<view class="h-24"></view>
 				</view>
-			</view>
+			</scroll-view>
 		</u-popup>
 		<view class="mt-[98rpx]"></view>
 
-		<view class="b-tabbar safe-area-inset-bottom">
+		<view class="b-tabbar safe-area-inset-bottom z-999 !bg-white">
 
-			<view class="b-tabbar-back pl-2 pt-2">
-				<view v-if="jhkdservice">
-					<checkbox-group class="uni-list" @change="checkboxChange">
-						<label class="text-xs fl items-center uni-list-cell uni-list-cell-pd">
-							<view>
-								<checkbox color="#3c4cde" style="transform: scale(0.6)" value="true"
-									:checked="isOpenAgreement">
-								</checkbox>
-							</view>
-							<view>
-								阅读并同意《<text class="text-[#3c39c0]" @click="
-									redirect({
-										url: '/addon/tk_jhkd/pages/agreement?type=jhkdservice',
-									})
-									"> {{
-										jhkdservice.title ? jhkdservice.title : "寄件服务协议"
-									}}</text>》</view>
-						</label>
-					</checkbox-group>
-				</view>
-				<view class=" fb items-center pl-2 pr-2 pb-2 pt-1">
-					<view class="w-[60%]">
-						<view class="flex items-center">
-							<view class="text-xs font-bold tk-sltext text-[30rpx] w-[40%]">
-								{{ selectData ? selectData.channelName : "请选择快递" }}
-							</view>
-							<view v-if="form.goods != ''" class="ml-2 text-xs text-slate-500">{{ form.goods }}{{
-								form.weight
-							}}kg
-							</view>
-						</view>
+			<view class="b-tabbar-back !p-2 flex items-center justify-between">
+				<view class="w-[60%]">
+					<view class="mb-2 ml-1 " v-if="selectData">
+						<view class="flex items-center mt-1">
 
-						<view v-if="selectData" class="flex items-center mt-1">
-							<view class="text-xs">快递费：</view>
-							<view class="font-bold text-[36rpx] text-red">{{
-								selectData ? selectData.showPrice + '元' : "请先选择快递"
+							<view class="font-bold text-[40rpx] text-red">{{
+								selectData ? selectData.showPrice + '元' : ""
 							}}</view>
 						</view>
 
 					</view>
-					<text class="tt-bbut text-center w-[20%]" @click="submitOrder()">立即下单</text>
+					<view v-if="jhkdservice">
+						<checkbox-group class="uni-list" @change="checkboxChange">
+							<label class="text-xs fl items-center uni-list-cell uni-list-cell-pd">
+								<view>
+									<!-- <checkbox color="#0057FE" style="transform: scale(0.9)" shape="circle" value="true"
+										active-color="#0057FE" :checked="isOpenAgreement">
+									</checkbox> -->
+									<up-checkbox v-model="isOpenAgreement" shape="circle" :name="true" size="24"
+										activeColor="#0057FE" @change="checkboxChange"></up-checkbox>
+								</view>
+								<view class="text-[#B0B0B0]" @click="
+									redirect({
+										url: '/addon/tk_jhkd/pages/agreement?type=jhkdservice',
+									})
+									">
+									阅读并同意《<text class="text-[#B0B0B0]"> {{
+										jhkdservice.title ? jhkdservice.title : "寄件服务协议"
+									}}</text>》</view>
+							</label>
+						</checkbox-group>
+					</view>
 				</view>
+
+				<view class="">
+
+					<up-button type="primary" shape="circle" v-if="selectData" hover-class="none"
+						class="bg-[#0057FE] text-[#fff] h-[80rpx] leading-[80rpx] rounded-[100rpx] text-[26rpx] font-500 w-[256rpx]"
+						@click="submitOrder()">立即下单</up-button>
+					<button v-else
+						class="bg-[#BDBDBD] text-[#fff] h-[80rpx] leading-[80rpx] rounded-[100rpx] text-[26rpx] font-500 w-[256rpx]">立即下单</button>
+				</view>
+
 
 			</view>
 			<u-safe-bottom></u-safe-bottom>
 		</view>
 		<button @click="shareEvent()"
-			class="fixed bottom-48 right-4 z-50 rounded-full p-2 text-white hover:bg-blue-700">
+			class="fixed bottom-48 right-4 z-999 rounded-full p-2 text-white hover:bg-blue-700">
 			<u-icon name="share" color="#000000" size="24"></u-icon>
 		</button>
 		<share-poster ref="sharePosterRef" posterType="tk_jhkd_poster" :posterId="poster_id" :posterParam="posterParam"
@@ -335,7 +349,7 @@
 
 <script setup lang="ts">
 import useDiyStore from "@/app/stores/diy";
-import { ref, reactive, computed } from "vue";
+import { ref, reactive, computed, watch } from "vue";
 import { goto } from "@/addon/tk_jhkd/utils/ts/goto";
 import { onLoad, onShow } from "@dcloudio/uni-app";
 import {
@@ -376,13 +390,11 @@ const tip = ref({
 });
 const goods = ref([
 	"普货",
-	"文件",
 	"美妆用品",
 	"数码产品",
 	"服装鞋帽",
-	"珠宝首饰",
 	"零食特产",
-	"办公用品",
+	"其他",
 ]);
 
 /************* 分享海报-start **************/
@@ -513,17 +525,24 @@ const writeGood = () => {
 	}
 	if (form.startAddress == []) {
 		toSelectAddress("startaddress");
-		uni.$u.toast("请填写取件地址");
+		uni.$u.toast("请填写寄件地址");
 		return;
 	}
 	if (form.endAddress == []) {
 		toSelectAddress("endaddress");
-		uni.$u.toast("请填写送件地址");
+		uni.$u.toast("请填写收件地址");
 		return;
 	}
+
+	form.showPrice = '0'
+	console.log(form);
+
 	useSubscribeMessage().request("tk_jhkd_order_sign");
 	goodshow.value = true;
 	form.delivery_info = [];
+
+
+
 };
 const closeShow = async () => {
 
@@ -533,7 +552,7 @@ const closeShow = async () => {
 	}
 	if (form.startAddress == []) {
 		toSelectAddress("startaddress");
-		uni.$u.toast("请填写取件地址");
+		uni.$u.toast("请填写寄件地址");
 		return;
 	}
 	if (form.endAddress == []) {
@@ -543,13 +562,19 @@ const closeShow = async () => {
 	}
 	bjshow.value = true;
 	const data = await preOrder(form);
-	selectData.value = null;
-	selectData.value = null;
+
+
+	// selectData.value  = 
+	console.log(data);
+
+	currentIndex.value = null;
 	form.key = data.data.key;
 	preData.value = data.data.list;
 	bjshow.value = false;
 	goodshow.value = false;
 	form.delivery_info = [];
+
+
 };
 const submitOrder = async () => {
 	checkAddPayEvent()
@@ -564,7 +589,7 @@ const submitOrder = async () => {
 	}
 	if (form.startAddress == []) {
 		toSelectAddress("startaddress");
-		uni.$u.toast("请填写取件地址");
+		uni.$u.toast("请填写寄件地址");
 		return;
 	}
 	if (form.endAddress == []) {
@@ -581,7 +606,7 @@ const submitOrder = async () => {
 		return;
 	}
 	if (isOpenAgreement.value == false) {
-		uni.$u.toast("请先阅读并同意协议");
+		uni.$u.toast("请先阅读并勾选阅读同意协议");
 		return;
 	}
 
@@ -589,10 +614,10 @@ const submitOrder = async () => {
 		"tk_jhkd_order_pay,tk_jhkd_order_pick,tk_jhkd_order_add"
 	);
 	const data = await createOrder(form);
+	payLoading.value = true;
 	form.delivery_info = [];
 	selectData.value = null;
 	preData.value = null;
-	payLoading.value = true;
 	payRef.value?.open(
 		data.data.trade_type,
 		data.data.trade_id,
@@ -600,14 +625,23 @@ const submitOrder = async () => {
 	);
 };
 const selectPre = (index: number) => {
+	console.log(preData.value)
 	currentIndex.value = index;
 	selectData.value = preData.value[index];
-	form.showPrice = selectData.value.showPrice;
+	// form.showPrice = selectData.value.showPrice;
 	form.delivery_info = selectData.value;
 	form.delivery_index = index;
-	form.price_rule = selectData.value.price_rule;
-	form.original_rule = selectData.value.original_rule;
+	// form.price_rule = selectData.value.price_rule;
+	// form.original_rule = selectData.value.original_rule;
 };
+
+// 监听 currentIndex 
+watch(currentIndex, (newValue, oldValue) => {
+	// 当 currentIndex 值发生变化时,重置 selectData 和 form
+	// 直接调用 selectPre 函数
+	selectPre(newValue);
+});
+
 const jhkdservice = ref();
 const checkServiceAgreement = async () => {
 	const data = await getAgreement("jhkdservice");
@@ -623,6 +657,9 @@ onLoad((option) => {
 		// 第三方平台自动登录
 		// #ifdef MP
 		login.getAuthCode();
+		// #endif
+		// #ifdef H5
+		useLogin().setLoginBack({ url: '/addon/tk_jhkd/pages/ordersubmit' })
 		// #endif
 	}
 	let pid = uni.getStorageSync("pid");
@@ -647,7 +684,7 @@ const filteredCourierList = computed(() => {
 // 交换收寄件地址
 const exchangeAddress = () => {
 	if (!form.startAddress || !form.endAddress) {
-		uni.$u.toast('请先选择收件和寄件地址');
+		uni.$u.toast('请先选择寄件和收件地址');
 		return;
 	}
 
@@ -658,7 +695,7 @@ const exchangeAddress = () => {
 
 	// 清空快递列表和选择
 	preData.value = null;
-	selectData.value = null;
+	// selectData.value = null;
 	form.delivery_info = [];
 
 	// 重新获取报价
@@ -684,18 +721,21 @@ const maskPhone = (phone: string | undefined) => {
 
 	border-radius: 12rpx;
 	padding: 12rpx;
-	box-shadow: 0 1px 1px 0 rgba(145, 145, 145, 0.2), 0 2px 2px 0 rgba(231, 231, 231, 0.2);
+	//box-shadow: 0 1px 1px 0 rgba(145, 145, 145, 0.2), 0 2px 2px 0 rgba(231, 231, 231, 0.2);
 }
 
-page {
-	--primary-color: #4541c7;
-	--primary-color-dark: #f26f3e;
-	--primary-color-disabled: #ffb397;
-	--primary-color-light: #ffeae2;
-	--page-bg-color: #f7f7f7;
-	--price-text-color: #ED1B26;
-}
+.tk-cardd {
+	background-color: #ffffff;
+	// 
 
+	border-radius: 12rpx;
+	padding: 16rpx;
+	margin: 12rpx;
+	position: relative;
+	/* 添加定位属性 */
+	z-index: 999;
+	//box-shadow: 0 1px 1px 0 rgba(145, 145, 145, 0.2), 0 2px 2px 0 rgba(231, 231, 231, 0.2);
+}
 
 
 .selectitemclass {
@@ -758,23 +798,23 @@ page {
 
 .b-tabbar {
 	position: fixed;
-	bottom: 12rpx;
+	bottom: 0rpx;
 	left: 0;
 	right: 0;
-	margin: 0rpx 8rpx;
+	margin: 0rpx;
 	border-radius: 12rpx;
 	padding: 12rpx;
-	background: linear-gradient(-90deg, #dde5e5 0%, #dde4ef 100%);
+	background: #f9f9f9;
 }
 
 .b-tabbar-back {
-	background: #f9f9f9;
+
 	border-radius: 12rpx;
 	// box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1), 1px 1px 1px rgba(0, 0, 0, 0.1);
 }
 
 .tt-bbut {
-	background: #4541c7;
+	background: #0057FE;
 	padding: 12rpx 34rpx;
 	border-radius: 8rpx;
 	color: #ffffff;
@@ -1082,26 +1122,62 @@ page {
 }
 
 .goods-tags {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 16rpx;
-	margin-bottom: 16rpx;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 20rpx;
+	padding: 20rpx 0;
 
 	.tag-item {
-		padding: 12rpx 24rpx;
-		background: #f5f6fa;
-		border-radius: 32rpx;
-		font-size: 26rpx;
+		height: 72rpx;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: #ffffff;
+		border: 1px solid #909194;
+		border-radius: 12rpx;
+		font-size: 28rpx;
 		color: #666666;
-		transition: all 0.3s;
+		transition: all 0.3s ease;
+		text-align: center;
+
+		/* 文本超出显示省略号 */
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		padding: 0 20rpx;
 
 		&.active {
-			background: #4541c7;
-			color: #ffffff;
+			background: #E6EEFF;
+			color: #0057FE;
+			border: 1px solid #0057FE;
 		}
 
+		/* 点击效果 */
 		&:active {
 			opacity: 0.8;
+			transform: scale(0.98);
+		}
+
+		/* 适配不同平台 */
+		/* #ifdef H5 */
+		cursor: pointer;
+
+		&:hover {
+			opacity: 0.9;
+		}
+
+		/* #endif */
+	}
+}
+
+/* 适配小屏幕 */
+@media screen and (max-width: 320px) {
+	.goods-tags {
+		gap: 16rpx;
+
+		.tag-item {
+			font-size: 24rpx;
+			height: 64rpx;
 		}
 	}
 }
@@ -1132,7 +1208,7 @@ page {
 
 	.volume-item {
 		flex: 1;
-		background: #f5f6fa;
+		background: #ffffff;
 		border-radius: 12rpx;
 		padding: 12rpx;
 	}
@@ -1172,7 +1248,7 @@ page {
 
 .submit-section {
 	margin-top: 48rpx;
-	padding: 0 24rpx 24rpx;
+	padding: 0rpx;
 }
 
 .submit-btn {
@@ -1181,12 +1257,10 @@ page {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background: linear-gradient(135deg, #4541c7 0%, #5c58d9 100%);
+	background: #0057FE;
 	border-radius: 44rpx;
 	font-size: 30rpx;
 	color: #ffffff;
-	border: none;
-	transition: all 0.3s;
 
 	&.loading {
 		opacity: 0.8;
@@ -1202,12 +1276,6 @@ page {
 }
 
 .goods-info-card {
-	margin: 16rpx;
-	padding: 24rpx;
-	background: #ffffff;
-	border-radius: 16rpx;
-	box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-
 	.card-header {
 		display: flex;
 		align-items: center;
@@ -1219,8 +1287,8 @@ page {
 			flex: 1;
 
 			.required-badge {
-				padding: 4rpx 12rpx;
-				background: linear-gradient(135deg, #4541c7 0%, #5c58d9 100%);
+				padding: 2rpx 12rpx;
+				background: #EB5757;
 				color: #ffffff;
 				font-size: 22rpx;
 				border-radius: 6rpx;
@@ -1232,13 +1300,14 @@ page {
 				color: #333333;
 				font-weight: 500;
 				margin-right: 16rpx;
+				font-weight: 600;
 			}
 
 			.info-text {
 				display: flex;
 				align-items: center;
 				font-size: 26rpx;
-				color: #272822;
+				color: #868686;
 
 				.goods-name {
 					margin-right: 8rpx;
@@ -1251,7 +1320,7 @@ page {
 
 			.empty-text {
 				font-size: 26rpx;
-				color: #999999;
+				color: #868686;
 			}
 		}
 
@@ -1268,6 +1337,7 @@ page {
 			&:active {
 				background: #e8e9f0;
 				transform: scale(0.95);
+				padding: 24rpx;
 			}
 		}
 	}
@@ -1278,25 +1348,24 @@ page {
 }
 
 .courier-card {
-	margin-bottom: 20rpx;
 	border-radius: 16rpx;
-	background: #ffffff;
 	box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
 	transition: all 0.3s ease;
 	overflow: hidden;
 
 	&.active {
 		background: linear-gradient(135deg, #f0f1ff 0%, #e8e9ff 100%);
-		border: 2rpx solid #4541c7;
-		transform: translateY(-2rpx);
-		box-shadow: 0 4rpx 16rpx rgba(69, 65, 199, 0.12);
+		border: 2rpx solid #0057FE;
+		//transform: translateY(-2rpx);
+		//box-shadow: 0 4rpx 16rpx rgba(69, 65, 199, 0.12);
+		padding: 24rpx;
 
 		.courier-name {
-			color: #4541c7;
+			color: #0057FE;
 		}
 
 		.price {
-			color: #4541c7;
+			color: #0057FE;
 		}
 	}
 
@@ -1306,15 +1375,16 @@ page {
 }
 
 .card-content {
-	padding: 24rpx;
+	padding-bottom: 12rpx;
+	padding-top: 12rpx;
 	// display: flex;
 	// align-items: flex-start;
 	gap: 20rpx;
 }
 
 .courier-logo {
-	width: 128rpx;
-	height: 128rpx;
+	width: 72rpx;
+	height: 72rpx;
 	border-radius: 128rpx;
 	background: #f5f6fa;
 	flex-shrink: 0;
@@ -1326,9 +1396,9 @@ page {
 
 .info-header {
 	display: flex;
-	justify-content: space-between;
+
 	align-items: center;
-	margin-bottom: 16rpx;
+	margin-bottom: 0rpx;
 
 	.courier-name {
 		font-size: 30rpx;
@@ -1347,14 +1417,9 @@ page {
 	display: flex;
 	gap: 12rpx;
 	margin-bottom: 12rpx;
-
-	.rule-tag {
-		padding: 8rpx 16rpx;
-		background: rgba(69, 65, 199, 0.05);
-		border-radius: 8rpx;
-		font-size: 24rpx;
-		color: #4541c7;
-	}
+	background: rgba(69, 65, 199, 0.05);
+	border-radius: 8rpx;
+	font-size: 24rpx;
 }
 
 .discount-tag {
@@ -1394,5 +1459,64 @@ page {
 .weight-limit {
 	font-size: 24rpx;
 	color: #666666;
+}
+
+.popup-header {
+	position: sticky;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 99;
+	background: #fff;
+}
+
+.popup-content {
+	height: calc(100vh - 180rpx);
+	/* #ifdef H5 */
+	height: calc(100vh - 280rpx);
+	/* #endif */
+}
+
+/* 适配不同平台的安全区域 */
+:deep(.u-popup) {
+	/* #ifdef MP */
+	max-height: 80vh;
+	/* #endif */
+
+	/* #ifdef H5 */
+	max-height: 90vh;
+	/* #endif */
+
+	/* #ifdef APP-PLUS */
+	max-height: 85vh;
+	/* #endif */
+}
+
+.goods-section {
+	.section-title {
+		border-bottom: 2rpx solid #F2F2F2;
+	}
+}
+
+:deep(.u-input) {
+	background-color: transparent;
+}
+
+.close-icon {
+	padding: 10rpx;
+
+	&:active {
+		opacity: 0.7;
+	}
+}
+
+.primary-btn-bg {
+	// background: linear-gradient( 94deg, #FB7939 0%, #FE120E 99%), #EF000C;
+	background: linear-gradient(94deg, var(--primary-help-color) 0%, var(--primary-color) 99%), var(--primary-color);
+}
+
+.payment-bottom {
+	padding-bottom: calc(20rpx + constant(safe-area-inset-bottom));
+	padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
 }
 </style>

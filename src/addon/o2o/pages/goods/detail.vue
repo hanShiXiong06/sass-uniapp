@@ -22,7 +22,7 @@
 								<image  v-if="priceType == 'member_price'" class="h-[28rpx] ml-[12rpx] w-[60rpx]" :src="img('addon/o2o/VIP.png')" mode="heightFix" />
                             </view>
                             <view class="text-[24rpx] flex ml-[20rpx]">
-                                <text class="text-[var(--primary-color)] rounded-[6rpx] py-[6rpx] bg-[var(--label-bg-color)] px-[10rpx]">{{ detail.goods.buy_type_name }}</text>
+                                <text class="text-[var(--primary-color)] rounded-[6rpx] py-[6rpx] bg-[var(--primary-color-light)] px-[10rpx]">{{ detail.goods.buy_type_name }}</text>
                             </view>
                         </view>
                         <view class="text-[20rpx]">{{ detail.goods.sale_num }}{{ t('selectNum') }}</view>
@@ -98,7 +98,7 @@
 						    <view class="nc-iconfont nc-icon-fenxiangV6xx text-[36rpx] mt-[4rpx] mb-[6rpx] font-bold"></view>
 						    <text class="text-[24rpx] text-[#454545] mt-1">{{ t('share') }}</text>
 						</view>
-						 
+
                         <view class="flex flex-col items-center mr-[44rpx]">
                             <image class="w-[44rpx] h-[44rpx]" :src="img('addon/o2o/service/service.png')" mode="aspectFill">
                             </image>
@@ -114,9 +114,9 @@
                     :text="detail.goods.status ? (detail.goods.buy_type == 'reservation' ? t('bookNow') : t('orderNow')) : t('delisted')"	@click="toOrder(detail)"></u-button>
                 </view>
             </view>
-			
+
 			<share-poster ref="sharePosterRef" posterType="o2o_goods" :posterId="detail.goods.poster_id" :posterParam="posterParam" :copyUrlParam="copyUrlParam" />
-			
+
         </view>
         <ns-goods-sku ref="goodsSkuRef" :goods-detail="detail" @change="specSelectFn"></ns-goods-sku>
 		<loading-page :loading="loading"></loading-page>
@@ -162,7 +162,7 @@ onLoad((option) => {
 	// 处理小程序场景值参数
 	option = handleOnloadParams(option);
 	// #endif
-	
+
 	goods.value.sku_id = option.sku_id
 	goods.value.goods_id = option.goods_id
 	loading.value = true
@@ -185,6 +185,7 @@ onLoad((option) => {
 		copyUrlFn();
 	});
 })
+
 // 订单计算创建
 let orderData  = {
 	sku:{
@@ -192,6 +193,7 @@ let orderData  = {
 		sku_id: ''
 	}
 }
+
 // 跳转订单预约
 const toOrder = (data) => {
 	if (!getToken()) {
@@ -209,9 +211,11 @@ const toOrder = (data) => {
 		redirect({ url: '/addon/o2o/pages/order/payment', param: { id: data.goods_id } })
 	}
 }
+
 const buyFn = () =>{
 	goodsSkuRef.value.open()
 }
+
 const specSelectFn = (id) => {
 	detail.value.skuList.forEach((item, index) => {
 		if (item.sku_id == id) {
@@ -231,13 +235,12 @@ const copyUrlFn = ()=>{
 	if (userInfo.value && userInfo.value.member_id) copyUrlParam.value += '&mid=' + userInfo.value.member_id;
 }
 
-const openShareFn = ()=>{
-	
+const openShareFn = ()=> {
     posterParam.sku_id = detail.value.sku_id;
-    if (userInfo.value && userInfo.value.member_id)
-        posterParam.member_id = userInfo.value.member_id;
-	sharePosterRef.value.openShare()
+    if (userInfo.value && userInfo.value.member_id) posterParam.member_id = userInfo.value.member_id;
+    sharePosterRef.value.openShare()
 }
+
 /************* 分享海报-end **************/
 
 // 价格类型

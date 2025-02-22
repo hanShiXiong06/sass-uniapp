@@ -8,16 +8,12 @@
                         <image v-if="['refund_completed'].indexOf(detail.status) != -1" class="w-[70rpx] h-[70rpx] mt-[45rpx]" :src="img('addon/o2o/refund/complete.png')" />
                         <image v-if="['cancel','refund_fail','refund_refuse'].indexOf(detail.status) != -1" class="w-[70rpx] h-[70rpx] mt-[45rpx]" :src="img('addon/o2o/refund/close.png')" />
                     </view>
-                    <view class="ml-[20rpx] text-[#fff] mt-[50rpx] text-[40rpx]">
-                        {{ detail.status_name }}
-                    </view>
+                    <view class="ml-[20rpx] text-[#fff] mt-[50rpx] text-[40rpx]">{{ detail.status_name }}</view>
                 </view>
 
                 <view class="bg-[#fff] mx-[30rpx] p-[30rpx] rounded-[10rpx] flex justify-between flex-wrap mt-[30rpx]">
                     <view class="w-[160rpx] h-[160rpx] flex-2" @click="goodsEvent(detail.order_item.goods_id)">
-                        <u--image class="rounded-[10rpx] overflow-hidden" width="160rpx" height="160rpx"
-                            :src="img(detail.order_item.item_image_thumb_small ? detail.order_item.item_image_thumb_small : '')"
-                            model="aspectFill">
+                        <u--image class="rounded-[10rpx] overflow-hidden" width="160rpx" height="160rpx" :src="img(detail.order_item.item_image_thumb_small ? detail.order_item.item_image_thumb_small : '')" model="aspectFill">
                             <template #error>
                                 <u-icon name="photo" color="#999" size="50"></u-icon>
                             </template>
@@ -28,7 +24,7 @@
                             <text class="text-[28rpx] text-item leading-[40rpx]">{{ detail.order_item.item_name }}</text>
                         </view>
                         <view class="text-[24rpx] flex">
-                            <text class="text-[var(--primary-color)] rounded-[6rpx] py-[6rpx] bg-[var(--label-bg-color)] px-[10rpx]">{{ detail.order_item.item_type == 'reservation' ? '预约' : '一口价' }}</text>
+                            <text class="text-[var(--primary-color)] rounded-[6rpx] py-[6rpx] bg-[var(--primary-color-light)] px-[10rpx]">{{ detail.order_item.item_type == 'reservation' ? '预约' : '一口价' }}</text>
                         </view>
                         <view class="flex justify-between">
                             <text class="text-right text-[28rpx]  text-[var(--price-text-color)] price-font">￥{{ detail.order_item.price }}</text>
@@ -84,10 +80,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive } from 'vue';
 import { onLoad,onUnload } from '@dcloudio/uni-app'
 import { t } from '@/locale'
-import { img, redirect, copy } from '@/utils/common';
+import { img, redirect } from '@/utils/common';
 import { getOrderRefundDetail } from '@/addon/o2o/api/order';
 
 const detail = ref<Object>({});
@@ -117,19 +113,19 @@ const goodsEvent = (id: number) => {
 	})
 }
 const handleImg = (url) => {
-	let tmp = [];
-	if(detail.value.voucher){
+    let tmp = [];
+    if (detail.value.voucher) {
         tmp = detail.value.voucher.split(',').map(item => {
             return img(item)
         })
     }
-	uni.previewImage({
-		current: img(url),
-		urls: tmp,
-		indicator: "number",
-		loop: true
-	})
-	
+    uni.previewImage({
+        current: img(url),
+        urls: tmp,
+        indicator: "number",
+        loop: true
+    })
+
 }
 
 // 关闭预览图片

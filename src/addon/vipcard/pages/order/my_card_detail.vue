@@ -41,8 +41,8 @@
 				    <text>{{t('verificationCode')}}</text>
 				</view>
 				<view class="flex flex-col p-3 pb-5 items-center">
-					<image :src="verificationData.verify_code_barcode" mode="widthFix" class="mb-5 w-[546rpx] border-1 border-[#aba9aa] border-dashed p-1"></image>
-					<image :src="verificationData.verify_code_qrcode" mode="widthFix" class="w-[326rpx] border-1 border-[#aba9aa] border-dashed"></image>
+					<image :src="verificationData.verify_code_barcode" mode="widthFix" class="mb-5 w-[546rpx] h-[auto] border-1 border-[#aba9aa] border-dashed p-1"></image>
+					<image :src="verificationData.verify_code_qrcode" mode="widthFix" class="w-[326rpx] h-[auto] border-1 border-[#aba9aa] border-dashed"></image>
 					<view class="text-xs text-[var(--text-color-light6)] mt-3">{{t('codeDesc')}}</view>
 				</view>
 			</u-popup>

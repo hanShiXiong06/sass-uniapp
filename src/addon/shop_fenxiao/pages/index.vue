@@ -12,7 +12,7 @@
                             <u-avatar v-else :src="img('static/resource/images/default_headimg.png')" size="100rpx" leftIcon="none" />
                         </view>
                         <view class="flex flex-col text-[#303133] ml-[32rpx]">
-                            <view class="text-[30rpx] font-500 truncate max-w-[520rpx]">
+                            <view class="text-[30rpx] font-500 leading-[1.4] truncate max-w-[520rpx]">
                                 {{ detail.member.nickname }}
                             </view>
                             <view class="text-[24rpx] text-[var(--text-color-light6)] mt-[20rpx]" v-if="detail.parent_fenxiao">
@@ -62,7 +62,7 @@
                             <text class="text-[#303133] price-font text-[30rpx] font-500 mt-[16rpx]">{{ moneyFormat(detail.member.commission_cash_outing) }}</text>
                         </view>
                     </view>
-                    <view class="text-center mt-[60rpx] mx-auto w-[570rpx] h-[76rpx] flex-center level-wrap text-[#985400] rounded-[90rpx] text-[26rpx] font-500" @click="applyCashOut">{{ t('cashOut') }}</view>
+                    <view class="text-center mt-[60rpx] mx-auto w-[570rpx] h-[76rpx] flex-center level-wrap text-[#985400] rounded-[90rpx] text-[26rpx] font-500" @click="applyCashOut">提现</view>
                 </view>
 
                 <view class="flex">
@@ -216,7 +216,7 @@ onShow(() => {
 			redirect({ url: '/addon/shop_fenxiao/pages/apply',mode: 'redirectTo'})
 		}
 	});
-	
+
 });
 
 const config: Record<string, any> = ref({})

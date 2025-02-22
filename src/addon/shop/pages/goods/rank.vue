@@ -148,7 +148,7 @@ const getRankListFn = (isFirstLoad = false) => {
       if (isFirstLoad && rankList.value && rankList.value.length) {
         selectCategory(rankList.value[0], 0);
       } else if (!rankList.value.length) {
-        loading.value = false;
+        loading.value = true;
       }
 
     }).catch((error) => {

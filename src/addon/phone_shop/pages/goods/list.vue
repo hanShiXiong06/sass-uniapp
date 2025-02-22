@@ -3,9 +3,9 @@
 		<!-- 顶部搜索栏 -->
 		<view class="fixed left-0 right-0 top-0 bg-[#fff] px-[30rpx] z-50">
 			<view class="py-[14rpx] flex items-center justify-between">
-				<view class="flex-1 flex items-center h-[64rpx] bg-[#F6F8F8] rounded-[33rpx] px-[32rpx] mr-[30rpx]">
+				<view class="flex-1 flex items-center h-[64rpx] bg-[#F6F8F8] rounded-[33rpx] px-[32rpx] mr-[30rpx] ">
 					<u-input class="flex-1" maxlength="50" v-model="goods_name" @confirm="searchGoods"
-						placeholder="请输入商品名称或串号(#)" placeholderClass="text-[#a5a6a6] text-[26rpx]" fontSize="26rpx"
+						placeholder="请输入商品名称或串号" placeholderClass="text-[#a5a6a6] text-[26rpx]" fontSize="26rpx"
 						clearable border="none"></u-input>
 					<text class="nc-iconfont nc-icon-sousuo-duanV6xx1 text-[32rpx] ml-[18rpx] !text-[#999]"
 						@click="searchGoods"></text>
@@ -24,7 +24,8 @@
 			<scroll-view scroll-x class="filter-scroll" show-scrollbar="false">
 				<view class="filter-scroll-content">
 					<!-- 分类筛选 -->
-					<view class="filter-tag" :class="{ 'active': activeFilters.category }"
+					<view class="filter-tag"
+						:class="{ 'active': activeFilters.category || selectedCategoryNames.length }"
 						@click="showPopup('category')">
 						<text>分类</text>
 						<text class="nc-iconfont nc-icon-a-xiangxiaV6xx1 text-[20rpx] ml-[4rpx]"></text>
@@ -37,6 +38,12 @@
 					<!-- 价格筛选 -->
 					<view class="filter-tag" :class="{ 'active': activeFilters.price }" @click="showPopup('price')">
 						<text>价格</text>
+						<text class="nc-iconfont nc-icon-a-xiangxiaV6xx1 text-[20rpx] ml-[4rpx]"></text>
+					</view>
+					<!-- 内存筛选 -->
+					<view class="filter-tag" :class="{ 'active': activeFilters.memory }" @click="showPopup('memory')"
+						v-if="selectedCategories.length === 1 && memoryList.length">
+						<text>内存</text>
 						<text class="nc-iconfont nc-icon-a-xiangxiaV6xx1 text-[20rpx] ml-[4rpx]"></text>
 					</view>
 					<!-- 排序方式 -->
@@ -92,6 +99,9 @@
 							<text class="nc-iconfont nc-icon-guanbiV6xx" @click.stop="removeCategory(index)"></text>
 						</view>
 					</view>
+					<view v-else>
+						<text>请选择分类</text>
+					</view>
 					<view class="btn-group">
 						<u-button type="info" :plain="true" text="重置" @click="resetCategories"></u-button>
 						<u-button type="primary" text="确定" @click="confirmCategories"></u-button>
@@ -105,7 +115,7 @@
 			<view class="popup-content">
 				<view class="brand-list">
 					<view class="brand-item" v-for="(item, index) in brandList" :key="index"
-						:class="{ 'active': filters.brand === item.value }" @click="selectbrand(item)">
+						:class="{ 'active': filters.brand_id === item.value }" @click="selectbrand(item)">
 						<text>{{ item.label }}</text>
 					</view>
 					<!-- 清除 -->
@@ -153,10 +163,24 @@
 			</view>
 		</u-popup>
 
+		<!-- 内存弹窗 -->
+		<u-popup :show="popups.memory && selectedCategories.length === 1" mode="top" @close="closePopup('memory')"
+			:round="10">
+			<view class="popup-content">
+				<view class="memory-list">
+					<view class="memory-item" v-for="(item, index) in memoryList" :key="item.spec_id"
+						:class="{ 'active': filters.memory_id === item.spec_id, 'inactive': filters.memory_id !== item.spec_id }"
+						@click="selectMemory(item)">
+						<text>{{ item.spec_name }}</text>
+					</view>
+				</view>
+			</view>
+		</u-popup>
+
 		<!-- 商品列表 -->
-		<mescroll-body ref="mescrollRef" top="160rpx" bottom="50px" @init="mescrollInit" :down="{ use: false }"
+		<mescroll-body ref="mescrollRef" top="180rpx" bottom="50px" @init="mescrollInit" :down="{ use: false }"
 			@up="getGoodsList">
-			<view v-if="goodsList.length" :class="['sidebar-margin', !listType ? 'grid-list' : '']">
+			<view v-if="goodsList.length" :class="[!listType ? 'grid-list' : '']">
 				<template v-for="(item, index) in goodsList" :key="item.goods_id">
 					<!-- 列表样式 -->
 					<template v-if="listType">
@@ -169,10 +193,15 @@
 									</image>
 								</template>
 							</u--image>
-							<view class="goods-info">
-								<view class="goods-name">{{ item.goods_name }}</view>
-								<view class="goods-subtitle" v-if="item.sub_title">{{ item.sub_title }}</view>
-								<view class="goods-sku" v-if="item.goodsSku.sku_no">
+							<view class="goods-info truncate w-[450rpx]">
+								<view class="goods-name ">
+									<text v-if="item.brand_name" class="brands-name  w-[50rpx]">{{ item.brand_name }}
+									</text>
+									<view class="truncate w-[400rpx]">{{ item.goods_name }}</view>
+								</view>
+								<view class="goods-subtitle truncate  w-[430rpx]" v-if="item.sub_title">{{
+									item.sub_title }}</view>
+								<view class="goods-sku truncate  w-[400rpx]" v-if="item.goodsSku.sku_no">
 									<text class="label">串号:</text>
 									<text class="value">{{ item.goodsSku.sku_no }}</text>
 								</view>
@@ -193,7 +222,7 @@
 									<view class="action-btns">
 										<view class="stock-info">
 											<text>库存:{{ item.goodsSku.stock }}{{ item.unit }}</text>
-											
+
 										</view>
 										<view class="download-btn" @click.stop="downloadGoods(item)">
 											<text class="nc-iconfont nc-icon-fenxiangV6xx"></text>
@@ -206,39 +235,36 @@
 					<!-- 网格样式 -->
 					<template v-else>
 						<view class="goods-item-grid" @click="toDetail(item.goods_id)">
-							<u--image class="goods-image" width="100%" height="350rpx"
+							<!-- <u--image class="goods-image" width="100%" height="200rpx"
 								:src="img(item.goods_cover_thumb_mid)" radius="10">
 								<template #error>
 									<image class="goods-image"
 										:src="img('static/resource/images/diy/shop_default.jpg')">
 									</image>
 								</template>
-							</u--image>
+</u--image> -->
 							<view class="goods-info">
-								<view class="goods-name">{{ item.goods_name }}</view>
-								<view class="goods-subtitle" v-if="item.sub_title">{{ item.sub_title }}</view>
+								<view class="goods-name text-sm truncate w-[100%]">{{ item.goods_name }}</view>
+								<view class="goods-subtitle truncate w-[100%]" v-if="item.sub_title">{{ item.sub_title
+									}}</view>
 								<view class="price-wrap">
 									<view class="left">
 										<text class="symbol">￥</text>
 										<text class="price">{{ goodsPrice(item).toFixed(2).split('.')[0] }}</text>
 										<text class="decimal">.{{ goodsPrice(item).toFixed(2).split('.')[1] }}</text>
-									</view>
-									<view class="right">
 										<image class="price-tag" v-if="priceType(item) == 'member_price'"
 											:src="img('addon/phone_shop/VIP.png')" mode="heightFix" />
 										<image class="price-tag" v-if="priceType(item) == 'discount_price'"
 											:src="img('addon/phone_shop/discount.png')" mode="heightFix" />
 									</view>
-								</view>
-								<view class="goods-bottom">
-									<view class="left">
-										<text class="stock">库存:{{ item.goodsSku.stock }}{{ item.unit }}</text>
-										<text class="brand" v-if="item.brand">{{ getbrandLabel(item.brand) }}</text>
-									</view>
-									<view class="download-btn" @click.stop="downloadGoods(item)">
-										<text class="nc-iconfont nc-icon-fenxiangV6xx"></text>
+									<view class="right">
+
+										<view class="download-btn" @click.stop="downloadGoods(item)">
+											<text class="nc-iconfont nc-icon-fenxiangV6xx"></text>
+										</view>
 									</view>
 								</view>
+
 							</view>
 						</view>
 					</template>
@@ -256,7 +282,7 @@
 <script setup lang="ts">
 import { reactive, ref, computed } from 'vue'
 import { redirect, img, getToken } from '@/utils/common'
-import { getGoodsPages, getGoodsCategoryTree, getBrandList, getGoodsDetail } from '@/addon/phone_shop/api/goods'
+import { getGoodsPages, getGoodsCategoryTree, getBrandList, getGoodsDetail, getMemoryList } from '@/addon/phone_shop/api/goods'
 import MescrollBody from '@/components/mescroll/mescroll-body/mescroll-body.vue'
 import useMescroll from '@/components/mescroll/hooks/useMescroll.js'
 import { onPageScroll, onReachBottom, onLoad } from '@dcloudio/uni-app'
@@ -274,11 +300,12 @@ const goods_name = ref("")
 const categoryList = ref<Array<any>>([])
 const filters = reactive({
 	category_id: '',
-	brand: '',
+	brand_id: '',
 	price_min: '',
 	price_max: '',
 	price_range: '',
-	sort: 'default'
+	sort: 'default',
+	memory_id: ''
 })
 
 // 弹窗控制
@@ -286,7 +313,8 @@ const popups = reactive({
 	category: false,
 	brand: false,
 	price: false,
-	sort: false
+	sort: false,
+	memory: false
 })
 
 // 成色选项
@@ -313,16 +341,21 @@ const sortOptions = [
 	{ label: '默认排序', value: 'default' },
 	{ label: '价格从低到高', value: 'price_asc' },
 	{ label: '价格从高到低', value: 'price_desc' },
-	{ label: '销量从高到低', value: 'sales_desc' },
-	{ label: '最新上架', value: 'time_desc' }
+	// { label: '销量从高到低', value: 'sales_desc' },
+	{ label: '最新上架', value: 'createTime_desc' }
 ]
+
+// 内存选项
+const memoryList = ref<Array<any>>([])
+
 
 // 计算属性
 const activeFilters = computed(() => ({
 	category: !!filters.category_id,
-	brand: !!filters.brand,
+	brand: !!filters.brand_id,
 	price: !!(filters.price_min || filters.price_max || filters.price_range),
-	sort: filters.sort !== 'default'
+	sort: filters.sort !== 'default',
+	memory: !!filters.memory_id
 }))
 
 const hasActiveFilters = computed(() =>
@@ -349,7 +382,7 @@ const _getBrandList = async () => {
 }
 // resetBrand 	
 const resetBrand = () => {
-	filters.brand = ''
+	filters.brand_id = ''
 	closePopup('brand')
 	searchGoods()
 }
@@ -374,6 +407,8 @@ const selectedCategoryNames = ref<string[]>([])
 // 选择一级分类
 const selectParentCategory = (item: any) => {
 	currentCategory.value = item
+	// 将内存清空
+	filters.memory_id = ''
 	// 如果当前一级分类已经被选中，则取消选中
 	const index = selectedCategories.value.indexOf(item.category_id)
 	if (index > -1) {
@@ -390,6 +425,7 @@ const selectParentCategory = (item: any) => {
 const selectSubCategory = (item: any) => {
 	// 如果已经选中了父分类，先移除父分类
 	const parentIndex = selectedCategories.value.indexOf(currentCategory.value.category_id)
+	filters.memory_id = ''
 	if (parentIndex > -1) {
 		selectedCategories.value.splice(parentIndex, 1)
 		selectedCategoryNames.value.splice(parentIndex, 1)
@@ -416,18 +452,7 @@ const resetCategories = () => {
 	selectedCategories.value = []
 	selectedCategoryNames.value = []
 	currentCategory.value = {}
-}
-
-// 确认分类选择
-const confirmCategories = () => {
-	// 如果没有选择任何分类，但有当前选中的一级分类，则选中一级分类
-	if (selectedCategories.value.length === 0 && currentCategory.value.category_id) {
-		selectedCategories.value.push(currentCategory.value.category_id)
-		selectedCategoryNames.value.push(currentCategory.value.category_name)
-	}
-	filters.category_id = selectedCategories.value.join(',')
-	closePopup('category')
-	searchGoods()
+	filters.memory_id = ''
 }
 
 // 修改加载分类方法
@@ -435,7 +460,7 @@ const loadCategories = async () => {
 	try {
 		const res = await getGoodsCategoryTree()
 		categoryList.value = res.data
-		// 如果有预选分类，需要��置选中状态
+		// 如果有预选分类，需要置选中状态
 		if (filters.category_id) {
 			const ids = filters.category_id.split(',').map(Number)
 			selectedCategories.value = ids
@@ -450,9 +475,47 @@ const loadCategories = async () => {
 			})
 			selectedCategoryNames.value = names
 		}
+		// 获取内存列表
+		if (selectedCategories.value.length === 1) {
+			await loadMemoryList(selectedCategories.value[0])
+		} else {
+			memoryList.value = []
+		}
 	} catch (error) {
 		console.error('加载分类失败:', error)
 	}
+}
+
+// 加载内存列表
+const loadMemoryList = async (categoryId: number) => {
+	try {
+		const res = await getMemoryList({ id: categoryId })
+		memoryList.value = res.data
+	} catch (error) {
+		console.error('加载内存列表失败:', error)
+	}
+}
+
+// 确认分类选择
+const confirmCategories = () => {
+	// 如果没有选择任何分类，但有当前选中的一级分类，则选中一级分类
+	// if (selectedCategories.value.length === 0 && currentCategory.value.category_id) {
+	// 	selectedCategories.value.push(currentCategory.value.category_id)
+	// 	selectedCategoryNames.value.push(currentCategory.value.category_name)
+	// }
+	console.log(selectedCategoryNames.value);
+
+	if (selectedCategories.value.length > 1) {
+		uni.showToast({ title: '只能选择一个分类才能筛选内存', icon: 'none' })
+		memoryList.value = []
+		filters.memory_id = ''
+		filters.category_id = selectedCategories.value.join(',')
+	} else {
+		filters.category_id = selectedCategories.value.join(',')
+		loadMemoryList(selectedCategories.value[0])
+	}
+	closePopup('category')
+	searchGoods()
 }
 
 // 获取商品列表
@@ -463,15 +526,17 @@ const getGoodsList = (mescroll: any) => {
 		limit: mescroll.size,
 		keyword: goods_name.value,
 		goods_category: filters.category_id,
-		brand: filters.brand,
+		brand_id: filters.brand_id,
 		start_price: filters.price_min || undefined,
-		end_price: filters.price_max || undefined
+		end_price: filters.price_max || undefined,
+		memory_id: filters.memory_id || undefined
 	}
 
 	// 添加排序参数
 	if (filters.sort !== 'default') {
 		const [field, order] = filters.sort.split('_')
-		params.order = field
+		// 如果排序字段为createTime_desc，则改为create_time
+		params.order = field == 'createTime' ? 'create_time' : field
 		params.sort = order
 	}
 
@@ -514,7 +579,7 @@ const selectCategory = (item: any) => {
 
 // 选择成色
 const selectbrand = (item: any) => {
-	filters.brand = filters.brand === item.value ? '' : item.value
+	filters.brand_id = filters.brand_id === item.value ? '' : item.value
 	closePopup('brand')
 	searchGoods()
 }
@@ -654,6 +719,14 @@ const downloadImages = (images: string[], item: any, showToast: boolean = true) 
 		})
 	})
 }
+
+// 选择内存
+const selectMemory = (item: any) => {
+	filters.memory_id = filters.memory_id === item.spec_id ? '' : item.spec_id;
+	// 关闭 
+	closePopup('memory')
+	searchGoods()
+}
 </script>
 
 <style lang="scss" scoped>
@@ -727,13 +800,15 @@ const downloadImages = (images: string[], item: any, showToast: boolean = true) 
 	}
 }
 
-.brand-list {
+.brand-list,
+.memory-list {
 	display: flex;
 	flex-wrap: wrap;
 	margin: -10rpx;
 }
 
-.brand-item {
+.brand-item,
+.memory-item {
 	width: calc(33.33% - 20rpx);
 	height: 70rpx;
 	margin: 10rpx;
@@ -822,6 +897,15 @@ const downloadImages = (images: string[], item: any, showToast: boolean = true) 
 	background: #fff;
 	border-radius: 16rpx;
 
+	.brands-name {
+		font-size: 24rpx;
+		color: #ffffff;
+		background-color: #19a9a9;
+		border-radius: 8rpx;
+		padding: 5rpx;
+
+	}
+
 	.goods-image {
 		width: 190rpx;
 		height: 190rpx;
@@ -840,19 +924,21 @@ const downloadImages = (images: string[], item: any, showToast: boolean = true) 
 		font-size: 28rpx;
 		color: #333;
 		line-height: 1.4;
-		margin-bottom: 10rpx;
+		margin-bottom: 2rpx;
+		display: flex;
+		align-items: center;
 	}
 
 	.goods-subtitle {
 		font-size: 24rpx;
 		color: #666;
-		margin-bottom: 10rpx;
+		margin-bottom: 2rpx;
 	}
 
 	.goods-sku,
 	.goods-brand {
 		font-size: 24rpx;
-		margin-bottom: 6rpx;
+		margin-bottom: 1rpx;
 
 		.label {
 			color: #999;
@@ -902,11 +988,11 @@ const downloadImages = (images: string[], item: any, showToast: boolean = true) 
 
 	.goods-image {
 		width: 100%;
-		height: 350rpx;
+		height: 210rpx;
 	}
 
 	.goods-info {
-		padding: 20rpx;
+		padding: 10rpx;
 	}
 
 	.goods-name {
@@ -919,7 +1005,7 @@ const downloadImages = (images: string[], item: any, showToast: boolean = true) 
 	.goods-subtitle {
 		font-size: 24rpx;
 		color: #666;
-		margin-bottom: 16rpx;
+		margin-bottom: 8rpx;
 	}
 
 	.goods-bottom {
@@ -1110,21 +1196,26 @@ const downloadImages = (images: string[], item: any, showToast: boolean = true) 
 		.selected-tags {
 			display: flex;
 			flex-wrap: wrap;
-			gap: 16rpx;
-			margin-bottom: 20rpx;
-			max-height: 80rpx;
+			gap: 12rpx;
+			margin-bottom: 16rpx;
+			max-height: 72rpx;
 			overflow-y: auto;
+
+			&::-webkit-scrollbar {
+				display: none;
+			}
 
 			.tag {
 				display: inline-flex;
 				align-items: center;
-				padding: 4rpx 16rpx;
+				height: 44rpx;
+				padding: 0 16rpx;
 				font-size: 24rpx;
 				color: var(--primary-color);
 				background: var(--primary-color-light);
-				border-radius: 24rpx;
+				border-radius: 22rpx;
 
-				.nc-iconfont {
+				.nc-icon-guanbiV6xx {
 					margin-left: 8rpx;
 					font-size: 24rpx;
 				}

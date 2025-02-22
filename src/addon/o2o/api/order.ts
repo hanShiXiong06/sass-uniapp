@@ -29,7 +29,7 @@ export function orderCreate(params: AnyObject) {
  *
  */
 export function getOrderList(params: AnyObject) {
-    return request.get('o2o/order',params);
+    return request.get('o2o/order', params);
 }
 
 /**
@@ -39,7 +39,7 @@ export function getOrderList(params: AnyObject) {
  *
  */
 export function getOrderDetail(orderId: Number) {
-    return request.get(`o2o/order/${orderId}`);
+    return request.get(`o2o/order/${ orderId }`);
 }
 
 /**
@@ -57,7 +57,7 @@ export function getOrderStatus() {
  * @returns
  */
 export function cancelOrder(orderId: number) {
-    return request.put(`o2o/order/cancel/${orderId}`, {}, { showErrorMessage: true, showSuccessMessage: true })
+    return request.put(`o2o/order/cancel/${ orderId }`, {}, { showErrorMessage: true, showSuccessMessage: true })
 }
 
 /**
@@ -66,7 +66,7 @@ export function cancelOrder(orderId: number) {
  * @returns
  */
 export function deleteOrder(orderId: number) {
-    return request.delete(`o2o/order/${orderId}`, { showErrorMessage: true, showSuccessMessage: true })
+    return request.delete(`o2o/order/${ orderId }`, { showErrorMessage: true, showSuccessMessage: true })
 }
 
 /**
@@ -84,7 +84,7 @@ export function refundApply(params: AnyObject) {
  * @returns
  */
 export function getRefundDetail(refundId: number) {
-    return request.get(`o2o/refund/${refundId}`)
+    return request.get(`o2o/refund/${ refundId }`)
 }
 
 /**
@@ -93,8 +93,9 @@ export function getRefundDetail(refundId: number) {
  * @returns
  */
 export function cancelRefund(refundId: number) {
-    return request.put(`o2o/refund/cancel/${refundId}`)
+    return request.put(`o2o/refund/cancel/${ refundId }`)
 }
+
 /**
  * 获取退款原因
  * @returns
@@ -102,6 +103,7 @@ export function cancelRefund(refundId: number) {
 export function getRefundReason() {
     return request.get(`o2o/refund/reason`)
 }
+
 /**
  * 获取退款状态
  * @returns
@@ -109,6 +111,7 @@ export function getRefundReason() {
 export function getRefundStatus() {
     return request.get(`o2o/refund/status`)
 }
+
 /**
  * 获取退款列表
  * @param params
@@ -116,7 +119,7 @@ export function getRefundStatus() {
  *
  */
 export function getRefundList(params: AnyObject) {
-    return request.get('o2o/refund/lists',params);
+    return request.get('o2o/refund/lists', params);
 }
 
 /**
@@ -125,5 +128,5 @@ export function getRefundList(params: AnyObject) {
  * @returns
  */
 export function getOrderRefundDetail(refundId: number) {
-    return request.get(`o2o/refund/orderRefund/${refundId}`)
+    return request.get(`o2o/refund/orderRefund/${ refundId }`)
 }

@@ -17,8 +17,7 @@
 						</view>
 						<view class="order-goods-item flex mt-[30rpx]" v-if="item.order_item">
 							<view class="w-[160rpx] h-[160rpx] flex-2">
-								<u--image class="rounded-[10rpx] overflow-hidden" width="160rpx" height="160rpx"
-									:src="img(item.order_item.item_image_thumb_small ? item.order_item.item_image_thumb_small : '')" model="aspectFill">
+								<u--image class="rounded-[10rpx] overflow-hidden" width="160rpx" height="160rpx" :src="img(item.order_item.item_image_thumb_small ? item.order_item.item_image_thumb_small : '')" model="aspectFill">
 									<template #error>
 										<u-icon name="photo" color="#999" size="50"></u-icon>
 									</template>
@@ -29,7 +28,7 @@
 									<text class="text-[28rpx] text-item h-[80rpx] leading-[40rpx]">{{ item.order_item.item_name }}</text>
 								</view>
 								<view class="text-[24rpx] flex">
-									<text class="text-[var(--primary-color)] rounded-[6rpx] py-[6rpx] bg-[var(--label-bg-color)] px-[10rpx]">{{ item.order_item.item_type == 'reservation' ? '预约' : '一口价' }}</text>
+									<text class="text-[var(--primary-color)] rounded-[6rpx] py-[6rpx] bg-[var(--primary-color-light)] px-[10rpx]">{{ item.order_item.item_type == 'reservation' ? '预约' : '一口价' }}</text>
 								</view>
 								<view class="flex justify-between">
 									<text class="text-right text-[28rpx] text-[var(--price-text-color)] price-font">￥{{ item.order_item.price }}</text>
@@ -88,12 +87,14 @@
     	}).catch(() => {
     	})
     }
+
     // 切换状态
     const refundStateFn = (status)=>{
     	refundState.value = status;
     	list.value = [];
     	getMescroll().resetUpScroll();
     };
+
     // 获取列表数据
 	const getRefundListFn = (mescroll) => {
 		loading.value = false;

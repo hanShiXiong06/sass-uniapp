@@ -15,8 +15,7 @@
 		<view class="dropdown-popup dropdown-popup-right" v-if="isOpened" @click.stop>
 			<!-- select-->
 			<view v-if="isSelect" class="list">
-				<label class="flex-r a-i-c list-item" v-for="(item,index) in dataList" :key="index"
-					@click="onItemClick($event, index)">
+				<label class="flex-r a-i-c list-item" v-for="(item,index) in dataList" :key="index" @click="onItemClick($event, index)">
 					<check-box class="check" :checked="item.checked" />
 					<view class="checklist-content">
 						<text class="checklist-text" :style="item.styleIconText">{{item[map.text]}}</text>
@@ -294,7 +293,7 @@
 
 <style lang="scss">
 	$uni-primary: #1890ff !default;
-	
+
 	.flex-r {
 		display: flex;
 		flex-direction: row;

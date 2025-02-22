@@ -65,7 +65,7 @@
 	import { wechatSync } from '@/app/api/system'
 	import useDiyStore from '@/app/stores/diy'
 
-	const props = defineProps(['component', 'index', 'pullDownRefreshCount']);
+	const props = defineProps(['component', 'index']);
 
 	const diyStore = useDiyStore();
 
@@ -94,13 +94,6 @@
 		if (diyComponent.value.bottomRounded) style += 'border-bottom-right-radius:' + diyComponent.value.bottomRounded * 2 + 'rpx;';
 		return style;
 	})
-
-	watch(
-		() => props.pullDownRefreshCount,
-		(newValue, oldValue) => {
-			// 处理下拉刷新业务
-		}
-	)
 
 	const memberStore = useMemberStore()
 

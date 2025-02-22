@@ -10,8 +10,7 @@
 		</view>
 		<mescroll-body ref="mescrollRef" top="88rpx" @init="mescrollInit" :down="{ use: false }" @up="getCardPageListFn">
 			<view class="sidebar-margin pt-[var(--top-m)]" v-if="list.length">
-				<view v-for="(item, index) in list" 
-				@click="btnClick('use',item)"
+				<view v-for="(item, index) in list" @click="btnClick('use',item)"
 				class="h-[430rpx] mb-[var(--top-m)] rounded-[var(--rounded-big)] overflow-hidden box-border relative">
 					<image v-if="item.card_cover" class="w-[100%] h-[100%] rounded-[var(--goods-rounded-big)] overflow-hidden" :src="img(item.card_cover || '')" @error="item.card_cover= defaultCard(item)" mode="aspectFill"></image>
 					<image v-else class="w-[100%] h-[100%] rounded-[var(--goods-rounded-big)] overflow-hidden" :src="img(defaultCard(item))" mode="aspectFill"></image>
@@ -38,7 +37,7 @@
 								<view v-if="item.status == 'invalid'"
 								class="bg-[rgba(255,255,255,0.9)] text-right box-border h-[36rpx] leading-[36rpx] px-[15rpx] text-[22rpx] rounded-[18rpx]">{{item.invalid_count}}{{t('unit')}}</view>
 							</block>
-							
+
 						</view>
 						<view class="flex items-center justify-between bg-[rgba(255,255,255,0.9)] h-[80rpx] px-[var(--pad-sidebar-m)] box-border">
 							<block v-if="item.to_use_count && item.is_give">
@@ -65,7 +64,7 @@
 						</view>
 					</view>
 				</view>
-				
+
 			</view>
 			<mescroll-empty v-if="!list.length && !loading" :option="{tip : t('cardEmpty'), icon: img('addon/shop_giftcard/empty.png')}"></mescroll-empty>
 			<tabbar />
@@ -92,15 +91,15 @@
 	onLoad((option: any) => {
 		getCardStatusListFn();
 	});
-	
+
 	onShow(()=>{
 		if(getMescroll()) getMescroll().resetUpScroll();
 	})
-	
+
 	const getCardStatusListFn = () => {
 		statusLoading.value = false;
 		statusList.value = {};
-	
+
 		getCardStatusList().then((res: any) => {
 			statusList.value = res.data
 			statusLoading.value = true;
@@ -121,7 +120,7 @@
 			limit: mescroll.size,
 			status: status.value,
 		};
-	
+
 		getCardPageList(data).then((res: any) => {
 			let newArr = (res.data.data as Array<Object>);
 			//设置列表数据
@@ -157,7 +156,7 @@
 			}else{
 				redirect({ url: '/addon/shop_giftcard/pages/use_card', param: { card_id:item.card_id,status:status.value } })
 			}
-			
+
 		} else {
 			if(uni.getStorageSync('give_id')) uni.removeStorageSync('give_id');
 			if(item.tag == 'group'){
@@ -165,7 +164,7 @@
 			}else{
 				redirect({ url: '/addon/shop_giftcard/pages/give', param: {card_id:item.card_id} })
 			}
-			
+
 		}
 	}
 </script>

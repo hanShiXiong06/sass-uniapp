@@ -53,3 +53,13 @@ export function getMemberLevel() {
 export function getBannerList() {
   return request.get("phone_shop_price/recycle_banner");
 }
+
+// 获取会员等级信息
+export function getLevelInfo() {
+  return request.get("tk_vip/vip/levelinfo");
+}
+
+// 获取收款信息
+export function getPaymentInfo() {
+  return request.get("phone_shop_price/payment/info");
+}

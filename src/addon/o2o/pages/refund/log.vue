@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive } from 'vue';
 import { onLoad } from '@dcloudio/uni-app'
 import { t } from '@/locale'
 import { img, redirect } from '@/utils/common';

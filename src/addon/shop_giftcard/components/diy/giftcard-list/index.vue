@@ -29,7 +29,7 @@
 	import useDiyStore from '@/app/stores/diy';
 	import { getGiftCardListByComponents } from '@/addon/shop_giftcard/api/giftcard';
 
-	const props = defineProps(['component', 'index', 'pullDownRefreshCount','value']);
+	const props = defineProps(['component', 'index','value']);
 	const diyStore = useDiyStore();
 
     const skeleton = reactive({
@@ -100,7 +100,7 @@
 		}
         return style;
     })
-	
+
 	const goodsItemCss = computed(() => {
 	    var style = '';
 	    if (diyComponent.value.topElementRounded) style += 'border-top-left-radius:' + diyComponent.value.topElementRounded * 2 + 'rpx;';
@@ -109,20 +109,13 @@
 	    if (diyComponent.value.bottomElementRounded) style += 'border-bottom-right-radius:' + diyComponent.value.bottomElementRounded * 2 + 'rpx;';
 	    return style;
 	})
-	
+
 	const style1Width = computed(() => {
 		var style = '';
 		if (diyComponent.value.margin && diyComponent.value.margin.both) style += 'calc((100vw - ' + (diyComponent.value.margin.both * 4) + 'rpx - 20rpx) / 2)'
 		else style += 'calc((100vw - 20rpx) / 2 )'
 		return style;
 	})
-
-	watch(
-		() => props.pullDownRefreshCount,
-		(newValue, oldValue) => {
-			// 处理下拉刷新业务
-		}
-	)
 
 	const getGiftCardFn = () => {
         let data = {
@@ -213,7 +206,7 @@
 	const toLink = (data: any) => {
 		redirect({ url: '/addon/shop_giftcard/pages/detail', param: { giftcard_id: data.giftcard_id } })
 	}
-	
+
 	const defaultCard = (data)=> {
 		let imgUrl = '';
 		if(data.card_right_type == 'balance'){

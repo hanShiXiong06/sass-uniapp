@@ -48,8 +48,7 @@
                                                     </text>
                                                     <u--image class="rounded-[8rpx] overflow-hidden" width="170rpx"
                                                         height="170rpx" @click="toDetail(item)"
-                                                        :src="img(item.goodsSku.sku_image_thumb_mid || '')"
-                                                        model="aspectFill">
+                                                        :src="img(item.goodsSku.sku_image || '')" model="aspectFill">
                                                         <template #error>
                                                             <image
                                                                 class="w-[170rpx] h-[170rpx] rounded-[8rpx] overflow-hidden"
@@ -80,10 +79,10 @@
                                                                     <text class="text-[26rpx] font-500">￥</text>
                                                                     <text class="text-[36rpx] font-500">{{
                                                                         parseFloat(goodsPrice(item)).toFixed(2).split('.')[0]
-                                                                        }}</text>
+                                                                    }}</text>
                                                                     <text class="text-[24rpx] font-500">.{{
                                                                         parseFloat(goodsPrice(item)).toFixed(2).split('.')[1]
-                                                                        }}</text>
+                                                                    }}</text>
                                                                     <image class="h-[24rpx] ml-[6rpx]"
                                                                         v-if="priceType(item) == 'member_price'"
                                                                         :src="img('addon/phone_shop/VIP.png')"
@@ -138,8 +137,7 @@
                                             class="self-center iconfont iconxuanze1 text-[34rpx] mr-[20rpx] text-[#F5F5F5] rounded-[50%] overflow-hidden shrink-0"></text>
                                         <view class="relative w-[168rpx] h-[168rpx]">
                                             <u--image class="rounded-[8rpx] overflow-hidden" width="168rpx"
-                                                height="168rpx" :src="img(item.goodsSku.sku_image_thumb_mid)"
-                                                model="aspectFill">
+                                                height="168rpx" :src="img(item.goodsSku.sku_image)" model="aspectFill">
                                                 <template #error>
                                                     <image class="w-[168rpx] h-[168rpx] rounded-[8rpx] overflow-hidden"
                                                         :src="img('static/resource/images/diy/shop_default.jpg')"
@@ -180,10 +178,10 @@
                                                         <text class="text-[26rpx] font-500">￥</text>
                                                         <text class="text-[36rpx] font-500">{{
                                                             parseFloat(goodsPrice(item)).toFixed(2).split('.')[0]
-                                                            }}</text>
+                                                        }}</text>
                                                         <text class="text-[24rpx] font-500">.{{
                                                             parseFloat(goodsPrice(item)).toFixed(2).split('.')[1]
-                                                            }}</text>
+                                                        }}</text>
                                                         <image class="h-[24rpx] ml-[6rpx]"
                                                             v-if="priceType(item) == 'member_price'"
                                                             :src="img('addon/phone_shop/VIP.png')" mode="heightFix" />
@@ -256,7 +254,7 @@
                     </view>
                     <button
                         class="w-[160rpx] h-[66rpx] text-[28rpx] leading-[66rpx] !text-[#fff] m-0 !mr-[30rpx] rounded-full primary-btn-bg remove-border"
-                        @click="settlement">结算</button>
+                        @click="settlement">结算11</button>
                 </view>
                 <view class="flex-1 flex items-center justify-end" v-else>
                     <button

@@ -3,9 +3,7 @@
 		<block v-if="!loading">
 			<view class="p-[30rpx]">
 				<view class="text-[32rpx] font-500 mb-[16rpx] multi-hidden leading-[1.4]">{{articleDetail.title}}</view>
-				<view class="text-[24rpx] text-[var(--text-color-light9)]">
-					{{articleDetail.create_time}}
-				</view>
+				<view class="text-[24rpx] text-[var(--text-color-light9)]">{{ articleDetail.create_time }}</view>
 				<!-- <view class="items-center flex mt-[40rpx]">
 					<image class="w-[80rpx] h-[80rpx] mr-[14rpx]" :src="img('addon/shop/payment/position_01.png')" mode="aspectFit"></image>
 					<view class="flex flex-col mr-[20rpx] w-[540rpx]">
@@ -96,5 +94,5 @@
 	})
 </script>
 <style lang="scss" scoped>
-	
+
 </style>

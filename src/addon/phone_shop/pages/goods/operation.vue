@@ -78,35 +78,48 @@
         </view>
         <u-loading-page :loading="loading" loading-text="" loadingColor="var(--primary-color)"
             iconSize="35"></u-loading-page>
-        <up-popup :round="10" v-model:show="operationShow" mode="center" @close="close" @open="open">
-            <view class="up-popup-wrap">
-                <view v-for="item in goodsList " class="p-2 flex justify-between  m-2">
-                    <view>
-                        <view> {{ item.goods_name }} </view>
-                        <view> {{ item.sub_title }} </view>
-                        <view> sn:{{ item.goodsSku.sku_no }} </view>
-                        <view>入库时间:{{ item.create_time }}</view>
-                    </view>
-                    <view>
-                        <view>
-                            <text class="text-[26rpx] font-500">￥</text>
-                            <text class="text-[36rpx] font-500">{{
-                                goodsPrice(item).toFixed(2).split('.')[0]
-                            }}</text>
-                            <text class="text-[24rpx] font-500">.{{
-                                goodsPrice(item).toFixed(2).split('.')[1] }}
-                            </text>
-                        </view>
+        <up-popup customStyle="width: 630rpx;" :round="10" closeable v-model:show="operationShow" mode="right"
+            @close="close" @open="open">
 
-                        <view>
-                            <up-button type="error" @click="_operationGoods(item.goods_id)" v-if="item.status"
-                                text="下架"></up-button>
-                            <up-button type="success" @click="_operationGoods(item.goods_id)" v-else
-                                text="上架"></up-button>
-                        </view>
-                    </view>
-                </view>
-            </view>
+            <up-list @scrolltolower="scrolltolower">
+                <up-list-item v-for="(item, index) in goodsList" :key="index">
+                    <up-cell>
+                        <!-- <template #icon>
+                            <up-avatar shape="square" size="35" :src="item.url"
+                                customStyle="margin: -3px 5px -3px 0"></up-avatar>
+                        </template>
+--> <template #title>
+                            <view class="u-slot-title">
+                                <text class="u-cell-text text-[26rpx] font-500">{{ item.goods_name }}</text>
+                            </view>
+                            <!--  不换行  超出隐藏  -->
+                            <view class=" text-xs text-gray-500 w-[400rpx] truncate overflow-hidden whitespace-nowrap ">
+                                {{ item.sub_title }}
+                            </view>
+                            <!-- sn -->
+                            <view class="text-[26rpx] font-500">sn:{{ item.goodsSku.sku_no }}</view>
+                            <view class="flex justify-between items-center">
+                                <view class="text-[26rpx] font-500">零售价:{{ item.goodsSku.price }}
+                                </view>
+                                <view class="text-[26rpx] font-500">
+                                    同行价:{{ item.goodsSku.market_price }}
+                                </view>
+                            </view>
+                        </template>
+                        <template #right-icon>
+                            <view>
+                                <up-switch v-model="item.status" size="20" @change="_operationGoods(item.goods_id)"
+                                    :activeValue="1" :inactiveValue="0"></up-switch>
+
+                            </view>
+                            <up-icon name="edit-pen" size="20" @click="editGoods(item)"></up-icon>
+                        </template>
+
+
+                    </up-cell>
+                </up-list-item>
+            </up-list>
+
         </up-popup>
 
     </view>
@@ -124,13 +137,9 @@ import wechat from '@/utils/wechat'
 const operationType = ref('manualInput'); //类型
 const operationShow = ref(false);
 const goodsList = ref([])
-// #ifdef H5
-operationType.value = 'manualInput';
-// #endif
-// #ifndef H5
-operationType.value = 'sweepCode';
-// #endif
-
+const page = ref(1)
+const isFinished = ref(false)
+const isLoading = ref(false)
 const isFocus = ref(false)
 const verify_code = ref('');
 const loading = ref(true)
@@ -173,11 +182,16 @@ const scanCode = () => {
             if (res.errMsg == 'scanCode:ok') {
                 let code = res.result;
                 console.log(code);
-
-                getGoodsPages({ sku_no: code, status: 'all' }).then(res => {
+                page.value = 1
+                goodsList.value = []
+                isFinished.value = false
+                getGoodsPages({ sku_no: code, status: 'all', page: page.value }).then(res => {
                     goodsList.value = res.data.data
+                    if (page.value >= res.data.last_page) {
+                        isFinished.value = true
+                    }
                     operationShow.value = true
-                    isLoading = false;
+                    isLoading.value = false;
                 })
             } else {
                 uni.showToast({
@@ -195,10 +209,10 @@ const scanCode = () => {
         wechat.scanQRCode(res => {
             if (res.resultStr) {
                 let code = res.resultStr;
-                getGoodsPages({ sku_no: code, status: 'all' }).then(res => {
+                getGoodsPages({ sku_no: code, status: 'all', page: page.value }).then(res => {
                     goodsList.value = res.data.data
                     operationShow.value = true
-                    isLoading = false;
+                    isLoading.value = false;
                 })
             }
         });
@@ -206,33 +220,32 @@ const scanCode = () => {
     // #endif
 }
 
-let isLoading = false;
 const confirm = () => {
-    var reg = /[\S]+/;
-    if (!reg.test(verify_code.value)) {
+    if (!verify_code.value) {
         uni.showToast({
-            title: '请输入核销码',
+            title: '请输入设备sn号',
             icon: 'none'
         });
-        return false;
+        return;
     }
-
-    if (isLoading) return false;
-    isLoading = true;
-    getGoodsPages({ sku_no: verify_code.value, status: 'all' }).then(res => {
-        console.log(res);
+    page.value = 1
+    goodsList.value = []
+    isFinished.value = false
+    getGoodsPages({ sku_no: verify_code.value, status: 'all', page: page.value }).then(res => {
         goodsList.value = res.data.data
+        if (page.value >= res.data.last_page) {
+            isFinished.value = true
+        }
         operationShow.value = true
-        isLoading = false;
+        isLoading.value = false;
     })
-    // getVerifierInfo(verify_code.value).then((res: any) => {
-    //     isLoading = false;
-    //     redirect({ url: '/app/pages/verify/verify', param: { code: verify_code.value } })
-    // }).catch(() => {
-    //     isLoading = false;
-    // })
 }
-
+// #ifdef H5
+operationType.value = 'manualInput';
+// #endif
+// #ifndef H5
+operationType.value = 'sweepCode';
+// #endif
 
 const focus = () => {
     isFocus.value = !isFocus.value;
@@ -258,7 +271,7 @@ const _operationGoods = (goods_id: string) => {
                 icon: 'none'
             });
         }
-        operationShow.value = false
+        // operationShow.value = false
 
     })
 }
@@ -275,6 +288,18 @@ const changeOperationType = (type: string) => {
     // #endif
     operationType.value = type;
 }
+
+const editGoods = (item: any) => {
+    // 携带id 跳转到 add_goods
+    // redirect({ url: '/app/pages/goods/add_goods', param: { id: item.goods_id }, mode: 'navigateTo' })
+
+    redirect({
+        url: '/addon/phone_shop/pages/manager/add_goods',
+        param: { id: item.goods_id },
+        mode: 'navigateTo'
+    });
+}
+
 const goodsPrice = (data: any) => {
     let price = "0.00";
     if (data.is_discount && data.goodsSku.sale_price != data.goodsSku.price) {
@@ -285,6 +310,23 @@ const goodsPrice = (data: any) => {
         price = data.goodsSku.price
     }
     return parseFloat(price);
+}
+
+const scrolltolower = () => {
+    if (isFinished.value || isLoading.value) return
+    isLoading.value = true
+    page.value++
+    getGoodsPages({ sku_no: verify_code.value, status: 'all', page: page.value }).then(res => {
+        goodsList.value = [...goodsList.value, ...res.data.data]
+        if (page.value >= res.data.last_page) {
+            isFinished.value = true
+            uni.showToast({
+                title: '没有更多数据了',
+                icon: 'none'
+            })
+        }
+        isLoading.value = false
+    })
 }
 </script>
 <style lang="scss" scoped>

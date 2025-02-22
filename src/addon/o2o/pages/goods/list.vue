@@ -39,7 +39,7 @@
 		<mescroll-body ref="mescrollRef" top="196rpx" bottom="50px" @init="mescrollInit" :down="{ use: false }" @up="getAllAppListFn">
 			<view :class="['p-[24rpx] !pb-0', !listType ? 'flex justify-between flex-wrap' : '']">
 				<template v-for="(item, index) in articleList">
-					<template v-if="listType" :key="item.app_id">
+					<template v-if="listType">
 						<view class="bg-white flex p-[20rpx] rounded-[16rpx]" :class="{ 'mt-[20rpx]': index }" @click="toDetail(item.goods_id)">
 							<u--image class="rounded-[10rpx] overflow-hidden" width="200rpx" height="200rpx" :src="img(item.cover_thumb_small ? item.cover_thumb_small : '')" mode="aspectFill">
 								<template #error>
@@ -192,9 +192,11 @@ const searchTypeFn = (type) => {
 const listIconBtn = () => {
 	listType.value = !listType.value
 }
+
 const toDetail = (id: string | number) => {
 	redirect({ url: '/addon/o2o/pages/goods/detail', param: { goods_id: id }, mode: 'navigateTo' })
 }
+
 onMounted(() => {
 	setTimeout(() => {
 		getMescroll().optUp.textNoMore = t("end");
@@ -206,11 +208,12 @@ const priceType = (data:any) =>{
 	let type = "";
 	if(data.member_discount && getToken()){
 		type = 'member_price' // 会员价
-	}else{ 
+	}else{
 		type = ""
 	}
 	return type;
 }
+
 // 商品价格
 const goodsPrice = (data:any) =>{
 	let price = "0.00";

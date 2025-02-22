@@ -19,18 +19,15 @@
 						<text class="text-[#333] leading-[39rpx]">{{detail.blessing}}</text>
 					</view>
 					<view class="mt-[148rpx]">
-						<view v-if="detail.give_num-detail.total_receive_num > detail.limit_num - detail.receive_num ? ((detail.limit_num - detail.receive_num)>1) : ((detail.give_num-detail.total_receive_num)>1)" 
+						<view v-if="detail.give_num-detail.total_receive_num > detail.limit_num - detail.receive_num ? ((detail.limit_num - detail.receive_num)>1) : ((detail.give_num-detail.total_receive_num)>1)"
 						class="mb-[25rpx] text-[24rpx] text-center leading-[34rpx] !text-[var(--text-color-light9)] ">{{t('receiveTipsTwo')}}{{detail.give_num-detail.total_receive_num > detail.limit_num - detail.receive_num ? detail.limit_num - detail.receive_num : detail.give_num-detail.total_receive_num}}{{t('receiveTipsTwoAnd')}}</view>
 						<button v-if="detail.total_leave_num && (detail.give_num >detail.total_receive_num)  && (detail.limit_num > detail.receive_num)"
-						class="w-full h-[80rpx] font-500 text-[26rpx] leading-[80rpx] !text-[#fff] !bg-[var(--primary-color)] m-0 rounded-[40rpx] remove-border"
-						:class="{'opacity-40':disable}"
+						class="w-full h-[80rpx] font-500 text-[26rpx] leading-[80rpx] !text-[#fff] !bg-[var(--primary-color)] m-0 rounded-[40rpx] remove-border" :class="{'opacity-40':disable}"
 						@click="save">{{t('GetItNow')}}</button>
-						<button v-else class="w-full h-[
-							280rpx] font-500 text-[26rpx] leading-[80rpx] !text-[var(--text-color-light9)] !bg-[#F7F7F7] m-0 rounded-[40rpx] remove-border">{{t('alreadyClaimed')}}</button>
-						<view v-if="detail.receive_num" 
-						class="mt-[25rpx] text-[24rpx] text-center leading-[34rpx] !text-[var(--text-color-light9)] " @click="tolink">{{t('seeCardBag')}}</view>
+						<button v-else class="w-full h-[280rpx] font-500 text-[26rpx] leading-[80rpx] !text-[var(--text-color-light9)] !bg-[#F7F7F7] m-0 rounded-[40rpx] remove-border">{{t('alreadyClaimed')}}</button>
+						<view v-if="detail.receive_num" class="mt-[25rpx] text-[24rpx] text-center leading-[34rpx] !text-[var(--text-color-light9)] " @click="tolink">{{t('seeCardBag')}}</view>
 					</view>
-				</view> 
+				</view>
 			</view>
 		</view>
 		<uni-popup ref="popupRef" type="center" :is-mask-click="false">
@@ -80,7 +77,7 @@
 		if (!option.give_id) {
             let parameter = {
                 url:'/addon/shop_giftcard/pages/index',
-                title: t('notCard'), 
+                title: t('notCard'),
                 mode: 'reLaunch'
             };
             goback(parameter)
@@ -100,14 +97,14 @@
 			if(res.data.give_status == 'receive_finish'){
 				let parameter = {
 					url:'/addon/shop_giftcard/pages/index',
-					title: res.data.message, 
+					title: res.data.message,
 					mode: 'reLaunch'
 				};
 				goback(parameter)
 			}else{
 				detail.value = res.data
 			}
-			
+
 			loading.value = false
 		}).catch(()=>{
 			loading.value = false
@@ -147,18 +144,18 @@
 		popupRef.value.close()
 		redirect({ url: '/addon/shop_giftcard/pages/my_card_list', mode: 'redirectTo' })
 	}
-	
+
 	const toDetail = () =>{
 		if(detail.value && detail.value.to_have == 'my'){
 			redirect({ url: '/addon/shop_giftcard/pages/card_bag', param:{card_bag_id: detail.value.card_bag_id}, mode: 'redirectTo' });
 		}
 	}
-	
+
 	const close = ()=>{
 		popupRef.value.close()
 		getCardGiveInfoFn(give_id.value)
 	}
-	
+
 	const defaultCard = (data:any)=> {
 		let imgUrl = '';
 		let giftcardData = data.card_info.giftcard;

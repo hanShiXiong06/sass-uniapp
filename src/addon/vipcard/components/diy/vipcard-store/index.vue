@@ -49,7 +49,7 @@
 	import useMemberStore from '@/stores/member'
 	import { useLogin } from '@/hooks/useLogin';
 
-    const props = defineProps(['component', 'index', 'pullDownRefreshCount']);
+    const props = defineProps(['component', 'index']);
 	const diyStore = useDiyStore();
 
 	const diyComponent = computed(() => {
@@ -134,13 +134,6 @@
 
 		redirect({ url: '/app/pages/member/code' });
 	}
-
-    watch(
-        () => props.pullDownRefreshCount,
-        (newValue, oldValue) => {
-            // 处理下拉刷新业务
-        }
-    )
 
     const instance = getCurrentInstance();
     const height = ref(0)

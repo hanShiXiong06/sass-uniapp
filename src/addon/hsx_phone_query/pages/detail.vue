@@ -39,7 +39,7 @@
                     <text>{{ deviceInfo.监管锁 }}</text>
                 </view>
             </view>
-                    </view>
+        </view>
 
         <!-- 详细信息卡片 -->
         <view class="detail-card card-base" v-if="deviceInfo" :class="{ 'slide-in-delay': showContent }">
@@ -56,20 +56,45 @@
             </view>
         </view>
 
+        <!-- 分享引导组件 -->
+        <view class="share-guide" v-if="showShareGuide">
+            <view class="guide-content">
+                <view class="guide-header">
+                    <text class="title">分享查询结果</text>
+                    <u-icon name="close" size="24" color="#999" @click="showShareGuide = false"></u-icon>
+                </view>
+                <view class="guide-body">
+                    <image class="share-icon" src="/static/images/share-illustration.png" mode="aspectFit"></image>
+                    <text class="guide-text">点击右上角"..."分享给好友</text>
+                </view>
+                <view class="guide-footer">
+                    <button class="share-btn" open-type="share">
+                        <u-icon name="share" size="20" color="#fff"></u-icon>
+                        <text>立即分享</text>
+                    </button>
+                </view>
+            </view>
+        </view>
+
         <!-- 水印层 -->
         <view class="watermark" :style="watermarkStyle">
             {{ watermarkConfig.text }}
         </view>
 
         <!-- 绘制区域（隐藏） -->
-        <canvas canvas-id="shareCanvas"
-            style="width: 750rpx; height: 1200rpx; position: fixed; left: -9999rpx;"></canvas>
+        <canvas canvas-id="shareCanvas" id="shareCanvas"
+            style="width: 750rpx; height: 1334rpx; position: fixed; left: -9999rpx;"></canvas>
 
+        <!-- 操作栏 -->
         <!-- #ifdef MP-WEIXIN -->
         <view class="action-bar" :class="{ 'fade-in': showContent }">
-            <button class="action-btn share-btn" @click="handleDownload">
+            <button class="action-btn download-btn" @click="handleGenerateImage">
                 <u-icon name="download" size="32" color="#fff"></u-icon>
                 <text>保存图片</text>
+            </button>
+            <button class="action-btn share-btn" @click="showShareGuide = true">
+                <u-icon name="share" size="32" color="#fff"></u-icon>
+                <text>分享</text>
             </button>
         </view>
         <!-- #endif -->
@@ -79,7 +104,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { getModelDetail, getWatermark } from '@/addon/hsx_phone_query/api/index'
-import { onLoad, onShow } from '@dcloudio/uni-app'
+import { onLoad, onShow, onShareAppMessage } from '@dcloudio/uni-app'
 
 const detail = ref<any>({})
 const deviceInfo = ref<any>(null)
@@ -89,7 +114,7 @@ const currentId = ref<number | null>(null)
 
 // 画布尺寸
 const canvasWidth = ref(750)
-const canvasHeight = ref(1200)
+const canvasHeight = ref(1334)
 
 // 添加水印文本
 const watermarkText = computed(() => {
@@ -221,116 +246,61 @@ const generateImage = async () => {
     return new Promise(async (resolve, reject) => {
         try {
             const ctx = uni.createCanvasContext('shareCanvas')
-            const padding = 40
-            let currentHeight = padding
+            const width = canvasWidth.value
+            const height = canvasHeight.value
 
             // 设置背景
-            ctx.setFillStyle('#ffffff')
-            ctx.fillRect(0, 0, canvasWidth.value, canvasHeight.value)
+            ctx.setFillStyle('#f8f9fa')
+            ctx.fillRect(0, 0, width, height)
 
-            // 绘制标题
-            ctx.setFillStyle('#333333')
-            ctx.setFontSize(32)
-            ctx.fillText('设备询结果', padding, currentHeight)
-            currentHeight += 60
+            // 绘制顶部信息卡片
+            ctx.setFillStyle('#ffffff')
+            ctx.fillRect(30, 30, width - 60, 180)
+            ctx.setFontSize(28)
+            ctx.setFillStyle('#333')
+            ctx.fillText(detail.value.type_name || '', 50, 80)
+            ctx.setFontSize(24)
+            ctx.setFillStyle('#666')
+            ctx.fillText(formatTime(detail.value.create_time) || '', width - 250, 80)
 
             // 绘制序列号
-            ctx.setFontSize(28)
-            ctx.fillText('序列号：' + detail.value.sn, padding, currentHeight)
-            currentHeight += 50
+            ctx.setFontSize(26)
+            ctx.setFillStyle('#333')
+            ctx.fillText('序列号：' + detail.value.sn, 50, 130)
 
             // 绘制设备信息
+            let currentY = 240
             if (deviceInfo.value) {
-                ctx.setFontSize(30)
-                ctx.fillText('设备信息', padding, currentHeight)
-                currentHeight += 50
-
-                // 机型信息
-                ctx.setFontSize(28)
-                ctx.fillText(deviceInfo.value.机型 || '未知设备', padding, currentHeight)
-                currentHeight += 40
-
-                if (deviceInfo.value.容量 || deviceInfo.value.颜色) {
-                    ctx.setFontSize(26)
-                    ctx.setFillStyle('#666666')
-                    let specs = deviceInfo.value.容量 || ''
-                    if (deviceInfo.value.颜色) {
-                        specs += ' · ' + deviceInfo.value.颜色
+                Object.entries(deviceInfo.value).forEach(([key, value]) => {
+                    if (!['机型', '容量', '颜色'].includes(key)) {
+                        ctx.setFontSize(26)
+                        ctx.setFillStyle('#666')
+                        ctx.fillText(key + '：', 50, currentY)
+                        ctx.setFillStyle('#333')
+                        ctx.fillText(String(value), 200, currentY)
+                        currentY += 50
                     }
-                    ctx.fillText(specs, padding, currentHeight)
-                    currentHeight += 50
-                }
-
-                // 绘制详细信息
-                ctx.setFontSize(28)
-                ctx.setFillStyle('#333333')
-                for (const [key, value] of Object.entries(deviceInfo.value)) {
-                    if (key !== '机型' && key !== '容量' && key !== '颜色') {
-                        // 检查是否是图片URL
-                        if (typeof value === 'string' && (value.startsWith('http') || value.startsWith('/'))) {
-                            try {
-                                const imagePath = await loadImage(value)
-                                // 绘制图片标题
-                                ctx.fillText(key + '', padding, currentHeight)
-                                currentHeight += 30
-
-                                // 计算图片尺寸
-                                const imageWidth = canvasWidth.value - (padding * 2)
-                                const imageHeight = 200 // 固定高度，可以根据需要调整
-
-                                // 绘制图片
-                                ctx.drawImage(imagePath, padding, currentHeight, imageWidth, imageHeight)
-                                currentHeight += imageHeight + 30
-                            } catch (error) {
-                                console.error('加载图片失败:', error)
-                                ctx.fillText(`${key}：${value}`, padding, currentHeight)
-                                currentHeight += 40
-                            }
-                        } else {
-                            // 普通文本
-                            ctx.fillText(`${key}：${value}`, padding, currentHeight)
-                            currentHeight += 40
-                        }
-                    }
-                }
+                })
             }
 
-            // 绘制时间
-            ctx.setFontSize(24)
-            ctx.setFillStyle('#999999')
-            ctx.fillText('查询时间：' + formatTime(detail.value.create_time), padding, currentHeight + 40)
+            // 生成当前页面二维码
+            const qrCodeSize = 200
+            const qrCodeX = (width - qrCodeSize) / 2
+            const qrCodeY = currentY + 30
 
-            // 修改水印绘制方式
-            ctx.save()
-            ctx.setFillStyle('#999999')
-            ctx.setGlobalAlpha(0.1)
-
-            // 绘制重复的水印
-            const watermarkSize = 200
-            const angle = -15
-            const text = '仅供参考'
-
-            ctx.setFontSize(32)
-
-            for (let y = 0; y < canvasHeight.value; y += watermarkSize) {
-                for (let x = 0; x < canvasWidth.value; x += watermarkSize) {
-                    ctx.save()
-                    ctx.translate(x + watermarkSize / 2, y + watermarkSize / 2)
-                    ctx.rotate(angle * Math.PI / 180)
-                    ctx.fillText(text, -50, 0)
-                    ctx.restore()
-                }
+            const pageUrl = `pages/addon/hsx_phone_query/pages/detail?id=${currentId.value}`
+            const qrCodeImage = await generateQRCode(pageUrl, qrCodeSize)
+            if (qrCodeImage) {
+                ctx.drawImage(qrCodeImage, qrCodeX, qrCodeY, qrCodeSize, qrCodeSize)
             }
 
-            // 添加时间水印在底部
-            ctx.setGlobalAlpha(0.6)
+            // 添加水印
             ctx.setFontSize(24)
-            const timeText = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`
-            ctx.fillText(timeText, padding, currentHeight + 80)
+            ctx.setFillStyle('rgba(0,0,0,0.1)')
+            ctx.setTextAlign('center')
+            const watermarkText = `${detail.value.type_name || ''} · ${formatTime(detail.value.create_time)}`
+            ctx.fillText(watermarkText, width / 2, qrCodeY + qrCodeSize + 50)
 
-            ctx.restore()
-
-            // 绘制完成
             ctx.draw(false, () => {
                 setTimeout(() => {
                     uni.canvasToTempFilePath({
@@ -338,9 +308,11 @@ const generateImage = async () => {
                         success: (res) => {
                             resolve(res.tempFilePath)
                         },
-                        fail: reject
+                        fail: (err) => {
+                            reject(err)
+                        }
                     })
-                }, 300) // 增加延时，确保图片绘制完成
+                }, 300)
             })
         } catch (error) {
             reject(error)
@@ -349,37 +321,53 @@ const generateImage = async () => {
 }
 
 // 处理下载
-const handleDownload = async () => {
+const handleGenerateImage = async () => {
     try {
-        uni.showLoading({
-            title: '生成图片中...',
-            mask: true
-        })
-
-        // 请求相册权限
-        await uni.authorize({
-            scope: 'scope.writePhotosAlbum'
-        })
-
-        const tempFilePath = await generateImage()
-
+        loading.value = true
+        // 先检查授权状态
+        const auth = await uni.getSetting({})
+        if (!auth.authSetting['scope.writePhotosAlbum']) {
+            // 请求授权
+            await uni.authorize({
+                scope: 'scope.writePhotosAlbum'
+            })
+        }
+        
+        // 生成图片
+        const res = await generateImage()
+        
         // 保存图片到相册
         await uni.saveImageToPhotosAlbum({
-            filePath: tempFilePath
+            filePath: res
         })
-
+        
         uni.showToast({
             title: '保存成功',
             icon: 'success'
         })
-    } catch (error) {
-        console.error('生成/保存图片失败:', error)
-        uni.showToast({
-            title: error.errMsg || '保存失败',
-            icon: 'none'
-        })
+    } catch (err: any) {
+        console.error('生成/保存图片失败:', err)
+        
+        // 如果是用户拒绝授权
+        if (err.errMsg && err.errMsg.includes('authorize:fail')) {
+            uni.showModal({
+                title: '提示',
+                content: '需要您授权保存图片到相册。是否去设置？',
+                success: (res) => {
+                    if (res.confirm) {
+                        // 打开设置页面
+                        uni.openSetting()
+                    }
+                }
+            })
+        } else {
+            uni.showToast({
+                title: '生成图片失败',
+                icon: 'none'
+            })
+        }
     } finally {
-        uni.hideLoading()
+        loading.value = false
     }
 }
 
@@ -403,7 +391,41 @@ const previewImage = (url: string) => {
     })
 }
 
+// 分享引导显示控制
+const showShareGuide = ref(false)
 
+// 生成二维码
+const generateQRCode = async (text: string, size: number) => {
+    return new Promise((resolve, reject) => {
+        uni.showLoading({ title: '生成二维码' })
+        // #ifdef MP-WEIXIN
+        const wxqrcode = require('wxmp-qrcode')
+        const qrcode = wxqrcode({
+            text: text,
+            width: size,
+            height: size,
+            correctLevel: 'H',
+            padding: 10,
+            background: '#ffffff',
+            foreground: '#000000'
+        })
+        resolve(qrcode)
+        // #endif
+        // #ifndef MP-WEIXIN
+        resolve(null)
+        // #endif
+        uni.hideLoading()
+    })
+}
+
+// 处理分享
+onShareAppMessage(() => {
+    return {
+        title: `${detail.value.type_name || '设备'}查询结果`,
+        path: `/pages/addon/hsx_phone_query/pages/detail?id=${currentId.value}`,
+        imageUrl: '' // 可以设置分享图片
+    }
+})
 
 // 水印配置
 const watermarkConfig = ref({
@@ -513,8 +535,6 @@ onMounted(() => {
 
 // 设备信息卡片
 .device-card {
-
-
     .card-title {
         font-size: 28rpx;
         font-weight: 500;
@@ -590,7 +610,6 @@ onMounted(() => {
             padding: 20rpx 0;
             border-bottom: 1px solid #f5f5f5;
 
-
             &:last-child {
                 border-bottom: none;
             }
@@ -621,50 +640,113 @@ onMounted(() => {
     }
 }
 
-// 底部操作栏
-.action-bar {
+// 分享引导样式
+.share-guide {
     position: fixed;
+    top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    padding: 20rpx;
-    background: #fff;
-    box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.05);
-    z-index: 100;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 999;
     display: flex;
     justify-content: center;
-
-    .action-btn {
-        display: flex;
     align-items: center;
-        justify-content: center;
-        gap: 8rpx;
-        width: 320rpx;
-        height: 80rpx;
-        border-radius: 40rpx;
-        background: var(--primary-color);
-        border: none;
 
-        text {
-            color: #fff;
-            font-size: 28rpx;
+    .guide-content {
+        width: 600rpx;
+        background: #fff;
+        border-radius: 24rpx;
+        padding: 40rpx;
+
+        .guide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40rpx;
+
+            .title {
+                font-size: 32rpx;
+                font-weight: 500;
+                color: #333;
+            }
         }
 
-        &:active {
-            opacity: 0.9;
+        .guide-body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 40rpx;
+
+            .share-icon {
+                width: 200rpx;
+                height: 200rpx;
+                margin-bottom: 20rpx;
+            }
+
+            .guide-text {
+                font-size: 28rpx;
+                color: #666;
+                text-align: center;
+            }
+        }
+
+        .guide-footer {
+            display: flex;
+            justify-content: center;
+
+            .share-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10rpx;
+                background: var(--primary-color);
+                color: #fff;
+                border-radius: 12rpx;
+                padding: 20rpx 40rpx;
+                border: none;
+                font-size: 28rpx;
+
+                &::after {
+                    border: none;
+                }
+            }
         }
     }
 }
 
-// 水印样式
-.watermark {
+// 修改操作栏样式
+.action-bar {
     position: fixed;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%) rotate(-30deg);
-    white-space: nowrap;
-    pointer-events: none;
-    z-index: 1;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20rpx 40rpx;
+    background: #fff;
+    box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.05);
+    display: flex;
+    gap: 20rpx;
+
+    .action-btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10rpx;
+        background: var(--primary-color);
+        color: #fff;
+        border-radius: 12rpx;
+        padding: 20rpx;
+        border: none;
+
+        &::after {
+            border: none;
+        }
+
+        &.download-btn {
+            background: #52c41a;
+        }
+    }
 }
 
 // 动画效果

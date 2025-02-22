@@ -68,21 +68,14 @@
 		</view>
 
 		<!-- 分类导航栏 -->
-		<view class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm">
-			<scroll-view scroll-x="true" class="whitespace-nowrap py-3 px-4" :show-scrollbar="false" enhanced
-				:bounces="true">
-				<view class="inline-flex space-x-4 px-2">
-					<view v-for="(item, index) in typeList" :key="index" class="relative inline-block"
+		<view class="sticky-header">
+			<scroll-view scroll-x class="scroll-container" :show-scrollbar="false" enhanced :bounces="true">
+				<view class="tab-container">
+					<view v-for="(item, index) in typeList" :key="index" class="tab-item"
 						@click="typeChange(item.type)">
-						<view class="px-6 py-2.5 rounded-full text-[28rpx] transition-all duration-300 relative" :class="[
-							type == item.type
-								? 'bg-gradient-to-r from-[#454337] to-[#5a5749] text-[#D5C6A9] font-bold shadow-md transform scale-105'
-								: 'text-gray-600 hover:bg-gray-50 active:bg-gray-100'
-						]">
+						<view :class="['tab-button', type == item.type ? 'tab-active' : '']">
 							<text>{{ item.name }}</text>
-							<view v-if="type == item.type"
-								class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-10 h-1 rounded-full bg-gradient-to-r from-[#E9D88B] to-[#D5C6A9]">
-							</view>
+							<view v-if="type == item.type" class="active-line"></view>
 						</view>
 					</view>
 				</view>
@@ -281,6 +274,74 @@ const backToTop = () => {
 </script>
 
 <style lang="scss" scoped>
+/* 添加以下样式到你的style标签中 */
+.sticky-header {
+	position: sticky;
+	top: 0;
+	z-index: 50;
+	background-color: rgba(255, 255, 255, 0.95);
+	box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.05);
+}
+
+.scroll-container {
+	white-space: nowrap;
+	padding: 24rpx 48rpx;
+}
+
+.tab-container {
+	display: inline-flex;
+	padding: 0 16rpx;
+}
+
+.tab-item {
+	position: relative;
+	display: inline-block;
+	margin-right: 32rpx;
+
+	&:last-child {
+		margin-right: 0;
+	}
+}
+
+.tab-button {
+	position: relative;
+	padding: 10rpx 48rpx;
+	border-radius: 999rpx;
+	font-size: 28rpx;
+	color: #666;
+	transition-property: all;
+	transition-duration: 300ms;
+}
+
+.tab-active {
+	background: linear-gradient(90deg, #454337, #5a5749);
+	color: #D5C6A9;
+	font-weight: bold;
+	box-shadow: 0 4rpx 6rpx rgba(0, 0, 0, 0.1);
+	/* 小程序中使用scale需要加前缀 */
+	transform: scale(1);
+}
+
+.active-line {
+	position: absolute;
+	bottom: -2rpx;
+	left: 50%;
+	width: 80rpx;
+	height: 2rpx;
+	background: linear-gradient(90deg, #E9D88B, #D5C6A9);
+	border-radius: 999rpx;
+	/* 使用translateX替代transform简写形式 */
+	transform: translateX(-50%);
+}
+
+/* 处理滚动条 */
+::-webkit-scrollbar {
+	display: none;
+	width: 0;
+	height: 0;
+	color: transparent;
+}
+
 .stats-card {
 	@apply relative overflow-hidden;
 

@@ -62,20 +62,20 @@
 				<block v-if="diyComponent.style == 'style-3'">
 					<view :style="style3Css">
 						<scroll-view :id="'warpStyle3-'+diyComponent.id" class="whitespace-nowrap" :scroll-x="true">
-						<view :id="'item'+index+diyComponent.id" class="w-[214rpx] inline-block bg-[#fff] box-border overflow-hidden" :class="{'!mr-[0rpx]' : index === (goodsList.length-1)}" :style="itemCss+itemStyle3" v-for="(item,index) in goodsList" :key="item.goods_id" @click="toLink(item)">
-							<u--image width="214rpx" height="160rpx" :src="img(item.goods_cover_thumb_mid || '')" model="aspectFill">
-								<template #error>
-									<image class="w-[214rpx] h-[160rpx]" :src="img('static/resource/images/diy/shop_default.jpg')" mode="aspectFill"></image>
-								</template>
-							</u--image>
-							<view class="px-[10rpx] py-[16rpx]">
-								<view class="text-[26rpx] text-[#303133] truncate" :style="{ color : diyComponent.goodsNameStyle.color, fontWeight : diyComponent.goodsNameStyle.fontWeight }">{{item.goods_name}}</view>
-								<view class="text-[var(--price-text-color)] mt-[16rpx] price-font flex items-baseline ml-[2rpx]" :style="{ color : diyComponent.priceStyle.mainColor }">
-									<text class="text-[20rpx] font-500">￥</text>
-									<text class="text-[36rpx] font-500">{{ parseFloat(item.goodsSku.price).toFixed(2) }}</text>
+							<view :id="'item'+index+diyComponent.id" class="w-[214rpx] inline-block bg-[#fff] box-border overflow-hidden" :class="{'!mr-[0rpx]' : index === (goodsList.length-1)}" :style="itemCss+itemStyle3" v-for="(item,index) in goodsList" :key="item.goods_id" @click="toLink(item)">
+								<u--image width="214rpx" height="160rpx" :src="img(item.goods_cover_thumb_mid || '')" model="aspectFill">
+									<template #error>
+										<image class="w-[214rpx] h-[160rpx]" :src="img('static/resource/images/diy/shop_default.jpg')" mode="aspectFill"></image>
+									</template>
+								</u--image>
+								<view class="px-[10rpx] py-[16rpx]">
+									<view class="text-[26rpx] text-[#303133] truncate" :style="{ color : diyComponent.goodsNameStyle.color, fontWeight : diyComponent.goodsNameStyle.fontWeight }">{{item.goods_name}}</view>
+									<view class="text-[var(--price-text-color)] mt-[16rpx] price-font flex items-baseline ml-[2rpx]" :style="{ color : diyComponent.priceStyle.mainColor }">
+										<text class="text-[20rpx] font-500">￥</text>
+										<text class="text-[36rpx] font-500">{{ parseFloat(item.goodsSku.price).toFixed(2) }}</text>
+									</view>
 								</view>
 							</view>
-						</view>
 						</scroll-view>
 					</view>
 				</block>
@@ -99,7 +99,7 @@
     import sharePoster from '@/components/share-poster/share-poster.vue'
 	import { useShare }from '@/hooks/useShare'
 
-	const props = defineProps(['component', 'index', 'pullDownRefreshCount','value']);
+	const props = defineProps(['component', 'index','value']);
 	const diyStore = useDiyStore()
 
 	// 会员信息
@@ -189,6 +189,7 @@
 		else{style += 'box-sizing: border-box; width: 100vw;';}
         return style;
     })
+
 	//商品样式三
 	const itemStyle3 = ref('');
 	const setItemStyle3 = ()=>{
@@ -203,12 +204,6 @@
 			itemStyle3.value= 'margin-right:14rpx;'
 		// #endif
 	}
-	watch(
-		() => props.pullDownRefreshCount,
-		(newValue, oldValue) => {
-			// 处理下拉刷新业务
-		}
-	)
 
 	const getGoodsListFn = () => {
         let data = {

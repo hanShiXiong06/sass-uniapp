@@ -31,8 +31,7 @@
 								:key="index">
 								<view class="w-[150rpx] h-[150rpx]">
 									<u--image class="rounded-[10rpx] overflow-hidden" radius="10rpx" width="150rpx"
-										height="150rpx"
-										:src="img(subitem.goods_image_thumb_small ? subitem.goods_image_thumb_small : '')"
+										height="150rpx" :src="img(subitem.goods_image ? subitem.goods_image : '')"
 										mode="aspectFill">
 										<template #error>
 											<image class="w-[150rpx] h-[150rpx] rounded-[10rpx] overflow-hidden"

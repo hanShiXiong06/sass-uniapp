@@ -27,7 +27,7 @@
                 <view class="category-container px-[10rpx] mt-[20rpx] ">
                     <view v-for="(item,index) in rechargePackage" :key="index"
                         :class="['category-item overflow-hidden flex justify-center items-center w-[190rpx] h-[110rpx] box-border border-[1rpx] text-center rounded-[var(--goods-rounded-big)] border-[#ccc] border-solid',{'border-none text-white':activeIndex === index}]"
-						:style="{'background': activeIndex === index?'linear-gradient( 283deg, #FD3923 11%, #FF7630 100%), #FFFFFF':''}"
+						:style="{'background': activeIndex === index?'linear-gradient( 283deg, var(--primary-color) 11%, var(--primary-color) 100%), #FFFFFF':''}"
                         @click="selectCategory(item, index)">
 						<view class="flex flex-col justify-around item-center h-[80rpx]">
 							<view class="flex justify-center items-end">
@@ -43,18 +43,18 @@
                     </view>
                 </view>
 				<view class="mt-[20rpx]" v-if="Object.keys(activeContent).length > 0" @click="rechargeShowRef = true">
-					<text class="text-[22rpx] text-[#FF7630]">注：实际到账 {{activeContent.face_value}}元</text>
+					<text class="text-[22rpx] text-[var(--primary-color)]">注：实际到账 {{activeContent.face_value}}元</text>
 
-					<text v-if="activeContent.point || activeContent.growth || (activeContent.gift_content.length > 0)" class="text-[22rpx] text-[#FF7630]">，赠送：</text>
-					<text v-if="activeContent.point" class="text-[22rpx] text-[#FF7630]">{{activeContent.point}}积分</text>
-					<text v-if="activeContent.point && activeContent.growth" class="text-[22rpx] text-[#FF7630]">，</text>
+					<text v-if="activeContent.point || activeContent.growth || (activeContent.gift_content.length > 0)" class="text-[22rpx] text-[var(--primary-color)]">，赠送：</text>
+					<text v-if="activeContent.point" class="text-[22rpx] text-[var(--primary-color)]">{{activeContent.point}}积分</text>
+					<text v-if="activeContent.point && activeContent.growth" class="text-[22rpx] text-[var(--primary-color)]">，</text>
 
-					<text v-if="activeContent.growth" class="text-[22rpx] text-[#FF7630]">{{activeContent.growth}}成长值</text>
-					<text v-if="activeContent.gift_content.length > 0 && activeContent.growth" class="text-[22rpx] text-[#FF7630]">，</text>
+					<text v-if="activeContent.growth" class="text-[22rpx] text-[var(--primary-color)]">{{activeContent.growth}}成长值</text>
+					<text v-if="activeContent.gift_content.length > 0 && activeContent.growth" class="text-[22rpx] text-[var(--primary-color)]">，</text>
 
 					<template v-if="activeContent.gift_content.length > 0" v-for="(item,index) in activeContent.gift_content">
-						<text class="text-[22rpx] text-[#FF7630]">{{ item.info }}</text>
-						<text v-if="(index + 1)  < activeContent.gift_content.length" class="text-[22rpx] text-[#FF7630]">，</text>
+						<text class="text-[22rpx] text-[var(--primary-color)]">{{ item.info }}</text>
+						<text v-if="(index + 1)  < activeContent.gift_content.length" class="text-[22rpx] text-[var(--primary-color)]">，</text>
 					</template>
 				</view>
             </view>

@@ -23,7 +23,7 @@
 					<text>({{moneyFormat(agentStat.unsettlement)}})</text>
 				</view>
 			</view>
-			
+
 			<mescroll-body ref="mescrollRef" bottom="100rpx" @init="mescrollInit" :down="{ use: false }" @up="getData">
 				<view class="sidebar-margin pt-[var(--top-m)]" v-if="list.length">
 					<view class="mb-[var(--top-m)] card-template" v-for='(item,index) in list' :key="index">
@@ -87,7 +87,7 @@
 
 <script setup lang="ts">
 	import { redirect, img, moneyFormat } from '@/utils/common';
-	import { onLoad, onShow, onPageScroll, onReachBottom } from '@dcloudio/uni-app'
+	import { onLoad, onPageScroll, onReachBottom } from '@dcloudio/uni-app'
 	import {ref, reactive} from 'vue'
 	import { t } from '@/locale'
 	import MescrollBody from '@/components/mescroll/mescroll-body/mescroll-body.vue'
@@ -97,7 +97,7 @@
 	import { getFenxiaoDetail } from '@/addon/shop_fenxiao/api/fenxiao';
 
     const { mescrollInit, downCallback, getMescroll } = useMescroll(onPageScroll, onReachBottom);
-	
+
 	/********* 是否开启渠道代理设置 - start ***********/
 	const agentOpen = ref<any>('');
 	onLoad(async ()=>{
@@ -122,8 +122,9 @@
 			loading.value = false;
 		});
 	}
+
 	getFenxiaoDetailFn();
-	
+
 	const getData = (mescroll: any) => {
 		let data: object = {
 			is_settlement: isSettlement.value,
@@ -145,7 +146,7 @@
 			mescroll.endErr(); // 请求失败, 结束加载
 		})
 	}
-	
+
 	// 统计
 	const getAgentStatFn = () => {
 		getAgentStat().then((res: any) => {

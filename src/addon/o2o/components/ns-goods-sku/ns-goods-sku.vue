@@ -130,43 +130,44 @@ const getSkuId = ()=>{
 	})
 }
 //提交
-const confirm = ()=>{
+const confirm = ()=> {
 	// 检测是否登录
 	if (!userInfo.value) {
-		useLogin().setLoginBack({ url: '/addon/o2o/pages/goods/detail', param: {sku_id: goodsDetail.value.sku_id} })
+		useLogin().setLoginBack({ url: '/addon/o2o/pages/goods/detail', param: { sku_id: goodsDetail.value.sku_id } })
 		return false
 	}
-	if(!goodsDetail.value.goods.status){
+	if (!goodsDetail.value.goods.status) {
 		return false
 	}
 	var data = {
-			sku_id: goodsDetail.value.sku_id,
-			num:buyNum.value
-		};
-		
-		uni.setStorage({
-			key: 'o2oCreateData',
-			data: {
-				sku: data
-            },
-			success: () => {
-				redirect({ url: '/addon/o2o/pages/order/payment',param: { id: goodsDetail.value.goods_id }  })
-			}
-		});
-		closeFn();
-	}
-	defineExpose({
-		open
-	})
-	
-	// 商品价格
-	const goodsPrice = computed(() =>{
-		let price = "0.00";
-		if(Object.keys(goodsDetail.value).length && Object.keys(goodsDetail.value.goods).length && goodsDetail.value.goods.member_discount && getToken()){
-			price = goodsDetail.value.member_price // 会员价
-		}else{
-			price = goodsDetail.value.price
+		sku_id: goodsDetail.value.sku_id,
+		num: buyNum.value
+	};
+
+	uni.setStorage({
+		key: 'o2oCreateData',
+		data: {
+			sku: data
+		},
+		success: () => {
+			redirect({ url: '/addon/o2o/pages/order/payment', param: { id: goodsDetail.value.goods_id } })
 		}
-		return parseFloat(price).toFixed(2);
-	})
+	});
+	closeFn();
+}
+
+// 商品价格
+const goodsPrice = computed(() =>{
+	let price = "0.00";
+	if(Object.keys(goodsDetail.value).length && Object.keys(goodsDetail.value.goods).length && goodsDetail.value.goods.member_discount && getToken()){
+		price = goodsDetail.value.member_price // 会员价
+	}else{
+		price = goodsDetail.value.price
+	}
+	return parseFloat(price).toFixed(2);
+})
+
+defineExpose({
+	open
+})
 </script>

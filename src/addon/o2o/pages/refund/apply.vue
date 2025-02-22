@@ -13,7 +13,7 @@
                             <text class="text-[28rpx] text-item  leading-[40rpx]">{{ orderDetail.item_name }}</text>
                         </view>
                         <view class="text-[22rpx] mt-[14rpx]">
-                            <text class="text-[var(--primary-color)] rounded-[6rpx] py-[6rpx] bg-[var(--label-bg-color)] px-[10rpx]">{{ orderDetail.item_type_name}}</text>
+                            <text class="text-[var(--primary-color)] rounded-[6rpx] py-[6rpx] bg-[var(--primary-color-light)] px-[10rpx]">{{ orderDetail.item_type_name}}</text>
                         </view>
                         <view class="text-[28rpx] mt-[14rpx] flex justify-between">
                             <text class="text-[var(--primary-color)] price-font">￥{{ orderDetail.item_money }}</text>
@@ -112,6 +112,7 @@ const formData = ref({
     remark: '',
     voucher: []
 })
+
 const reason = ref<string[]>([])
 const currReasonName = ref('')
 getRefundReason().then(({ data }) => {
@@ -150,7 +151,6 @@ const inputWidth = computed((value) => {
         }
     };
 })
-
 
 const voucherListPreview = computed(() => {
     if(formData.value.voucher.length){

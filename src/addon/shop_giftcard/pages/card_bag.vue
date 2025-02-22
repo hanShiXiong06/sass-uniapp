@@ -10,7 +10,7 @@
 		</view>
 		<mescroll-body ref="mescrollRef" top="88rpx" @init="mescrollInit" :down="{ use: false }" @up="getCardListFn">
 			<view class="sidebar-margin pt-[var(--top-m)]" v-if="list.length">
-				<view v-for="(item, index) in list" 
+				<view v-for="(item, index) in list"
 				@click="btnClick('use',item.card_id)"
 				class="h-[430rpx] mb-[var(--top-m)] rounded-[var(--rounded-big)] overflow-hidden box-border relative">
 					<image v-if="item.card_cover" class="w-[100%] h-[100%] rounded-[var(--goods-rounded-big)] overflow-hidden" :src="img(item.card_cover || '')" @error="item.card_cover= defaultCard(item)" mode="aspectFill"></image>
@@ -36,22 +36,19 @@
 								@click.stop="btnClick('give',item.card_id)">{{t('giftToFriends')}}</view>
 								<view class="w-[2rpx] h-[24rpx] bg-[var(--text-color-light9)] rounded-[2rpx]"></view>
 							</block>
-							<view
-							v-if="item.status=='to_use' || item.status=='can_use'"
+							<view v-if="item.status=='to_use' || item.status=='can_use'"
 							class="flex-1 h-[70rpx] leading-[70rpx] text-[24rpx] font-500 text-center min-w-[calc(50%-1rpx)]"
 							@click.stop="btnClick('use',item.card_id)">{{t('canUse')}}</view>
-							<view
-							v-if="item.status=='used'"
+							<view v-if="item.status=='used'"
 							class="flex-1 h-[70rpx] leading-[70rpx] text-[24rpx] font-500 text-center min-w-[calc(50%-1rpx)]"
 							@click.stop="btnClick('use',item.card_id)">{{t('used')}}</view>
-							<view
-							v-if="item.status=='invalid'"
+							<view v-if="item.status=='invalid'"
 							class="flex-1 h-[70rpx] leading-[70rpx] text-[24rpx] font-500 text-center min-w-[calc(50%-1rpx)]"
 							@click.stop="btnClick('use',item.card_id)">{{t('invalid')}}</view>
 						</view>
 					</view>
 				</view>
-				
+
 			</view>
 			<mescroll-empty v-if="!list.length && !loading" :option="{tip : t('cardEmpty'), icon: img('addon/shop_giftcard/empty.png')}"></mescroll-empty>
 			<tabbar />
@@ -83,15 +80,15 @@
 		status.value = option.status || ''
 		getCardStatusListFn();
 	});
-	
+
 	onShow(()=>{
 		if(getMescroll()) getMescroll().resetUpScroll();
 	})
-	
+
 	const getCardStatusListFn = () => {
 		statusLoading.value = false;
 		statusList.value = {};
-	
+
 		getCardStatusList().then((res: any) => {
 			statusList.value = res.data
 			statusLoading.value = true;
@@ -114,7 +111,7 @@
 			card_bag_id: card_bag_id.value,
 			order_id: order_id.value
 		};
-	
+
 		getCardList(data).then((res: any) => {
 			let newArr = (res.data.data as Array<Object>);
 			//设置列表数据

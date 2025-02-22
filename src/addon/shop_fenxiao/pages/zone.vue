@@ -6,16 +6,9 @@
 		<view v-show="!diy.getLoading()">
 
 			<!-- 自定义模板渲染 -->
-			<view class="diy-template-wrap bg-index" v-if="diy.data.pageMode != 'fixed'" :style="diy.pageStyle()">
+			<view class="diy-template-wrap bg-index" :style="diy.pageStyle()">
 
-				<diy-group ref="diyGroupRef" :data="diy.data" :pullDownRefreshCount="diy.pullDownRefreshCount" />
-
-			</view>
-
-			<!-- 固定模板渲染 -->
-			<view class="fixed-template-wrap" v-if="diy.data.pageMode == 'fixed'">
-
-				<fixed-group :data="diy.data" :pullDownRefreshCount="diy.pullDownRefreshCount" />
+				<diy-group ref="diyGroupRef" :data="diy.data" />
 
 			</view>
 
@@ -33,10 +26,9 @@
     import {ref,watch,nextTick} from 'vue';
     import {useDiy} from '@/hooks/useDiy'
     import diyGroup from '@/addon/components/diy/group/index.vue'
-    import fixedGroup from '@/addon/components/fixed/group/index.vue'
 	import useSystemStore from '@/stores/system'
     import { redirect } from '@/utils/common';
-	
+
 	const systemStore = useSystemStore()
 
     const diy = useDiy({
@@ -90,12 +82,9 @@
 
     // 监听页面隐藏
     diy.onHide();
-	
+
 	// 监听页面卸载
 	diy.onUnload();
-
-    // 监听下拉刷新事件
-    diy.onPullDownRefresh()
 
     // 监听滚动事件
     diy.onPageScroll()

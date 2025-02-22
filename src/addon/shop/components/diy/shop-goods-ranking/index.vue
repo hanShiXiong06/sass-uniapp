@@ -10,7 +10,6 @@
 								<text class="text-[30rpx] font-bold" v-if="item.text">{{ item.text }}</text>
 								<text class="text-[30rpx] font-bold" v-else>{{ listGoodsNames[item.rankIds[0]] }}</text>
 							</view>
-
 						</view>
 						<view class="mb-[6rpx] h-[35rpx]" :style="{'color': item.subTitle.textColor}" @click="diyStore.toRedirect(item.subTitle.link)">
 							<text class="text-[24rpx]" v-if="item.subTitle.text">{{item.subTitle.text}}</text>
@@ -40,7 +39,6 @@
 										<view>
 											<text class="iconfont icongouwuche3 text-[var(--primary-color)] border-[2rpx] border-solid border-[var(--primary-color)] rounded-[50%] text-[22rpx] p-[6rpx]"></text>
 										</view>
-
 									</view>
 								</view>
 							</view>
@@ -61,7 +59,7 @@
     import { getRankComponentsGoodsList } from '@/addon/shop/api/rank'
 	import { useGoods } from '@/addon/shop/hooks/useGoods'
 
-	const props = defineProps(['component', 'index', 'pullDownRefreshCount']);
+	const props = defineProps(['component', 'index']);
 	const diyGoods = useGoods();
 	const diyStore = useDiyStore();
 
@@ -106,13 +104,6 @@
 		if (diyComponent.value.bottomElementRounded) style += 'border-bottom-right-radius:' + diyComponent.value.bottomElementRounded * 2 + 'rpx;';
 		return style;
 	}
-
-	watch(
-		() => props.pullDownRefreshCount,
-		(newValue, oldValue) => {
-			// 处理下拉刷新业务
-		}
-	)
 
 	watch(
 	    () => diyComponent.value,

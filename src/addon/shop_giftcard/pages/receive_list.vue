@@ -10,9 +10,7 @@
 		</view>
 		<mescroll-body ref="mescrollRef" top="88rpx" @init="mescrollInit" :down="{ use: false }" @up="getCardReceiveRecordsPageListFn">
 			<view class="sidebar-margin pt-[var(--top-m)]" v-if="list.length">
-				<view v-for="(item, index) in list"
-				 @click="btnClick('use',item.card_id)"
-				class="h-[430rpx] mb-[var(--top-m)] rounded-[var(--rounded-big)] overflow-hidden box-border relative">
+				<view v-for="(item, index) in list" @click="btnClick('use',item.card_id)" class="h-[430rpx] mb-[var(--top-m)] rounded-[var(--rounded-big)] overflow-hidden box-border relative">
 					<image v-if="item.card_cover" class="w-[100%] h-[100%] rounded-[var(--goods-rounded-big)] overflow-hidden" :src="img(item.card_cover || '')" @error="item.card_cover= defaultCard(item)" mode="aspectFill"></image>
 					<image v-else class="w-[100%] h-[100%] rounded-[var(--goods-rounded-big)] overflow-hidden" :src="img(defaultCard(item))" mode="aspectFill"></image>
 					<view class="flex flex-col justify-between w-full h-[430rpx] mb-[var(--top-m)] rounded-[var(--rounded-big)] overflow-hidden box-border absolute left-0 top-0 z-5">
@@ -74,7 +72,7 @@
 	const getCardStatusListFn = () => {
 		statusLoading.value = false;
 		statusList.value = {};
-	
+
 		getCardStatusList().then((res: any) => {
 			statusList.value = res.data
 			statusLoading.value = true;
@@ -90,7 +88,7 @@
 			limit: mescroll.size,
 			status: status.value
 		};
-	
+
 		getCardReceiveRecordsPageList(data).then((res: any) => {
 			let newArr = (res.data.data as Array<Object>);
 			//设置列表数据

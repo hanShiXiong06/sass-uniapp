@@ -74,8 +74,7 @@
                         v-for="(goodsItem, goodsIndex) in detail.order_goods" :key="goodsIndex">
                         <view class="w-[150rpx] h-[150rpx] flex-2" @click="goodsEvent(goodsItem.goods_id)">
                             <u--image class="overflow-hidden" radius="10rpx" width="150rpx" height="150rpx"
-                                :src="img(goodsItem.goods_image_thumb_small ? goodsItem.goods_image_thumb_small : '')"
-                                model="aspectFill">
+                                :src="img(goodsItem.goods_image ? goodsItem.goods_image : '')" model="aspectFill">
                                 <template #error>
                                     <image class="w-[150rpx] h-[150rpx] rounded-[10rpx] overflow-hidden"
                                         :src="img('static/resource/images/diy/shop_default.jpg')" mode="aspectFill">
@@ -114,10 +113,10 @@
                                         <text class="text-[32rpx]">￥</text>
                                         <text class="text-[32rpx] font-500">{{
                                             parseFloat(goodsItem.price).toFixed(2).split('.')[0]
-                                        }}</text>
+                                            }}</text>
                                         <text class="text-[32rpx] font-500">.{{
                                             parseFloat(goodsItem.price).toFixed(2).split('.')[1]
-                                        }}</text>
+                                            }}</text>
                                     </block>
                                 </view>
                                 <text class="text-right text-[26rpx]">x{{ goodsItem.num }}</text>
@@ -383,7 +382,7 @@ const orderDetailFn = (id) => {
 
         sendMessageTitle.value = detail.value.order_goods[0].goods_name
         sendMessagePath.value = detail.value.order_id
-        sendMessageImg.value = img(detail.value.order_goods[0].goods_image_thumb_small || '')
+        sendMessageImg.value = img(detail.value.order_goods[0].goods_image || '')
 
         loading.value = false;
     }).catch(() => {

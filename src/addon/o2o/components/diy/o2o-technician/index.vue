@@ -19,7 +19,7 @@
 	import {checkTechnician} from '@/addon/o2o/api/technician'
 	import useDiyStore from '@/app/stores/diy';
 
-	const props = defineProps(['component', 'index', 'pullDownRefreshCount']);
+	const props = defineProps(['component', 'index']);
 
 	const diyStore = useDiyStore();
 
@@ -68,13 +68,6 @@
         return style;
     });
 
-	watch(
-		() => props.pullDownRefreshCount,
-		(newValue, oldValue) => {
-			// 处理下拉刷新业务
-		}
-	)
-
     onMounted(() => {
         refresh();
         // 装修模式下刷新
@@ -120,7 +113,7 @@
 				}
 			})
 		}
-		
+
 	}
 	checkTechnicianFn()
 </script>

@@ -23,7 +23,7 @@
 						</view>
 					</view>
 				</view>
-				
+
 				<view class="tab-style-1  mt-[40rpx]">
 					<view class="tab-left">
 						<view  class="tab-left-item" :class="{ 'class-select': fromType === item.key}" @click="fromTypeFn(item.key,index)" v-for="(item, index) in typeList">{{ item.name }}</view>
@@ -79,6 +79,7 @@ import useMescroll from '@/components/mescroll/hooks/useMescroll.js';
 import { onPageScroll, onReachBottom, onLoad } from '@dcloudio/uni-app';
 import { topTabar } from '@/utils/topTabbar'
 import { cloneDeep } from 'lodash-es'
+
 const memberStore = useMemberStore();
 // 获取系统状态栏的高度
 let menuButtonInfo: any = {};
@@ -105,6 +106,7 @@ const headerStyle = computed(()=>{
 	// #endif
 	return obj
 })
+
 const mescrollTop = computed(()=>{
 	if(Object.keys(menuButtonInfo).length){
 		// pxToRpx(8) => 表示胶囊的padding-bottom  728 => 表示列表以上的该高度【不包括自定义头部】
@@ -130,7 +132,7 @@ onLoad(async ()=>{
 })
 /********* 是否开启销售奖励设置  - end ***********/
 
-/************ 类型筛选-start ************/ 
+/************ 类型筛选-start ************/
 const typeList = ref([
 	{name:'全部',key:'all'},
 	{name:'待发放',key:'0'},
@@ -199,7 +201,6 @@ const applyCashOut = () => {
 	memberStore.getMemberInfo(()=>{
 		redirect({ url: '/app/pages/member/commission' })
 	})
-	
 }
 
 const toDetail = (id: any) => {

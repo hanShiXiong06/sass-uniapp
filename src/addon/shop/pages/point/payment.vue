@@ -68,9 +68,7 @@
                             </u--image>
                             <view class="flex flex-1 w-0 flex-col justify-between ml-[20rpx] py-[6rpx]">
                                 <view class="line-normal">
-                                    <view class="truncate text-[#303133] text-[28rpx] leading-[32rpx]">
-                                        {{ item.goods.goods_name }}
-                                    </view>
+                                    <view class="truncate text-[#303133] text-[28rpx] leading-[32rpx]">{{ item.goods.goods_name }}</view>
                                     <view v-if="item.sku_name" class="mt-[14rpx] flex">
                                         <text class="truncate text-[24rpx] text-[var(--text-color-light9)] leading-[28rpx]">{{ item.sku_name }}</text>
                                     </view>
@@ -163,7 +161,7 @@
 							<text class="text-[38rpx] text-[var(--price-text-color)] price-font mx-[4rpx]">+</text>
 							<view class="inline-block">
 								<text class="text-[44rpx] text-[var(--price-text-color)] price-font">{{ parseFloat(orderData.basic.order_money).toFixed(2) }}</text>
-								<text class="text-[38rpx] text-[var(--price-text-color)] price-font">元</text> 
+								<text class="text-[38rpx] text-[var(--price-text-color)] price-font">元</text>
 							</view>
 						</block>
                     </view>

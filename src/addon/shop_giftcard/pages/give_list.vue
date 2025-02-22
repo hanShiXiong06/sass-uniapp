@@ -12,15 +12,12 @@
 							<view class="flex h-[38rpx] px-[10rpx] bg-[rgba(255,255,255,0.9)] rounded-[19rpx]">
 								<text class="mr-[8rpx] iconfont !text-[24rpx] !leading-[38rpx]"
 									  :class="{'iconchuzhikaV6mm !text-[#EF000C]':item.card_info.giftcard.card_right_type=='balance','iconduihuankaV6mm-1 !text-[#FF7700]':item.card_info.giftcard.card_right_type=='goods'}"></text>
-									  <text v-if="item.card_info.giftcard.card_right_type=='balance'" class="!text-[26rpx] font-500 !leading-[38rpx]">{{item.card_info.balance}}</text>
-									<text class="!text-[22rpx] font-400 !leading-[38rpx]"><text v-if="item.card_info.giftcard.card_right_type=='balance'">{{t('yuan')}}</text>{{item.card_info.giftcard.card_right_type_name}}</text>
+								<text v-if="item.card_info.giftcard.card_right_type=='balance'" class="!text-[26rpx] font-500 !leading-[38rpx]">{{item.card_info.balance}}</text>
+								<text class="!text-[22rpx] font-400 !leading-[38rpx]"><text v-if="item.card_info.giftcard.card_right_type=='balance'">{{t('yuan')}}</text>{{item.card_info.giftcard.card_right_type_name}}</text>
 							</view>
 						</view>
 						<view class="flex justify-between px-[var(--pad-sidebar-m)] mt-auto mb-[var(--pad-top-m)]">
-							<view
-							class="h-[36rpx] leading-[36rpx] text-[26rpx] font-800 text-stroke">
-							{{item.card_info.card_no}}
-							</view>
+							<view class="h-[36rpx] leading-[36rpx] text-[26rpx] font-800 text-stroke">{{item.card_info.card_no}}</view>
 						</view>
 						<view class="flex items-center justify-between bg-[rgba(255,255,255,0.9)] h-[80rpx] px-[var(--pad-sidebar-m)] box-border">
 							<view class="flex items-center">
@@ -46,7 +43,7 @@
 
 <script setup lang="ts">
 	import { redirect, img } from '@/utils/common';
-	import { onLoad, onShow, onPageScroll, onReachBottom } from '@dcloudio/uni-app'
+	import { onShow, onPageScroll, onReachBottom } from '@dcloudio/uni-app'
 	import {ref, reactive} from 'vue'
 	import { t } from '@/locale'
 	import { getCardGiveRecordsPageList } from '@/addon/shop_giftcard/api/records';
@@ -76,7 +73,7 @@
 			page: mescroll.num,
 			limit: mescroll.size
 		};
-	
+
 		getCardGiveRecordsPageList(data).then((res: any) => {
 			let newArr = (res.data.data as Array<Object>);
 			//设置列表数据
@@ -90,7 +87,7 @@
 			loading.value = false;
 			mescroll.endErr(); // 请求失败, 结束加载
 		})
-		
+
 	}
 
 	const toLink = (member_card_id:any)=> {

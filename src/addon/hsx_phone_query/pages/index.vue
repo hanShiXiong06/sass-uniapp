@@ -19,17 +19,6 @@
 
             <!-- 右侧内容 -->
             <view class="content">
-
-
-                <!-- 轮播图 -->
-                <!-- <view class="swiper-box">
-                    <u-swiper :list="bannerList" :indicator="true" :autoplay="true" :interval="3000" :duration="500"
-                        :height="130" :radius="8" @click="clickBanner"></u-swiper>
-                            </view> -->
-
-
-
-
                 <scroll-view scroll-y class="content-scroll">
                     <!-- 查询面板 -->
                     <view class="query-panel">
@@ -50,15 +39,16 @@
                             <view class="header-main">
                                 <text class="title">{{ lists[current]?.child[tabActive]?.name }}</text>
                                 <view class="price-info">
-                                    <view class="price-item">
+                                    <view class="price-item" :class="{ active: payType === 'balance' }"
+                                        @click="payType = 'balance'">
                                         <text class="value">¥{{ lists[current]?.child[tabActive]?.price }}</text>
-                                        <text class="label">查询价格</text>
+                                        <text class="label">余额支付</text>
                                     </view>
-                                    <view class="price-item">
+                                    <view class="price-item" :class="{ active: payType === 'point' }"
+                                        @click="payType = 'point'">
                                         <text class="value">{{ (lists[current]?.child[tabActive]?.price *
-                                            100).toFixed(0)
-                                            }}</text>
-                                        <text class="label">所需积分</text>
+                                            100).toFixed(0) }}</text>
+                                        <text class="label">积分支付</text>
                                     </view>
                                 </view>
                             </view>
@@ -68,50 +58,22 @@
                         <view class="query-box">
                             <view class="input-area">
                                 <textarea v-model="imeis" class="query-input"
-                                    placeholder="请输入需要查询的手机串号&#13;&#10;例如：IMEI/SN/序列号&#13;&#10;iOS设备：拨打 *#06# 可显示IMEI码&#13;&#10;安卓设备:拨打 *#09# 可显示IMEI码"
+                                    placeholder="请输入需要查询的手机串号&#13;&#10;支持多串号查询中间使用空格或者逗号分割&#13;&#10;例如：IMEI/SN/序列号&#13;&#10;iOS设备：拨打 *#06# 可显示IMEI码&#13;&#10;部分安卓设备:拨打 *#09# 可显示IMEI码"
                                     :auto-height="true" :show-confirm-bar="false" @input="handleInput"></textarea>
                                 <view class="scan-btn" @click="handleScan">
                                     <u-icon name="scan" size="40" color="var(--primary-color)"></u-icon>
                                 </view>
                             </view>
                             <view class="query-actions">
-                                <up-button type="primary" class="action-btn"
-                                    @click="handleQuery(lists[current]?.child[tabActive]?.id, 'point')">积分查询</up-button>
-                                <up-button type="primary" class="action-btn"
-                                    @click="handleQuery(lists[current]?.child[tabActive]?.id, 'balance')">余额查询</up-button>
-                            </view>
-                        </view>
-
-                        <!-- 查询说明部分 -->
-                        <view class="tips-collapse">
-                            <view class="collapse-header" @click="toggleTips">
-                                <view class="header-left">
-                                    <text class="icon">📋</text>
-                                    <text class="title">查询说明</text>
-                                </view>
-                                <u-icon :name="showTips ? 'arrow-up' : 'arrow-down'" size="20" color="#666"></u-icon>
-                            </view>
-
-                            <view class="collapse-content" v-show="showTips">
-                                <!-- IMEI获取说明 -->
-                                <view class="tips-section">
-                                    <text class="section-title">获取IMEI方式</text>
-                                    <text class="tips-text">• iOS设备：拨打 *#06# 可显示IMEI码</text>
-                                    <text class="tips-text">• 安卓设备:拨打 *#09# 可显示IMEI码</text>
-                                </view>
-
-                                <!-- 查询说明 -->
-                                <view class="tips-section">
-                                    <text class="section-title">注意事项</text>
-                                    <text class="tips-text">• 暂不支持批量查询，每行输入一个串号</text>
-                                    <text class="tips-text">• 查询结果将在查询记录中展示</text>
-                                    <text class="tips-text">• 查询消耗积分或余额，请确保账户充足</text>
-                                    <text class="tips-text">• 查询重复项目及串号不扣费</text>
+                                <view class="query-btn" :class="{ 'disabled': loading || !imeis }"
+                                    @click="handleQuery(lists[current]?.child[tabActive]?.id)">
+                                    <text class="btn-text">立即查询</text>
                                 </view>
                             </view>
                         </view>
                     </view>
                 </scroll-view>
+
                 <!-- 快捷功能区 -->
                 <view class="quick-links">
                     <navigator url="/addon/hsx_phone_query/pages/history" class="link-item">
@@ -122,11 +84,15 @@
                         <text class="icon">💰</text>
                         <text>账户充值</text>
                     </navigator>
-                    <navigator open-type="switchTab" url="/app/pages/member/index" class="link-item">
+                    <navigator url="/app/pages/member/index" class="link-item">
                         <text class="icon">👤</text>
                         <text>个人中心</text>
                     </navigator>
                 </view>
+
+
+
+
             </view>
         </view>
 
@@ -135,6 +101,38 @@
             <u-loading-icon></u-loading-icon>
         </view>
     </view>
+
+    <!-- 支付方式选择弹窗 -->
+    <u-popup v-model="showPayTypeSelect" mode="bottom" border-radius="24">
+        <view class="pay-type-popup">
+            <view class="popup-header">
+                <text class="title">选择支付方式</text>
+                <u-icon name="close" size="32" @click="showPayTypeSelect = false"></u-icon>
+            </view>
+            <view class="pay-type-list">
+                <view class="pay-type-item" @click="handleQuery(lists[current]?.child[tabActive]?.id, 'balance')">
+                    <view class="item-left">
+                        <u-icon name="rmb-circle" size="40" color="#1890ff"></u-icon>
+                        <view class="item-info">
+                            <text class="name">余额支付</text>
+                            <text class="desc">当前余额: ¥{{ memberInfo?.balance || '0.00' }}</text>
+                        </view>
+                    </view>
+                    <text class="price">¥{{ lists[current]?.child[tabActive]?.price }}</text>
+                </view>
+                <view class="pay-type-item" @click="handleQuery(lists[current]?.child[tabActive]?.id, 'point')">
+                    <view class="item-left">
+                        <u-icon name="integral" size="40" color="#722ed1"></u-icon>
+                        <view class="item-info">
+                            <text class="name">积分支付</text>
+                            <text class="desc">当前积分: {{ memberInfo?.point || 0 }}</text>
+                        </view>
+                    </view>
+                    <text class="price">{{ (lists[current]?.child[tabActive]?.price * 100).toFixed(0) }}积分</text>
+                </view>
+            </view>
+        </view>
+    </u-popup>
 </template>
 
 <script setup lang="ts">
@@ -142,10 +140,8 @@ import { ref, onMounted, computed } from 'vue';
 
 import { img, redirect } from '@/utils/common';
 
-
 import { getCategoryTree, getQueryModelList, getModelList } from '@/addon/hsx_phone_query/api/index'
 import { onLoad, onShow } from '@dcloudio/uni-app'
-
 
 import useMemberStore from "@/stores/member";
 import { useLogin } from "@/hooks/useLogin";
@@ -177,7 +173,6 @@ const bannerList = ref([
 const clickBanner = (index: number) => {
     console.log('点击了轮播图:', index)
 }
-
 
 let config = {
     "level": 1,
@@ -241,8 +236,11 @@ const handleInput = (e: any) => {
     imeis.value = value.replace(/\r\n/g, '\n')
 }
 
-// 修改查询方法，支持多行
-const handleQuery = async (id: any, payType: string) => {
+// 支付方式
+const payType = ref('balance')
+
+// 修改查询方法
+const handleQuery = async (id: number) => {
     // 分割并过滤空行
     const imeiList = imeis.value.split('\n').filter(item => item.trim())
 
@@ -255,19 +253,28 @@ const handleQuery = async (id: any, payType: string) => {
         return
     }
 
-    loading.value = true
+    if (loading.value) return
+
     try {
+        loading.value = true
         // 将多行IMEI合并为一个字符串，用逗号分隔
         const imeiString = imeiList.join(',')
 
-        const res = await getQueryModelList({ imeis: imeiString, id, payType, pid: current.value })
+        const res = await getQueryModelList({
+            imeis: imeiString,
+            id,
+            payType: payType.value,
+            pid: current.value
+        })
+
         if (res.code === 1) {
             uni.showToast({
                 title: '查询成功',
-                icon: 'none',
-                duration: 2000
+                icon: 'success'
             })
-            redirect({ url: '/addon/hsx_phone_query/pages/history', mode: 'navigateTo' })
+            uni.navigateTo({
+                url: `/addon/hsx_phone_query/pages/detail?id=${res.data.id}`
+            })
         }
     } catch (err) {
         uni.showToast({
@@ -276,7 +283,6 @@ const handleQuery = async (id: any, payType: string) => {
             duration: 2000
         })
     } finally {
-        imeis.value = ''
         loading.value = false
     }
 }
@@ -338,28 +344,15 @@ const showTips = ref(false)
 const toggleTips = () => {
     showTips.value = !showTips.value
 }
+
+// 支付方式选择弹窗
+const showPayTypeSelect = ref(false)
 </script>
 
 <style lang="scss" scoped>
 .page {
     min-height: 100vh;
-    background: #f5f7fa;
-}
-
-.swiper-box {
-    margin: 20rpx;
-    border-radius: 16rpx;
-    overflow: hidden;
-    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
-
-
-}
-
-// 调整查询面板的边距
-.query-panel {
-    margin-top: 0; // 由于上面有轮播图，减少顶部边距
-    height: 765rpx;
-    overflow: scroll;
+    background: #f7f8fa;
 }
 
 .header {
@@ -375,8 +368,9 @@ const toggleTips = () => {
 
 .main {
     display: flex;
-    height: 100vh;
+    height: calc(100vh - 100rpx);
     padding-top: 0;
+    background: #fff;
 
     &.has-header {
         padding-top: 88rpx;
@@ -424,228 +418,344 @@ const toggleTips = () => {
 
 .content {
     flex: 1;
-
-    &-scroll {
-
-        padding: 24rpx;
-        box-sizing: border-box;
-    }
+    overflow: hidden;
+    background: #f7f8fa;
+    padding: 12rpx;
+    padding-bottom: 120rpx;
+    box-sizing: border-box;
 }
 
 .query-panel {
     background: #fff;
+    border-radius: 24rpx;
+    padding: 16rpx;
+    box-sizing: border-box;
+    box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.account-info {
+    display: flex;
+    justify-content: space-between;
+    padding: 24rpx 30rpx;
+    background: linear-gradient(135deg, #2979ff 0%, #5cadff 100%);
     border-radius: 16rpx;
-    padding: 30rpx;
-    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+    margin-bottom: 30rpx;
+    position: relative;
+    overflow: hidden;
 
-    .account-info {
-        display: flex;
-        justify-content: space-between;
-        padding: 24rpx 30rpx;
-        background: linear-gradient(135deg, #2979ff 0%, #5cadff 100%);
-        border-radius: 16rpx;
-        margin-bottom: 30rpx;
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(90deg,
+                rgba(255, 255, 255, 0.1) 0%,
+                rgba(255, 255, 255, 0.2) 50%,
+                rgba(255, 255, 255, 0.1) 100%);
+        transform: skewX(-20deg);
+    }
+
+    .info-item {
         position: relative;
-        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
 
-        &::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(90deg,
-                    rgba(255, 255, 255, 0.1) 0%,
-                    rgba(255, 255, 255, 0.2) 50%,
-                    rgba(255, 255, 255, 0.1) 100%);
-            transform: skewX(-20deg);
+        .label {
+            font-size: 24rpx;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 8rpx;
         }
 
-        .info-item {
-            position: relative;
+        .value {
+            font-size: 36rpx;
+            font-weight: 600;
+            color: #fff;
+            text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+        }
+    }
+}
+
+.panel-header {
+    margin-bottom: 32rpx;
+
+    .header-main {
+        .title {
+            font-size: 32rpx;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 16rpx;
+            display: block;
+        }
+
+        .price-info {
             display: flex;
-            flex-direction: column;
-            align-items: flex-start;
+            gap: 32rpx;
 
-            .label {
-                font-size: 24rpx;
-                color: rgba(255, 255, 255, 0.9);
-                margin-bottom: 8rpx;
-            }
-
-            .value {
-                font-size: 36rpx;
-                font-weight: 600;
-                color: #fff;
-                text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
-            }
-        }
-    }
-
-    .panel-header {
-        margin-top: 30rpx;
-
-        .header-main {
-            .title {
-                font-size: 32rpx;
-                font-weight: 600;
-                color: #333;
-                margin-bottom: 20rpx;
-            }
-
-            .price-info {
-                display: flex;
-                gap: 40rpx;
-
-                .price-item {
-                    .value {
-                        font-size: 36rpx;
-                        font-weight: 600;
-                        color: var(--primary-color);
-                        margin-bottom: 4rpx;
-                    }
-
-                    .label {
-                        font-size: 24rpx;
-                        color: #999;
-                    }
-                }
-            }
-        }
-    }
-
-    .query-box {
-        margin: 30rpx 0;
-
-        .input-area {
-            position: relative;
-            margin-bottom: 20rpx;
-
-            .query-input {
-                background: #f8f9fa;
+            .price-item {
+                background: #f7f8fa;
+                padding: 16rpx 24rpx;
                 border-radius: 12rpx;
-                padding: 20rpx;
-                width: 100%;
-                min-height: 200rpx;
-                font-size: 23rpx;
-                box-sizing: border-box;
-            }
+                text-align: center;
+                position: relative;
+                transition: all 0.3s;
 
-            .scan-btn {
-                position: absolute;
-                right: 13rpx;
-                bottom: 13rpx;
-                padding: 0rpx;
-                cursor: pointer;
+                &.active {
+                    background: var(--primary-color);
 
-                &:active {
-                    opacity: 0.8;
+                    .value,
+                    .label {
+                        color: #fff;
+                    }
+
+                    &::after {
+                        content: '';
+                        position: absolute;
+                        right: 8rpx;
+                        top: 8rpx;
+                        width: 16rpx;
+                        height: 16rpx;
+                        border-radius: 50%;
+                        background: #fff;
+                    }
                 }
-            }
-        }
 
-        .query-actions {
-            display: flex;
-            gap: 20rpx;
-
-            .action-btn {
-                flex: 1;
-                height: 88rpx;
-                font-size: 28rpx;
-            }
-        }
-    }
-
-    .tips-collapse {
-        background: #f8f9fa;
-        border-radius: 12rpx;
-        margin-bottom: 20rpx;
-
-        .collapse-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20rpx;
-            cursor: pointer;
-
-            .header-left {
-                display: flex;
-                align-items: center;
-                gap: 8rpx;
-
-                .icon {
+                .value {
                     font-size: 32rpx;
-                }
-
-                .title {
-                    font-size: 28rpx;
+                    color: var(--primary-color);
                     font-weight: 500;
-                    color: #333;
-                }
-            }
-        }
-
-        .collapse-content {
-            padding: 0 20rpx 20rpx;
-            border-top: 1px solid rgba(0, 0, 0, 0.05);
-
-            .tips-section {
-                margin-top: 16rpx;
-
-                .section-title {
-                    font-size: 26rpx;
-                    color: #666;
-                    margin-bottom: 8rpx;
+                    margin-bottom: 4rpx;
                     display: block;
                 }
 
-                .tips-text {
-                    display: block;
+                .label {
                     font-size: 24rpx;
                     color: #999;
-                    line-height: 1.8;
                 }
+            }
+        }
+    }
+}
 
-                &:not(:last-child) {
-                    margin-bottom: 16rpx;
-                }
+.query-box {
+    .input-area {
+        position: relative;
+        margin-bottom: 24rpx;
+
+        .query-input {
+            width: 100%;
+            min-height: 200rpx;
+            background: #f7f8fa;
+            border-radius: 16rpx;
+            padding: 24rpx;
+            font-size: 24rpx;
+            box-sizing: border-box;
+            line-height: 1.6;
+        }
+
+        .scan-btn {
+            position: absolute;
+            right: 16rpx;
+            bottom: 16rpx;
+            padding: 16rpx;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+        }
+    }
+
+    .query-actions {
+        margin-top: 32rpx;
+
+        .query-btn {
+            height: 100rpx;
+            background: linear-gradient(135deg, #1890ff, #096dd9);
+            border-radius: 50rpx;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+
+            &::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(90deg,
+                        rgba(255, 255, 255, 0.1) 0%,
+                        rgba(255, 255, 255, 0.2) 50%,
+                        rgba(255, 255, 255, 0.1) 100%);
+                transform: skewX(-20deg);
+                transition: transform 0.3s;
+            }
+
+            &:active::before {
+                transform: skewX(-20deg) translateX(100%);
+            }
+
+            .btn-text {
+                font-size: 36rpx;
+                font-weight: 500;
+                margin-bottom: 4rpx;
+            }
+
+            .btn-desc {
+                font-size: 24rpx;
+                opacity: 0.9;
+            }
+
+            &.disabled {
+                opacity: 0.6;
+                pointer-events: none;
             }
         }
     }
 }
 
 .quick-links {
-    margin: 24rpx;
-    display: flex;
-    justify-content: space-around;
-    margin-top: 24rpx;
+
+    margin-top: 10rpx;
+    padding: 20rpx;
     background: #fff;
-    border-radius: 16rpx;
-    padding: 24rpx;
+    display: flex;
+    border-radius: 20rpx;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0 -2rpx 8rpx rgba(0, 0, 0, 0.05);
 
     .link-item {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 8rpx;
+        padding: 10rpx 20rpx;
+        border-radius: 12rpx;
+        transition: all 0.3s;
 
         .icon {
             font-size: 40rpx;
+            margin-bottom: 8rpx;
         }
 
         text {
             font-size: 24rpx;
             color: #666;
         }
+
+        &:active {
+            background: #f5f5f5;
+        }
     }
 }
 
 .loading {
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
     z-index: 999;
+}
+
+.tabbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100rpx;
+    background: #fff;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0 -2rpx 8rpx rgba(0, 0, 0, 0.05);
+    z-index: 99;
+
+    .tabbar-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: #666;
+        font-size: 24rpx;
+
+        text {
+            margin-top: 4rpx;
+        }
+
+        &:active {
+            opacity: 0.8;
+        }
+    }
+}
+
+.pay-type-popup {
+    padding: 32rpx;
+
+    .popup-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 32rpx;
+
+        .title {
+            font-size: 32rpx;
+            font-weight: 500;
+            color: #333;
+        }
+    }
+
+    .pay-type-list {
+        .pay-type-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24rpx;
+            background: #f7f8fa;
+            border-radius: 16rpx;
+            margin-bottom: 20rpx;
+
+            &:active {
+                opacity: 0.8;
+            }
+
+            .item-left {
+                display: flex;
+                align-items: center;
+                gap: 20rpx;
+
+                .item-info {
+                    .name {
+                        font-size: 28rpx;
+                        color: #333;
+                        margin-bottom: 4rpx;
+                        display: block;
+                    }
+
+                    .desc {
+                        font-size: 24rpx;
+                        color: #999;
+                    }
+                }
+            }
+
+            .price {
+                font-size: 32rpx;
+                font-weight: 500;
+                color: #333;
+            }
+        }
+    }
 }
 </style>

@@ -79,7 +79,22 @@ export function oparationGoods(goods_id: any) {
 /**
  * 获取brand列表
  * brand
- * */ 
+ * */
 export function getBrandList() {
   return request.get(`phone_shop/goods/brand/list`);
+}
+
+// 添加商品
+export function addGoods(data: Record<string, any>) {
+  return request.post(`phone_shop/goods/add`, data);
+}
+// getMemoryList
+
+export function getMemoryList(params: Record<string, any>) {
+  return request.get(`phone_shop/goods/memory/list`, params);
+}
+
+// 更新商品
+export function updateGoods(goods_id: any, data: Record<string, any>) {
+  return request.put(`phone_shop/goods/${goods_id}`, data);
 }

@@ -8,7 +8,7 @@
                             <template #error>
                                 <image class="w-[120rpx] h-[120rpx] border-[#fff] border-[4rpx] border-solid rounded-full" :src="img('addon/o2o/technician/user.png')" />
                             </template>
-                        </u--image> 
+                        </u--image>
                         <view class="flex-1 flex flex-col ml-[16rpx]">
                             <view>
                                 <text class="text-[30rpx] font-bold text-[#ffffff] leading-[35rpx]">{{ technicianInfo.name }}</text>
@@ -83,7 +83,7 @@
                 </view>
             </view>
         </scroll-view>
-        
+
 		<loading-page :loading="loading"></loading-page>
     </view>
 </template>
@@ -108,7 +108,6 @@ const getStatFn = () =>{
 }
 // 技师详情
 const getTechnicianDetailFn = (id) =>{
-	
 	getTechnicianDetail(id).then(res =>{
 		technicianInfo.value = res.data
 		if(technicianInfo.value.label != ''){
@@ -117,7 +116,6 @@ const getTechnicianDetailFn = (id) =>{
 			technicianInfo.value.label = []
 		}
 	}).catch(() =>{
-		
 	})
 }
 const checkTechnicianFn = () =>{
@@ -135,7 +133,9 @@ const checkTechnicianFn = () =>{
 		loading.value = false;
 	})
 }
+
 checkTechnicianFn()
+
 // 跳转商品详情
 const toLink = (goods_id: any) => {
 	redirect({url:'/addon/o2o/pages/goods/detail',param:{ goods_id }})

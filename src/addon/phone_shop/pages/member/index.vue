@@ -55,13 +55,19 @@ diy.onShow((data: any) => {
   if (userInfo.value) {
     useMemberStore().getMemberInfo()
   }
+  // #ifdef MP
+  nextTick(() => {
+    if (wxPrivacyPopupRef.value) wxPrivacyPopupRef.value.proactive();
+  })
+  // #endif
 });
 
 // 监听页面卸载
 diy.onUnload();
-
+// 监听页面隐藏
+diy.onHide();
 // 监听下拉刷新事件
-diy.onPullDownRefresh()
+// diy.onPullDownRefresh()
 
 // 监听滚动事件
 diy.onPageScroll()

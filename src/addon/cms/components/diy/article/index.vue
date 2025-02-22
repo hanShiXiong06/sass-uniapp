@@ -1,5 +1,5 @@
 <template>
-	<view :style="warpCss" v-if="articleList.length">
+	<view :style="warpCss">
 		<view :style="maskLayer"></view>
 		<view class="diy-active relative">
 			<view v-for="(item,index) in articleList" :key="item.id" class="item flex align-center px-[var(--pad-sidebar-m)] py-[var(--pad-top-m)]" @click="toLink(item.id)" :style="itemCss">
@@ -30,7 +30,7 @@
 	import useDiyStore from '@/app/stores/diy';
 	import { getArticleAll } from '@/addon/cms/api/article';
 
-	const props = defineProps(['component', 'index', 'pullDownRefreshCount']);
+	const props = defineProps(['component', 'index']);
 	const diyStore = useDiyStore();
 	const articleList = ref<Array<any>>([]);
 
@@ -88,13 +88,6 @@
 		if (diyComponent.value.bottomElementRounded) style += 'border-bottom-right-radius:' + diyComponent.value.bottomElementRounded * 2 + 'rpx;';
 		return style;
 	})
-
-	watch(
-		() => props.pullDownRefreshCount,
-		(newValue, oldValue) => {
-			// 处理下拉刷新业务
-		}
-	)
 
 	const getArticleListFn = () => {
 		interface dataStructure {

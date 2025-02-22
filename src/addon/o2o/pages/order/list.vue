@@ -7,7 +7,7 @@
     			</view>
     		</scroll-view>
     	</view>
-        
+
         <mescroll-body ref="mescrollRef" top="114rpx" @init="mescrollInit" :down="{ use: false }" @up="getOrderListFn">
             <block v-for="(item, index) in list" :key="item.order_id">
                 <view class="mx-3 mb-3 bg-white p-3 rounded">
@@ -28,7 +28,7 @@
 							<view class="ml-[20rpx] flex flex-1 flex-col justify-between">
 								<view class="flex justify-between items-center">
 									<text class="text-[28rpx] text-item  leading-[40rpx] max-h-[80rpx] w-[360rpx] multi-hidden">{{ goodsItem.item_name }}</text>
-                                    <text class="shrink-0  text-[24rpx] text-[var(--primary-color)] ml-[10rpx] leading-[40rpx]">{{ goodsItem.pay_time ? '' : t('notPaid') }}</text>
+                                    <text class="shrink-0 text-[24rpx] text-[var(--primary-color)] ml-[10rpx] leading-[40rpx]">{{ goodsItem.pay_time ? '' : t('notPaid') }}</text>
 								</view>
 								<view class="flex justify-between">
 									<text class="text-right text-[28rpx] text-[var(--price-text-color)] price-font">￥{{goodsItem.price }}</text>
@@ -72,14 +72,14 @@
     import { onLoad,onPageScroll, onReachBottom } from '@dcloudio/uni-app'
     import { t } from '@/locale'
     import useConfigStore from "@/stores/config";
-    
+
     const { mescrollInit, downCallback, getMescroll } = useMescroll(onPageScroll, onReachBottom)
     const list = ref<Array<Object>>([]);
     const loading = ref<boolean>(false);
     const statusLoading = ref<boolean>(false);
     const orderState = ref('')
     const orderStateList = ref([]);
-    
+
     onLoad((option) => {
         orderState.value = option.order_status || "";
         getOrderStatusFn();
@@ -91,7 +91,7 @@
     	orderStateList.value = [];
     	let obj = {name: '全部',status: ''};
     	orderStateList.value.push(obj);
-    	
+
     	getOrderStatus().then((res) => {
     		Object.values(res.data).forEach((item,index)=>{
     			orderStateList.value.push(item);
@@ -115,7 +115,7 @@
     		limit: mescroll.size,
     		order_status: orderState.value
     	};
-    
+
     	getOrderList(data).then((res) => {
     		let newArr = (res.data.data as Array<Object>);
     		//设置列表数据
@@ -129,23 +129,24 @@
     		loading.value = true;
     		mescroll.endErr(); // 请求失败, 结束加载
     	})
-    } 
-    
+    }
+
     const toDetail = (res) => {
     	redirect({ url: '/addon/o2o/pages/order/detail', param: { order_id : res.order_id } })
     }
-    
+
     // 支付
     const payRef = ref(null)
     const orderBtnFn = (data:any, type='')=>{
     	if(type == 'pay'){
             payRef.value?.open(data.order_type, data.order_id, `/addon/o2o/pages/order/detail?order_id=${data.order_id}`);
         }else if(type == 'cancel'){
-            cancel(data) 
+            cancel(data)
     	}else if(type == 'delete'){
             deleteFn(data)
     	}
     }
+
     // 取消订单
     const cancel = (data: any) =>{
         uni.showModal({
@@ -163,6 +164,7 @@
             }
         })
     }
+
     // 删除订单
     const deleteFn = (data:any) =>{
         uni.showModal({
@@ -179,7 +181,7 @@
                 }
             }
         })
-        
+
     }
 </script>
 

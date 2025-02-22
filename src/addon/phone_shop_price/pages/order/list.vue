@@ -2,15 +2,33 @@
     <view class="page">
         <!-- 顶部状态切换 -->
         <view class="header-section">
-            <scroll-view class="status-nav" scroll-x>
-                <view class="nav-items">
-                    <view v-for="(item, index) in statusList" :key="index" class="nav-item"
-                        :class="{ active: currentStatus === item.value }" @click="switchStatus(item.value)">
-                        {{ item.label }}
-                        <text class="count" v-if="getStatusCount(item.value)">{{ getStatusCount(item.value) }}</text>
+            <view class="nav-header">
+
+                <scroll-view class="status-nav" scroll-x>
+                    <view class="nav-items">
+                        <view v-for="(item, index) in statusList" :key="index" class="nav-item"
+                            :class="{ active: currentStatus === item.value }" @click="switchStatus(item.value)">
+                            {{ item.label }}
+                            <text class="count" v-if="getStatusCount(item.value)">{{ getStatusCount(item.value)
+                                }}</text>
+                        </view>
                     </view>
+                </scroll-view>
+
+            </view>
+
+            <!-- 搜索 -->
+            <view class="search-section">
+                <view class="search-bar">
+                    <view class="search-input">
+                        <up-icon size="22" name="search"></up-icon>
+                        <input type="text" v-model="searchKeyword" placeholder="搜索订单号/IMEI" confirm-type="search"
+                            @confirm="handleSearch" />
+                        <text class="iconfont icon-close" v-if="searchKeyword" @click="clearSearch"></text>
+                    </view>
+                    <text class="cancel-search" @click="cancelSearch">取消</text>
                 </view>
-            </scroll-view>
+            </view>
 
             <!-- 配送方式筛选 -->
             <view class="delivery-filter">
@@ -33,13 +51,13 @@
 
         <!-- 订单列表 -->
         <scroll-view scroll-y class="order-list" @scrolltolower="loadMore" :refresher-enabled="true"
-            :refresher-triggered="isRefreshing" @refresherrefresh="onRefresh">
+            :refresher-triggered="isRefreshing" @refresherrefresh="onRefresh" :class="{ 'has-search': showSearch }">
             <view class="order-item" v-for="(item, index) in filteredOrderList" :key="index">
                 <!-- 订单头部 -->
                 <view class="order-header" @click="goDetail(item)">
-                    <view class="header-left">
-                        <text class="order-no">{{ item.order_no }}</text>
-                        <text class="time">{{ formatTime(item.create_at) }}</text>
+                    <view class="header-left ">
+                        <view class="order-no">{{ item.order_no }}</view>
+                        <text class="time">创建时间: {{ formatTime(item.create_at) }}</text>
                     </view>
                     <view class="header-right">
 
@@ -64,7 +82,7 @@
                 <view class="order-content" @click="goDetail(item)">
                     <!-- 设备信息 -->
                     <view class="device-info">
-                        <view class="device-list">
+                        <view class="device-list" v-if='item.devices.length > 0'>
                             <view class="device-item" v-for="(device, dIndex) in item.devices" :key="dIndex">
                                 <text class="model">{{ device.model || '待识别' }}</text>
                                 <text class="imei">IMEI: {{ device.imei }}</text>
@@ -91,6 +109,11 @@
                                 </text>
 
                             </view>
+
+
+                        </view>
+                        <view v-else class="tip flex text-[#999]">
+                            <up-icon name="info-circle" size="16" color="#FFD700" /> 最终信息以商家确认为准
                         </view>
                     </view>
                 </view>
@@ -225,11 +248,14 @@ const switchStatus = async (status: string) => {
 // 加载数据
 const loadData = async () => {
     try {
-        const res = await getOrderList({
+        const params = {
             page: page.value,
-            limit: pageSize.value,
-            status: currentStatus.value
-        }) as ApiResponse<OrderListResponse>;
+            page_size: pageSize.value,
+            status: currentStatus.value || undefined,
+            delivery_type: currentDeliveryType.value === 'all' ? undefined : currentDeliveryType.value,
+            search: searchKeyword.value.trim() || undefined
+        };
+        const res = await getOrderList(params) as ApiResponse<OrderListResponse>;
 
         if (res.code === 1) {
             // 更新订单列表
@@ -536,7 +562,35 @@ const toggleDeliveryType = async (order: Order, type: 'mail' | 'self') => {
     }
 };
 
+// 搜索相关
+const showSearch = ref(false);
+const searchKeyword = ref('');
 
+// 切换搜索框显示状态
+const toggleSearch = () => {
+    showSearch.value = !showSearch.value;
+};
+
+// 清空搜索内容
+const clearSearch = () => {
+    searchKeyword.value = '';
+};
+
+// 取消搜索
+const cancelSearch = () => {
+    searchKeyword.value = '';
+    showSearch.value = false;
+    // 重置搜索结果
+    loadData();
+};
+
+// 处理搜索
+const handleSearch = () => {
+    if (!searchKeyword.value.trim()) return;
+    // 重置页码并重新加载数据
+    page.value = 1;
+    loadData();
+};
 
 onMounted(() => {
     loadStatusList().then(() => {
@@ -551,363 +605,419 @@ onShow(() => {
 
 <style lang="scss" scoped>
 .page {
+    background: linear-gradient(to bottom, #f8f9fa, #f1f3f5);
     min-height: 100vh;
-    background: #F2F2F7;
-    padding-bottom: env(safe-area-inset-bottom);
 }
 
 .header-section {
+    // 吸顶     
     position: sticky;
     top: 0;
     z-index: 100;
-    background: #fff;
-    border-bottom: 1rpx solid rgba(60, 60, 67, 0.1);
-    display: flex;
-    flex-direction: column;
 }
 
-.delivery-filter {
-    padding: 12rpx 20rpx;
-    background: #fff;
-    border-bottom: 1rpx solid #f5f5f5;
-
-    .filter-options {
-        display: flex;
-        gap: 12rpx;
-
-        .filter-item {
-
-            text-align: center;
-            font-size: 26rpx;
-            padding: 12rpx;
-            color: #666;
-            background: #F2F2F7;
-            border-radius: 8rpx;
-            transition: all 0.3s;
-
-            &.active {
-                background: #007AFF;
-                color: #fff;
-            }
-
-            &:active {
-                opacity: 0.8;
-            }
-        }
-    }
-}
-
-.status-nav {
+.order-list {
     flex: 1;
-    padding-right: 220rpx; // 为右侧筛选留出空间
-    background: #fff;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    border-bottom: 1rpx solid rgba(60, 60, 67, 0.1);
-    white-space: nowrap;
+    background: #f5f5f5;
 
-    .nav-items {
-        display: inline-flex;
-        padding: 12rpx 20rpx;
-        min-width: 100%;
-    }
+    .order-item {
+        background: #fff;
+        margin-bottom: 12rpx;
+        border-radius: 10px;
+        margin: 10rpx;
+        box-shadow: 0 2rpx 10rpx rgba(44, 43, 43, 0.05);
 
-    .nav-item {
-        display: inline-flex;
-        align-items: center;
-        padding: 16rpx 24rpx;
-        font-size: 28rpx;
-        color: #666;
-        position: relative;
-        flex-shrink: 0;
-        gap: 8rpx;
+        overflow: hidden;
 
-        .count {
-            font-size: 20rpx;
-            background: #FF3B30;
-            color: #fff;
-            padding: 2rpx 8rpx;
-            border-radius: 20rpx;
-            min-width: 28rpx;
-            text-align: center;
-        }
-
-        &.active {
-            color: #007AFF;
-            font-weight: 500;
-
-            &::after {
-                content: '';
-                position: absolute;
-                bottom: -12rpx;
-                left: 24rpx;
-                right: 24rpx;
-                height: 2rpx;
-                background: #007AFF;
-            }
-        }
-
-        &:active {
-            opacity: 0.7;
-        }
-    }
-}
-
-.order-item {
-    background: #fff;
-    border-radius: 16rpx;
-    margin: 20rpx;
-    overflow: hidden;
-    box-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.05);
-
-    .order-header {
-        padding: 24rpx;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1rpx solid #f5f5f5;
-
-        .header-left {
+        .order-header {
             display: flex;
-            flex-direction: column;
-            gap: 8rpx;
+            align-items: flex-start;
+            justify-content: space-between;
+            padding: 20rpx;
+            background: linear-gradient(to right, #fff, #f8f9fa);
+            border-bottom: 1rpx solid #f5f5f5;
 
-            .order-no {
-                font-size: 28rpx;
-                color: #333;
-                font-weight: 500;
+            .header-left {
+                flex: 1;
+
+                .order-no {
+                    font-size: 26rpx;
+                    color: #333;
+                    margin-bottom: 8rpx;
+                }
+
+                .time {
+                    font-size: 24rpx;
+                    color: #999;
+                }
             }
 
-            .time {
-                font-size: 24rpx;
-                color: #999;
-            }
-        }
+            .header-right {
+                text-align: right;
 
-        .header-right {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 8rpx;
+                .order-status {
+                    font-size: 26rpx;
+                    font-weight: 500;
+                    padding: 4rpx 16rpx;
+                    border-radius: 24rpx;
+                    display: inline-block;
+                    margin-bottom: 8rpx;
 
-            .delivery-type-tag {
-                display: flex;
-                align-items: center;
-                gap: 4rpx;
-                background: #F2F2F7;
-                padding: 4rpx 12rpx;
-                border-radius: 6rpx;
+                    &.pending {
+                        background: linear-gradient(135deg, #fff8e1, #ffe0b2);
+                        color: #f57c00;
+                    }
 
-                text {
+                    &.checking {
+                        background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+                        color: #1976d2;
+                    }
+
+                    &.checked {
+                        background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+                        color: #388e3c;
+                    }
+
+                    &.completed {
+                        background: linear-gradient(135deg, #e3f2fd, #90caf9);
+                        color: #1565c0;
+                    }
+
+                    &.returned {
+                        background: linear-gradient(135deg, #ffebee, #ffcdd2);
+                        color: #d32f2f;
+                    }
+                }
+
+                .delivery-type-tag {
                     font-size: 24rpx;
                     color: #666;
-                }
+                    margin-bottom: 8rpx;
 
-                .express-id {
-                    margin-left: 8rpx;
-                    color: #999;
-                    font-size: 22rpx;
+                    .express-id {
+                        color: #999;
+                    }
                 }
             }
         }
-    }
 
-    .order-content {
-        padding: 24rpx;
+        .order-content {
+            padding: 20rpx;
 
-        .device-info {
-            .device-count {
-                display: flex;
-                align-items: center;
-                gap: 12rpx;
-                margin-bottom: 20rpx;
-
-                text {
-                    font-size: 26rpx;
-                    color: #666;
-                }
-            }
-
-            .device-list {
+            .device-info {
                 .device-item {
                     display: flex;
                     align-items: center;
-                    gap: 16rpx;
-                    padding: 16rpx 0;
-                    border-bottom: 1rpx solid #f5f5f5;
+                    padding: 12rpx 0;
 
                     .model {
-                        font-size: 28rpx;
-                        color: #333;
                         flex: 1;
+                        font-size: 26rpx;
+                        color: #333;
                     }
 
                     .imei {
                         font-size: 24rpx;
                         color: #666;
+                        margin-right: 20rpx;
+                        background: #f5f6f7;
+                        padding: 4rpx 12rpx;
+                        border-radius: 12rpx;
                     }
 
                     .price {
-                        font-size: 28rpx;
-                        color: #FF3B30;
+                        font-size: 22rpx;
                         font-weight: 500;
+                        padding: 4rpx 16rpx;
+                        border-radius: 24rpx;
 
                         &.pending {
-                            color: #999;
+                            background: linear-gradient(135deg, #fff8e1, #ffe0b2);
+                            color: #f57c00;
                         }
 
                         &.checking {
-                            color: #007AFF;
+                            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+                            color: #1976d2;
                         }
 
                         &.checked {
-                            color: #5856D6;
-                        }
-
-                        &.confirmed {
-                            color: #FF9500;
+                            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+                            color: #388e3c;
                         }
 
                         &.completed {
-                            color: #34C759;
+                            background: linear-gradient(135deg, #e3f2fd, #90caf9);
+                            color: #1565c0;
                         }
 
                         &.returned {
-                            color: #8E8E93;
+                            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+                            color: #d32f2f;
                         }
                     }
                 }
-
-                .device-item:last-child {
-                    border: none;
-                    padding-bottom: 0;
-                }
             }
-
         }
-    }
 
-    .order-footer {
-        padding: 24rpx;
-        border-top: 1rpx solid #f5f5f5;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        .order-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16rpx 20rpx;
+            background: linear-gradient(to right, #fff, #f8f9fa);
+            border-top: 1rpx solid #f5f5f5;
 
-        .total-info {
-            .total-label {
+            .total-info {
                 font-size: 26rpx;
                 color: #666;
-                margin-right: 12rpx;
+
+                .text-lg {
+                    color: #333;
+                    font-weight: 500;
+                }
+
+                .total-price {
+                    font-size: 30rpx;
+                    font-weight: 600;
+                    background: linear-gradient(135deg, #2979ff, #1565c0);
+                    -webkit-background-clip: text;
+                    color: transparent;
+                }
             }
 
-            .total-price {
-                font-size: 32rpx;
-                color: #FF3B30;
-                font-weight: 600;
+            .action-buttons {
+                display: flex;
+                gap: 12rpx;
+                justify-content: flex-end;
+                flex-wrap: wrap;
+
+                .btn {
+                    padding: 6rpx 20rpx;
+                    font-size: 24rpx;
+                    border-radius: 30rpx;
+                    border: none;
+                    min-width: 120rpx;
+                    position: relative;
+                    overflow: hidden;
+                    transition: all 0.3s;
+
+                    &::after {
+                        border: none;
+                    }
+
+                    &:active {
+                        transform: scale(0.95);
+                        opacity: 0.9;
+                    }
+
+                    &.btn-primary {
+                        background: linear-gradient(135deg, #4481eb, #04befe);
+                        color: #ffffff;
+                        box-shadow: 0 2px 6px rgba(68, 129, 235, 0.2);
+                    }
+
+                    &.btn-cancel {
+                        background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+                        color: #ffffff;
+                        box-shadow: 0 2px 6px rgba(255, 154, 158, 0.2);
+                    }
+
+                    &.btn-danger {
+                        background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+                        color: #ffffff;
+                        box-shadow: 0 2px 6px rgba(255, 107, 107, 0.2);
+                    }
+
+                    &.btn-warning {
+                        background: linear-gradient(135deg, #ffd86f, #ffc371);
+                        color: #ffffff;
+                        box-shadow: 0 2px 6px rgba(255, 216, 111, 0.2);
+                    }
+                }
             }
         }
+    }
 
-        .action-buttons {
+    .empty-state {
+        padding: 120rpx 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20rpx;
+
+        text {
+            font-size: 28rpx;
+            color: #999;
+        }
+    }
+
+    .loading-more {
+        text-align: center;
+        padding: 20rpx 0;
+
+        text {
+            font-size: 24rpx;
+            color: #999;
+        }
+    }
+}
+
+.status-nav {
+    background: linear-gradient(to right, #fff, #f8f9fa);
+    white-space: nowrap;
+    border-bottom: 1rpx solid #f5f5f5;
+
+    .nav-items {
+        display: inline-flex;
+        padding: 0 20rpx;
+
+        .nav-item {
+            position: relative;
+            padding: 20rpx 32rpx;
+            font-size: 28rpx;
+            color: #666;
+
+            &.active {
+                color: #2979ff;
+                font-weight: 500;
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    bottom: 0;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    width: 40rpx;
+                    height: 4rpx;
+                    background: linear-gradient(135deg, #2979ff, #1565c0);
+                    border-radius: 2rpx;
+                }
+            }
+
+            .count {
+                position: absolute;
+                top: 10rpx;
+                right: 4rpx;
+                min-width: 28rpx;
+                height: 28rpx;
+                line-height: 28rpx;
+                text-align: center;
+                background: linear-gradient(135deg, #ff5252, #d32f2f);
+                color: #fff;
+                font-size: 20rpx;
+                border-radius: 14rpx;
+                padding: 0 6rpx;
+                transform: scale(0.8);
+                transform-origin: right top;
+                box-shadow: 0 2rpx 6rpx rgba(255, 82, 82, 0.3);
+            }
+        }
+    }
+}
+
+.search-section {
+    background: linear-gradient(to right, #fff, #f8f9fa);
+    padding: 12rpx 20rpx;
+    border-bottom: 1rpx solid #f5f5f5;
+
+    .search-bar {
+        display: flex;
+        align-items: center;
+        gap: 12rpx;
+
+        .search-input {
+            flex: 1;
             display: flex;
-            gap: 16rpx;
+            align-items: center;
+            background: #f5f5f5;
+            border-radius: 32rpx;
+            padding: 8rpx 16rpx;
+            box-shadow: inset 0 2rpx 6rpx rgba(0, 0, 0, 0.05);
 
-            .btn {
-                padding: 12rpx 24rpx;
+            input {
+                flex: 1;
+                margin: 0 12rpx;
                 font-size: 26rpx;
-                border-radius: 8rpx;
+                background: transparent;
+            }
 
-                &.btn-cancel {
-                    background: #f5f5f5;
-                    color: #666;
-                }
-
-                &.btn-primary {
-                    background: #007AFF;
-                    color: #fff;
-                }
-
-                &.btn-warning {
-                    background: #FF9500;
-                    color: #fff;
-                }
-
-                &:active {
-                    opacity: 0.8;
-                }
+            .icon-close {
+                color: #999;
+                padding: 8rpx;
             }
         }
+
+        .cancel-search {
+            color: #666;
+            font-size: 26rpx;
+
+        }
     }
-}
-
-.empty-state {
-    padding: 120rpx 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20rpx;
-
-    text {
-        font-size: 28rpx;
-        color: #999;
-    }
-}
-
-.loading-more {
-    text-align: center;
-    padding: 30rpx 0;
-
-    text {
-        font-size: 24rpx;
-        color: #999;
-    }
-}
-
-.order-list {
-    height: calc(100vh - 140rpx - var(--status-bar-height));
-    padding: 0rpx;
-    box-sizing: border-box;
 }
 
 .order-status {
     font-size: 26rpx;
     font-weight: 500;
+    padding: 4rpx 16rpx;
+    border-radius: 24rpx;
+    display: inline-block;
+    margin-bottom: 8rpx;
 
     &.pending {
-        color: #FF9500; // 橙色 - 待确认
+        background: linear-gradient(135deg, #fff8e1, #ffe0b2);
+        color: #f57c00;
     }
 
     &.checking {
-        color: #007AFF; // 蓝色 - 质检中
+        background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+        color: #1976d2;
     }
 
     &.checked {
-        color: #5856D6; // 紫色 - 已质检
-    }
-
-    &.paying {
-        color: #FF3B30; // 红色 - 待打款
-    }
-
-    &.payed {
-        color: #FF9500; // 橙色 - 已打款
+        background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+        color: #388e3c;
     }
 
     &.completed {
-        color: #34C759; // 绿色 - 已完成
-    }
-
-    &.cancelled {
-        color: #8E8E93; // 灰色 - 已取消
-    }
-
-    &.returning {
-        color: #FF9500; // 橙色 - 退回中
+        background: linear-gradient(135deg, #e3f2fd, #90caf9);
+        color: #1565c0;
     }
 
     &.returned {
-        color: #8E8E93; // 灰色 - 已退回
+        background: linear-gradient(135deg, #ffebee, #ffcdd2);
+        color: #d32f2f;
+    }
+}
+
+.delivery-filter {
+    background: linear-gradient(to right, #fff, #f8f9fa);
+    padding: 12rpx 20rpx;
+    border-bottom: 1rpx solid #f5f5f5;
+
+    .filter-options {
+        display: flex;
+        align-items: center;
+        background: #f1f3f5;
+        border-radius: 12rpx;
+        padding: 4rpx;
+        max-width: 400rpx;
+
+        .filter-item {
+            flex: 1;
+            text-align: center;
+            font-size: 26rpx;
+            color: #666;
+            padding: 8rpx 0;
+            transition: all 0.3s;
+            border-radius: 8rpx;
+
+            &.active {
+                background: linear-gradient(135deg, #2979ff, #1565c0);
+                color: #fff;
+                box-shadow: 0 2rpx 8rpx rgba(41, 121, 255, 0.3);
+            }
+        }
     }
 }
 </style>

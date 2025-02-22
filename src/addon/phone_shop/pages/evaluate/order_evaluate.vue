@@ -35,7 +35,7 @@
                                    :size="'32rpx'"></u-rate>
                               <text class="ml-[20rpx] text-[26rpx] text-[#888]">{{ form[index].scores === 1 ? '差评' :
                                    form[index].scores === 2 ||
-                                   form[index].scores === 3 ? '中评' : '好评' }}</text>
+                                        form[index].scores === 3 ? '中评' : '好评' }}</text>
                          </view>
                          <textarea class="!text-[26rpx] mt-[20rpx] w-[100%]" v-model.trim="form[index].content"
                               placeholder="请在此处输入你的评价" maxlength="200" />

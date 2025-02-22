@@ -9,20 +9,21 @@
                 </view>
             </view>
             <view class="order-link" @tap="toOrderList">
-                <up-icon name="list" size="20"></up-icon>
+                <up-icon color="#fff" name="list" size="18"></up-icon>
                 <text>我的订单</text>
             </view>
         </view>
+        <up-notice-bar :text="tips_text"></up-notice-bar>
 
         <u-form :model="form" :rules="rules" ref="formRef" label-position="left">
             <!-- 出货信息 -->
-            <view class="box rounded">
+            <view class="box">
                 <view class="title">
                     <up-icon name="info-circle" size="16" color="#3b82f6"></up-icon>
                     <text>出货信息</text>
                     <view class="scan-btn" @click="scanIMEI">
                         <up-icon name="scan" size="14" color="#3b82f6"></up-icon>
-                        <text>扫码</text>
+                        <text>添加设备</text>
                     </view>
                 </view>
 
@@ -30,8 +31,8 @@
                 <view class="phone-list" v-if="phoneList.length > 0">
                     <view class="phone-item" v-for="(item, index) in phoneList" :key="index">
                         <view class="phone-info">
-                            <text class="imei">IMEI: {{ item.imei }}</text>
-                            <text class="model">{{ item.model || '未知型号' }}</text>
+                            <text class="imei"> <text class="index">{{ index + 1 }} </text> IMEI: {{ item.imei }}</text>
+                            <text class="model" v-if="item.initial_price">定价: {{ item.initial_price }}</text>
                         </view>
                         <view class="delete-btn" @click="removePhone(index)">
                             <up-icon name="trash" size="14" color="#ef4444"></up-icon>
@@ -39,51 +40,74 @@
                     </view>
                 </view>
 
-                <view class="empty-tip" v-else>
-                    <text>提示：在手机拨号界面输入 *#06# 可显示IMEI码</text>
-                </view>
+                <!-- <up-collapse v-model="activeHelp" class="help-collapse"> -->
+                <!-- <up-collapse-item title="查看IMEI码说明" name="imei-help"> -->
 
-                <up-row customStyle="margin-bottom: 10px">
+                <!-- </up-collapse-item> -->
+                <!-- </up-collapse> -->
+
+                <up-row customStyle="margin-bottom: 8px">
                     <up-col span="3">
-                        <view class="label">出货数量</view>
+                        <view class="label">数量</view>
                     </up-col>
                     <up-col span="9">
-                        <view class="input-wrapper">
-                            <up-number-box v-model="form.count" @change="handleCountChange"></up-number-box>
-                        </view>
+                        <u-number-box v-model="form.count" :min="1" :max="99"
+                            @change="handleCountChange"></u-number-box>
                     </up-col>
                 </up-row>
 
-                <up-row customStyle="margin-bottom: 10px">
+                <up-row>
                     <up-col span="3">
                         <view class="label">备注</view>
                     </up-col>
                     <up-col span="9">
                         <view class="input-wrapper">
-                            <up-textarea v-model="form.comment" placeholder="请输入备注信息"></up-textarea>
+                            <up-textarea autoHeight v-model="form.comment" placeholder="请输入备注信息"></up-textarea>
                         </view>
                     </up-col>
                 </up-row>
             </view>
 
-            <!-- 寄件信息 -->
-            <view class="box rounded mt-2 payment-box">
-
+            <!-- 商家信息 -->
+            <view class="box mt-2">
                 <view class="title">
-
-                    <view class="title-left">
-                        <up-icon name="truck" size="16" color="#3b82f6"></up-icon>
-                        <text>{{ currentTab === 0 ? '寄件信息' : '自送信息' }}</text>
+                    <up-icon name="bag" size="16" color="#3b82f6"></up-icon>
+                    <text>商家信息</text>
+                    <view class="copy-btn" @click="copyShopInfo">
+                        <up-icon size="16" name="cut" />
                     </view>
-                    <view class="title-action" @click="toAddressPage">
+                </view>
+
+                <view class="shop-info" v-if="shopInfo">
+                    <view class="info-row">
+                        <text class="label">商家名称：</text>
+                        <text class="value">{{ shopInfo.name }}</text>
+                    </view>
+                    <view class="info-row">
+                        <text class="label">联系电话：</text>
+                        <text v-if='shopInfo.mobile' class="value">{{ shopInfo.mobile }}</text>
+                    </view>
+                    <view class="info-row">
+                        <text class="label">商家地址：</text>
+                        <text class="value">{{ shopInfo.full_address || shopInfo.address }}</text>
+                        <up-icon @click="openLocation" name="map" size="16"></up-icon>
+                    </view>
+                </view>
+            </view>
+
+            <!-- 寄件信息 -->
+            <view class="box mt-2">
+                <view class="title">
+                    <up-icon name="car" size="16" color="#3b82f6"></up-icon>
+                    <text>{{ currentTab === 0 ? '寄件信息' : '自送信息' }}</text>
+                    <view v-if="currentTab == 1" class="title-action" @click="toAddressPage">
                         <up-icon name="plus" size="14"></up-icon>
                         <text>添加地址</text>
                     </view>
                 </view>
 
-
                 <!-- 快递单号 - 仅在邮寄模式显示 -->
-                <up-row v-if="currentTab === 0" customStyle="margin-bottom: 10px">
+                <up-row v-if="currentTab === 0" customStyle="margin-bottom: 8px">
                     <up-col span="3">
                         <view class="label">快递单号</view>
                     </up-col>
@@ -101,18 +125,17 @@
                 </up-row>
 
                 <!-- 联系信息 -->
-                <view class="contact-info ">
+                <view class="contact-info" v-if="currentTab === 1">
                     <view class="section-header">
                         <text>联系信息</text>
                         <view class="switch-wrapper">
-                            <u-switch v-model="useDefaultAddress" @change="handleDefaultAddressChange"
-                                size="22"></u-switch>
+                            <u-switch size="18" v-model="useDefaultAddress"
+                                @change="handleDefaultAddressChange"></u-switch>
                             <text class="switch-label">使用默认地址</text>
                         </view>
                     </view>
 
-
-                    <up-row customStyle="margin-bottom: 10px">
+                    <up-row customStyle="margin-bottom: 8px">
                         <up-col span="3">
                             <view class="label">联系人</view>
                         </up-col>
@@ -125,7 +148,7 @@
                         </up-col>
                     </up-row>
 
-                    <up-row customStyle="margin-bottom: 10px">
+                    <up-row>
                         <up-col span="3">
                             <view class="label">联系电话</view>
                         </up-col>
@@ -140,148 +163,15 @@
                 </view>
             </view>
 
-            <!-- 收款信息 -->
-            <view class="box rounded mt-2 payment-box">
-                <view class="title">
-                    <view class="title-left">
-                        <up-icon name="wallet" size="16" color="#3b82f6"></up-icon>
-                        <text>收款信息</text>
-                    </view>
-                    <view class="title-action" @click="toPaymentPage">
-                        <up-icon name="plus" size="14"></up-icon>
-                        <text>管理收款方式</text>
-                    </view>
-                </view>
-
-                <view class="payment-info">
-                    <view class="section-header">
-                        <text>收款方式</text>
-                        <view class="switch-wrapper">
-                            <u-switch v-model="useDefaultPayment" @change="handleDefaultPaymentChange"
-                                size="22"></u-switch>
-                            <text class="switch-label">使用默认支付</text>
-                        </view>
-                    </view>
-
-                    <up-row customStyle="margin-bottom: 10px">
-                        <up-col span="3">
-                            <view class="label">收款方式</view>
-                        </up-col>
-                        <up-col span="9">
-                            <view class="input-wrapper payment-select">
-                                <up-button type="primary" @click="pay_show = true">
-                                    {{ pay_type || '选择收款方式' }}
-                                </up-button>
-                                <up-picker :show="pay_show" :columns="columns" @confirm="confirm"
-                                    @cancel="pay_show = false"></up-picker>
-                            </view>
-                        </up-col>
-                    </up-row>
-
-                    <up-row customStyle="margin-bottom: 10px" v-if="pay_type && pay_type !== '银行卡'">
-                        <up-col span="3">
-                            <view class="label">收款码</view>
-                        </up-col>
-                        <up-col span="9">
-                            <view class="input-wrapper qrcode-wrapper">
-                                <image v-if="form.qrcode_image" :src="form.qrcode_image" mode="aspectFit"
-                                    class="qrcode-image" @click="previewImage"></image>
-                                <view v-else class="no-qrcode">首次使用请先添加收款方式</view>
-                            </view>
-                        </up-col>
-                    </up-row>
-
-                    <up-row customStyle="margin-bottom: 10px">
-                        <up-col span="3">
-                            <view class="label">真实姓名</view>
-                        </up-col>
-                        <up-col span="9">
-                            <view class="input-wrapper">
-                                <up-input placeholder="请输入真实姓名, 否则无法打款" border="surround" clearable
-                                    v-model="form.user_name">
-                                </up-input>
-                            </view>
-                        </up-col>
-                    </up-row>
-
-                    <up-row customStyle="margin-bottom: 10px">
-                        <up-col span="3">
-                            <view class="label">账号</view>
-                        </up-col>
-                        <up-col span="9">
-                            <view class="input-wrapper">
-                                <u-form-item prop="account">
-                                    <u-input v-model="form.account" placeholder="请输入收款账号" clearable />
-                                </u-form-item>
-                            </view>
-                        </up-col>
-                    </up-row>
-                </view>
-            </view>
-
-            <!-- 商家信息 -->
-            <view class="box rounded mt-2">
-                <view class="title">
-                    <up-icon name="shop" size="16" color="#3b82f6"></up-icon>
-                    <text>商家信息</text>
-                </view>
-                <view class="shop-info">
-                    <view class="info-row">
-                        <text class="label">商家名称：</text>
-                        <text class="value">{{ shopInfo.name }}</text>
-                    </view>
-                    <view class="info-row">
-                        <text class="label">联系电话：</text>
-                        <text class="value">{{ shopInfo.mobile }}</text>
-                    </view>
-
-                    <view class="info-row address-row">
-                        <text class="label">店铺地址：</text>
-                        <view class="address-content">
-                            <text class="value">{{ address }}</text>
-                            <view class="address-actions">
-                                <view class="action-btn" @click="toCopy">
-                                    <up-icon name="copy" size="14"></up-icon>
-                                    <text>复制地址</text>
-                                </view>
-                                <view class="action-btn" @click="toShopLocation">
-                                    <up-icon name="nav" size="14"></up-icon>
-                                    <text>查看位置</text>
-                                </view>
-                            </view>
-                        </view>
-                    </view>
-                </view>
-            </view>
-
-            <!-- 自送信息 -->
-            <view class="box rounded mt-2" v-if="currentTab === 1">
-                <view class="title">
-                    <up-icon name="info" size="16" color="#3b82f6"></up-icon>
-                    <text>自送说明</text>
-                </view>
-                <view class="info-content">
-                    <view class="info-text">请在工作时间内将手机送至以下地址：</view>
-                    <view class="shop-address">{{ address }}</view>
-                    <view class="action-links">
-                        <view class="link-item" @click="toShopLocation">
-                            <up-icon name="map" size="14"></up-icon>
-                            <text>查看店铺位置</text>
-                            <up-icon name="arrow-right" size="14"></up-icon>
-                        </view>
-                    </view>
-                </view>
-            </view>
-
             <!-- 回收协议 -->
             <view class="box rounded mt-2">
                 <view class="agreement-section">
-                    <view class="agreement-checkbox">
+                    <view class="agreement-checkbox flex">
                         <u-checkbox-group>
                             <u-checkbox activeColor="var(--primary-color)" :checked="isAgreeRecycle" shape="shape"
                                 size="14" @change="handleRecycleAgree" />
                         </u-checkbox-group>
-                        <view class="agreement-text">
+                        <view class="agreement-text flex">
                             我已阅读并同意
                             <view @click="toAgreementPage">
                                 <text class="text-primary">《回收服务协议》</text>
@@ -297,6 +187,80 @@
             </view>
         </u-form>
     </view>
+
+    <!-- IMEI输入弹窗 -->
+    <uni-popup ref="popup" type="center" background-color="#fff" :mask-click="true">
+        <view class="imei-modal">
+            <view class="modal-header">
+                <text class="modal-title">添加设备</text>
+                <view class="close-btn" @click="closePopup">
+                    <up-icon name="close" size="16" color="#64748b"></up-icon>
+                </view>
+            </view>
+            <view class="modal-body">
+                <view class="form-group">
+                    <view class="input-row">
+                        <view v-for="(input, index) in inputList" :key="index" class="input-group">
+                            <view class="input-wrapper flex-1">
+                                <u-input v-model="input.imei" size="14" placeholder="输入IMEI/SN码" border="surround"
+                                    clearable></u-input>
+                                <view class="scan-btn" @click="() => handleScan(index)">
+                                    <up-icon name="scan" size="16" color="#3b82f6"></up-icon>
+                                </view>
+                            </view>
+                            <view class="input-wrapper" v-if="isPriceEnabled">
+                                <u-input v-model="input.initial_price" type="number" size="14" placeholder="输入定价"
+                                    border="surround" clearable></u-input>
+                            </view>
+                            <view class="remove-btn" v-if="index > 0" @click="() => removeInput(index)">
+                                <up-icon name="trash" size="16" color="#ef4444"></up-icon>
+                            </view>
+                        </view>
+                    </view>
+                    <view class="add-input-btn" @click="addInput">
+                        <up-icon name="plus" size="16" color="#3b82f6"></up-icon>
+                        <up-text size="14" text="添加输入框"></up-text>
+                    </view>
+                    <view class="tip-text">
+                        <up-icon name="info-circle" size="14" color="#64748b"></up-icon>
+                        <text>如果 输入 SN 过长，可以直接只输入后 6 位</text>
+                    </view>
+                    <view class="tip-text">
+                        <up-icon name="info-circle" size="12" color="#64748b"></up-icon>
+                        <text>苹果设备在拨号界面输入*#06#可快速获取 SN 条形码</text>
+                    </view>
+
+                </view>
+
+                <!-- 已添加的设备列表 -->
+                <view class="device-list" v-if="tempDeviceList.length > 0">
+                    <view class="list-header">
+                        <text>已添加设备</text>
+                        <text class="count">({{ tempDeviceList.length }})</text>
+                    </view>
+                    <view class="device-item" v-for="(item, index) in tempDeviceList" :key="index">
+                        <view class="device-info">
+                            <text class="imei">IMEI: {{ item.imei }}</text>
+                            <text class="price" v-if="item.initial_price">¥{{ item.initial_price }}</text>
+                        </view>
+                        <view class="delete-btn" @click="removeDevice(index)">
+                            <up-icon name="trash" size="16" color="#ef4444"></up-icon>
+                        </view>
+                    </view>
+                </view>
+            </view>
+            <view class="modal-footer">
+                <view class="left">
+                    <u-switch size="18" v-model="isPriceEnabled" activeColor="#3b82f6"></u-switch>
+                    <text>启用定价</text>
+                </view>
+                <view class="right">
+                    <view class="btn cancel" @click="closePopup">取消</view>
+                    <view class="btn confirm" @click="confirmDevices">确定</view>
+                </view>
+            </view>
+        </view>
+    </uni-popup>
 </template>
 
 <script setup lang="ts">
@@ -306,6 +270,7 @@ import { createOrder } from '@/addon/phone_shop_price/api/order'
 import { getPaymentList } from '@/addon/phone_shop_price/api/payment'
 import { getAddressList } from '@/app/api/member'
 import useMemberStore from "@/stores/member";
+import { copy } from '@/utils/common'
 
 // 新增 - 当前选中的标签页
 const currentTab = ref(0);
@@ -323,30 +288,15 @@ const form = ref({
     express_id: '',
     send_username: '',
     telphone: useMemberStore().info.mobile || '',
-    user_name: '',
-    account: '',
+    comment: '',
     delivery_type: 'mail',
     return_type: 'self',
-    qrcode_image: '',
-    return_address: '',
 });
 
-// 开关状态
-const useDefaultPayment = ref(false);
-const useDefaultAddress = ref(false);
+const tips_text = '首次寄件可直接发到付,价格不满意包邮退回'
 
 // 校验规则
 const rules = {
-    send_username: {
-        required: true,
-        message: '联系人不能为空',
-        trigger: 'blur'
-    },
-    username: {
-        required: true,
-        message: '联系人不能为空',
-        trigger: 'blur'
-    },
     express_id: {
         required: (rule, value, callback) => {
             if (form.value.delivery_type === 'mail' && !value) {
@@ -357,22 +307,22 @@ const rules = {
         },
         trigger: 'blur'
     },
-    account: {
+    send_username: {
         required: true,
-        message: '请输入收款账号',
+        message: '联系人不能为空',
         trigger: 'blur'
     },
-    pay_type: {
+    telphone: {
         required: true,
-        message: '请选择收款方式',
+        message: '联系电话不能为空',
         trigger: 'blur'
-    }
+    },
 };
 
 const formRef = ref(null);
-const pay_type = ref(null);
-const pay_show = ref(false);
-const columns = reactive([['微信', '支付宝', '银行卡']]);
+
+// 开关状态
+const useDefaultAddress = ref(false);
 
 // 切换标签页
 const switchTab = (index) => {
@@ -384,35 +334,11 @@ const switchTab = (index) => {
     }
 };
 
-// 选择退货方式
-const selectReturnMethod = (index) => {
-    selectedReturnMethod.value = index;
-    form.value.return_type = index === 0 ? 'self' : 'mail';
-};
-
 // 跳转到订单列表
 const toOrderList = () => {
     uni.navigateTo({
         url: '/addon/phone_shop_price/pages/order/list'
     });
-};
-
-// 获取默认支付方式
-const loadDefaultPayment = async () => {
-    try {
-        const res = await getPaymentList();
-        if (res.code === 1 && res.data) {
-            const defaultPayment = res.data.find(item => item.is_default === 1);
-            if (defaultPayment) {
-                pay_type.value = defaultPayment.pay_type;
-                form.value.account = defaultPayment.account;
-                form.value.user_name = defaultPayment.user_name || '';
-                form.value.qrcode_image = defaultPayment.qrcode_image || '';
-            }
-        }
-    } catch (error) {
-        uni.showToast({ title: '获取默认支付方式失败', icon: 'none' });
-    }
 };
 
 // 获取默认地址
@@ -424,24 +350,13 @@ const loadDefaultAddress = async () => {
             if (defaultAddress) {
                 form.value.send_username = defaultAddress.name;
                 form.value.telphone = defaultAddress.mobile;
-                form.value.return_address = defaultAddress.full_address
-                    ;
             }
         }
     } catch (error) {
-        uni.showToast({ title: '获取默认地址失败', icon: 'none' });
-    }
-};
-
-// 处理默认支付方式切换
-const handleDefaultPaymentChange = async (value) => {
-    if (value) {
-        await loadDefaultPayment();
-    } else {
-        pay_type.value = null;
-        form.value.account = '';
-        form.value.user_name = '';
-        form.value.qrcode_image = '';
+        uni.showToast({
+            title: '获取默认地址失败',
+            icon: 'none'
+        });
     }
 };
 
@@ -452,7 +367,6 @@ const handleDefaultAddressChange = async (value) => {
     } else {
         form.value.send_username = '';
         form.value.telphone = '';
-        form.value.return_address = '';
     }
 };
 
@@ -461,7 +375,10 @@ const fetchAddress = async () => {
         const res = await getShopAddressList();
         address.value = res.data.data[0].full_address;
     } catch (error) {
-        uni.showToast({ title: '无邮寄地址!请系商家', icon: 'none' });
+        uni.showToast({
+            title: '无邮寄地址!请系商家',
+            icon: 'none'
+        });
         console.error("获取地址失败", error);
     }
 };
@@ -476,119 +393,123 @@ const scanCode = () => {
     });
 };
 
-const copyUsername = () => {
-    form.value.user_name = form.value.send_username || '';
-};
-
-const confirm = e => {
-    pay_show.value = false;
-    pay_type.value = e.value[0];
-};
-
 // 手机列表
-const phoneList = ref<Array<{ imei: string, model?: string }>>([]);
+const phoneList = ref<Array<{ imei: string, initial_price?: string }>>([]);
+
+// IMEI 输入相关
+const popup = ref(null)
+const isPriceEnabled = ref(false)
+const tempDeviceList = ref<Array<{ imei: string, initial_price?: string }>>([])
+const inputList = ref<Array<{ imei: string, initial_price: string }>>([
+    { imei: '', initial_price: '' }
+])
+
+// 添加输入框
+const addInput = () => {
+    inputList.value.push({ imei: '', initial_price: '' })
+}
+
+// 移除输入框
+const removeInput = (index: number) => {
+    inputList.value.splice(index, 1)
+}
+
+// 打开弹窗
+const openPopup = () => {
+    popup.value.open()
+    tempDeviceList.value = []
+    isPriceEnabled.value = false
+    inputList.value = [{ imei: '', initial_price: '' }]
+}
+
+// 关闭弹窗
+const closePopup = () => {
+    popup.value.close()
+    tempDeviceList.value = []
+    isPriceEnabled.value = false
+    inputList.value = [{ imei: '', initial_price: '' }]
+}
+
+// 处理扫码
+const handleScan = (index: number) => {
+    uni.scanCode({
+        onlyFromCamera: true,
+        success: (res) => {
+            inputList.value[index].imei = res.result;
+        },
+        fail: () => {
+            uni.showToast({
+                title: '扫码失败',
+                icon: 'none'
+            });
+        }
+    });
+}
+
+// 添加设备到临时列表
+const addDevices = () => {
+    const validInputs = inputList.value.filter(input => input.imei.trim());
+
+    if (validInputs.length === 0) {
+        uni.showToast({
+            title: '请输入IMEI码',
+            icon: 'none'
+        });
+        return;
+    }
+
+    for (const input of validInputs) {
+        // 检查是否重复
+        if (tempDeviceList.value.some(item => item.imei === input.imei)) {
+            uni.showToast({
+                title: `IMEI码 ${input.imei} 已存在`,
+                icon: 'none'
+            });
+            continue;
+        }
+
+        const device = {
+            imei: input.imei,
+            initial_price: isPriceEnabled.value ? input.initial_price : undefined
+        };
+
+        tempDeviceList.value.push(device);
+    }
+
+    // 清空输入
+    inputList.value = [{ imei: '', initial_price: '' }];
+}
+
+// 确认添加设备
+const confirmDevices = () => {
+    // 先添加当前输入框中的设备
+    addDevices();
+
+    if (tempDeviceList.value.length === 0) {
+        uni.showToast({
+            title: '请添加至少一个设备',
+            icon: 'none'
+        });
+        return;
+    }
+
+    // 将临时列表中的设备添加到主列表
+    tempDeviceList.value.forEach(device => {
+        phoneList.value.push({
+            imei: device.imei,
+            initial_price: device.initial_price
+        });
+    });
+
+    // 更新设备数量
+    form.value.count = phoneList.value.length;
+
+    closePopup();
+}
 
 // 扫描IMEI
 const scanIMEI = () => {
-    uni.showActionSheet({
-        itemList: ['扫描条形码', '手动输入'],
-        success: (res) => {
-            if (res.tapIndex === 0) {
-                // 扫描条形码
-                uni.scanCode({
-                    onlyFromCamera: true,
-                    success: (res) => {
-                        handleIMEIResult(res.result);
-                    },
-                    fail: () => {
-                        uni.showToast({
-                            title: '扫码失败',
-                            icon: 'none'
-                        });
-                    }
-                });
-            } else {
-                // 手动输入
-                uni.showModal({
-                    title: '输入IMEI',
-                    placeholderText: '请输入15位IMEI码',
-                    editable: true,
-                    success: (res) => {
-                        if (res.confirm && res.content) {
-                            handleIMEIResult(res.content);
-                        }
-                    }
-                });
-            }
-        }
-    });
-};
-
-// 处理IMEI结果
-const handleIMEIResult = (imei: string) => {
-    imei = imei.trim();
-    // 验证IMEI格式（通常是15位数字）
-    if (/^\d{15}$/.test(imei)) {
-        // 检查是否已存在相同的IMEI
-        if (phoneList.value.some(phone => phone.imei === imei)) {
-            uni.showToast({
-                title: '该IMEI已添加',
-                icon: 'none'
-            });
-            return;
-        }
-        phoneList.value.push({
-            imei: imei,
-            model: '待识别'
-        });
-        // 更新数量
-        form.value.count = phoneList.value.length;
-        uni.showToast({
-            title: '添加成功',
-            icon: 'success'
-        });
-    } else {
-        uni.showToast({
-            title: '无效的IMEI码，请输入15位数字',
-            icon: 'none'
-        });
-    }
-};
-
-// OCR识别IMEI
-const recognizeIMEI = async (imagePath: string) => {
-    uni.showLoading({
-        title: '正在识别...'
-    });
-
-    try {
-        // 这里替换为实际的OCR API调用
-        // 示例使用百度OCR API
-        const result = await ocrAPI.recognize(imagePath);
-        const imei = extractIMEI(result.text);
-        if (imei) {
-            handleIMEIResult(imei);
-        } else {
-            uni.showToast({
-                title: '未识别到IMEI码',
-                icon: 'none'
-            });
-        }
-    } catch (error) {
-        uni.showToast({
-            title: '识别失败',
-            icon: 'none'
-        });
-    } finally {
-        uni.hideLoading();
-    }
-};
-
-// 从OCR结果中提取IMEI
-const extractIMEI = (text: string): string | null => {
-    // 查找符合IMEI格式的文本（15位数字）
-    const match = text.match(/\d{15}/);
-    return match ? match[0] : null;
+    openPopup();
 };
 
 // 删除手机
@@ -615,14 +536,7 @@ const submitOrder = async () => {
         });
         return;
     }
-    form.value.pay_type = pay_type.value;
     form.value.phone_list = phoneList.value;  // 添加手机列表到表单数据
-    if (!pay_type.value) {
-        return uni.showToast({
-            title: '请选择收款方式',
-            icon: 'none'
-        });
-    }
 
     const valid = await formRef.value.validate();
     if (valid) {
@@ -633,10 +547,7 @@ const submitOrder = async () => {
                     icon: 'success'
                 });
                 // 清空表单
-                pay_type.value = ''
                 formRef.value.resetFields()
-                useDefaultPayment.value = false;
-                useDefaultAddress.value = false;
                 // 跳转到订单列表
                 setTimeout(() => {
                     toOrderList();
@@ -656,71 +567,6 @@ const submitOrder = async () => {
     }
 };
 
-const toCopy = () => {
-    uni.setClipboardData({
-        data: address.value + ',' + shopInfo.value.name + ',' + shopInfo.value.mobile,
-        success() {
-            uni.showToast({ title: '复制成功', icon: 'success' });
-        }
-    });
-};
-
-// 跳转到收款方式管理页面
-const toPaymentPage = () => {
-    uni.navigateTo({
-        url: '/addon/phone_shop_price/pages/payment/index'
-    });
-};
-
-// 跳转到店铺置页面
-const toShopLocation = () => {
-    uni.navigateTo({
-        url: '/addon/phone_shop_price/pages/shop/location'
-    });
-};
-
-// 预览收款图片
-const previewImage = () => {
-    if (form.value.qrcode_image) {
-        uni.previewImage({
-            urls: [form.value.qrcode_image],
-            current: 0
-        });
-    }
-};
-
-// 获取商家信息
-const shopInfo = ref({
-    name: '',
-    mobile: '',
-    business_hours: ''
-});
-
-// 获取商家信息
-const fetchShopInfo = async () => {
-    try {
-        const res = await getShopAddressList();
-        console.log(res);
-
-        if (res.code === 1 && res.data) {
-            shopInfo.value = {
-                name: res.data.data[0].contact_name,
-                mobile: res.data.data[0].mobile,
-                business_hours: res.data.data[0].business_hours
-            };
-        }
-    } catch (error) {
-        console.error('获取商家信息失败', error);
-    }
-};
-
-const isAgreeRecycle = ref(false)
-
-// 处理回收协议同意状态
-const handleRecycleAgree = () => {
-    isAgreeRecycle.value = !isAgreeRecycle.value
-}
-
 // 跳转到收货地址页面
 const toAddressPage = () => {
     uni.navigateTo({
@@ -735,489 +581,626 @@ const toAgreementPage = () => {
     });
 };
 
+// 检查收款信息
+const checkPaymentInfo = async () => {
+    try {
+        const res = await getPaymentList();
+        if (!res.data) {
+            // 如果没有收款信息，跳转到收款信息页面
+            uni.redirectTo({
+                url: '/addon/phone_shop_price/pages/payment/index'
+            });
+        }
+    } catch (error) {
+        console.error('获取收款信息失败：', error);
+    }
+};
+
+// 打开导航
+const openLocation = () => {
+    if (!shopInfo.value.lat || !shopInfo.value.lng) {
+        uni.showToast({
+            title: '无法获取商家位置信息',
+            icon: 'none'
+        });
+        return;
+    }
+
+    uni.openLocation({
+        latitude: parseFloat(shopInfo.value.lat),
+        longitude: parseFloat(shopInfo.value.lng),
+        name: shopInfo.value.name || '商家地址',
+        address: shopInfo.value.full_address || shopInfo.value.address,
+        success: () => {
+            console.log('打开导航成功');
+        },
+        fail: (err) => {
+            console.error('打开导航失败：', err);
+            uni.showToast({
+                title: '打开导航失败',
+                icon: 'none'
+            });
+        }
+    });
+};
+
+const isAgreeRecycle = ref(false)
+
+// 处理回收协议同意状态
+const handleRecycleAgree = () => {
+    isAgreeRecycle.value = !isAgreeRecycle.value
+}
+
+const shopInfo = ref({
+    name: '',
+    mobile: '',
+    business_hours: '',
+    lat: '',
+    lng: '',
+    full_address: '',
+    address: ''
+});
+
+const copyShopInfo = () => {
+    // name+mobile+full_address
+    const text = `${shopInfo.value.name} , ${shopInfo.value.mobile}, ${shopInfo.value.full_address}`;
+    copy(text, () => {
+        uni.showToast({
+            title: '复制成功',
+            icon: 'success'
+        })
+    })
+}
+
+// 获取商家信息
+const fetchShopInfo = async () => {
+    try {
+        const res = await getShopAddressList();
+        console.log(res);
+
+        if (res.code === 1 && res.data) {
+            shopInfo.value = {
+                name: res.data.data[0].contact_name,
+                mobile: res.data.data[0].mobile,
+                business_hours: res.data.data[0].business_hours,
+                lat: res.data.data[0].lat,
+                lng: res.data.data[0].lng,
+                full_address: res.data.data[0].full_address,
+                address: res.data.data[0].address
+            };
+        }
+    } catch (error) {
+        console.error('获取商家信息失败', error);
+    }
+};
+
+const activeHelp = ref(['imei-help'])
+
 onMounted(() => {
     fetchAddress();
     fetchShopInfo();
+    checkPaymentInfo(); // 添加检查收款信息
 });
 </script>
 
 <style lang="scss" scoped>
 .page {
-    padding: 24rpx;
-    background-color: #f7f7f7;
     min-height: 100vh;
+    background: linear-gradient(to bottom, #f8fafc, #f1f5f9);
+    padding: 12px;
 }
 
 .nav-header {
+    background: linear-gradient(120deg, #4f46e5, #3b82f6, #0ea5e9);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16rpx;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20rpx 0;
-    margin-bottom: 20rpx;
+    color: #fff;
+    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.15), 0 2px 4px -2px rgba(59, 130, 246, 0.1);
+    position: relative;
+    overflow: hidden;
 
-    .tabs {
-        display: flex;
-        background: #fff;
-        border-radius: 16rpx;
-        padding: 4rpx;
-        box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg,
+                rgba(255, 255, 255, 0.12) 0%,
+                rgba(255, 255, 255, 0.06) 50%,
+                rgba(255, 255, 255, 0) 100%);
+        pointer-events: none;
+    }
+}
 
-        .tab-item {
-            padding: 16rpx 32rpx;
-            font-size: 28rpx;
-            color: #666;
-            position: relative;
-            transition: all 0.3s;
+.tabs {
+    display: flex;
+    gap: 12px;
+    position: relative;
+    z-index: 1;
 
-            &.active {
-                color: #3b82f6;
-                background: #ebf5ff;
-                border-radius: 12rpx;
+    .tab-item {
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(4px);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        &:active::before {
+            opacity: 1;
+        }
+
+        &.active {
+            background: #fff;
+            color: #4f46e5;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+            border-color: #fff;
+
+            &::after {
+                content: '';
+                position: absolute;
+                bottom: -1px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 4px;
+                height: 4px;
+                border-radius: 2px;
+                background: #4f46e5;
             }
         }
     }
+}
 
-    .order-link {
-        display: flex;
-        align-items: center;
-        padding: 12rpx 24rpx;
-        background: #fff;
-        border-radius: 30rpx;
-        box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+.order-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(4px);
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 
-        text {
-            font-size: 26rpx;
-            color: #666;
-            margin-left: 8rpx;
-        }
+    &:active {
+        transform: translateY(1px);
+        background: rgba(255, 255, 255, 0.18);
+    }
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .up-icon {
+        opacity: 0.9;
+    }
+
+    text {
+        font-weight: 500;
     }
 }
 
 .box {
-    background-color: #fff;
-    padding: 30rpx;
-    border-radius: 16rpx;
-    box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
-
-    .title {
-        display: flex;
-        align-items: center;
-        margin-bottom: 24rpx;
-        position: relative;
-
-        text {
-            font-size: 32rpx;
-            font-weight: 600;
-            color: #333;
-            margin-left: 12rpx;
-        }
-
-        .scan-btn {
-            position: absolute;
-            right: 0;
-            display: inline-flex;
-            align-items: center;
-            padding: 6rpx 16rpx;
-            border-radius: 24rpx;
-            background: #ebf5ff;
-            border: 2rpx solid #e5e7eb;
-
-            text {
-                font-size: 24rpx;
-                color: #3b82f6;
-                margin: 0 0 0 4rpx;
-                font-weight: normal;
-            }
-
-            &:active {
-                background: #dbeafe;
-            }
-        }
-    }
-
-    // 仅收款信息的标题需要两端对齐
-    &.payment-box {
-        .title {
-            justify-content: space-between;
-
-            .title-left {
-                display: flex;
-                align-items: center;
-
-                text {
-                    font-size: 32rpx;
-                    font-weight: 600;
-                    color: #333;
-                    margin-left: 12rpx;
-                }
-            }
-
-            .title-action {
-                display: flex;
-                align-items: center;
-                padding: 12rpx 24rpx;
-                background: #f8fafc;
-                border-radius: 30rpx;
-                border: 2rpx solid #e5e7eb;
-                transition: all 0.3s;
-
-                text {
-                    font-size: 24rpx;
-                    color: #666;
-                    margin-left: 8rpx;
-                }
-
-                &:active {
-                    background: #f0f0f0;
-                }
-            }
-        }
-    }
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-.label {
-    font-size: 28rpx;
-    color: #666;
-    padding-top: 20rpx;
-}
-
-.input-wrapper {
-    background: #f8fafc;
-    border-radius: 12rpx;
-    padding: 4rpx 12rpx;
-
-    .address-tip {
-        font-size: 24rpx;
-        color: #999;
-        margin-top: 8rpx;
-        padding: 0 12rpx;
-    }
-}
-
-.section-header {
+.title {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24rpx;
-    padding-bottom: 16rpx;
-    border-bottom: 2rpx solid #f0f0f0;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
 
-    text {
-        font-size: 28rpx;
-        color: #666;
-    }
-
-    .switch-wrapper {
-        display: flex;
-        align-items: center;
-
-        :deep(.u-switch) {
-            transform: scale(0.7);
-            margin-right: 4rpx;
-        }
-
-        .switch-label {
-            margin-left: 8rpx;
-            color: #999;
-            font-size: 24rpx;
-        }
-    }
-}
-
-.return-method {
-    display: flex;
-    justify-content: space-around;
-    padding: 20rpx 0;
-
-    .method-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 32rpx 60rpx;
-        background: #f8fafc;
-        border-radius: 12rpx;
-        transition: all 0.3s;
-        border: 2rpx solid #e5e7eb;
-
-        text {
-            font-size: 26rpx;
-            color: #666;
-            margin-top: 12rpx;
-        }
-
-        &.active {
-            background: #ebf5ff;
-            border-color: #3b82f6;
-            color: #3b82f6;
-
-            text {
-                color: #3b82f6;
-            }
-        }
-    }
-}
-
-.shop-info {
-    .info-row {
-        display: flex;
-        margin-bottom: 20rpx;
-
-        &:last-child {
-            margin-bottom: 0;
-        }
-
-        .label {
-            width: 140rpx;
-            font-size: 26rpx;
-            color: #999;
-            flex-shrink: 0;
-        }
-
-        .value {
-            flex: 1;
-            font-size: 26rpx;
-            color: #333;
-            margin-top: 11px;
-        }
-    }
-
-    .address-row {
-        align-items: flex-start;
-        padding-top: 20rpx;
-        border-top: 2rpx solid #f0f0f0;
-
-        .address-content {
-            flex: 1;
-
-            .address-actions {
-                display: flex;
-                gap: 20rpx;
-                margin-top: 16rpx;
-
-                .action-btn {
-                    display: flex;
-                    align-items: center;
-                    padding: 12rpx 24rpx;
-                    background: #fff;
-                    border-radius: 30rpx;
-                    border: 2rpx solid #e5e7eb;
-
-                    text {
-                        font-size: 24rpx;
-                        color: #666;
-                        margin-left: 8rpx;
-                    }
-
-                    &:active {
-                        background: #f0f0f0;
-                    }
-                }
-            }
-        }
-    }
-}
-
-.return-address {
-    margin-top: 30rpx;
-    padding-top: 24rpx;
-    border-top: 2rpx solid #f0f0f0;
-
-    .section-header {
-        margin-bottom: 16rpx;
-
-        text {
-            font-size: 28rpx;
-            color: #666;
-        }
-    }
-}
-
-.submit-section {
-    margin-top: 40rpx;
-    padding: 20rpx 40rpx;
-    position: sticky;
-    bottom: 20rpx;
-
-    :deep(.u-button) {
-        height: 88rpx;
-        border-radius: 44rpx;
-        font-size: 32rpx;
-        font-weight: 600;
-        background: linear-gradient(135deg, #3b82f6, #2563eb);
-        box-shadow: 0 4rpx 12rpx rgba(59, 130, 246, 0.3);
-    }
-}
-
-.mt-2 {
-    margin-top: 20rpx;
-}
-
-.payment-select {
-    display: flex;
-    gap: 20rpx;
-    align-items: center;
-    font-size: 46rpx;
-
-    :deep(.u-button) {
-        flex-shrink: 0;
-    }
-}
-
-.qrcode-wrapper {
-    padding: 20rpx;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 200rpx;
-    background: #fff;
-    border-radius: 12rpx;
-    border: 2rpx dashed #e5e7eb;
-
-    .qrcode-image {
-        width: 200rpx;
-        height: 200rpx;
-        object-fit: contain;
-    }
-
-    .no-qrcode {
-        color: #999;
-        font-size: 26rpx;
-    }
-}
-
-.action-links {
-    margin-top: 20rpx;
-
-    .link-item {
-        display: flex;
-        align-items: center;
-        padding: 20rpx;
-        background: #f8fafc;
-        border-radius: 12rpx;
-        color: #3b82f6;
-
-        text {
-            flex: 1;
-            margin: 0 12rpx;
-            font-size: 28rpx;
-        }
-    }
-}
-
-.info-content {
-    .info-text {
-        font-size: 28rpx;
-        color: #666;
-        margin-bottom: 16rpx;
-    }
-
-    .shop-address {
-        font-size: 30rpx;
-        color: #333;
-        font-weight: 500;
-        padding: 20rpx;
-        background: #f8fafc;
-        border-radius: 12rpx;
-        margin-bottom: 20rpx;
+    .up-icon {
+        margin-right: 4px;
     }
 }
 
 .phone-list {
-    margin-bottom: 20rpx;
+    margin-bottom: 12px;
+}
 
-    .phone-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 20rpx;
-        background: #f8fafc;
-        border-radius: 12rpx;
-        margin-bottom: 16rpx;
-        border: 2rpx solid #e5e7eb;
+.phone-item {
+    background: #f8fafc;
+    border-radius: 6px;
+    padding: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-        .phone-info {
-            flex: 1;
+.phone-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 
-            .imei {
-                font-size: 26rpx;
-                color: #333;
-                margin-right: 20rpx;
-            }
+    .imei {
+        font-size: 14px;
+        color: #1f2937;
+    }
 
-            .model {
-                font-size: 24rpx;
-                color: #666;
-            }
-        }
-
-        .delete-btn {
-            padding: 12rpx;
-            border-radius: 8rpx;
-
-            &:active {
-                background: #fee2e2;
-            }
-        }
-
-        &:last-child {
-            margin-bottom: 0;
-        }
+    .model {
+        font-size: 12px;
+        color: #6b7280;
     }
 }
 
 .empty-tip {
-    text-align: center;
-    padding: 30rpx 0;
-    color: #999;
-    font-size: 26rpx;
+    font-size: 12px;
+    color: #6b7280;
+    padding: 8px;
     background: #f8fafc;
-    border-radius: 12rpx;
-    margin-bottom: 20rpx;
+    border-radius: 6px;
+    margin-bottom: 12px;
 }
 
-.agreement-section {
-    padding: 20rpx;
+.index {
+    color: #4f46e5;
+    font-weight: 500;
+    margin-right: 4px;
 
-    .agreement-checkbox {
-        display: flex;
-        align-items: flex-start;
-        gap: 10rpx;
+}
 
-        .agreement-text {
-            font-size: 24rpx;
-            color: #64748b;
-            display: flex;
-            flex-wrap: wrap;
+.label {
+    font-size: 14px;
+    color: #374151;
+}
 
-            .text-primary {
-                color: var(--primary-color);
-            }
+.input-wrapper {
+    width: 100%;
+    overflow: hidden;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.switch-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    .switch-label {
+        font-size: 12px;
+        color: #6b7280;
+    }
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 14px;
+
+    .label {
+        color: #6b7280;
+        width: 80px;
+    }
+
+    .value {
+        color: #1f2937;
+        flex: 1;
+    }
+
+    .up-icon {
+        margin-left: 8px;
+        color: #3b82f6;
+    }
+}
+
+.scan-btn {
+    margin-right: 18px;
+}
+
+.scan-btn,
+.copy-btn {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #3b82f6;
+    background: rgba(59, 130, 246, 0.1);
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.title-action {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #3b82f6;
+}
+
+.help-collapse {
+    margin: 8px 0 12px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #f8fafc;
+
+    :deep(.up-collapse-item__title) {
+        font-size: 13px;
+        color: #6b7280;
+        padding: 8px 12px;
+    }
+}
+
+.help-content {
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    text {
+        font-size: 13px;
+        color: #6b7280;
+
+        &.sub-text {
+            font-size: 12px;
+            color: #9ca3af;
         }
     }
 }
 
-.action-links {
-    margin-top: 20rpx;
-    display: flex;
-    flex-direction: column;
-    gap: 16rpx;
+.mt-2 {
+    margin-top: 12px;
+}
 
-    .link-item {
+.imei-modal {
+    width: 320px;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+
+    .modal-header {
         display: flex;
+        justify-content: space-between;
         align-items: center;
-        padding: 20rpx;
-        background: #f8fafc;
-        border-radius: 12rpx;
-        color: #3b82f6;
+        padding: 16px 16px 12px;
+        border-bottom: 1px solid #e5e7eb;
 
-        text {
-            flex: 1;
-            margin: 0 12rpx;
-            font-size: 28rpx;
+        .modal-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #1f2937;
         }
 
-        &:active {
-            background: #f1f5f9;
+        .close-btn {
+            padding: 4px;
+            border-radius: 4px;
+            cursor: pointer;
+
+            &:active {
+                background: #f1f5f9;
+            }
+        }
+    }
+
+    .modal-body {
+        padding: 16px;
+        max-height: 60vh;
+        overflow-y: auto;
+
+        .form-group {
+            margin-bottom: 16px;
+
+            .input-row {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+
+                .input-group {
+                    display: flex;
+                    gap: 8px;
+                    align-items: flex-start;
+
+                    .input-wrapper {
+                        position: relative;
+                        display: flex;
+                        align-items: center;
+                        flex: 1;
+
+                        .scan-btn {
+                            position: absolute;
+                            right: 8px;
+                            padding: 4px;
+                            border-radius: 4px;
+                            cursor: pointer;
+
+                            &:active {
+                                background: #f1f5f9;
+                            }
+                        }
+                    }
+
+                    .input-wrapper:nth-child(1) {
+                        flex: 2;
+                    }
+
+                    .remove-btn {
+                        margin-top: 8px;
+                        padding: 4px;
+                        border-radius: 4px;
+                        cursor: pointer;
+
+                        &:active {
+                            background: #fee2e2;
+                        }
+                    }
+                }
+            }
+
+            .add-input-btn {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                margin-top: 8px;
+                padding: 6px 12px;
+                border-radius: 6px;
+                background: #f1f5f9;
+                cursor: pointer;
+
+                text {
+                    font-size: 14px;
+                    color: #3b82f6;
+                }
+
+                &:active {
+                    background: #e2e8f0;
+                }
+            }
+
+            .tip-text {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                margin-top: 8px;
+
+                text {
+                    font-size: 12px;
+                    color: #64748b;
+                }
+            }
+        }
+
+        .device-list {
+            border-top: 1px solid #e5e7eb;
+            padding-top: 16px;
+
+            .list-header {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                margin-bottom: 8px;
+                font-size: 14px;
+                color: #1f2937;
+
+                .count {
+                    color: #64748b;
+                }
+            }
+
+            .device-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 8px;
+                background: #f8fafc;
+                border-radius: 4px;
+                margin-bottom: 8px;
+
+                .device-info {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 2px;
+
+                    .imei {
+                        font-size: 14px;
+                        color: #1f2937;
+                    }
+
+                    .price {
+                        font-size: 12px;
+                        color: #3b82f6;
+                    }
+                }
+
+                .delete-btn {
+                    padding: 4px;
+                    border-radius: 4px;
+                    cursor: pointer;
+
+                    &:active {
+                        background: #fee2e2;
+                    }
+                }
+            }
+        }
+    }
+
+    .modal-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 16px;
+        border-top: 1px solid #e5e7eb;
+
+        .left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            text {
+                font-size: 14px;
+                color: #64748b;
+            }
+        }
+
+        .right {
+            display: flex;
+            gap: 8px;
+
+            .btn {
+                padding: 6px 16px;
+                border-radius: 6px;
+                font-size: 14px;
+                cursor: pointer;
+
+                &.cancel {
+                    color: #64748b;
+                    background: #f1f5f9;
+
+                    &:active {
+                        background: #e2e8f0;
+                    }
+                }
+
+                &.confirm {
+                    color: #fff;
+                    background: #3b82f6;
+
+                    &:active {
+                        background: #2563eb;
+                    }
+                }
+            }
         }
     }
 }

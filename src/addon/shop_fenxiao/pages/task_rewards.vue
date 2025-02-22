@@ -27,7 +27,7 @@
                                 <view class="w-[200rpx] h-[200rpx] relative overflow-hidden">
                                     <image class="w-[200rpx] h-[200rpx] flex-shrink-0 rounded-[var(--goods-rounded-mid)]" mode="aspectFill" v-if="item.cover_thumb_mid" :src="img(item.cover_thumb_mid)" @error="item.cover_thumb_mid='addon/shop_fenxiao/task.png'"></image>
                                     <image class="w-[200rpx] h-[200rpx] flex-shrink-0 rounded-[var(--goods-rounded-mid)]" mode="aspectFit" v-else :src="img('addon/shop_fenxiao/task.png')"></image>
-                                    <view class="absolute top-0 right-0 task rounded-tr-[var(--goods-rounded-mid)] rounded-bl-[var(--goods-rounded-mid)] px-[16rpx] leading-[30rpx] h-[36rpx] text-[#fff] flex-center" :class="{'bg-[#EF000C]':(item as any).status === 2,'bg-[#FF6A1A]': (item as any).status === 1}">
+                                   <view class="absolute top-0 right-0 task rounded-tr-[var(--goods-rounded-mid)] rounded-bl-[var(--goods-rounded-mid)] px-[16rpx] leading-[30rpx] h-[36rpx] text-[#fff] flex-center" :class="{'bg-[#EF000C]':(item as any).status === 2,'bg-[var(--primary-color)]': (item as any).status === 1}">
                                         <block v-if="(item as any).status === 2">
                                             <u-count-down  v-if="(item as any).time_type != '2'" :time="(item as any).time"  format="HH:mm:ss" autoStart millisecond />
                                             <text v-if="(item as any).time_type === '2'" class="text-[22rpx]">长期有效</text>

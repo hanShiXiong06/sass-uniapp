@@ -5,7 +5,7 @@
             <view class="chunk-wrap p-3 bg-white mx-3 rounded-md">
                 <view class="flex" v-for="(item, index) in paymentData.goods">
                     <view class="w-[200rpx] mr-3 overflow-hidden rounded">
-                        <image :src="img(item.cover_thumb_mid)" mode="widthFix" class="w-full"></image>
+                        <image :src="img(item.cover_thumb_mid)" mode="widthFix" class="w-full h-[auto]"></image>
                     </view>
                     <view class="flex-1 w-0">
                         <view class="font-bold truncate">{{ item.goods_name }}</view>

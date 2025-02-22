@@ -227,7 +227,7 @@
 	import useDiyStore from '@/app/stores/diy';
     import { getNewcomersComponentsList } from '@/addon/shop/api/newcomer'
 
-	const props = defineProps(['component', 'index', 'pullDownRefreshCount','value']);
+	const props = defineProps(['component', 'index','value']);
 	const diyStore = useDiyStore();
 
 	const diyComponent = computed(() => {
@@ -302,8 +302,8 @@
 		if (diyComponent.value.countDown.numberColor) style += 'color:' + diyComponent.value.countDown.numberColor + ';';
 		return style;
 	})
-	
-	
+
+
 	// 公共模块颜色
 	const commonTempCss = ()=>{
 		var style = '';
